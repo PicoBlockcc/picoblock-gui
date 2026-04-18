@@ -11,20 +11,27 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: picoblock-gui
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout picoblock-gui
+        uses: actions/checkout@v4
+        with:
+          path: picoblock-gui
 
       - name: Checkout picoblock-vm
         uses: actions/checkout@v4
         with:
           repository: PicoBlockcc/picoblock-vm
-          path: ../picoblock-vm
+          path: picoblock-vm
 
       - name: Checkout picoblock-blocks
         uses: actions/checkout@v4
         with:
           repository: PicoBlockcc/picoblock-blocks
-          path: ../picoblock-blocks
+          path: picoblock-blocks
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,5 +48,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: picoblock-gui/build
           enable_jekyll: false
