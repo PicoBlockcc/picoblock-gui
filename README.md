@@ -33,7 +33,7 @@ It combines:
 ## 🚀 Try PiCoBlock Online
 
 👉 (Add your future link here, e.g.)
-https://picoblock.pico.ma
+https://picoblockcc.github.io/picoblock-gui/
 
 ---
 
