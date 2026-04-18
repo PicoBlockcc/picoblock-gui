@@ -1,46 +1,93 @@
-# openblock-gui
+# PiCoBlock GUI
 
-[![Publish Npm Package And Deploy Github Pages](https://github.com/openblockcc/openblock-gui/actions/workflows/publish-npm-package-and-deploy-gh-pages.yml/badge.svg)](https://github.com/openblockcc/openblock-gui/actions/workflows/publish-npm-package-and-deploy-gh-pages.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenblockcc%2Fopenblock-gui.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenblockcc%2Fopenblock-gui?ref=badge_shield)
-[![Gitter](https://badges.gitter.im/openblockcc/community.svg)](https://gitter.im/openblockcc/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![ko-fi](https://img.shields.io/badge/donate-sponsors-ea4aaa.svg?logo=ko-fi)](https://ko-fi.com/X8X66DATO)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-**OpenBlock GUI is a set of React components that comprise the interface for creating and running OpenBlock projects**
+**PiCoBlock GUI is a visual programming environment for embedded systems, built on top of OpenBlock technology and adapted for the PiCo ecosystem.**
 
-## Try OpenBlock Online
+---
 
-OpenBlock Online: [https://openblockcc.github.io/openblock-gui/develop/](https://openblockcc.github.io/openblock-gui/develop/)
+## 🌍 What is PiCoBlock?
 
-![screenshot1](./docs/screenshot1.png)
-![screenshot2](./docs/screenshot2.png)
+PiCoBlock is a block-based programming platform that allows users to create, simulate, and upload programs to PiCo boards using an intuitive drag-and-drop interface.
 
-## Getting Start
+It combines:
+- 🎓 Educational simplicity (like Scratch)
+- ⚙️ Embedded systems power (Arduino-compatible)
+- 🔌 Real hardware interaction (PiCo boards)
 
-Visit the wiki: [https://wiki.openblock.cc](https://wiki.openblock.cc)
+---
 
-## Join chat
+## ⚡ Key Features
 
-- Gitter: [https://gitter.im/openblockcc/community](https://gitter.im/openblockcc/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
+- 🧩 Drag-and-drop programming interface  
+- 🔄 Real-time code generation and upload  
+- 🔌 Native support for PiCo hardware:
+  - PiCoNano  
+  - PiCoLAB-Sensors  
+  - PiCoBot  
+- 🧠 Beginner-friendly + advanced extensibility  
+- 🌐 Web-based interface (no installation required)
 
-- QQ 群 (for chinese): 933484739
+---
 
-## Donate
+## 🚀 Try PiCoBlock Online
 
-Buy me a cup of coffee.
+👉 (Add your future link here, e.g.)
+https://picoblock.pico.ma
 
-- Ko-fi (PayPal):
+---
 
-    [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X8X66DATO)
+## 📚 Documentation
 
-- 支付宝:
+- PiCo Documentation (coming soon)
+- Tutorials and learning content integrated into PiCo Learn
 
-    ![alipayQRCode](./docs/alipayQRCode.png)
+---
 
-## Bug Report
+## 🧪 Getting Started
 
-You can submit the bug log in issues of this project.
+1. Connect your PiCo board  
+2. Open PiCoBlock in your browser  
+3. Drag blocks to create your program  
+4. Upload and run on your device  
 
+---
 
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenblockcc%2Fopenblock-gui.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenblockcc%2Fopenblock-gui?ref=badge_large)
+## 🧑‍🏫 For Education
+
+PiCoBlock is designed for:
+- Schools  
+- Robotics clubs  
+- STEM programs  
+- Workshops and camps (مخيمات)
+
+---
+
+## 🤝 Community
+
+(You can replace later with your own links)
+
+- Discord / WhatsApp (optional)
+- GitHub Issues for bug reports
+
+---
+
+## ❤️ Support the Project
+
+If you want to support PiCoBlock:
+
+- Share the project
+- Use PiCo hardware
+- Contribute to development
+
+---
+
+## 🐞 Bug Reports
+
+Please report issues in this repository.
+
+---
+
+## 📄 License
+
+MIT License
