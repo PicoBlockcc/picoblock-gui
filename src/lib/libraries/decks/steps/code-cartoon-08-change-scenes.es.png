@@ -1,0 +1,1546 @@
+;
+                result.push(fragment);
+                if (i + 1 < iz && !endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
+                    if (preserveBlankLines) {
+                        if (!stmt.body[i + 1].leadingComments) {
+                            result.push(newline);
+                        }
+                    } else {
+                        result.push(newline);
+                    }
+                }
+
+                if (preserveBlankLines) {
+                    // handle spaces after the last line
+                    if (i === iz - 1) {
+                        if (!stmt.body[i].trailingComments) {
+                            generateBlankLines(stmt.body[i].range[1], stmt.range[1], result);
+                        }
+                    }
+                }
+            }
+            return result;
+        },
+
+        FunctionDeclaration: function (stmt, flags) {
+            return [
+                generateAsyncPrefix(stmt, true),
+                'function',
+                generateStarSuffix(stmt) || noEmptySpace(),
+                stmt.id ? generateIdentifier(stmt.id) : '',
+                this.generateFunctionBody(stmt)
+            ];
+        },
+
+        ReturnStatement: function (stmt, flags) {
+            if (stmt.argument) {
+                return [join(
+                    'return',
+                    this.generateExpression(stmt.argument, Precedence.Sequence, E_TTT)
+                ), this.semicolon(flags)];
+            }
+            return ['return' + this.semicolon(flags)];
+        },
+
+        WhileStatement: function (stmt, flags) {
+            var result, that = this;
+            withIndent(function () {
+                result = [
+                    'while' + space + '(',
+                    that.generateExpression(stmt.test, Precedence.Sequence, E_TTT),
+                    ')'
+                ];
+            });
+            result.push(this.maybeBlock(stmt.body, flags & F_SEMICOLON_OPT ? S_TFFT : S_TFFF));
+            return result;
+        },
+
+        WithStatement: function (stmt, flags) {
+            var result, that = this;
+            withIndent(function () {
+                result = [
+                    'with' + space + '(',
+                    that.generateExpression(stmt.object, Precedence.Sequence, E_TTT),
+                    ')'
+                ];
+            });
+            result.push(this.maybeBlock(stmt.body, flags & F_SEMICOLON_OPT ? S_TFFT : S_TFFF));
+            return result;
+        }
+
+    };
+
+    merge(CodeGenerator.prototype, CodeGenerator.Statement);
+
+    // Expressions.
+
+    CodeGenerator.Expression = {
+
+        SequenceExpression: function (expr, precedence, flags) {
+            var result, i, iz;
+            if (Precedence.Sequence < precedence) {
+                flags |= F_ALLOW_IN;
+            }
+            result = [];
+            for (i = 0, iz = expr.expressions.length; i < iz; ++i) {
+                result.push(this.generateExpression(expr.expressions[i], Precedence.Assignment, flags));
+                if (i + 1 < iz) {
+                    result.push(',' + space);
+                }
+            }
+            return parenthesize(result, Precedence.Sequence, precedence);
+        },
+
+        AssignmentExpression: function (expr, precedence, flags) {
+            return this.generateAssignment(expr.left, expr.right, expr.operator, precedence, flags);
+        },
+
+        ArrowFunctionExpression: function (expr, precedence, flags) {
+            return parenthesize(this.generateFunctionBody(expr), Precedence.ArrowFunction, precedence);
+        },
+
+        ConditionalExpression: function (expr, precedence, flags) {
+            if (Precedence.Conditional < precedence) {
+                flags |= F_ALLOW_IN;
+            }
+            return parenthesize(
+                [
+                    this.generateExpression(expr.test, Precedence.LogicalOR, flags),
+                    space + '?' + space,
+                    this.generateExpression(expr.consequent, Precedence.Assignment, flags),
+                    space + ':' + space,
+                    this.generateExpression(expr.alternate, Precedence.Assignment, flags)
+                ],
+                Precedence.Conditional,
+                precedence
+            );
+        },
+
+        LogicalExpression: function (expr, precedence, flags) {
+            return this.BinaryExpression(expr, precedence, flags);
+        },
+
+        BinaryExpression: function (expr, precedence, flags) {
+            var result, leftPrecedence, rightPrecedence, currentPrecedence, fragment, leftSource;
+            currentPrecedence = BinaryPrecedence[expr.operator];
+            leftPrecedence = expr.operator === '**' ? Precedence.Postfix : currentPrecedence;
+            rightPrecedence = expr.operator === '**' ? currentPrecedence : currentPrecedence + 1;
+
+            if (currentPrecedence < precedence) {
+                flags |= F_ALLOW_IN;
+            }
+
+            fragment = this.generateExpression(expr.left, leftPrecedence, flags);
+
+            leftSource = fragment.toString();
+
+            if (leftSource.charCodeAt(leftSource.length - 1) === 0x2F /* / */ && esutils.code.isIdentifierPartES5(expr.operator.charCodeAt(0))) {
+                result = [fragment, noEmptySpace(), expr.operator];
+            } else {
+                result = join(fragment, expr.operator);
+            }
+
+            fragment = this.generateExpression(expr.right, rightPrecedence, flags);
+
+            if (expr.operator === '/' && fragment.toString().charAt(0) === '/' ||
+            expr.operator.slice(-1) === '<' && fragment.toString().slice(0, 3) === '!--') {
+                // If '/' concats with '/' or `<` concats with `!--`, it is interpreted as comment start
+                result.push(noEmptySpace());
+                result.push(fragment);
+            } else {
+                result = join(result, fragment);
+            }
+
+            if (expr.operator === 'in' && !(flags & F_ALLOW_IN)) {
+                return ['(', result, ')'];
+            }
+            return parenthesize(result, currentPrecedence, precedence);
+        },
+
+        CallExpression: function (expr, precedence, flags) {
+            var result, i, iz;
+            // F_ALLOW_UNPARATH_NEW becomes false.
+            result = [this.generateExpression(expr.callee, Precedence.Call, E_TTF)];
+            result.push('(');
+            for (i = 0, iz = expr['arguments'].length; i < iz; ++i) {
+                result.push(this.generateExpression(expr['arguments'][i], Precedence.Assignment, E_TTT));
+                if (i + 1 < iz) {
+                    result.push(',' + space);
+                }
+            }
+            result.push(')');
+
+            if (!(flags & F_ALLOW_CALL)) {
+                return ['(', result, ')'];
+            }
+            return parenthesize(result, Precedence.Call, precedence);
+        },
+
+        NewExpression: function (expr, precedence, flags) {
+            var result, length, i, iz, itemFlags;
+            length = expr['arguments'].length;
+
+            // F_ALLOW_CALL becomes false.
+            // F_ALLOW_UNPARATH_NEW may become false.
+            itemFlags = (flags & F_ALLOW_UNPARATH_NEW && !parentheses && length === 0) ? E_TFT : E_TFF;
+
+            result = join(
+                'new',
+                this.generateExpression(expr.callee, Precedence.New, itemFlags)
+            );
+
+            if (!(flags & F_ALLOW_UNPARATH_NEW) || parentheses || length > 0) {
+                result.push('(');
+                for (i = 0, iz = length; i < iz; ++i) {
+                    result.push(this.generateExpression(expr['arguments'][i], Precedence.Assignment, E_TTT));
+                    if (i + 1 < iz) {
+                        result.push(',' + space);
+                    }
+                }
+                result.push(')');
+            }
+
+            return parenthesize(result, Precedence.New, precedence);
+        },
+
+        MemberExpression: function (expr, precedence, flags) {
+            var result, fragment;
+
+            // F_ALLOW_UNPARATH_NEW becomes false.
+            result = [this.generateExpression(expr.object, Precedence.Call, (flags & F_ALLOW_CALL) ? E_TTF : E_TFF)];
+
+            if (expr.computed) {
+                result.push('[');
+                result.push(this.generateExpression(expr.property, Precedence.Sequence, flags & F_ALLOW_CALL ? E_TTT : E_TFT));
+                result.push(']');
+            } else {
+                if (expr.object.type === Syntax.Literal && typeof expr.object.value === 'number') {
+                    fragment = toSourceNodeWhenNeeded(result).toString();
+                    // When the following conditions are all true,
+                    //   1. No floating point
+                    //   2. Don't have exponents
+                    //   3. The last character is a decimal digit
+                    //   4. Not hexadecimal OR octal number literal
+                    // we should add a floating point.
+                    if (
+                            fragment.indexOf('.') < 0 &&
+                            !/[eExX]/.test(fragment) &&
+                            esutils.code.isDecimalDigit(fragment.charCodeAt(fragment.length - 1)) &&
+                            !(fragment.length >= 2 && fragment.charCodeAt(0) === 48)  // '0'
+                            ) {
+                        result.push(' ');
+                    }
+                }
+                result.push('.');
+                result.push(generateIdentifier(expr.property));
+            }
+
+            return parenthesize(result, Precedence.Member, precedence);
+        },
+
+        MetaProperty: function (expr, precedence, flags) {
+            var result;
+            result = [];
+            result.push(typeof expr.meta === "string" ? expr.meta : generateIdentifier(expr.meta));
+            result.push('.');
+            result.push(typeof expr.property === "string" ? expr.property : generateIdentifier(expr.property));
+            return parenthesize(result, Precedence.Member, precedence);
+        },
+
+        UnaryExpression: function (expr, precedence, flags) {
+            var result, fragment, rightCharCode, leftSource, leftCharCode;
+            fragment = this.generateExpression(expr.argument, Precedence.Unary, E_TTT);
+
+            if (space === '') {
+                result = join(expr.operator, fragment);
+            } else {
+                result = [expr.operator];
+                if (expr.operator.length > 2) {
+                    // delete, void, typeof
+                    // get `typeof []`, not `typeof[]`
+                    result = join(result, fragment);
+                } else {
+                    // Prevent inserting spaces between operator and argument if it is unnecessary
+                    // like, `!cond`
+                    leftSource = toSourceNodeWhenNeeded(result).toString();
+                    leftCharCode = leftSource.charCodeAt(leftSource.length - 1);
+                    rightCharCode = fragment.toString().charCodeAt(0);
+
+                    if (((leftCharCode === 0x2B  /* + */ || leftCharCode === 0x2D  /* - */) && leftCharCode === rightCharCode) ||
+                            (esutils.code.isIdentifierPartES5(leftCharCode) && esutils.code.isIdentifierPartES5(rightCharCode))) {
+                        result.push(noEmptySpace());
+                        result.push(fragment);
+                    } else {
+                        result.push(fragment);
+                    }
+                }
+            }
+            return parenthesize(result, Precedence.Unary, precedence);
+        },
+
+        YieldExpression: function (expr, precedence, flags) {
+            var result;
+            if (expr.delegate) {
+                result = 'yield*';
+            } else {
+                result = 'yield';
+            }
+            if (expr.argument) {
+                result = join(
+                    result,
+                    this.generateExpression(expr.argument, Precedence.Yield, E_TTT)
+                );
+            }
+            return parenthesize(result, Precedence.Yield, precedence);
+        },
+
+        AwaitExpression: function (expr, precedence, flags) {
+            var result = join(
+                expr.all ? 'await*' : 'await',
+                this.generateExpression(expr.argument, Precedence.Await, E_TTT)
+            );
+            return parenthesize(result, Precedence.Await, precedence);
+        },
+
+        UpdateExpression: function (expr, precedence, flags) {
+            if (expr.prefix) {
+                return parenthesize(
+                    [
+                        expr.operator,
+                        this.generateExpression(expr.argument, Precedence.Unary, E_TTT)
+                    ],
+                    Precedence.Unary,
+                    precedence
+                );
+            }
+            return parenthesize(
+                [
+                    this.generateExpression(expr.argument, Precedence.Postfix, E_TTT),
+                    expr.operator
+                ],
+                Precedence.Postfix,
+                precedence
+            );
+        },
+
+        FunctionExpression: function (expr, precedence, flags) {
+            var result = [
+                generateAsyncPrefix(expr, true),
+                'function'
+            ];
+            if (expr.id) {
+                result.push(generateStarSuffix(expr) || noEmptySpace());
+                result.push(generateIdentifier(expr.id));
+            } else {
+                result.push(generateStarSuffix(expr) || space);
+            }
+            result.push(this.generateFunctionBody(expr));
+            return result;
+        },
+
+        ArrayPattern: function (expr, precedence, flags) {
+            return this.ArrayExpression(expr, precedence, flags, true);
+        },
+
+        ArrayExpression: function (expr, precedence, flags, isPattern) {
+            var result, multiline, that = this;
+            if (!expr.elements.length) {
+                return '[]';
+            }
+            multiline = isPattern ? false : expr.elements.length > 1;
+            result = ['[', multiline ? newline : ''];
+            withIndent(function (indent) {
+                var i, iz;
+                for (i = 0, iz = expr.elements.length; i < iz; ++i) {
+                    if (!expr.elements[i]) {
+                        if (multiline) {
+                            result.push(indent);
+                        }
+                        if (i + 1 === iz) {
+                            result.push(',');
+                        }
+                    } else {
+                        result.push(multiline ? indent : '');
+                        result.push(that.generateExpression(expr.elements[i], Precedence.Assignment, E_TTT));
+                    }
+                    if (i + 1 < iz) {
+                        result.push(',' + (multiline ? newline : space));
+                    }
+                }
+            });
+            if (multiline && !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
+                result.push(newline);
+            }
+            result.push(multiline ? base : '');
+            result.push(']');
+            return result;
+        },
+
+        RestElement: function(expr, precedence, flags) {
+            return '...' + this.generatePattern(expr.argument);
+        },
+
+        ClassExpression: function (expr, precedence, flags) {
+            var result, fragment;
+            result = ['class'];
+            if (expr.id) {
+                result = join(result, this.generateExpression(expr.id, Precedence.Sequence, E_TTT));
+            }
+            if (expr.superClass) {
+                fragment = join('extends', this.generateExpression(expr.superClass, Precedence.Unary, E_TTT));
+                result = join(result, fragment);
+            }
+            result.push(space);
+            result.push(this.generateStatement(expr.body, S_TFFT));
+            return result;
+        },
+
+        MethodDefinition: function (expr, precedence, flags) {
+            var result, fragment;
+            if (expr['static']) {
+                result = ['static' + space];
+            } else {
+                result = [];
+            }
+            if (expr.kind === 'get' || expr.kind === 'set') {
+                fragment = [
+                    join(expr.kind, this.generatePropertyKey(expr.key, expr.computed)),
+                    this.!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^let cmd;$/;"	variable	line:15
+which	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^function which(name) {$/;"	function	line:17
+loc	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^  let loc;$/;"	variable	line:19
+len	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^  for (let i = 0, len = paths.length; i < len; i += 1) {$/;"	variable	line:21
+loc	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^    loc = path.join(paths[i], name);$/;"	variable	line:22
+setupCmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^function setupCmd() {$/;"	function	line:28
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^        cmd = {$/;"	object	line:32
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^        cmd = {$/;"	variable	line:32
+type	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          type: 'Darwin-NotificationCenter',$/;"	string	line:33
+type	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          type: 'Darwin-NotificationCenter',$/;"	variable	line:33
+pkg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          pkg: 'terminal-notifier',$/;"	string	line:34
+pkg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          pkg: 'terminal-notifier',$/;"	variable	line:34
+msg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          msg: '-message',$/;"	string	line:35
+msg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          msg: '-message',$/;"	variable	line:35
+title	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          title: '-title',$/;"	string	line:36
+title	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          title: '-title',$/;"	variable	line:36
+subtitle	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          subtitle: '-subtitle',$/;"	string	line:37
+subtitle	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          subtitle: '-subtitle',$/;"	variable	line:37
+icon	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          icon: '-appIcon',$/;"	string	line:38
+icon	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          icon: '-appIcon',$/;"	variable	line:38
+sound	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          sound: '-sound',$/;"	string	line:39
+sound	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          sound: '-sound',$/;"	variable	line:39
+url	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          url: '-open',$/;"	string	line:40
+url	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          url: '-open',$/;"	variable	line:40
+priority	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          priority: {$/;"	object	line:41
+priority	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          priority: {$/;"	variable	line:41
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^            cmd: '-execute',$/;"	string	line:42
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^            cmd: '-execute',$/;"	variable	line:42
+range	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^            range: [],$/;"	array	line:43
+range	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^            range: [],$/;"	variable	line:43
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^        cmd = {$/;"	object	line:47
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^        cmd = {$/;"	variable	line:47
+type	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          type: 'Darwin-Growl',$/;"	string	line:48
+type	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          type: 'Darwin-Growl',$/;"	variable	line:48
+pkg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          pkg: 'growlnotify',$/;"	string	line:49
+pkg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          pkg: 'growlnotify',$/;"	variable	line:49
+msg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          msg: '-m',$/;"	string	line:50
+msg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          msg: '-m',$/;"	variable	line:50
+sticky	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          sticky: '--sticky',$/;"	string	line:51
+sticky	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          sticky: '--sticky',$/;"	variable	line:51
+url	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          url: '--url',$/;"	string	line:52
+url	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          url: '--url',$/;"	variable	line:52
+priority	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          priority: {$/;"	object	line:53
+priority	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          priority: {$/;"	variable	line:53
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^            cmd: '--priority',$/;"	string	line:54
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^            cmd: '--priority',$/;"	variable	line:54
+range	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^            range: [$/;"	array	line:55
+range	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^            range: [$/;"	variable	line:55
+0	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^              0,$/;"	variable	line:58
+1	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^              1,$/;"	variable	line:59
+2	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^              2,$/;"	variable	line:60
+break	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^      break;$/;"	variable	line:70
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^        cmd = {$/;"	object	line:73
+cmd	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^        cmd = {$/;"	variable	line:73
+type	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          type: 'Linux-Growl',$/;"	string	line:74
+type	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          type: 'Linux-Growl',$/;"	variable	line:74
+pkg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          pkg: 'growl',$/;"	string	line:75
+pkg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          pkg: 'growl',$/;"	variable	line:75
+msg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          msg: '-m',$/;"	string	line:76
+msg	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          msg: '-m',$/;"	variable	line:76
+title	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          title: '-title',$/;"	string	line:77
+title	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          title: '-title',$/;"	variable	line:77
+subtitle	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          subtitle: '-subtitle',$/;"	string	line:78
+subtitle	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          subtitle: '-subtitle',$/;"	variable	line:78
+host	/Users/timosand/Dropbox/Documents/Projects/node-growl/lib/growl.js	/^          host: {$/;"	object	line:79
+host	/Users/timosand/Dropbox/Documents/Projects/node-grow(The MIT License)
+
+Copyright (c) 2014 TJ Holowaychuk <tj@vision-media.ca>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+and associated documentation files (the 'Software'), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             # Commander.js
+
+
+[![Build Status](https://api.travis-ci.org/tj/commander.js.svg?branch=master)](http://travis-ci.org/tj/commander.js)
+[![NPM Version](http://img.shields.io/npm/v/commander.svg?style=flat)](https://www.npmjs.org/package/commander)
+[![NPM Downloads](https://img.shields.io/npm/dm/commander.svg?style=flat)](https://www.npmjs.org/package/commander)
+[![Join the chat at https://gitter.im/tj/commander.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tj/commander.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+  The complete solution for [node.js](http://nodejs.org) command-line interfaces, inspired by Ruby's [commander](https://github.com/commander-rb/commander).  
+  [API documentation](http://tj.github.com/commander.js/)
+
+
+## Installation
+
+    $ npm install commander --save
+
+## Option parsing
+
+ Options with commander are defined with the `.option()` method, also serving as documentation for the options. The example below parses args and options from `process.argv`, leaving remaining args as the `program.args` array which were not consumed by options.
+
+```js
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var program = require('commander');
+
+program
+  .version('0.1.0')
+  .option('-p, --peppers', 'Add peppers')
+  .option('-P, --pineapple', 'Add pineapple')
+  .option('-b, --bbq-sauce', 'Add bbq sauce')
+  .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
+  .parse(process.argv);
+
+console.log('you ordered a pizza with:');
+if (program.peppers) console.log('  - peppers');
+if (program.pineapple) console.log('  - pineapple');
+if (program.bbqSauce) console.log('  - bbq');
+console.log('  - %s cheese', program.cheese);
+```
+
+ Short flags may be passed as a single arg, for example `-abc` is equivalent to `-a -b -c`. Multi-word options such as "--template-engine" are camel-cased, becoming `program.templateEngine` etc.
+
+
+## Coercion
+
+```js
+function range(val) {
+  return val.split('..').map(Number);
+}
+
+function list(val) {
+  return val.split(',');
+}
+
+function collect(val, memo) {
+  memo.push(val);
+  return memo;
+}
+
+function increaseVerbosity(v, total) {
+  return total + 1;
+}
+
+program
+  .version('0.1.0')
+  .usage('[options] <file ...>')
+  .option('-i, --integer <n>', 'An integer argument', parseInt)
+  .option('-f, --float <n>', 'A float argument', parseFloat)
+  .option('-r, --range <a>..<b>', 'A range', range)
+  .option('-l, --list <items>', 'A list', list)
+  .option('-o, --optional [value]', 'An optional value')
+  .option('-c, --collect [value]', 'A repeatable value', collect, [])
+  .option('-v, --verbose', 'A value that can be increased', increaseVerbosity, 0)
+  .parse(process.argv);
+
+console.log(' int: %j', program.integer);
+console.log(' float: %j', program.float);
+console.log(' optional: %j', program.optional);
+program.range = program.range || [];
+console.log(' range: %j..%j', program.range[0], program.range[1]);
+console.log(' list: %j', program.list);
+console.log(' collect: %j', program.collect);
+console.log(' verbosity: %j', program.verbose);
+console.log(' args: %j', program.args);
+```
+
+## Regular Expression
+```js
+program
+  .version('0.1.0')
+  .option('-s --size <size>', 'Pizza size', /^(large|medium|small)$/i, 'medium')
+  .option('-d --drink [drink]', 'Drink', /^(coke|pepsi|izze)$/i)
+  .parse(process.argv);
+  
+console.log(' size: %j', program.size);
+console.log(' drink: %j', program.drink);
+```
+
+## Variadic arguments
+
+ The last argument of a command can be variadic, and only the last argument.  To make an argument variadic you have to
+ append `...` to the argument name.  Here is an example:
+
+```js
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var program = require('commander');
+
+program
+  .version('0.1.0')
+  .command('rmdir <dir> [otherDirs...]')
+  .action(function (dir, otherDirs) {
+    console.log('rmdir %s', dir);
+    if (otherDirs) {
+      otherDirs.forEach(function (oDir) {
+        console.log('rmdir %s', oDir);
+      });
+    }
+  });
+
+program.parse(process.argv);
+```
+
+ An `Array` is used for the value of a variadic argumen"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.escape = exports.encodeHTML = exports.encodeXML = void 0;
+var xml_json_1 = __importDefault(require("./maps/xml.json"));
+var inverseXML = getInverseObj(xml_json_1.default);
+var xmlReplacer = getInverseReplacer(inverseXML);
+exports.encodeXML = getInverse(inverseXML, xmlReplacer);
+var entities_json_1 = __importDefault(require("./maps/entities.json"));
+var inverseHTML = getInverseObj(entities_json_1.default);
+var htmlReplacer = getInverseReplacer(inverseHTML);
+exports.encodeHTML = getInverse(inverseHTML, htmlReplacer);
+function getInverseObj(obj) {
+    return Object.keys(obj)
+        .sort()
+        .reduce(function (inverse, name) {
+        inverse[obj[name]] = "&" + name + ";";
+        return inverse;
+    }, {});
+}
+function getInverseReplacer(inverse) {
+    var single = [];
+    var multiple = [];
+    for (var _i = 0, _a = Object.keys(inverse); _i < _a.length; _i++) {
+        var k = _a[_i];
+        if (k.length === 1) {
+            // Add value to single array
+            single.push("\\" + k);
+        }
+        else {
+            // Add value to multiple array
+            multiple.push(k);
+        }
+    }
+    // Add ranges to single characters.
+    single.sort();
+    for (var start = 0; start < single.length - 1; start++) {
+        // Find the end of a run of characters
+        var end = start;
+        while (end < single.length - 1 &&
+            single[end].charCodeAt(1) + 1 === single[end + 1].charCodeAt(1)) {
+            end += 1;
+        }
+        var count = 1 + end - start;
+        // We want to replace at least three characters
+        if (count < 3)
+            continue;
+        single.splice(start, count, single[start] + "-" + single[end]);
+    }
+    multiple.unshift("[" + single.join("") + "]");
+    return new RegExp(multiple.join("|"), "g");
+}
+var reNonASCII = /(?:[\x80-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])/g;
+function singleCharReplacer(c) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return "&#x" + c.codePointAt(0).toString(16).toUpperCase() + ";";
+}
+function getInverse(inverse, re) {
+    return function (data) {
+        return data
+            .replace(re, function (name) { return inverse[name]; })
+            .replace(reNonASCII, singleCharReplacer);
+    };
+}
+var reXmlChars = getInverseReplacer(inverseXML);
+function escape(data) {
+    return data
+        .replace(reXmlChars, singleCharReplacer)
+        .replace(reNonASCII, singleCharReplacer);
+}
+exports.escape = escape;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           # ![format-message-parse][logo]
+
+> Parse ICU MessageFormat pattern strings to a compact ast
+
+[![npm Version][npm-image]][npm]
+[![JS Standard Style][style-image]][style]
+[![MIT License][license-image]][LICENSE]
+
+Turns a ICU Message Format string:
+```js
+`You have {
+  numBananas, plural,
+     =0 {no bananas}
+    one {a banana}
+  other {# bananas}
+} for sale`
+```
+
+into a compact format-message ast:
+```js
+[ "You have ", [ "numBananas", "plural", 0, {
+     "=0": [ "no bananas" ],
+    "one": [ "a banana" ],
+  "other": [ [ '#' ], " bananas" ]
+} ], " for sale." ]
+```
+
+Quick Examples
+--------------
+
+`npm install format-message-parse --save`
+
+```js
+import parse from 'format-message-parse'
+import interpret from 'format-message-interpret'
+
+interpret('en', parse('Hello, {name}!'))({ name: 'Jane' })
+```
+
+API
+---
+
+### `parse(pattern: string, tokens?: ?Token[]): AST`
+
+Generate a compact array-based AST from an ICU MessageFormat string pattern. If an empty `tokens` array is passed in, it will be filled with found tokens.
+
+This can throw a `SyntaxError` if the pattern is not valid. The `offset` property of the error lets you know how far into the pattern tokenization was able to go before the error. The `tokens` array will have all the found tokens up until the bad syntax.
+
+Note that the only semantic validation done in parsing is ensuring that `select`, `selectordinal`, and `plural` include an `other` sub-message. It does *not* validate that a plural keyword applies to the locale, or that a style is supported by the type, or even that the type will be supported by the interpreter. Successful parsing is not a guarantee the final message will format as expected.
+
+### `SyntaxError`
+
+```ts
+class SyntaxError extends Error {
+  name: 'SyntaxError';
+  message: string;
+  expected: ?string;
+  found: ?string;
+  offset: number;
+  line: number;
+  column: number;
+}
+```
+
+
+License
+-------
+
+This software is free to use under the MIT license. See the [LICENSE-MIT file][LICENSE] for license text and copyright information.
+
+
+[logo]: https://cdn.rawgit.com/format-message/format-message/2febdd8/logo.svg
+[npm]: https://www.npmjs.org/package/format-message-parse
+[npm-image]: https://img.shields.io/npm/v/format-message-parse.svg
+[style]: https://github.com/feross/standard
+[style-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg
+[license-image]: https://img.shields.io/npm/l/format-message.svg
+[LICENSE]: https://github.com/format-message/format-message/blob/master/LICENSE-MIT
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           exports.alphasort = alphasort
+exports.alphasorti = alphasorti
+exports.setopts = setopts
+exports.ownProp = ownProp
+exports.makeAbs = makeAbs
+exports.finish = finish
+exports.mark = mark
+exports.isIgnored = isIgnored
+exports.childrenIgnored = childrenIgnored
+
+function ownProp (obj, field) {
+  return Object.prototype.hasOwnProperty.call(obj, field)
+}
+
+var path = require("path")
+var minimatch = require("minimatch")
+var isAbsolute = require("path-is-absolute")
+var Minimatch = minimatch.Minimatch
+
+function alphasorti (a, b) {
+  return a.toLowerCase().localeCompare(b.toLowerCase())
+}
+
+function alphasort (a, b) {
+  return a.localeCompare(b)
+}
+
+function setupIgnores (self, options) {
+  self.ignore = options.ignore || []
+
+  if (!Array.isArray(self.ignore))
+    self.ignore = [self.ignore]
+
+  if (self.ignore.length) {
+    self.ignore = self.ignore.map(ignoreMap)
+  }
+}
+
+// ignore patterns are always in dot:true mode.
+function ignoreMap (pattern) {
+  var gmatcher = null
+  if (pattern.slice(-3) === '/**') {
+    var gpattern = pattern.replace(/(\/\*\*)+$/, '')
+    gmatcher = new Minimatch(gpattern, { dot: true })
+  }
+
+  return {
+    matcher: new Minimatch(pattern, { dot: true }),
+    gmatcher: gmatcher
+  }
+}
+
+function setopts (self, pattern, options) {
+  if (!options)
+    options = {}
+
+  // base-matching: just use globstar for that.
+  if (options.matchBase && -1 === pattern.indexOf("/")) {
+    if (options.noglobstar) {
+      throw new Error("base matching requires globstar")
+    }
+    pattern = "**/" + pattern
+  }
+
+  self.silent = !!options.silent
+  self.pattern = pattern
+  self.strict = options.strict !== false
+  self.realpath = !!options.realpath
+  self.realpathCache = options.realpathCache || Object.create(null)
+  self.follow = !!options.follow
+  self.dot = !!options.dot
+  self.mark = !!options.mark
+  self.nodir = !!options.nodir
+  if (self.nodir)
+    self.mark = true
+  self.sync = !!options.sync
+  self.nounique = !!options.nounique
+  self.nonull = !!options.nonull
+  self.nosort = !!options.nosort
+  self.nocase = !!options.nocase
+  self.stat = !!options.stat
+  self.noprocess = !!options.noprocess
+  self.absolute = !!options.absolute
+
+  self.maxLength = options.maxLength || Infinity
+  self.cache = options.cache || Object.create(null)
+  self.statCache = options.statCache || Object.create(null)
+  self.symlinks = options.symlinks || Object.create(null)
+
+  setupIgnores(self, options)
+
+  self.changedCwd = false
+  var cwd = process.cwd()
+  if (!ownProp(options, "cwd"))
+    self.cwd = cwd
+  else {
+    self.cwd = path.resolve(options.cwd)
+    self.changedCwd = self.cwd !== cwd
+  }
+
+  self.root = options.root || path.resolve(self.cwd, "/")
+  self.root = path.resolve(self.root)
+  if (process.platform === "win32")
+    self.root = self.root.replace(/\\/g, "/")
+
+  // TODO: is an absolute `cwd` supposed to be resolved against `root`?
+  // e.g. { cwd: '/test', root: __dirname } === path.join(__dirname, '/test')
+  self.cwdAbs = isAbsolute(self.cwd) ? self.cwd : makeAbs(self, self.cwd)
+  if (process.platform === "win32")
+    self.cwdAbs = self.cwdAbs.replace(/\\/g, "/")
+  self.nomount = !!options.nomount
+
+  // disable comments and negation in Minimatch.
+  // Note that they are not supported in Glob itself anyway.
+  options.nonegate = true
+  options.nocomment = true
+
+  self.minimatch = new Minimatch(pattern, options)
+  self.options = self.minimatch.options
+}
+
+function finish (self) {
+  var nou = self.nounique
+  var all = nou ? [] : Object.create(null)
+
+  for (var i = 0, l = self.matches.length; i < l; i ++) {
+    var matches = self.matches[i]
+    if (!matches || Object.keys(matches).length === 0) {
+      if (self.nonull) {
+        // do like the shell, and spit out the literal glob
+        var literal = self.minimatch.globSet[i]
+        if (nou)
+          all.push(literal)
+        else
+          all[literal] = true
+      }
+    } else {
+      // had matches
+      var m = Object.keys(matches)
+      if (nou)
+        all.push.apply(all, m)
+      else
+        m.forEach(function (m) {
+          all[m] = true
+        })
+    }
+  }
+
+  if (!nou)
+    all = Object.keys(all)
+
+  if (!self.nosort)
+    all = all.sort(self.nocase ? alphasorti : alphasort)
+
+  // at *some* point we statted all of these
+  if (self.mark) {
+    for (var i = 0; i < all.length; i++) {
+      all[i] = self._mark(all[i])
+    }
+    if (self.nodir) {
+      all = all.filter(function (e) {
+        var notDir = !(/\/$/.test(e))
+        var c = self.cache[e] || self.cache[makeAbs(self, e)]
+        if (notDir && c)
+          notDir = c !== 'DIR' && !Array.isArray(c)
+        return notDir
+      })
+    }
+  }
+
+  if (self.ignore.length)
+    all = all.filter(function(m) {
+      return !isIgnored(self, m)
+    })
+
+  self.found = all
+}
+
+function mark (self, p) {
+  var abs = makeAbs(self, p)
+  var c = self.cache[abs]
+  var m = p
+  if (c) {
+    var isDir = c === 'DIR' || Array.isArray(c)
+    var slash = p.slice(-1) === '/'
+
+    if (isDir && !slash)
+      m += '/'
+    else if (!isDir && slash)
+      m = m.slice(0, -1)
+
+    if (m !== p) {
+      var mabs = makeAbs(self, m)
+      self.statCache[mabs] = self.statCache[abs]
+      self.cache[mabs] = self.cache[abs]
+    }
+  }
+
+  return m
+}
+
+// lotta situps...
+function makeAbs (self, f) {
+  var abs = f
+  if (f.charAt(0) === '/') {
+    abs = path.join(self.root, f)
+  } else if (isAbsolute(f) || f === '') {
+    abs = f
+  } else if (self.changedCwd) {
+    abs = path.resolve(self.cwd, f)
+  } else {
+    abs = path.resolve(f)
+  }
+
+  if (process.platform === 'win32')
+    abs = abs.replace(/\\/g, '/')
+
+  return abs
+}
+
+
+// Return true, if pattern ends with globstar '**', for the accompanying parent directory.
+// Ex:- If node_modules/** is the pattern, add 'node_modules' to ignore list along with it's contents
+function isIgnored (self, path) {
+  if (!self.ignore.length)
+    return false
+
+  return self.ignore.some(function(item) {
+    return item.matcher.match(path) || !!(item.gmatcher && item.gmatcher.match(path))
+  })
+}
+
+function childrenIgnored (self, path) {
+  if (!self.ignore.length)
+    return false
+
+  return self.ignore.some(function(item) {
+    return !!(item.gmatcher && item.gmatcher.match(path))
+  })
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             break
+  }
+
+  var remain = pattern.slice(n)
+
+  // get the list of entries.
+  var read
+  if (prefix === null)
+    read = '.'
+  else if (isAbsolute(prefix) || isAbsolute(pattern.join('/'))) {
+    if (!prefix || !isAbsolute(prefix))
+      prefix = '/' + prefix
+    read = prefix
+  } else
+    read = prefix
+
+  var abs = this._makeAbs(read)
+
+  //if ignored, skip _processing
+  if (childrenIgnored(this, read))
+    return cb()
+
+  var isGlobStar = remain[0] === minimatch.GLOBSTAR
+  if (isGlobStar)
+    this._processGlobStar(prefix, read, abs, remain, index, inGlobStar, cb)
+  else
+    this._processReaddir(prefix, read, abs, remain, index, inGlobStar, cb)
+}
+
+Glob.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+  var self = this
+  this._readdir(abs, inGlobStar, function (er, entries) {
+    return self._processReaddir2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
+  })
+}
+
+Glob.prototype._processReaddir2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+
+  // if the abs isn't a dir, then nothing can match!
+  if (!entries)
+    return cb()
+
+  // It will only match dot entries if it starts with a dot, or if
+  // dot is set.  Stuff like @(.foo|.bar) isn't allowed.
+  var pn = remain[0]
+  var negate = !!this.minimatch.negate
+  var rawGlob = pn._glob
+  var dotOk = this.dot || rawGlob.charAt(0) === '.'
+
+  var matchedEntries = []
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i]
+    if (e.charAt(0) !== '.' || dotOk) {
+      var m
+      if (negate && !prefix) {
+        m = !e.match(pn)
+      } else {
+        m = e.match(pn)
+      }
+      if (m)
+        matchedEntries.push(e)
+    }
+  }
+
+  //console.error('prd2', prefix, entries, remain[0]._glob, matchedEntries)
+
+  var len = matchedEntries.length
+  // If there are no matched entries, then nothing matches.
+  if (len === 0)
+    return cb()
+
+  // if this is the last remaining pattern bit, then no need for
+  // an additional stat *unless* the user has specified mark or
+  // stat explicitly.  We know they exist, since readdir returned
+  // them.
+
+  if (remain.length === 1 && !this.mark && !this.stat) {
+    if (!this.matches[index])
+      this.matches[index] = Object.create(null)
+
+    for (var i = 0; i < len; i ++) {
+      var e = matchedEntries[i]
+      if (prefix) {
+        if (prefix !== '/')
+          e = prefix + '/' + e
+        else
+          e = prefix + e
+      }
+
+      if (e.charAt(0) === '/' && !this.nomount) {
+        e = path.join(this.root, e)
+      }
+      this._emitMatch(index, e)
+    }
+    // This was the last one, and no stats were needed
+    return cb()
+  }
+
+  // now test all matched entries as stand-ins for that part
+  // of the pattern.
+  remain.shift()
+  for (var i = 0; i < len; i ++) {
+    var e = matchedEntries[i]
+    var newPattern
+    if (prefix) {
+      if (prefix !== '/')
+        e = prefix + '/' + e
+      else
+        e = prefix + e
+    }
+    this._process([e].concat(remain), index, inGlobStar, cb)
+  }
+  cb()
+}
+
+Glob.prototype._emitMatch = function (index, e) {
+  if (this.aborted)
+    return
+
+  if (isIgnored(this, e))
+    return
+
+  if (this.paused) {
+    this._emitQueue.push([index, e])
+    return
+  }
+
+  var abs = isAbsolute(e) ? e : this._makeAbs(e)
+
+  if (this.mark)
+    e = this._mark(e)
+
+  if (this.absolute)
+    e = abs
+
+  if (this.matches[index][e])
+    return
+
+  if (this.nodir) {
+    var c = this.cache[abs]
+    if (c === 'DIR' || Array.isArray(c))
+      return
+  }
+
+  this.matches[index][e] = true
+
+  var st = this.statCache[abs]
+  if (st)
+    this.emit('stat', e, st)
+
+  this.emit('match', e)
+}
+
+Glob.prototype._readdirInGlobStar = function (abs, cb) {
+  if (this.aborted)
+    return
+
+  // follow all symlinked directories forever
+  // just proceed as if this is a non-globstar situation
+  if (this.follow)
+    return this._readdir(abs, false, cb)
+
+  var lstatkey = 'lstat\0' + abs
+  var self = this
+  var lstatcb = inflight(lstatkey, lstatcb_)
+
+  if (lstatcb)
+    fs.lstat(abs, lstatcb)
+
+  function lstatcb_ (er, lstat) {
+    if (er && er.code === 'ENOENT')
+      return cb()
+
+    var isSym = lstat && lstat.isSymbolicLink()
+    self.symlinks[abs] = isSym
+
+    // If it's not a symlink or a dir, then it's definitely a regular file.
+    // don't bother doing a readdir in that case.
+    if (!isSym && lstat && !lstat.isDirectory()) {
+      self.cache[abs] = 'FILE'
+      cb()
+    } else
+      self._readdir(abs, false, cb)
+  }
+}
+
+Glob.prototype._readdir = function (abs, inGlobStar, cb) {
+  if (this.aborted)
+    return
+
+  cb = inflight('readdir\0'+abs+'\0'+inGlobStar, cb)
+  if (!cb)
+    return
+
+  //console.error('RD %j %j', +inGlobStar, abs)
+  if (inGlobStar && !ownProp(this.symlinks, abs))
+    return this._readdirInGlobStar(abs, cb)
+
+  if (ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+    if (!c || c === 'FILE')
+      return cb()
+
+    if (Array.isArray(c))
+      return cb(null, c)
+  }
+
+  var self = this
+  fs.readdir(abs, readdirCb(this, abs, cb))
+}
+
+function readdirCb (self, abs, cb) {
+  return function (er, entries) {
+    if (er)
+      self._readdirError(abs, er, cb)
+    else
+      self._readdirEntries(abs, entries, cb)
+  }
+}
+
+Glob.prototype._readdirEntries = function (abs, entries, cb) {
+  if (this.aborted)
+    return
+
+  // if we haven't asked to stat everything, then just
+  // assume that everything in there exists, so we can avoid
+  // having to stat it a second time.
+  if (!this.mark && !this.stat) {
+    for (var i = 0; i < entries.length; i ++) {
+      var e = entries[i]
+      if (abs === '/')
+        e = abs + e
+      else
+        e = abs + '/' + e
+      this.cache[e] = true
+    }
+  }
+
+  this.cache[abs] = entries
+  return cb(null, entries)
+}
+
+Glob.prototype._readdirError = function (f, er, cb) {
+  if (this.aborted)
+    return
+
+  // handle errors, and cache the information
+  switch (er.code) {
+    case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
+    case 'ENOTDIR': // totally normal. means it *does* exist.
+      var abs = this._makeAbs(f)
+      this.cache[abs] = 'FILE'
+      if (abs === this.cwdAbs) {
+        var error = new Error(er.code + ' invalid cwd ' + this.cwd)
+        error.path = this.cwd
+        error.code = er.code
+        this.emit('error', error)
+        this.abort()
+      }
+      break
+
+    case 'ENOENT': // not terribly unusual
+    case 'ELOOP':
+    case 'ENAMETOOLONG':
+    case 'UNKNOWN':
+      this.cache[this._makeAbs(f)] = false
+      break
+
+    default: // some unusual error.  Treat as failure.
+      this.cache[this._makeAbs(f)] = false
+      if (this.strict) {
+        this.emit('error', er)
+        // If the error is handled, then we abort
+        // if not, we threw out of here
+        this.abort()
+      }
+      if (!this.silent)
+        console.error('glob error', er)
+      break
+  }
+
+  return cb()
+}
+
+Glob.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+  var self = this
+  this._readdir(abs, inGlobStar, function (er, entries) {
+    self._processGlobStar2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
+  })
+}
+
+
+Glob.prototype._processGlobStar2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+  //console.error('pgs2', prefix, remain[0], entries)
+
+  // no entries means not a dir, so it can never have matches
+  // foo.txt/** doesn't match foo.txt
+  if (!entries)
+    return cb()
+
+  // test without the globstar, and with every child both below
+  // and replacing the globstar.
+  var remainWithoutGlobStar = remain.slice(1)
+  var gspref = prefix ? [ prefix ] : []
+  var noGlobStar = gspref.concat(remainWithoutGlobStar)
+
+  // the noGlobStar pattern exits the inGlobStar state
+  this._process(noGlobStar, index, false, cb)
+
+  var isSym = this.symlinks[abs]
+  var len = entries.length
+
+  // If it's a symlink, and we're in a globstar, then stop
+  if (isSym && inGlobStar)
+    return cb()
+
+  for (var i = 0; i < len; i++) {
+    var e = entries[i]
+    if (e.charAt(0) === '.' && !this.dot)
+      continue
+
+    // these two cases enter the inGlobStar state
+    var instead = gspref.concat(entries[i], remainWithoutGlobStar)
+    this._process(instead, index, true, cb)
+
+    var below = gspref.concat(entries[i], remain)
+    this._process(below, index, true, cb)
+  }
+
+  cb()
+}
+
+Glob.prototype._processSimple = function (prefix, index, cb) {
+  // XXX review this.  Shouldn't it be doing the mounting etc
+  // before doing stat?  kinda weird?
+  var self = this
+  this._stat(prefix, function (er, exists) {
+    self._processSimple2(prefix, index, er, exists, cb)
+  })
+}
+Glob.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
+
+  //console.error('ps2', prefix, exists)
+
+  if (!this.matches[index])
+    this.matches[index] = Object.create(null)
+
+  // If it doesn't exist, then just mark the lack of results
+  if (!exists)
+    return cb()
+
+  if (prefix && isAbsolute(prefix) && !this.nomount) {
+    var trail = /[\/\\]$/.test(prefix)
+    if (prefix.charAt(0) === '/') {
+      prefix = path.join(this.root, prefix)
+    } else {
+      prefix = path.resolve(this.root, prefix)
+      if (trail)
+        prefix += '/'
+    }
+  }
+
+  if (process.platform === 'win32')
+    prefix = prefix.replace(/\\/g, '/')
+
+  // Mark this as a match
+  this._emitMatch(index, prefix)
+  cb()
+}
+
+// Returns either 'DIR', 'FILE', or false
+Glob.prototype._stat = function (f, cb) {
+  var abs = this._makeAbs(f)
+  var needDir = f.slice(-1) === '/'
+
+  if (f.length > this.maxLength)
+    return cb()
+
+  if (!this.stat && ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+
+    if (Array.isArray(c))
+      c = 'DIR'
+
+    // It exists, but maybe not how we need it
+    if (!needDir || c === 'DIR')
+      return cb(null, c)
+
+    if (needDir && c === 'FILE')
+      return cb()
+
+    // otherwise we have to stat, because maybe c=true
+    // if we know it exists, but not what it is.
+  }
+
+  var exists
+  var stat = this.statCache[abs]
+  if (stat !== undefined) {
+    if (stat === false)
+      return cb(null, stat)
+    else {
+      var type = stat.isDirectory() ? 'DIR' : 'FILE'
+      if (needDir && type === 'FILE')
+        return cb()
+      else
+        return cb(null, type, stat)
+    }
+  }
+
+  var self = this
+  var statcb = inflight('stat\0' + abs, lstatcb_)
+  if (statcb)
+    fs.lstat(abs, statcb)
+
+  function lstatcb_ (er, lstat) {
+    if (lstat && lstat.isSymbolicLink()) {
+      // If it's a symlink, then treat it as the target, unless
+      // the target does not exist, then treat it as a file.
+      return fs.stat(abs, function (er, stat) {
+        if (er)
+          self._stat2(f, abs, null, lstat, cb)
+        else
+          self._stat2(f, abs, er, stat, cb)
+      })
+    } else {
+      self._stat2(f, abs, er, lstat, cb)
+    }
+  }
+}
+
+Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
+  if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
+    this.statCache[abs] = false
+    return cb()
+  }
+
+  var needDir = f.slice(-1) === '/'
+  this.statCache[abs] = stat
+
+  if (abs.slice(-1) === '/' && stat && !stat.isDirectory())
+    return cb(null, false, stat)
+
+  var c = true
+  if (stat)
+    c = stat.isDirectory() ? 'DIR' : 'FILE'
+  this.cache[abs] = this.cache[abs] || c
+
+  if (needDir && c === 'FILE')
+    return cb()
+
+  return cb(null, c, stat)
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # Pluralize
+
+[![NPM version][npm-image]][npm-url]
+[![NPM downloads][downloads-image]][downloads-url]
+[![Build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
+
+> Pluralize and singularize any word.
+
+## Installation
+
+```
+npm install pluralize --save
+bower install pluralize --save
+```
+
+### Node
+
+```javascript
+var pluralize = require('pluralize')
+```
+
+### AMD
+
+```javascript
+define(function (require, exports, module) {
+  var pluralize = require('pluralize')
+})
+```
+
+### `<script>` tag
+
+```html
+<script src="pluralize.js"></script>
+```
+
+## Why?
+
+This module uses a pre-defined list of rules, applied in order, to singularize or pluralize a given word. There are many cases where this is useful, such as any automation based on user input. For applications where the word(s) are known ahead of time, you can use a simple ternary (or function) which would be a much lighter alternative.
+
+## Usage
+
+```javascript
+pluralize('test') //=> "tests"
+pluralize('test', 1) //=> "test"
+pluralize('test', 5) //=> "tests"
+pluralize('test', 1, true) //=> "1 test"
+pluralize('test', 5, true) //=> "5 tests"
+
+pluralize.plural('regex') //=> "regexes"
+pluralize.addPluralRule(/gex$/i, 'gexii')
+pluralize.plural('regex') //=> "regexii"
+
+pluralize.plural('singles', 1) //=> "single"
+pluralize.addSingularRule(/singles$/i, 'singular')
+pluralize.plural('singles', 1) //=> "singular"
+
+pluralize.plural('irregular') //=> "irregulars"
+pluralize.addIrregularRule('irregular', 'regular')
+pluralize.plural('irregular') //=> "regular"
+
+pluralize.plural('paper') //=> "papers"
+pluralize.addUncountableRule('paper')
+pluralize.plural('paper') //=> "paper"
+```
+
+## License
+
+MIT
+
+[npm-image]: https://img.shields.io/npm/v/pluralize.svg?style=flat
+[npm-url]: https://npmjs.org/package/pluralize
+[downloads-image]: https://img.shields.io/npm/dm/pluralize.svg?style=flat
+[downloads-url]: https://npmjs.org/package/pluralize
+[travis-image]: https://img.shields.io/travis/blakeembrey/pluralize.svg?style=flat

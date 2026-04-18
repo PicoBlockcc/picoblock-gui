@@ -1,0 +1,420 @@
+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"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       n  low: number,\n  high: number,\n): number {\n  while (low <= high) {\n    const mid = low + ((high - low) >> 1);\n    const cmp = haystack[mid][COLUMN] - needle;\n\n    if (cmp === 0) {\n      found = true;\n      return mid;\n    }\n\n    if (cmp < 0) {\n      low = mid + 1;\n    } else {\n      high = mid - 1;\n    }\n  }\n\n  found = false;\n  return low - 1;\n}\n\nexport function upperBound(\n  haystack: SourceMapSegment[] | ReverseSegment[],\n  needle: number,\n  index: number,\n): number {\n  for (let i = index + 1; i < haystack.length; index = i++) {\n    if (haystack[i][COLUMN] !== needle) break;\n  }\n  return index;\n}\n\nexport function lowerBound(\n  haystack: SourceMapSegment[] | ReverseSegment[],\n  needle: number,\n  index: number,\n): number {\n  for (let i = index - 1; i >= 0; index = i--) {\n    if (haystack[i][COLUMN] !== needle) break;\n  }\n  return index;\n}\n\nexport function memoizedState(): MemoState {\n  return {\n    lastKey: -1,\n    lastNeedle: -1,\n    lastIndex: -1,\n  };\n}\n\n/**\n * This overly complicated beast is just to record the last tested line/column and the resulting\n * index, allowing us to skip a few tests if mappings are monotonically increasing.\n */\nexport function memoizedBinarySearch(\n  haystack: SourceMapSegment[] | ReverseSegment[],\n  needle: number,\n  state: MemoState,\n  key: number,\n): number {\n  const { lastKey, lastNeedle, lastIndex } = state;\n\n  let low = 0;\n  let high = haystack.length - 1;\n  if (key === lastKey) {\n    if (needle === lastNeedle) {\n      found = lastIndex !== -1 && haystack[lastIndex][COLUMN] === needle;\n      return lastIndex;\n    }\n\n    if (needle >= lastNeedle) {\n      // lastIndex may be -1 if the previous needle was not found.\n      low = lastIndex === -1 ? 0 : lastIndex;\n    } else {\n      high = lastIndex;\n    }\n  }\n  state.lastKey = key;\n  state.lastNeedle = needle;\n\n  return (state.lastIndex = binarySearch(haystack, needle, low, high));\n}\n","import { COLUMN, SOURCES_INDEX, SOURCE_LINE, SOURCE_COLUMN } from './sourcemap-segment';\nimport { memoizedBinarySearch, upperBound } from './binary-search';\n\nimport type { ReverseSegment, SourceMapSegment } from './sourcemap-segment';\nimport type { MemoState } from './binary-search';\n\nexport type Source = {\n  __proto__: null;\n  [line: number]: Exclude<ReverseSegment, [number]>[];\n};\n\n// Rebuilds the original source files, with mappings that are ordered by source line/column instead\n// of generated line/column.\nexport default function buildBySources(\n  decoded: readonly SourceMapSegment[][],\n  memos: MemoState[],\n): Source[] {\n  const sources: Source[] = memos.map(buildNullArray);\n\n  for (let i = 0; i < decoded.length; i++) {\n    const line = decoded[i];\n    for (let j = 0; j < line.length; j++) {\n      const seg = line[j];\n      if (seg.length === 1) continue;\n\n      const sourceIndex = seg[SOURCES_INDEX];\n      const sourceLine = seg[SOURCE_LINE];\n      const sourceColumn = seg[SOURCE_COLUMN];\n      const originalSource = sources[sourceIndex];\n      const originalLine = (originalSource[sourceLine] ||= []);\n      const memo = memos[sourceIndex];\n\n      // The binary search either found a match, or it found the left-index just before where the\n      // segment should go. Either way, we want to insert after that. And there may be multiple\n      // generated segments associated with an original location, so there may need to move several\n      // indexes before we find where we need to insert.\n      const index = upperBound(\n        originalLine,\n        sourceColumn,\n        memoizedBinarySearch(originalLine, sourceColumn, memo, sourceLine),\n      );\n\n      insert(originalLine, (memo.lastIndex = index + 1), [sourceColumn, i, seg[COLUMN]]);\n    }\n  }\n\n  return sources;\n}\n\nfunction insert<T>(array: T[], index: number, value: T) {\n  for (let i = array.length; i > index; i--) {\n    array[i] = array[i - 1];\n  }\n  array[index] = value;\n}\n\n// Null arrays allow us to use ordered index keys without actually allocating contiguous memory like\n// a real array. We use a null-prototype object to avoid prototype pollution and deoptimizations.\n// Numeric properties on objects are magically sorted in ascending order by the engine regardless of\n// the insertion order. So, by setting any numeric keys, even out of order, we'll get ascending\n// order when iterating with for-in.\nfunction buildNullArray<T extends { __proto__: null }>(): T {\n  return { __proto__: null } as T;\n}\n","import { TraceMap, presortedDecodedMap, decodedMappings } from './trace-mapping';\nimport {\n  COLUMN,\n  SOURCES_INDEX,\n  SOURCE_LINE,\n  SOURCE_COLUMN,\n  NAMES_INDEX,\n} from './sourcemap-segment';\n\nimport type {\n  Section,\n  SectionedSourceMap,\n  DecodedSourceMap,\n  SectionedSourceMapInput,\n  Ro,\n} from './types';\nimport type { SourceMapSegment } from './sourcemap-segment';\n\ntype AnyMap = {\n  new (map: SectionedSourceMapInput, mapUrl?: string | null): TraceMap;\n  (map: SectionedSourceMapInput, mapUrl?: string | null): TraceMap;\n};\n\nexport const AnyMap: AnyMap = function (map, mapUrl) {\n  const parsed =\n    typeof map === 'string' ? (JSON.parse(map) as Exclude<SectionedSourceMapInput, string>) : map;\n\n  if (!('sections' in parsed)) return new TraceMap(parsed, mapUrl);\n\n  const mappings: SourceMapSegment[][] = [];\n  const sources: string[] = [];\n  const sourcesContent: (string | null)[] = [];\n  const names: string[] = [];\n\n  recurse(parsed, mapUrl, mappings, sources, sourcesContent, names, 0, 0, Infinity, Infinity);\n\n  const joined: DecodedSourceMap = {\n    version: 3,\n    file: parsed.file,\n    names,\n    sources,\n    sourcesContent,\n    mappings,\n  };\n\n  return presortedDecodedMap(joined);\n} as AnyMap;\n\nfunction recurse(\n  input: Ro<SectionedSourceMap>,\n  mapUrl: string | null | undefined,\n  mappings: SourceMapSegment[][],\n  sources: string[],\n  sourcesContent: (string | null)[],\n  names: string[],\n  lineOffset: number,\n  columnOffset: number,\n  stopLine: number,\n  stopColumn: number,\n) {\n  const { sections } = input;\n  for (let i = 0; i < sections.length; i++) {\n    const { map, offset } = sections[i];\n\n    let sl = stopLine;\n    let sc = stopColumn;\n    if (i + 1 < sections.length) {\n      const nextOffset = sections[i + 1].offset;\n      sl = Math.min(stopLine, lineOffset + nextOffset.line);\n\n      if (sl === stopLine) {\n        sc = Math.min(stopColumn, columnOffset + nextOffset.column);\n      } else if (sl < stopLine) {\n        sc = columnOffset + nextOffset.column;\n      }\n    }\n\n    addSection(\n      map,\n      mapUrl,\n      mappings,\n      sources,\n      sourcesContent,\n      names,\n      lineOffset + offset.line,\n      columnOffset + offset.column,\n      sl,\n      sc,\n    );\n  }\n}\n\nfunction addSection(\n  input: Ro<Section['map']>,\n  mapUrl: string | null | undefined,\n  mappings: SourceMapSegment[][],\n  sources: string[],\n  sourcesContent: (string | null)[],\n  names: string[],\n  lineOffset: number,\n  columnOffset: number,\n  stopLine: number,\n  stopColumn: number,\n) {\n  if ('sections' in input) return recurse(...(arguments as unknown as Parameters<typeof recurse>));\n\n  const map = new TraceMap(input, mapUrl);\n  const sourcesOffset = sources.length;\n  const namesOffset = names.length;\n  const decoded = decodedMappings(map);\n  const { resolvedSources, sourcesContent: contents } = map;\n\n  append(sources, resolvedSources);\n  append(names, map.names);\n  if (contents) append(sourcesContent, contents);\n  else for (let i = 0; i < resolvedSources.length; i++) sourcesContent.push(null);\n\n  for (let i = 0; i < decoded.length; i++) {\n    const lineI = lineOffset + i;\n\n    // We can only add so many lines before we step into the range that the next section's map\n    // controls. When we get to the last line, then we'll start checking the segments to see if\n    // they've crossed into the column range. But it may not have any columns that overstep, so we\n    // still need to check that we don't overstep lines, too.\n    if (lineI > stopLine) return;\n\n    // The out line may already exist in mappings (if we're continuing the line started by a\n    // previous section). Or, we may have jumped ahead several lines to start this section.\n    const out = getLine(mappings, lineI);\n    // On the 0th loop, the section's column offset shifts us forward. On all other lines (since the\n    // map can be multiple lines), it doesn't.\n    const cOffset = i === 0 ? columnOffset : 0;\n\n    const line = decoded[i];\n    for (let j = 0; j < line.length; j++) {\n      const seg = line[j];\n      const column = cOffset + seg[COLUMN];\n\n      // If this segment steps into the column range that the next section's map controls, we need\n      // to stop early.\n      if (lineI === stopLine && column >= stopColumn) return;\n\n      if (seg.length === 1) {\n        out.push([column]);\n        continue;\n      }\n\n      const sourcesIndex = sourcesOffset + seg[SOURCES_INDEX];\n      const sourceLine = seg[SOURCE_LINE];\n      const sourceColumn = seg[SOURCE_COLUMN];\n      out.push(\n        seg.length === 4\n          ? [column, sourcesIndex, sourceLine, sourceColumn]\n          : [column, sourcesIndex, sourceLine, sourceColumn, namesOffset + seg[NAMES_INDEX]],\n      );\n    }\n  }\n}\n\nfunction append<T>(arr: T[], other: T[]) {\n  for (let i = 0; i < other.length; i++) arr.push(other[i]);\n}\n\nfunction getLine<T>(arr: T[][], index: number): T[] {\n  for (let i = arr.length; i <= index; i++) arr[i] = [];\n  return arr[index];\n}\n","import { encode, decode } from '@jridgewell/sourcemap-codec';\n\nimport resolve from './resolve';\nimport stripFilename from './strip-filename';\nimport maybeSort from './sort';\nimport buildBySources from './by-source';\nimport {\n  memoizedState,\n  memoizedBinarySearch,\n  upperBound,\n  lowerBound,\n  found as bsFound,\n} from './binary-search';\nimport {\n  COLUMN,\n  SOURCES_INDEX,\n  SOURCE_LINE,\n  SOURCE_COLUMN,\n  NAMES_INDEX,\n  REV_GENERATED_LINE,\n  REV_GENERATED_COLUMN,\n} from './sourcemap-segment';\n\nimport type { SourceMapSegment, ReverseSegment } from './sourcemap-segment';\nimport type {\n  SourceMapV3,\n  DecodedSourceMap,\n  EncodedSourceMap,\n  InvalidOriginalMapping,\n  OriginalMapping,\n  InvalidGeneratedMapping,\n  GeneratedMapping,\n  SourceMapInput,\n  Needle,\n  SourceNeedle,\n  SourceMap,\n  EachMapping,\n  Bias,\n} from './types';\nimport type { Source } from './by-source';\nimport type { MemoState } from './binary-search';\n\nexport type { SourceMapSegment } from './sourcemap-segment';\nexport type {\n  SourceMapInput,\n  SectionedSourceMapInput,\n  DecodedSourceMap,\n  EncodedSourceMap,\n  SectionedSourceMap,\n  InvalidOriginalMapping,\n  OriginalMapping as Mapping,\n  OriginalMapping,\n  InvalidGeneratedMapping,\n  GeneratedMapping,\n  EachMapping,\n} from './types';\n\nconst LINE_GTR_ZERO = '`line` must be greater than 0 (lines start at line 1)';\nconst COL_GTR_EQ_ZERO = '`column` must be greater than or equal to 0 (columns start at column 0)';\n\nexport const LEAST_UPPER_BOUND = -1;\nexport const GREATEST_LOWER_BOUND = 1;\n\n/**\n * Returns the encoded (VLQ string) form of the SourceMap's mappings field.\n */\nexport let encodedMappings: (map: TraceMap) => EncodedSourceMap['mappings'];\n\n/**\n * Returns the decoded (array of lines of segments) form of the SourceMap's mappings field.\n */\nexport let decodedMappings: (map: TraceMap) => Readonly<DecodedSourceMap['mappings']>;\n\n/**\n * A low-level API to find the segment associated with a generated line/column (think, from a\n * stack trace). Line and column here are 0-based, unlike `originalPositionFor`.\n */\nexport let traceSegment: (\n  map: TraceMap,\n  line: number,\n  column: number,\n) => Readonly<SourceMapSegment> | null;\n\n/**\n * A higher-level API to find the source/line/column associated with a generated line/column\n * (think, from a stack trace). Line is 1-based, but column is 0-based, due to legacy behavior in\n * `source-map` library.\n */\nexport let originalPositionFor: (\n  map: TraceMap,\n  needle: Needle,\n) => OriginalMapping | InvalidOriginalMapping;\n\n/**\n * Finds the generated line/column position of the provided source/line/column source position.\n */\nexport let generatedPositionFor: (\n  map: TraceMap,\n  needle: SourceNeedle,\n) => GeneratedMapping | InvalidGeneratedMapping;\n\n/**\n * Finds all generated line/column positions of the provided source/line/column source position.\n */\nexport let allGeneratedPositionsFor: (map: TraceMap, needle: SourceNeedle) => GeneratedMapping[];\n\n/**\n * Iterates each mapping in generated position order.\n */\nexport let eachMapping: (map: TraceMap, cb: (mapping: EachMapping) => void) => void;\n\n/**\n * Retrieves the source content for a particular source, if its found. Returns null if not.\n */\nexport let sourceContentFor: (map: TraceMap, source: string) => string | null;\n\n/**\n * A helper that skips sorting of the input map's mappings array, which can be expensive for larger\n * maps.\n */\nexport let presortedDecodedMap: (map: DecodedSourceMap, mapUrl?: string) => TraceMap;\n\n/**\n * Returns a sourcemap object (with decoded mappings) suitable for passing to a library that expects\n * a sourcemap, or to JSON.stringify.\n */\nexport let decodedMap: (\n  map: TraceMap,\n) => Omit<DecodedSourceMap, 'mappings'> & { mappings: readonly SourceMapSegment[][] };\n\n/**\n * Returns a sourcemap object (with encoded mappings) suitable for passing to a library that expects\n * a sourcemap, or to JSON.stringify.\n */\nexport let encodedMap: (map: TraceMap) => EncodedSourceMap;\n\nexport { AnyMap } from './any-map';\n\nexport class TraceMap implements SourceMap {\n  declare version: SourceMapV3['version'];\n  declare file: SourceMapV3['file'];\n  declare names: SourceMapV3['names'];\n  declare sourceRoot: SourceMapV3['sourceRoot'];\n  declare sources: SourceMapV3['sources'];\n  declare sourcesContent: SourceMapV3['sourcesContent'];\n\n  declare resolvedSources: string[];\n  private declare _encoded: string | undefined;\n\n  private declare _decoded: SourceMapSegment[][] | undefined;\n  private declare _decodedMemo: MemoState;\n\n  private declare _bySources: Source[] | undefined;\n  private declare _bySourceMemos: MemoState[] | undefined;\n\n  constructor(map: SourceMapInput, mapUrl?: string | null) {\n    const isString = typeof map === 'string';\n\n    if (!isString && (map as unknown as { _decodedMemo: any })._decodedMemo) return map as TraceMap;\n\n    const parsed = (isString ? JSON.parse(map) : map) as DecodedSourceMap | EncodedSourceMap;\n\n    const { version, file, names, sourceRoot, sources, sourcesContent } = parsed;\n    this.version = version;\n    this.file = file;\n    this.names = names;\n    this.sourceRoot = sourceRoot;\n    this.sources = sources;\n    this.sourcesContent = sourcesContent;\n\n    const from = resolve(sourceRoot || '', stripFilename(mapUrl));\n    this.resolvedSources = sources.map((s) => resolve(s || '', from));\n\n    const { mappings } = parsed;\n    if (typeof mappings === 'string') {\n      this._encoded = mappings;\n      this._decoded = undefined;\n    } else {\n      this._encoded = undefined;\n      this._decoded = maybeSort(mappings, isString);\n    }\n\n    this._decodedMemo = memoizedState();\n    this._bySources = undefined;\n    this._bySourceMemos = undefined;\n  }\n\n  static {\n    encodedMappings = (map) => {\n      return (map._encoded ??= encode(map._decoded!));\n    };\n\n    decodedMappings = (map) => {\n      return (map._decoded ||= decode(map._encoded!));\n    };\n\n    traceSegment = (map, line, column) => {\n      const decoded = decodedMappings(map);\n\n      // It's common for parent source maps to have pointers to lines that have no\n      // mapping (like a \"//# sourceMappingURL=\") at the end of the child file.\n      if (line >= decoded.length) return null;\n\n      const segments = decoded[line];\n      const index = traceSegmentInternal(\n        segments,\n        map._decodedMemo,\n        line,\n        column,\n        GREATEST_LOWER_BOUND,\n      );\n\n      return index === -1 ? null : segments[index];\n    };\n\n    originalPositionFor = (map, { line, columodule.exports={A:{A:{"2":"I D F E A B nB"},B:{"1":"C O H P J K L","2":"Z MB M R S N U V W"},C:{"2":"0 1 2 3 4 5 6 7 8 9 mB cB G a I D F E A B C O H P J K L b c d e f g h i j k l m n o p q r s t u v w x y z AB BB CB DB EB FB GB TB IB JB KB LB T NB OB PB QB RB HB Y XB UB VB WB SB Z MB M lB R S N U V uB xB"},D:{"2":"0 1 2 3 4 5 6 7 8 9 G a I D F E A B C O H P J K L b c d e f g h i j k l m n o p q r s t u v w x y z AB BB CB DB EB FB GB TB IB JB KB LB T NB OB PB QB RB HB Y XB UB VB WB SB Z MB M R S N U V W 0B dB eB"},E:{"2":"G a I D F E A B C O H fB YB hB iB jB kB ZB X Q oB pB"},F:{"2":"0 1 2 3 4 5 6 7 8 9 E B C P J K L b c d e f g h i j k l m n o p q r s t u v w x y z AB BB CB DB EB GB IB JB KB LB T NB OB PB QB RB HB Y qB rB sB tB X aB vB Q"},G:{"2":"F YB wB bB yB zB XC 1B","132":"2B 3B 4B 5B 6B 7B 8B 9B AC BC CC DC EC"},H:{"2":"FC"},I:{"2":"cB G M GC HC IC JC bB KC LC"},J:{"2":"D","132":"A"},K:{"2":"A B C FB X aB","132":"Q"},L:{"2":"W"},M:{"2":"N"},N:{"2":"A B"},O:{"132":"MC"},P:{"2":"G NC OC PC QC RC ZB SC TC UC"},Q:{"2":"VC"},R:{"2":"WC"},S:{"2":"gB"}},B:6,C:"AC-3 (Dolby Digital) and EC-3 (Dolby Digital Plus) codecs"};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                (alberto)
+* 7c97201 Upgrade: doctrine version to 1.1.0 (fixes #4854) (Tim Schaub)
+* ceaf324 New: Add no-new-symbol rule (fixes #4862) (alberto)
+* e2f2b66 Breaking: Remove defaults from `eslint:recommended` (fixes #4809) (Ian VanSchooten)
+* 0b3c01e Docs: Specify default for func-style (fixes #4834) (Ian VanSchooten)
+* 008ea39 Docs: Document default for operator assignment (fixes #4835) (alberto)
+* b566f56 Docs: no-new-func typo (alberto)
+* 1569695 Update: Adds default 'that' for consistent-this (fixes #4833) (alberto)
+* f7b28b7 Docs: clarify `requireReturn` option for valid-jsdoc rule (fixes #4859) (Tim Schaub)
+* 407f329 Build: Fix prerelease script (Nicholas C. Zakas)
+* 688f277 Fix: Set proper exit code for Node > 0.10 (fixes #4691) (Nicholas C. Zakas)
+* 58715e9 Fix: Use single quotes in context.report messages (fixes #4845) (Joe Lencioni)
+* 5b7586b Fix: do not require a @return tag for @interface (fixes #4860) (Tim Schaub)
+* d43f26c Breaking: migrate from minimatch to node-ignore (fixes #2365) (Stefan Grönke)
+* c07ca39 Breaking: merges keyword spacing rules (fixes #3869) (Toru Nagashima)
+* 871f534 Upgrade: Optionator version to 0.8.1 (fixes #4851) (Eric Johnson)
+* 82d4cd9 Update: Add atomtest env (fixes #4848) (Andres Suarez)
+* 9c9beb5 Update: Add "ignore" override for operator-linebreak (fixes #4294) (Rajendra Patil)
+* 9c03abc Update: Add "allowCall" option (fixes #4011) (Rajendra Patil)
+* 29516f1 Docs: fix migration guide for no-arrow-condition rule (Peter Newnham)
+* 2ef7549 Docs: clarify remedy to some prefer-const errors (Turadg Aleahmad)
+* 1288ba4 Update: Add default limit to `complexity` (fixes #4808) (Ian VanSchooten)
+* d3e8179 Fix: env is rewritten by modules (fixes #4814) (Toru Nagashima)
+* fd72aba Docs: Example fix for `no-extra-parens` rule (fixes #3527) (Gyandeep Singh)
+* 315f272 Fix: Change max-warnings type to Int (fixes #4660) (George Zahariev)
+* 5050768 Update: Ask for `commonjs` under config init (fixes #3553) (Gyandeep Singh)
+* 4665256 New: Add no-whitespace-before-property rule (fixes #1086) (Kai Cataldo)
+* f500d7d Fix: allow extending @scope/eslint/file (fixes #4800) (André Cruz)
+* 5ab564e New: 'ignoreArrayIndexes' option for 'no-magic-numbers' (fixes #4370) (Christian Schuller)
+* 97cdb95 New: Add no-useless-constructor rule (fixes #4785) (alberto)
+* b9bcbaf Fix: Bug in no-extra-bind (fixes #4806) (Andres Kalle)
+* 246a6d2 Docs: Documentation fix (Andres Kalle)
+* 9ea6b36 Update: Ignore case in jsdoc tags (fixes #4576) (alberto)
+* acdda24 Fix: ignore argument parens in no-unexpected-multiline (fixes #4658) (alberto)
+* 4931f56 Update: optionally allow bitwise operators (fixes #4742) (Swaagie)
+
+v2.0.0-alpha-2 - December 23, 2015
+
+* Build: Add prerelease script (Nicholas C. Zakas)
+* Update: Allow to omit semi for one-line blocks (fixes #4385) (alberto)
+* Fix: Handle getters and setters in key-spacing (fixes #4792) (Brandon Mills)
+* Fix: ObjectRestSpread throws error in key-spacing rule (fixes #4763) (Ziad El Khoury Hanna)
+* Docs: Typo in generator-star (alberto)
+* Fix: Backtick behavior in quotes rule (fixes #3090) (Nicholas C. Zakas)
+* Fix: Empty schemas forbid any options (fixes #4789) (Brandon Mills)
+* Fix: Remove `isMarkedAsUsed` function name (fixes #4783) (Gyandeep Singh)
+* Fix: support arrow functions in no-return-assign (fixes #4743) (alberto)
+* Docs: Add license header to Working with Rules guide (Brandon Mills)
+* Fix: RuleTester to show parsing errors (fixes #4779) (Nicholas C. Zakas)
+* Docs: Escape underscores in no-path-concat (alberto)
+* Update: configuration for classes in space-before-blocks (fixes #4089) (alberto)
+* Docs: Typo in no-useless-concat (alberto)
+* Docs: fix typos, suggests (molee1905)
+* Docs: Typos in space-before-keywords and space-unary-ops (fixes #4771) (alberto)
+* Upgrade: beefy to ^2.0.0, fixes installation errors (fixes #4760) (Kai Cataldo)
+* Docs: Typo in no-unexpected-multiline (fixes #4756) (alberto)
+* Update: option to ignore top-level max statements (fixes #4309) (alberto)
+* Update: Implement auto fix for semi-spacing rule (fixes #3829) (alberto)
+* Fix: small typos in code examples (Plusb Preco)
+* Docs: Add section on file extensions to user-guide/configuring (adam)
+* Fix: Comma first issue in `indent` (fixes #4739, fixes #3456) (Gyandeep Singh)
+* Fix: no-constant-condition false positive (fixes #4737) (alberto)
+* Fix: Add source property for fatal errors (fixes #3325) (Gyandeep Singh)
+* New: Add a comment length option to the max-len rule (fixes #4665) (Ian)
+* Docs: RuleTester doesn't require any tests (fixes #4681) (alberto)
+* Fix: Remove path analysis from debug log (fixes #4631) (Ilya Volodin)
+* Fix: Set null to property ruleId when fatal is true (fixes #4722) (Sébastien Règne)
+* New: Visual Studio compatible formatter (fixes #4708) (rhpijnacker)
+* New: Add greasemonkey environment (fixes #4715) (silverwind)
+* Fix: always-multiline for comma-dangle import (fixes #4704) (Nicholas C. Zakas)
+* Fix: Check 1tbs non-block else (fixes #4692) (Nicholas C. Zakas)
+* Fix: Apply environment configs last (fixes #3915) (Nicholas C. Zakas)
+* New: `no-unmodified-loop-condition` rule (fixes #4523) (Toru Nagashima)
+* Breaking: deprecate `no-arrow-condition` rule (fixes #4417) (Luke Karrys)
+* Update: Add cwd option for cli-engine (fixes #4472) (Ilya Volodin)
+* New: Add no-confusing-arrow rule (refs #4417) (Luke Karrys)
+* Fix: ensure `ConfigOps.merge` do a deep copy (fixes #4682) (Toru Nagashima)
+* Fix: `no-invalid-this` allows this in static method (fixes #4669) (Toru Nagashima)
+* Fix: Export class syntax for `require-jsdoc` rule (fixes #4667) (Gyandeep Singh)
+* Update: Add "safe" mode to strict (fixes #3306) (Brandon Mills)
+
+v2.0.0-alpha-1 - December 11, 2015
+
+* Breaking: Correct links between variables and references (fixes #4615) (Toru Nagashima)
+* Fix: Update rule tests for parser options (fixes #4673) (Nicholas C. Zakas)
+* Breaking: Implement parserOptions (fixes #4641) (Nicholas C. Zakas)
+* Fix: max-len rule overestimates the width of some tabs (fixes #4661) (Nick Evans)
+* New: Add no-implicit-globals rule (fixes #4542) (Joshua Peek)
+* Update: `no-use-before-define` checks invalid initializer (fixes #4280) (Toru Nagashima)
+* Fix: Use oneValuePerFlag for --ignore-pattern option (fixes #4507) (George Zahariev)
+* New: `array-callback-return` rule (fixes #1128) (Toru Nagashima)
+* Upgrade: Handlebars to >= 4.0.5 for security reasons (fixes #4642) (Jacques Favreau)
+* Update: Add class body support to `indent` rule (fixes #4372) (Gyandeep Singh)
+* Breaking: Remove space-after-keyword newline check (fixes #4149) (Nicholas C. Zakas)
+* Breaking: Treat package.json like the rest of configs (fixes #4451) (Ilya Volodin)
+* Docs: writing mistake (molee1905)
+* Update: Add 'method' option to no-empty (fixes #4605) (Kai Cataldo)
+* Breaking: Remove autofix from eqeqeq (fixes #4578) (Ilya Volodin)
+* Breaking: Remove ES6 global variables from builtins (fixes #4085) (Brandon Mills)
+* Fix: Handle forbidden LineTerminators in no-extra-parens (fixes #4229) (Brandon Mills)
+* Update: Option to ignore constructor Fns object-shorthand (fixes #4487) (Kai Cataldo)
+* Fix: Check YieldExpression argument in no-extra-parens (fixes #4608) (Brandon Mills)
+* Fix: Do not cache `package.json` (fixes #4611) (Spain)
+* Build: Consume no-underscore-dangle allowAfterThis option (fixes #4599) (Kevin Partington)
+* New: Add no-restricted-imports rule (fixes #3196) (Guy Ellis)
+* Docs: no-extra-semi no longer refers to deprecated rule (fixes #4598) (Kevin Partington)
+* Fix: `consistent-return` checks the last (refs #3530, fixes #3373) (Toru Nagashima)
+* Update: add class option to `no-use-before-define` (fixes #3944) (Toru Nagashima)
+* Breaking: Simplify rule schemas (fixes #3625) (Nicholas C. Zakas)
+* Docs: Update docs/rules/no-plusplus.md (Xiangyun Chi)
+* Breaking: added bower_components to default ignore (fixes #3550) (Julian Laval)
+* Fix: `no-unreachable` with the code path (refs #3530, fixes #3939) (Toru Nagashima)
+* Fix: `no-this-before-super` with the code path analysis (refs #3530) (Toru Nagashima)
+* Fix: `no-fallthrough` with the code path analysis (refs #3530) (Toru Nagashima)
+* Fix: `constructor-super` with the code path analysis (refs #3530) (Toru Nagashima)
+* Breaking: Switch to Espree 3.0.0 (fixes #4334) (Nicholas C. Zakas)
+* Breaking: Freeze context object (fixes #4495) (Nicholas C. Zakas)
+* Docs: Add Code of Conduct (fixes #3095) (Nicholas C. Zakas)
+* Breaking: Remove warnings of readonly from `no-undef` (fixes #4504) (Toru Nagashima)
+* Update: allowAfterThis option in no-underscore-dangle (fixes #3435) (just-boris)
+* Fix: Adding options unit tests for --ignore-pattern (refs #4507) (Kevin Partington)
+* Breaking: Implement yield-star-spacing rule (fixes #4115) (Bryan Smith)
+* New: `prefer-rest-params` rule (fixes #4108) (Toru Nagashima)
+* Update: `prefer-const` begins to cover separating init (fixes #4474) (Toru Nagashima)
+* Fix: `no-eval` come to catch indirect eval (fixes #4399, fixes #4441) (Toru Nagashima)
+* Breaking: Default no-magic-numbers to none. (fixes #4193) (alberto)
+* Breaking: Allow empty arrow body (fixes #4411) (alberto)
+* New: Code Path Analysis (fixes #3530) (Toru Nagashima)
+
+v1.10.3 - December 1, 2015
+
+* Docs: Update strict rule docs (fixes #4583) (Nicholas C. Zakas)
+* Docs: Reference .eslintrc.* in contributing docs (fixes #4532) (Kai Cataldo)
+* Fix: Add for-of to `curly` rule (fixes #4571) (Kai Cataldo)
+* Fix: Ignore space before function in array start (fixes #4569) (alberto)
+
+v1.10.2 - November 27, 2015
+
+* Upgrade: escope@3.3.0 (refs #4485) (Nicholas C. Zakas)
+* Upgrade: Pinned down js-yaml to avoid breaking dep (fixes #4553) (alberto)
+* Fix: lines-around-comment with multiple comments (fixes #3509) (alberto)
+* Upgrade: doctrine@0.7.1 (fixes #4545) (Kevin Partington)
+* Fix: Bugfix for eqeqeq autofix (fixes #4540) (Kevin Partington)
+* Fix: Add for-in to `curly` rule (fixes #4436) (Kai Cataldo)
+* Fix: `valid-jsdoc` unneeded require check fix (fixes #4527) (Gyandeep Singh)
+* Fix: `brace-style` ASI fix for if-else condition (fixes #4520) (Gyandeep Singh)
+* Build: Add branch update during release process (fixes #4491) (Gyandeep Singh)
+* Build: Allow revert commits in commit messages (fixes #4452) (alberto)
+* Fix: Incorrect location in no-fallthrough (fixes #4516) (alberto)
+* Fix: `no-spaced-func` had been crashed (fixes #4508) (Toru Nagashima)
+* Fix: Add a RestProperty test of `no-undef` (fixes #3271) (Toru Nagashima)
+* Docs: Load badge from HTTPS (Brian J Brennan)
+* Build: Update eslint bot messages (fixes #4497) (Nicholas C. Zakas)
+
+v1.10.1 - November 20, 2015
+
+* Fix: Revert freezing context object (refs #4495) (Nicholas C. Zakas)
+* 1.10.0 (Nicholas C. Zakas)
+
+v1.10.0 - November 20, 2015
+
+* Docs: Remove dupes from changelog (Nicholas C. Zakas)
+* Update: --init to create extensioned files (fixes #4476) (Nicholas C. Zakas)
+* Docs: Update description of exported comment (fixes #3916) (Nicholas C. Zakas)
+* Docs: Move legacy rules to stylistic (files #4111) (Nicholas C. Zakas)
+* Docs: Clean up description of recommended rules (fixes #4365) (Nicholas C. Zakas)
+* Docs: Fix home directory config description (fixes #4398) (Nicholas C. Zakas)
+* Update: Add class support to `require-jsdoc` rule (fixes #4268) (Gyandeep Singh)
+* Update: return type error in `valid-jsdoc` rule (fixes #4443) (Gyandeep Singh)
+* Update: Display errors at the place where fix should go (fixes #4470) (nightwing)
+* Docs: Fix typo in default `cacheLocation` value (Andrew Hutchings)
+* Fix: Handle comments in block-spacing (fixes #4387) (alberto)
+* Update: Accept array for `ignorePattern` (fixes #3982) (Jesse McCarthy)
+* Update: replace label and break with IIFE and return (fixes #4459) (Ilya Panasenko)
+* Fix: space-before-keywords false positive (fixes #4449) (alberto)
+* Fix: Improves performance (refs #3530) (Toru Nagashima)
+* Fix: Autofix quotes produces invalid javascript (fixes #4380) (nightwing)
+* Docs: Update indent.md (Nathan Brown)
+* New: Disable comment config option (fixes #3901) (Matthew Riley MacPherson)
+* New: Config files with extensions (fixes #4045, fixes #4263) (Nicholas C. Zakas)
+* Revert "Update: Add JSX exceptions to no-extra-parens (fixes #4229)" (Brandon Mills)
+* Update: Add JSX exceptions to no-extra-parens (fixes #4229) (Brandon Mills)
+* Docs: Replace link to deprecated rule with newer rule (Andrew Marshall)
+* Fix: `no-extend-native` crashed at empty defineProperty (fixes #4438) (Toru Nagashima)
+* Fix: Support empty if blocks in lines-around-comment (fixes #4339) (alberto)
+* Fix: `curly` warns wrong location for `else` (fixes #4362) (Toru Nagashima)
+* Fix: `id-length` properties never option (fixes #4347) (Toru Nagashima)
+* Docs: missing close rbracket in example (@storkme)
+* Revert "Update: Allow empty arrow body (fixes #4411)" (Nicholas C. Zakas)
+* Fix: eqeqeq autofix avoids clashes with space-infix-ops (fixes #4423) (Kevin Partington)
+* Docs: Document semi-spacing behaviour (fixes #4404) (alberto)
+* Update: Allow empty arrow body (fixes #4411) (alberto)
+* Fix: Handle comments in comma-spacing (fixes #4389) (alberto)
+* Update: Refactor eslint.verify args (fixes #4395) (Nicholas C. Zakas)
+* Fix: no-undef-init should ignore const (fixes #4284) (Nicholas C. Zakas)
+* Fix: Add the missing "as-needed" docs to the radix rule (fixes #4364) (Michał Gołębiowski)
+* Fix: Display singular/plural version of "line" in message (fixes #4359) (Marius Schulz)
+* Update: Add Popular Style Guides (fixes #4320) (Jamund Ferguson)
+* Fix: eslint.report can be called w/o node if loc provided (fixes #4220) (Kevin Partington)
+* Update: no-implicit-coercion validate AssignmentExpression (fixes #4348) (Ilya Panasenko)
+
+v1.9.0 - November 6, 2015
+
+* Update: Make radix accept a "as-needed" option (fixes #4048) (Michał Gołębiowski)
+* Fix: Update the message to include number of lines (fixes #4342) (Brian Delahunty)
+* Docs: ASI causes problem whether semicolons are used or not (Thai Pangsakulyanont)
+* Fix: Fixer to not overlap ranges among fix objects (fixes #4321) (Gyandeep Singh)
+* Update: Add default to `max-nested-callbacks` (fixes #4297) (alberto)
+* Fix: Check comments in space-in-parens (fixes #4302) (alberto)
+* Update: Add quotes to error messages to improve clarity (fixes #4313) (alberto)
+* Fix: tests failing due to differences in temporary paths (fixes #4324) (alberto)
+* Fix: Make tests compatible with Windows (fixes #4315) (Ian VanSchooten)
+* Update: Extract glob and filesystem logic from cli-engine (fixes #4305) (Ian VanSchooten)
+* Build: Clarify commit-check messages (fixes #4256) (Ian VanSchooten)
+* Upgrade: Upgrade various dependencies (fixes #4303) (Gyandeep Singh)
+* Build: Add node 5 to travis build (fixes #4310) (Gyandeep Singh)
+* Fix: ensure using correct estraverse (fixes #3951) (Toru Nagashima)
+* Docs: update docs about using gitignore (Mateusz Derks)
+* Update: Detect and fix wrong linebreaks (fixes #3981) (alberto)
+* New: Add no-case-declarations rule (fixes #4278) (Erik Arvidsson)
+
+v1.8.0 - October 30, 2015
+
+* Fix: Check for node property before testing type (fixes #4298) (Ian VanSchooten)
+* Docs: Specify 'double' as default for quotes (fixes #4270) (Ian VanSchooten)
+* Fix: Missing errors in space-in-parens (fixes #4257, fixes #3996) (alberto)
+* Docs: fixed typo (Mathieu M-Gosselin)
+* Fix: `cacheLocation` handles paths in windows style. (fixes #4285) (royriojas)
+* Docs: fixed typo (mpal9000)
+* Update: Add support for class in `valid-jsdoc` rule (fixes #4279) (Gyandeep Singh)
+* Update: cache-file accepts a directory. (fixes #4241) (royriojas)
+* Update: Add `maxEOF` to no-multiple-empty-lines (fixes #4235) (Adrien Vergé)
+* Update: fix option for comma-spacing (fixes #4232) (HIPP Edgar (PRESTA EXT))
+* Docs: Fix use of wrong word in configuration doc (Jérémie Astori)
+* Fix: Prepare config before verifying SourceCode (fixes #4230) (Ian VanSchooten)
+* Update: RuleTester come to check AST was not modified (fixes #4156) (Toru Nagashima)
+* Fix: wrong count for 'no-multiple-empty-lines' on last line (fixes #4228) (alberto)
+* Update: Add `allow` option to `no-shadow` rule (fixes #3035) (Gyandeep Singh)
+* Doc: Correct the spelling of Alberto's surname (alberto)
+* Docs: Add alberto as a committer (Gyandeep Singh)
+* Build: Do not stub console in testing (fixes #1328) (Gyandeep Singh)
+* Fix: Check node exists before checking type (fixes #4231) (Ian VanSchooten)
+* Up>,\n    programPath: NodePath,\n    Collection: Class<C>,\n  ): C {\n    let collection = map.get(programPath);\n    if (!collection) {\n      collection = new Collection();\n      map.set(programPath, collection);\n    }\n    return collection;\n  }\n\n  _normalizeKey(programPath: NodePath, url: string, name: string = \"\"): string {\n    const { sourceType } = programPath.node;\n\n    // If we rely on the imported binding (the \"name\" parameter), we also need to cache\n    // based on the sourceType. This is because the module transforms change the names\n    // of the import variables.\n    return `${name && sourceType}::${url}::${name}`;\n  }\n}\n","// @flow\n\nimport { prettifyTargets } from \"@babel/helper-compilation-targets\";\n\nimport type { Targets } from \"./types\";\n\nexport const presetEnvSilentDebugHeader =\n  \"#__secret_key__@babel/preset-env__don't_log_debug_header_and_resolved_targets\";\n\nexport function stringifyTargetsMultiline(targets: Targets): string {\n  return JSON.stringify(prettifyTargets(targets), null, 2);\n}\n\nexport function stringifyTargets(targets: Targets): string {\n  return JSON.stringify(targets)\n    .replace(/,/g, \", \")\n    .replace(/^\\{\"/, '{ \"')\n    .replace(/\"\\}$/, '\" }');\n}\n","// @flow\n\nimport { intersection } from \"./utils\";\nimport type {\n  Pattern,\n  PluginOptions,\n  MissingDependenciesOption,\n} from \"./types\";\n\nfunction patternToRegExp(pattern: Pattern): ?RegExp {\n  if (pattern instanceof RegExp) return pattern;\n\n  try {\n    return new RegExp(`^${pattern}$`);\n  } catch {\n    return null;\n  }\n}\n\nfunction buildUnusedError(label, unused) {\n  if (!unused.length) return \"\";\n  return (\n    `  - The following \"${label}\" patterns didn't match any polyfill:\\n` +\n    unused.map(original => `    ${String(original)}\\n`).join(\"\")\n  );\n}\n\nfunction buldDuplicatesError(duplicates) {\n  if (!duplicates.size) return \"\";\n  return (\n    `  - The following polyfills were matched both by \"include\" and \"exclude\" patterns:\\n` +\n    Array.from(duplicates, name => `    ${name}\\n`).join(\"\")\n  );\n}\n\nexport function validateIncludeExclude(\n  provider: string,\n  polyfills: Set<string>,\n  includePatterns: Pattern[],\n  excludePatterns: Pattern[],\n) {\n  let current;\n  const filter = pattern => {\n    const regexp = patternToRegExp(pattern);\n    if (!regexp) return false;\n\n    let matched = false;\n    for (const polyfill of polyfills) {\n      if (regexp.test(polyfill)) {\n        matched = true;\n        current.add(polyfill);\n      }\n    }\n    return !matched;\n  };\n\n  // prettier-ignore\n  const include = current = new Set<string> ();\n  const unusedInclude = Array.from(includePatterns).filter(filter);\n\n  // prettier-ignore\n  const exclude = current = new Set<string> ();\n  const unusedExclude = Array.from(excludePatterns).filter(filter);\n\n  const duplicates = intersection(include, exclude);\n\n  if (\n    duplicates.size > 0 ||\n    unusedInclude.length > 0 ||\n    unusedExclude.length > 0\n  ) {\n    throw new Error(\n      `Error while validating the \"${provider}\" provider options:\\n` +\n        buildUnusedError(\"include\", unusedInclude) +\n        buildUnusedError(\"exclude\", unusedExclude) +\n        buldDuplicatesError(duplicates),\n    );\n  }\n\n  return { include, exclude };\n}\n\nexport function applyMissingDependenciesDefaults(\n  options: PluginOptions,\n  babelApi: Object,\n): MissingDependenciesOption {\n  const { missingDependencies = {} } = options;\n  if (missingDependencies === false) return false;\n\n  const caller = babelApi.caller(caller => caller?.name);\n\n  const {\n    log = \"deferred\",\n    inject = caller === \"rollup-plugin-babel\" ? \"throw\" : \"import\",\n    all = false,\n  } = missingDependencies;\n\n  return { log, inject, all };\n}\n","// @flow\n\nimport type { NodePath } from \"@babel/traverse\";\nimport type { MetaDescriptor } from \"../types\";\n\nimport { resolveKey, resolveSource } from \"../utils\";\n\nexport default (\n  callProvider: (payload: MetaDescriptor, path: NodePath) => void,\n) => {\n  function property(object, key, placement, path) {\n    return callProvider({ kind: \"property\", object, key, placement }, path);\n  }\n\n  return {\n    // Symbol(), new Promise\n    ReferencedIdentifier(path: NodePath) {\n      const {\n        node: { name },\n        scope,\n      } = path;\n      if (scope.getBindingIdentifier(name)) return;\n\n      callProvider({ kind: \"global\", name }, path);\n    },\n\n    MemberExpression(path: NodePath) {\n      const key = resolveKey(path.get(\"property\"), path.node.computed);\n      if (!key || key === \"prototype\") return;\n\n      const object = path.get(\"object\");\n      const binding = object.scope.getBinding(object.node.name);\n      if (binding && binding.path.isImportNamespaceSpecifier()) return;\n\n      const source = resolveSource(object);\n      return property(source.id, key, source.placement, path);\n    },\n\n    ObjectPattern(path: NodePath) {\n      const { parentPath, parent } = path;\n      let obj;\n\n      // const { keys, values } = Object\n      if (parentPath.isVariableDeclarator()) {\n        obj = parentPath.get(\"init\");\n        // ({ keys, values } = Object)\n      } else if (parentPath.isAssignmentExpression()) {\n        obj = parentPath.get(\"right\");\n        // !function ({ keys, values }) {...} (Object)\n        // resolution does not work after properties transform :-(\n      } else if (parentPath.isFunction()) {\n        const grand = parentPath.parentPath;\n        if (grand.isCallExpression() || grand.isNewExpression()) {\n          if (grand.node.callee === parent) {\n            obj = grand.get(\"arguments\")[path.key];\n          }\n        }\n      }\n\n      let id = null;\n      let placement = null;\n      if (obj) ({ id, placement } = resolveSource(obj));\n\n      for (const prop of path.get(\"properties\")) {\n        if (prop.isObjectProperty()) {\n          const key = resolveKey(prop.get(\"key\"));\n          if (key) property(id, key, placement, prop);\n        }\n      }\n    },\n\n    BinaryExpression(path: NodePath) {\n      if (path.node.operator !== \"in\") return;\n\n      const source = resolveSource(path.get(\"right\"));\n      const key = resolveKey(path.get(\"left\"), true);\n\n      if (!key) return;\n\n      callProvider(\n        {\n          kind: \"in\",\n          object: source.id,\n          key,\n          placement: source.placement,\n        },\n        path,\n      );\n    },\n  };\n};\n","// @flow\n\nimport type { NodePath } from \"@babel/traverse\";\nimport type { MetaDescriptor } from \"../types\";\n\nimport { getImportSource, getRequireSource } from \"../utils\";\n\nexport default (\n  callProvider: (payload: MetaDescriptor, path: NodePath) => void,\n) => ({\n  ImportDeclaration(path: NodePath) {\n    const source = getImportSource(path);\n    if (!source) return;\n    callProvider({ kind: \"import\", source }, path);\n  },\n  Program(path: NodePath) {\n    path.get(\"body\").forEach(bodyPath => {\n      const source = getRequireSource(bodyPath);\n      if (!source) return;\n      callProvider({ kind: \"import\", source }, bodyPath);\n    });\n  },\n});\n","// @flow\n\nexport function resolve(\n  dirname: string,\n  moduleName: string,\n  absoluteImports: boolean | string,\n): string {\n  if (absoluteImports === false) return moduleName;\n\n  throw new Error(\n    `\"absoluteImports\" is not supported in bundles prepared for the browser.`,\n  );\n}\n\n// eslint-disable-next-line no-unused-vars\nexport function has(basedir: string, name: string) {\n  return true;\n}\n\n// eslint-disable-next-line no-unused-vars\nexport function logMissing(missingDeps: Set<string>) {}\n\n// eslint-disable-next-line no-unused-vars\nexport function laterLogMissing(missingDeps: Set<string>) {}\n","// @flow\n\nimport type {\n  MetaDescriptor,\n  ResolverPolyfills,\n  ResolvedPolyfill,\n} from \"./types\";\n\nimport { has } from \"./utils\";\n\ntype ResolverFn<T> = (meta: MetaDescriptor) => void | ResolvedPolyfill<T>;\n\nconst PossibleGlobalObjects = new Set<string>([\n  \"global\",\n  \"globalThis\",\n  \"self\",\n  \"window\",\n]);\n\nexport default function createMetaResolver<T>(\n  polyfills: ResolverPolyfills<T>,\n): ResolverFn<T> {\n  const { static: staticP, instance: instanceP, global: globalP } = polyfills;\n\n  return meta => {\n    if (meta.kind === \"global\" && globalP && has(globalP, meta.name)) {\n      return { kind: \"global\", desc: globalP[meta.name], name: meta.name };\n    }\n\n    if (meta.kind === \"property\" || meta.kind === \"in\") {\n      const { placement, object, key } = meta;\n\n      if (object && placement === \"static\") {\n        if (globalP && PossibleGlobalObjects.has(object) && has(globalP, key)) {\n          return { kind: \"global\", desc: globalP[key], name: key };\n        }\n\n        if (staticP && has(staticP, object) && has(staticP[object], key)) {\n          return {\n            kind: \"static\",\n            desc: staticP[object][key],\n            name: `${object}$${key}`,\n          };\n        }\n      }\n\n      if (instanceP && has(instanceP, key)) {\n        return { kind: \"instance\", desc: instanceP[key], name: `${key}` };\n      }\n    }\n  };\n}\n","// @flow\n\nimport { declare } from \"@babel/helper-plugin-utils\";\nimport type { NodePath } from \"@babel/traverse\";\n\nimport _getTargets, {\n  isRequired,\n  getInclusionReasons,\n} from \"@babel/helper-compilation-targets\";\nconst getTargets = _getTargets.default || _getTargets;\n\nimport { createUtilsGetter } from \"./utils\";\nimport ImportsCache from \"./imports-cache\";\nimport {\n  stringifyTargetsMultiline,\n  presetEnvSilentDebugHeader,\n} from \"./debug-utils\";\nimport {\n  validateIncludeExclude,\n  applyMissingDependenciesDefaults,\n} from \"./normalize-options\";\n\nimport type {\n  ProviderApi,\n  MethodString,\n  Targets,\n  MetaDescriptor,\n  PolyfillProvider,\n  PluginOptions,\n  ProviderOptions,\n} from \"./types\";\n\nimport * as v from \"./visitors\";\nimport * as deps from \"./node/dependencies\";\n\nimport createMetaResolver from \"./meta-resolver\";\n\nexport type { PolyfillProvider, MetaDescriptor, Utils, Targets } from \"./types\";\n\nfunction resolveOptions<Options>(\n  options: PluginOptions,\n  babelApi,\n): {\n  method: MethodString,\n  methodName: \"usageGlobal\" | \"entryGlobal\" | \"usagePure\",\n  targets: Targets,\n  debug: boolean,\n  shouldInjectPolyfill: ?(name: string, shouldInject: boolean) => boolean,\n  providerOptions: ProviderOptions<Options>,\n  absoluteImports: string | boolean,\n} {\n  const {\n    method,\n    targets: targetsOption,\n    ignoreBrowserslistConfig,\n    configPath,\n    debug,\n    shouldInjectPolyfill,\n    absoluteImports,\n    ...providerOptions\n  } = options;\n\n  let methodName;\n  if (method === \"usage-global\") methodName = \"usageGlobal\";\n  else if (method === \"entry-global\") methodName = \"entryGlobal\";\n  else if (method === \"usage-pure\") methodName = \"usagePure\";\n  else if (typeof method !== \"string\") {\n    throw new Error(\".method must be a string\");\n  } else {\n    throw new Error(\n      `.method must be one of \"entry-global\", \"usage-global\"` +\n        ` or \"usage-pure\" (received ${JSON.stringify(method)})`,\n    );\n  }\n\n  if (typeof shouldInjectPolyfill === \"function\") {\n    if (options.include || options.exclude) {\n      throw new Error(\n        `.include and .exclude are not supported when using the` +\n          ` .shouldInjectPolyfill function.`,\n      );\n    }\n  } else if (shouldInjectPolyfill != null) {\n    throw new Error(\n      `.shouldInjectPolyfill must be a function, or undefined` +\n        ` (received ${JSON.stringify(shouldInjectPolyfill)})`,\n    );\n  }\n\n  if (\n    absoluteImports != null &&\n    typeof absoluteImports !== \"boolean\" &&\n    typeof absoluteImports !== \"string\"\n  ) {\n    throw new Error(\n      `.absoluteImports must be a boolean, a string, or undefined` +\n        ` (received ${JSON.stringify(absoluteImports)})`,\n    );\n  }\n\n  let targets;\n\n  if (\n    // If any browserslist-related option is specified, fallback to the old\n    // behavior of not using the targets specified in the top-level options.\n    targetsOption ||\n    configPath ||\n    ignoreBrowserslistConfig\n  ) {\n    const targetsObj =\n      typeof targetsOption === \"string\" || Array.isArray(targetsOption)\n        ? { browsers: targetsOption }\n        : targetsOption;\n\n    targets = getTargets(targetsObj, {\n      ignoreBrowserslistConfig,\n      configPath,\n    });\n  } else {\n    targets = babelApi.targets();\n  }\n\n  return {\n    method,\n    methodName,\n    targets,\n    absoluteImports: absoluteImports ?? false,\n    shouldInjectPolyfill,\n    debug: !!debug,\n    providerOptions: ((providerOptions: Object): ProviderOptions<Options>),\n  };\n}\n\nfunction instantiateProvider<Options>(\n  factory: PolyfillProvider<Options>,\n  options: PluginOptions,\n  missingDependencies,\n  dirname,\n  debugLog,\n  babelApi,\n) {\n  const {\n    method,\n    methodName,\n    targets,\n    debug,\n    shouldInjectPolyfill,\n    providerOptions,\n    absoluteImports,\n  } = resolveOptions<Options>(options, babelApi);\n\n  const getUtils = createUtilsGetter(\n    new ImportsCache(moduleName =>\n      deps.resolve(dirname, moduleName, absoluteImports),\n    ),\n  );\n\n  // eslint-disable-next-line prefer-const\n  let include, exclude;\n  let polyfillsSupport;\n  let polyfillsNames;\n  let filterPolyfills;\n\n  const depsCache = new Map();\n\n  const api: ProviderApi = {\n    babel: babelApi,\n    getUtils,\n    method: options.method,\n    targets,\n    createMetaResolver,\n    shouldInjectPolyfill(name) {\n      if (polyfillsNames === undefined) {\n        throw new Error(\n          `Internal error in the ${factory.name} provider: ` +\n            `shouldInjectPolyfill() can't be called during initialization.`,\n        );\n      }\n      if (!polyfillsNames.has(name)) {\n        console.warn(\n          `Internal error in the ${provider.name} provider: ` +\n            `unknown polyfill \"${name}\".`,\n        );\n      }\n\n      if (filterPolyfills && !filterPolyfills(name)) return false;\n\n      let shouldInject = isRequired(name, targets, {\n        compatData: polyfillsSupport,\n        includes: include,\n        excludes: exclude,\n      });\n\n      if (shouldInjectPolyfill) {\n        shouldInject = shouldInjectPolyfill(name, shouldInject);\n        if (typeof shouldInject !== \"boolean\") {\n          throw new Error(`.shouldInjectPolyfill must return a boolean.`);\n        }\n      }\n\n      return shouldInject;\n    },\n    debug(name) {\n      debugLog().found = true;\n\n      if (!debug || !name) return;\n\n      if (debugLog().polyfills.has(provider.name)) return;\n      debugLog().polyfills.set(\n        name,\n        polyfillsSupport && name && polyfillsSupport[name],\n      );\n    },\n    assertDependency(name, version = \"*\") {\n      if (missingDependencies === false) return;\n      if (absoluteImports) {\n        // If absoluteImports is not false, we will try resolving\n        // the dependency and throw if it's not possible. We can\n        // skip the check here.\n        return;\n      }\n\n      const dep = version === \"*\" ? name : `${name}@^${version}`;\n\n      const found = missingDependencies.all\n        ? false\n        : mapGetOr(depsCache, `${name} :: ${dirname}`, () =>\n            deps.has(dirname, name),\n          );\n\n      if (!found) {\n        debugLog().missingDeps.add(dep);\n      }\n    },\n  };\n\n  const provider = factory(api, providerOptions, dirname);\n\n  if (typeof provider[methodName] !== \"function\") {\n    throw new Error(\n      `The \"${provider.name || factory.name}\" provider doesn't ` +\n        `support the \"${method}\" polyfilling method.`,\n    );\n  }\n\n  if (Array.isArray(provider.polyfills)) {\n    polyfillsNames = new Set(provider.polyfills);\n    filterPolyfills = provider.filterPolyfills;\n  } else if (provider.polyfills) {\n    polyfillsNames = new Set(Object.keys(provider.polyfills));\n    polyfillsSupport = provider.polyfills;\n    filterPolyfills = provider.filterPolyfills;\n  } else {\n    pol": "9",
+    "android": "4",
+    "ios": "6",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es7.string.trim-left": {
+    "chrome": "66",
+    "opera": "53",
+    "edge": "79",
+    "firefox": "61",
+    "safari": "12",
+    "node": "10",
+    "ios": "12",
+    "samsung": "9",
+    "electron": "3.0"
+  },
+  "es7.string.trim-right": {
+    "chrome": "66",
+    "opera": "53",
+    "edge": "79",
+    "firefox": "61",
+    "safari": "12",
+    "node": "10",
+    "ios": "12",
+    "samsung": "9",
+    "electron": "3.0"
+  },
+  "es6.typed.array-buffer": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.data-view": {
+    "chrome": "5",
+    "opera": "12",
+    "edge": "12",
+    "firefox": "15",
+    "safari": "5.1",
+    "node": "0.10",
+    "ie": "10",
+    "android": "4",
+    "ios": "6",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.typed.int8-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.uint8-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.uint8-clamped-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.int16-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.uint16-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.int32-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.uint32-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.float32-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.typed.float64-array": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "13",
+    "firefox": "48",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.weak-map": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "15",
+    "firefox": "53",
+    "safari": "9",
+    "node": "6.5",
+    "ios": "9",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.weak-set": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "15",
+    "firefox": "53",
+    "safari": "9",
+    "node": "6.5",
+    "ios": "9",
+    "samsung": "5",
+    "electron": "1.2"
+  }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     s,r)}}Cu.Cache=Ye;var Du=bo((function(t,r){var e=(r=1==r.length&&Yu(r[0])?Er(r[0],Wr(ui())):Er(dn(r,1),Wr(ui()))).length;return Jn((function(n){for(var o=-1,i=ye(n.length,e);++o<i;)n[o]=r[o].call(this,n[o]);return gr(t,this,n)}))})),Fu=Jn((function(t,r){var e=re(r,ii(Fu));return Ho(t,c,o,r,e)})),Uu=Jn((function(t,r){var e=re(r,ii(Uu));return Ho(t,64,o,r,e)})),Mu=ti((function(t,r){return Ho(t,256,o,o,o,r)}));function Bu(t,r){return t===r||t!=t&&r!=r}var zu=Yo(jn),Gu=Yo((function(t,r){return t>=r})),Wu=Rn(function(){return arguments}())?Rn:function(t){return ra(t)&&Lt.call(t,"callee")&&!tr.call(t,"callee")},Yu=n.isArray,qu=lr?Wr(lr):function(t){return ra(t)&&On(t)==T};function $u(t){return null!=t&&Qu(t.length)&&!Xu(t)}function Ju(t){return ra(t)&&$u(t)}var Vu=le||yc,Hu=pr?Wr(pr):function(t){return ra(t)&&On(t)==b};function Ku(t){if(!ra(t))return!1;var r=On(t);return r==m||"[object DOMException]"==r||"string"==typeof t.message&&"string"==typeof t.name&&!oa(t)}function Xu(t){if(!ta(t))return!1;var r=On(t);return r==w||r==x||"[object AsyncFunction]"==r||"[object Proxy]"==r}function Zu(t){return"number"==typeof t&&t==va(t)}function Qu(t){return"number"==typeof t&&t>-1&&t%1==0&&t<=l}function ta(t){var r=typeof t;return null!=t&&("object"==r||"function"==r)}function ra(t){return null!=t&&"object"==typeof t}var ea=hr?Wr(hr):function(t){return ra(t)&&pi(t)==_};function na(t){return"number"==typeof t||ra(t)&&On(t)==O}function oa(t){if(!ra(t)||On(t)!=j)return!1;var r=$t(t);if(null===r)return!0;var e=Lt.call(r,"constructor")&&r.constructor;return"function"==typeof e&&e instanceof e&&It.call(e)==Ft}var ia=vr?Wr(vr):function(t){return ra(t)&&On(t)==S},ua=dr?Wr(dr):function(t){return ra(t)&&pi(t)==P};function aa(t){return"string"==typeof t||!Yu(t)&&ra(t)&&On(t)==k}function ca(t){return"symbol"==typeof t||ra(t)&&On(t)==R}var sa=yr?Wr(yr):function(t){return ra(t)&&Qu(t.length)&&!!Zt[On(t)]},fa=Yo(Nn),la=Yo((function(t,r){return t<=r}));function pa(t){if(!t)return[];if($u(t))return aa(t)?oe(t):Po(t);if(ur&&t[ur])return function(t){for(var r,e=[];!(r=t.next()).done;)e.push(r.value);return e}(t[ur]());var r=pi(t);return(r==_?Qr:r==P?ee:Ba)(t)}function ha(t){return t?(t=ya(t))===f||t===-1/0?17976931348623157e292*(t

@@ -1,0 +1,1390 @@
+ be "'+l.kind+'", not "'+e.kind+'"'),l.resolve(e.result)?(e.result=l.construct(e.result),null!==e.anchor&&(e.anchorMap[e.anchor]=e.result)):N(e,"cannot resolve a node with !<"+e.tag+"> explicit tag")):N(e,"unknown tag !<"+e.tag+">");return null!==e.listener&&e.listener("close",e),null!==e.tag||null!==e.anchor||d}function $(e,t){t=t||{},0!==(e=String(e)).length&&(10!==e.charCodeAt(e.length-1)&&13!==e.charCodeAt(e.length-1)&&(e+="\n"),65279===e.charCodeAt(0)&&(e=e.slice(1)));var n=new F(e,t),e=e.indexOf("\0");for(-1!==e&&(n.position=e,N(n,"null byte is not allowed in input")),n.input+="\0";32===n.input.charCodeAt(n.position);)n.lineIndent+=1,n.position+=1;for(;n.position<n.length-1;)!function(e){var t,n,i,r,o=e.position,a=!1;for(e.version=null,e.checkLineBreaks=e.legacy,e.tagMap={},e.anchorMap={};0!==(r=e.input.charCodeAt(e.position))&&(Y(e,!0,-1),r=e.input.charCodeAt(e.position),!(0<e.lineIndent||37!==r));){for(a=!0,r=e.input.charCodeAt(++e.position),t=e.position;0!==r&&!O(r);)r=e.input.charCodeAt(++e.position);for(i=[],(n=e.input.slice(t,e.position)).length<1&&N(e,"directive name must not be less than one character in length");0!==r;){for(;I(r);)r=e.input.charCodeAt(++e.position);if(35===r){for(;r=e.input.charCodeAt(++e.position),0!==r&&!S(r););break}if(S(r))break;for(t=e.position;0!==r&&!O(r);)r=e.input.charCodeAt(++e.position);i.push(e.input.slice(t,e.position))}0!==r&&q(e),m.call(T,n)?T[n](e,n,i):M(e,'unknown document directive "'+n+'"')}Y(e,!0,-1),0===e.lineIndent&&45===e.input.charCodeAt(e.position)&&45===e.input.charCodeAt(e.position+1)&&45===e.input.charCodeAt(e.position+2)?(e.position+=3,Y(e,!0,-1)):a&&N(e,"directives end mark is expected"),P(e,e.lineIndent-1,A,!1,!0),Y(e,!0,-1),e.checkLineBreaks&&s.test(e.input.slice(o,e.position))&&M(e,"non-ASCII line breaks are interpreted as content"),e.documents.push(e.result),e.position===e.lineStart&&R(e)?46===e.input.charCodeAt(e.position)&&(e.position+=3,Y(e,!0,-1)):e.position<e.length-1&&N(e,"end of the stream or a document separator is expected")}(n);return n.documents}function H(e,t,n){null!==t&&"object"==typeof t&&void 0===n&&(n=t,t=null);var i=$(e,n);if("function"!=typeof t)return i;for(var r=0,o=i.length;r<o;r+=1)t(i[r])}function G(e,t){t=$(e,t);if(0!==t.length){if(1===t.length)return t[0];throw new i("expected a single document in the stream, but found more")}}t.exports.loadAll=H,t.exports.load=G,t.exports.safeLoadAll=function(e,t,n){return"object"==typeof t&&null!==t&&void 0===n&&(n=t,t=null),H(e,t,h.extend({schema:o},n))},t.exports.safeLoad=function(e,t){return G(e,h.extend({schema:o},t))}},{"./common":2,"./exception":4,"./mark":6,"./schema/default_full":9,"./schema/default_safe":10}],6:[function(e,t,n){"use strict";var s=e("./common");function i(e,t,n,i,r){this.name=e,this.buffer=t,this.position=n,this.line=i,this.column=r}i.prototype.getSnippet=function(e,t){var n,i,r,o,a;if(!this.buffer)return null;for(e=e||4,t=t||75,n="",i=this.position;0<i&&-1==="\0\r\n¬Ö\u2028\u2029".indexOf(this.buffer.charAt(i-1));)if(--i,this.position-i>t/2-1){n=" ... ",i+=5;break}for(r="",o=this.position;o<this.buffer.length&&-1==="\0\r\n¬Ö\u2028\u2029".indexOf(this.buffer.charAt(o));)if((o+=1)-this.position>t/2-1){r=" ... ",o-=5;break}return a=this.buffer.slice(i,o),s.repeat(" ",e)+n+a+r+"\n"+s.repeat(" ",e+this.position-i+n.length)+"^"},i.prototype.toString=function(e){var t="";return this.name&&(t+='in "'+this.name+'" '),t+="at line "+(this.line+1)+", column "+(this.column+1),e||(e=this.getSnippet())&&(t+=":\n"+e),t},t.exports=i},{"./common":2}],7:[function(e,t,n){"use strict";var r=e("./common"),o=e("./exception"),a=e("./type");function s(e,t,i){var r=[];return e.include.forEach(function(e){i=s(e,t,i)}),e[t].forEach(function(n){i.forEach(function(e,t){e.tag===n.tag&&e.kind===n.kind&&r.push(t)}),i.push(n)}),i.filter(function(e,t){return-1===r.indexOf(t)})}function c(e){this.include=e.include||[],this.implicit=e.implicit||[],this.explicit=e.explicit||[],this.implicit.forEach(function(e){if(e.loadKind&&"scalar"!==e.loadKind)throw new o("There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.")}),this.compiledImplicit=s(this,"implicit",[]),this.compiledExplicit=s(this,"explicit",[]),this.compiledTypeMap=function(){var e,t,n={scalar:{},sequence:{},mapping:{},fallback:{}};function i(e){n[e.kind][e.tag]=n.fallback[e.tag]=e}for(e=0,t=arguments.length;e<t;e+=1)arguments[e].forEach(i);return n}(this.compiledImplicit,this.compiledExplicit)}c.DEFAULT=null,c.create=function(e,t){var n,i;switch(arguments.length){case 1:n=c.DEFAULT,i=e;break;case 2:n=e,i=t;break;default:throw new o("Wrong number of arguments for Schema.create function")}if(n=r.toArray(n),i=r.toArray(i),!n.every(function(e){return e instanceof c}))throw new o("Specified list of super schemas (or a single Schema object) contains a non-Schema object.");if(!i.every(function(e){return e instanceof a}))throw new o("Specified list of YAML types (or a single Type object) contains a non-Type object.");return new c({include:n,explicit:i})},t.exports=c},{"./common":2,"./exception":4,"./type":13}],8:[function(e,t,n){"use strict";var i=e("../schema");t.exports=new i({include:[e("./json")]})},{"../schema":7,"./json":12}],9:[function(e,t,n){"use strict";var i=e("../schema");t.exports=i.DEFAULT=new i({include:[e("./default_safe")],explicit:[e("../type/js/undefined"),e("../type/js/regexp"),e("../type/js/function")]})},{"../schema":7,"../type/js/function":18,"../type/js/regexp":19,"../type/js/undefined":20,"./default_safe":10}],10:[function(e,t,n){"use strict";var i=e("../schema");t.exports=new i({include:[e("./core")],implicit:[e("../type/timestamp"),e("../type/merge")],explicit:[e("../type/binary"),e("../type/omap"),e("../type/pairs"),e("../type/set")]})},{"../schema":7,"../type/binary":14,"../type/merge":22,"../type/omap":24,"../type/pairs":25,"../type/set":27,"../type/timestamp":29,"./core":8}],11:[function(e,t,n){"use strict";var i=e("../schema");t.exports=new i({explicit:[e("../type/str"),e("../type/seq"),e("../type/map")]})},{"../schema":7,"../type/map":21,"../type/seq":26,"../type/str":28}],12:[function(e,t,n){"use strict";var i=e("../schema");t.exports=new i({include:[e("./failsafe")],implicit:[e("../type/null"),e("../type/bool"),e("../type/int"),e("../type/float")]})},{"../schema":7,"../type/bool":15,"../type/float":16,"../type/int":17,"../type/null":23,"./failsafe":11}],13:[function(e,t,n){"use strict";var r=e("./exception"),o=["kind","resolve","construct","instanceOf","predicate","represent","defaultStyle","styleAliases"],a=["scalar","sequence","mapping"];t.exports=function(t,e){var n,i;if(e=e||{},Object.keys(e).forEach(function(e){if(-1===o.indexOf(e))throw new r('Unknown option "'+e+'" is met in definition of "'+t+'" YAML type.')}),this.tag=t,this.kind=e.kind||null,this.resolve=e.resolve||function(){return!0},this.construct=e.construct||function(e){return e},this.instanceOf=e.instanceOf||null,this.predicate=e.predicate||null,this.represent=e.represent||null,this.defaultStyle=e.defaultStyle||null,this.styleAliases=(n=e.styleAliases||null,i={},null!==n&&Object.keys(n).forEach(function(t){n[t].forEach(function(e){i[String(e)]=t})}),i),-1===a.indexOf(this.kind))throw new r('Unknown kind "'+this.kind+'" is specified for "'+t+'" YAML type.')}},{"./exception":4}],14:[function(e,t,n){"use strict";try{var s=e("buffer").Buffer}catch(e){}var i=e("../type"),c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\n\r";t.exports=new i("tag:yaml.org,2002:binary",{kind:"scalar",resolve:function(e){if(null===e)return!1;for(var t,n=0,i=e.length,r=c,o=0;o<i;o++)if(!(64<(t=r.indexOf(e.charAt(o))))){if(t<0)return!1;n+=6}return n%8==0},construct:function(e){for(var t=e.replace(/[\r\n=]/g,""),n=t.length,i=c,r=0,o=[],a=0;a<n;a++)a%4==0&&a&&(o.push(r>>16&255),o.push(r>>8&255),o.push(255&r)),r=r<<6|i.indexOf(t.charAt(a));return 0==(e=n%4*6)?(o.push(r>>16&255),o.push(r>>8&255),o.push(255&r)):18==e?(o.push(r>>10&255),o.push(r>>2&255)):12==e&&o.push(r>>4&255),s?s.from?s.from(o):new s(o):o},predicate:function(e){return s&&s.isBuffer(e)},represent:function(e){for(var t,n="",i=0,r=e.length,o=c,a=0;a<r;a++)a%3==0&&a&&(n+=o[i>>18&63],n+=o[i>>12&63],n+=o[i>>6&63],n+=o[63&i]),i=(i<<8)+e[a];return 0==(t=r%3)?(n+=o[i>>18&63],n+=o[i>>12&63],n+=o[i>>6&63],n+=o[63&i]):2==t?(n+=o[i>>10&63],n+=o[i>>4&63],n+=o[i<<2&63],n+=o[64]):1==t&&(n+=o[i>>2&63],n+=o[i<<4&63],n+=o[64],n+=o[64]),n}})},{"../type":13}],15:[function(e,t,n){"use strict";e=e("../type");t.exports=new e("tag:yaml.org,2002:bool",{kind:"scalar",resolve:function(e){if(null===e)return!1;var t=e.length;return 4===t&&("true"===e||"True"===e||"TRUE"===e)||5===t&&("false"===e||"False"===e||"FALSE"===e)},construct:function(e){return"true"===e||"True"===e||"TRUE"===e},predicate:function(e){return"[object Boolean]"===Object.prototype.toString.call(e)},represent:{lowercase:function(e){return e?"true":"false"},uppercase:function(e){return e?"TRUE":"FALSE"},camelcase:function(e){return e?"True":"False"}},defaultStyle:"lowercase"})},{"../type":13}],16:[function(e,t,n){"use strict";var i=e("../common"),e=e("../type"),r=new RegExp("^(?:[-+]?(?:0|[1-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN))$");var o=/^[-+]?[0-9]+e/;t.exports=new e("tag:yaml.org,2002:float",{kind:"scalar",resolve:function(e){return null!==e&&!(!r.test(e)||"_"===e[e.length-1])},construct:function(e){var t,n=e.replace(/_/g,"").toLowerCase(),e="-"===n[0]?-1:1,i=[];return 0<="+-".indexOf(n[0])&&(n=n.slice(1)),".inf"===n?1==e?Number.POSITIVE_INFINITY:Number.NEGATIVE_INFINITY:".nan"===n?NaN:0<=n.indexOf(":")?(n.split(":").forEach(function(e){i.unshift(parseFloat(e,10))}),n=0,t=1,i.forEach(function(e){n+=e*t,t*=60}),e*n):e*parseFloat(n,10)},predicate:function(e){return"[object Number]"===Object.prototype.toString.call(e)&&(e%1!=0||i.isNegativeZero(e))},represent:function(e,t){if(isNaN(e))switch(t){case"lowercase":return".nan";case"uppercase":return".NAN";case"camelcase":return".NaN"}else if(Number.POSITIVE_INFINITY===e)switch(t){case"lowercase":return".inf";case"uppercase":return".INF";case"camelcase":return".Inf"}else if(Number.NEGATIVE_INFINITY===e)switch(t){case"lowercase":return"-.inf";case"uppercase":return"-.INF";case"camelcase":return"-.Inf"}else if(i.isNegativeZero(e))return"-0.0";return e=e.toString(10),o.test(e)?e.replace("e",".e"):e},defaultStyle:"lowercase"})},{"../common":2,"../type":13}],17:[function(e,t,n){"use strict";var i=e("../common"),e=e("../type");t.exports=new e("tag:yaml.org,2002:int",{kind:"scalar",resolve:function(e){if(null===e)return!1;var t,n,i,r,o=e.length,a=0,s=!1;if(!o)return!1;if("-"!==(t=e[a])&&"+"!==t||(t=e[++a]),"0"===t){if(a+1===o)return!0;if("b"===(t=e[++a])){for(a++;a<o;a++)if("_"!==(t=e[a])){if("0"!==t&&"1"!==t)return!1;s=!0}return s&&"_"!==t}if("x"===t){for(a++;a<o;a++)if("_"!==(t=e[a])){if(!(48<=(i=e.charCodeAt(a))&&i<=57||65<=i&&i<=70||97<=i&&i<=102))return!1;s=!0}return s&&"_"!==t}for(;a<o;a++)if("_"!==(t=e[a])){if(!(48<=(n=e.charCodeAt(a))&&n<=55))return!1;s=!0}return s&&"_"!==t}if("_"===t)return!1;for(;a<o;a++)if("_"!==(t=e[a])){if(":"===t)break;if(!(48<=(r=e.charCodeAt(a))&&r<=57))return!1;s=!0}return!(!s||"_"===t)&&(":"!==t||/^(:[0-5]?[0-9])+$/.test(e.slice(a)))},construct:function(e){var t,n=e,i=1,r=[];return-1!==n.indexOf("_")&&(n=n.replace(/_/g,"")),"-"!==(e=n[0])&&"+"!==e||("-"===e&&(i=-1),e=(n=n.slice(1))[0]),"0"===n?0:"0"===e?"b"===n[1]?i*parseInt(n.slice(2),2):"x"===n[1]?i*parseInt(n,16):i*parseInt(n,8):-1!==n.indexOf(":")?(n.split(":").forEach(function(e){r.unshift(parseInt(e,10))}),n=0,t=1,r.forEach(function(e){n+=e*t,t*=60}),i*n):i*parseInt(n,10)},predicate:function(e){return"[object Number]"===Object.prototype.toString.call(e)&&e%1==0&&!i.isNegativeZero(e)},represent:{binary:function(e){return 0<=e?"0b"+e.toString(2):"-0b"+e.toString(2).slice(1)},octal:function(e){return 0<=e?"0"+e.toString(8):"-0"+e.toString(8).slice(1)},decimal:function(e){return e.toString(10)},hexadecimal:function(e){return 0<=e?"0x"+e.toString(16).toUpperCase():"-0x"+e.toString(16).toUpperCase().slice(1)}},defaultStyle:"decimal",styleAliases:{binary:[2,"bin"],octal:[8,"oct"],decimal:[10,"dec"],hexadecimal:[16,"hex"]}})},{"../common":2,"../type":13}],18:[function(e,t,n){"use strict";try{var r=e("esprima")}catch(e){"undefined"!=typeof window&&(r=window.esprima)}var i=e("../../type");t.exports=new i("tag:yaml.org,2002:js/function",{kind:"scalar",resolve:function(e){if(null===e)return!1;try{var t="("+e+")",t=r.parse(t,{range:!0});return"Program"!==t.type||1!==t.body.length||"ExpressionStatement"!==t.body[0].type||"ArrowFunctionExpression"!==t.body[0].expression.type&&"FunctionExpression"!==t.body[0].expression.type?!1:!0}catch(e){return!1}},construct:function(e){var t="("+e+")",n=r.parse(t,{range:!0}),i=[];if("Program"!==n.type||1!==n.body.length||"ExpressionStatement"!==n.body[0].type||"ArrowFunctionExpression"!==n.body[0].expression.type&&"FunctionExpression"!==n.body[0].expression.type)throw new Error("Failed to resolve function");return n.body[0].expression.params.forEach(function(e){i.push(e.name)}),e=n.body[0].expression.body.range,"BlockStatement"===n.body[0].expression.body.type?new Function(i,t.slice(e[0]+1,e[1]-1)):new Function(i,"return "+t.slice(e[0],e[1]))},predicate:function(e){return"[object Function]"===Object.prototype.toString.call(e)},represent:function(e){return e.toString()}})},{"../../type":13}],19:[function(e,t,n){"use strict";e=e("../../type");t.exports=new e("tag:yaml.org,2002:js/regexp",{kind:"scalar",resolve:function(e){if(null===e)return!1;if(0===e.length)return!1;var t=e,n=/\/([gim]*)$/.exec(e),e="";if("/"===t[0]){if(n&&(e=n[1]),3<e.length)return!1;if("/"!==t[t.length-e.length-1])return!1}return!0},construct:function(e){var t=e,n=/\/([gim]*)$/.exec(e),e="";return"/"===t[0]&&(n&&(e=n[1]),t=t.slice(1,t.length-e.length-1)),new RegExp(t,e)},predicate:function(e){return"[object RegExp]"===Object.prototype.toString.call(e)},represent:function(e){var t="/"+e.source+"/";return e.global&&(t+="g"),e.multiline&&(t+="m"),e.ignoreCase&&(t+="i"),t}})},{"../../type":13}],20:[function(e,t,n){"use strict";e=e("../../type");t.exports=new e("tag:yaml.org,2002:js/undefined",{kind:"scalar",resolve:function(){return!0},construct:function(){},predicate:function(e){return void 0===e},represent:function(){return""}})},{"../../type":13}],21:[function(e,t,n){"use strict";e=e("../type");t.exports=new e("tag:yaml.org,2002:map",{kind:"mapping",construct:function(e){return null!==e?e:{}}})},{"../type":13}],22:[function(e,t,n){"use strict";e=e("../type");t.exports=new e("tag:yaml.org,2002:merge",{kind:"scalar",resolve:function(e){return"<<"===e||null===e}})},{"../type":13}],23:[function(e,t,n){"use strict";e=e("../type");t.exports=new e("tag:yaml.org,2002:null",{kind:"scalar",resolve:function(e){if(null===e)return!0;var t=e.length;return 1===t&&"~"===e||4===t&&("null"===e||"Null"===e||"NULL"===e)},construct:function(){return null},predicate:function(e){return null===e},represent:{canonical:function(){return"~"},lowercase:function(){return"null"},uppercase:function(){return"NULL"},camelcase:function(){return"Null"}},defaultStyle:"lowercase"})},{"../type":13}],24:[function(e,t,n){"use strict";var e=e("../type"),c=Object.prototype.hasOwnProperty,u=Object.prototype.toString;t.exports=new e("tag:yaml.org,2002:omap",{kind:"sequence",resolve:function(e){if(null===e)return!0;for(var t,n,i,r=[],o=e,a=0,s=o.length;a<s;a+=1){if(t=o[a],i=!1,"[object Object]"!==u.call(t))return!1;for(n in t)if(c.call(t,n)){if(i)return!1;i=!0}if(!i)return!1;if(-1!==r.indexOf(n))return!1;r.push(n)}return!0},construct:function(e){return null!==e?e:[]}})},{"../type":13}],25:[function(e,t,n){"use strict";var e=e("../type"),s=Object.prototype.toString;t.exports=new e("tag:yaml.org,2002:pairs",{kind:"sequence",resolve:function(e){if(null===e)return!0;for(var t,n,i=e,r=new Array(i.length),o=0,a=i.length;o<a;o+=1){if(t=i[o],"[object Object]"!==s.call(t))return!1;if(1!==(n=Object.keys(t)).length)return!1;r[o]=[n[0],t[n[0]]]}return!0},construct:function(e){if(null===e)return[];for(var t,n,i=e,r=new Array(i.length),o=0,a=i.length;o<a;o+=1)t=i[o],n=Object.keys(t),r[o]=[n[0],t[n[0]]];return r}})},{"../type":13}],26:[function(e,t,n){"use strict";e=e("./* pako 1.0.11 nodeca/pako */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.pako = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict';
+
+
+var TYPED_OK =  (typeof Uint8Array !== 'undefined') &&
+                (typeof Uint16Array !== 'undefined') &&
+                (typeof Int32Array !== 'undefined');
+
+function _has(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+exports.assign = function (obj /*from1, from2, from3, ...*/) {
+  var sources = Array.prototype.slice.call(arguments, 1);
+  while (sources.length) {
+    var source = sources.shift();
+    if (!source) { continue; }
+
+    if (typeof source !== 'object') {
+      throw new TypeError(source + 'must be non-object');
+    }
+
+    for (var p in source) {
+      if (_has(source, p)) {
+        obj[p] = source[p];
+      }
+    }
+  }
+
+  return obj;
+};
+
+
+// reduce buffer size, avoiding mem copy
+exports.shrinkBuf = function (buf, size) {
+  if (buf.length === size) { return buf; }
+  if (buf.subarray) { return buf.subarray(0, size); }
+  buf.length = size;
+  return buf;
+};
+
+
+var fnTyped = {
+  arraySet: function (dest, src, src_offs, len, dest_offs) {
+    if (src.subarray && dest.subarray) {
+      dest.set(src.subarray(src_offs, src_offs + len), dest_offs);
+      return;
+    }
+    // Fallback to ordinary array
+    for (var i = 0; i < len; i++) {
+      dest[dest_offs + i] = src[src_offs + i];
+    }
+  },
+  // Join array of chunks to single array.
+  flattenChunks: function (chunks) {
+    var i, l, len, pos, chunk, result;
+
+    // calculate data length
+    len = 0;
+    for (i = 0, l = chunks.length; i < l; i++) {
+      len += chunks[i].length;
+    }
+
+    // join chunks
+    result = new Uint8Array(len);
+    pos = 0;
+    for (i = 0, l = chunks.length; i < l; i++) {
+      chunk = chunks[i];
+      result.set(chunk, pos);
+      pos += chunk.length;
+    }
+
+    return result;
+  }
+};
+
+var fnUntyped = {
+  arraySet: function (dest, src, src_offs, len, dest_offs) {
+    for (var i = 0; i < len; i++) {
+      dest[dest_offs + i] = src[src_offs + i];
+    }
+  },
+  // Join array of chunks to single array.
+  flattenChunks: function (chunks) {
+    return [].concat.apply([], chunks);
+  }
+};
+
+
+// Enable/Disable typed arrays use, for testing
+//
+exports.setTyped = function (on) {
+  if (on) {
+    exports.Buf8  = Uint8Array;
+    exports.Buf16 = Uint16Array;
+    exports.Buf32 = Int32Array;
+    exports.assign(exports, fnTyped);
+  } else {
+    exports.Buf8  = Array;
+    exports.Buf16 = Array;
+    exports.Buf32 = Array;
+    exports.assign(exports, fnUntyped);
+  }
+};
+
+exports.setTyped(TYPED_OK);
+
+},{}],2:[function(require,module,exports){
+// String encode/decode helpers
+'use strict';
+
+
+var utils = require('./common');
+
+
+// Quick check if we can use fast array to bin string conversion
+//
+// - apply(Array) can fail on Android 2.2
+// - apply(Uint8Array) can fail on iOS 5.1 Safari
+//
+var STR_APPLY_OK = true;
+var STR_APPLY_UIA_OK = true;
+
+try { String.fromCharCode.apply(null, [ 0 ]); } catch (__) { STR_APPLY_OK = false; }
+try { String.fromCharCode.apply(null, new Uint8Array(1)); } catch (__) { STR_APPLY_UIA_OK = false; }
+
+
+// Table with utf8 lengths (calculated by first byte of sequence)
+// Note, that 5 & 6-byte values and some 4-byte values can not be represented in JS,
+// because max possible codepoint is 0x10ffff
+var _utf8len = new utils.Buf8(256);
+for (var q = 0; q < 256; q++) {
+  _utf8len[q] = (q >= 252 ? 6 : q >= 248 ? 5 : q >= 240 ? 4 : q >= 224 ? 3 : q >= 192 ? 2 : 1);
+}
+_utf8len[254] = _utf8len[254] = 1; // Invalid sequence start
+
+
+// convert string to array (typed, when possible)
+exports.string2buf = function (str) {
+  var buf, c, c2, m_pos, i, str_len = str.length, buf_len = 0;
+
+  // count binary size
+  for (m_pos = 0; m_pos < str_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 0xfc00) === 0xdc00) {
+        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        m_pos++;
+      }
+    }
+    buf_len += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
+  }
+
+  // allocate buffer
+  buf = new utils.Buf8(buf_len);
+
+  // convert
+  for (i = 0, m_pos = 0; i < buf_len; m_pos++) {
+    c = str.charCodeAt(m_pos);
+    if ((c & 0xfc00) === 0xd800 && (m_pos + 1 < str_len)) {
+      c2 = str.charCodeAt(m_pos + 1);
+      if ((c2 & 0xfc00) === 0xdc00) {
+        c = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+        m_pos++;
+      }
+    }
+    if (c < 0x80) {
+      /* one byte */
+      buf[i++] = c;
+    } else if (c < 0x800) {
+      /* two bytes */
+      buf[i++] = 0xC0 | (c >>> 6);
+      buf[i++] = 0x80 | (c & 0x3f);
+    } else if (c < 0x10000) {
+      /* three bytes */
+      buf[i++] = 0xE0 | (c >>> 12);
+      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+      buf[i++] = 0x80 | (c & 0x3f);
+    } else {
+      /* four bytes */
+      buf[i++] = 0xf0 | (c >>> 18);
+      buf[i++] = 0x80 | (c >>> 12 & 0x3f);
+      buf[i++] = 0x80 | (c >>> 6 & 0x3f);
+      buf[i++] = 0x80 | (c & 0x3f);
+    }
+  }
+
+  return buf;
+};
+
+// Helper (used in 2 places)
+function buf2binstring(buf, len) {
+  // On Chrome, the arguments in a function call that are allowed is `65534`.
+  // If the length of the buffer is smaller than that, we can use this optimization,
+  // otherwise we will take a slower path.
+  if (len < 65534) {
+    if ((buf.subarray && STR_APPLY_UIA_OK) || (!buf.subarray && STR_APPLY_OK)) {
+      return String.fromCharCode.apply(null, utils.shrinkBuf(buf, len));
+    }
+  }
+
+  var result = '';
+  for (var i = 0; i < len; i++) {
+    result += String.fromCharCode(buf[i]);
+  }
+  return result;
+}
+
+
+// Convert byte array to binary string
+exports.buf2binstring = function (buf) {
+  return buf2binstring(buf, buf.length);
+};
+
+
+// Convert binary string (typed, when possible)
+exports.binstring2buf = function (str) {
+  var buf = new utils.Buf8(str.length);
+  for (var i = 0, len = buf.length; i < len; i++) {
+    buf[i] = str.charCodeAt(i);
+  }
+  return buf;
+};
+
+
+// convert array to string
+exports.buf2string = function (buf, max) {
+  var i, out, c, c_len;
+  var len = max || buf.length;
+
+  // Reserve max possible length (2 words per char)
+  // NB: by unknown reasons, Array is significantly faster for
+  //     String.fromCharCode.apply than Uint16Array.
+  var utf16buf = new Array(len * 2);
+
+  for (out = 0, i = 0; i < len;) {
+    c = buf[i++];
+    // quick process ascii
+    if (c < 0x80) { utf16buf[out++] = c; continue; }
+
+    c_len = _utf8len[c];
+    // skip 5 & 6 byte codes
+    if (c_len > 4) { utf16buf[out++] = 0xfffd; i += c_len - 1; continue; }
+
+    // apply mask on first byte
+    c &= c_len === 2 ? 0x1f : c_len === 3 ? 0x0f : 0x07;
+    // join the rest
+    while (c_len > 1 && i < len) {
+      c = (c << 6) | (buf[i++] & 0x3f);
+      c_len--;
+    }
+
+    // terminated by end of string?
+    if (c_len > 1) { utf16buf[out++] = 0xfffd; continue; }
+
+    if (c < 0x10000) {
+      utf16buf[out++] = c;
+    } else {
+      c -= 0x10000;
+      utf16buf[out++] = 0xd800 | ((c >> 10) & 0x3ff);
+      utf16buf[out++] = 0xdc00 | (c & 0x3ff);
+    }
+  }
+
+  return buf2binstring(utf16buf, out);
+};
+
+
+// Calculate max possible position in utf8 buffer,
+// that will not break sequence. If that's not possible
+// - (very small limits) return max size as is.
+//
+// buf[] - utf8 bytes array
+// max   - length limit (mandatory);
+exports.utf8border = function (buf, max) {
+  var pos;
+
+  max = max || buf.length;
+  if (max > buf.length) { max = buf.length; }
+
+  // go back from last position, until start of sequence found
+  pos = max - 1;
+  while (pos >= 0 && (buf[pos] & 0xC0) === 0x80) { pos--; }
+
+  // Very small and broken sequence,
+  // return max, because we should return something anyway.
+  if (pos < 0) { return max; }
+
+  // If we came to start of buffer - that means buffer is too small,
+  // return max too.
+  if (pos === 0) { return max; }
+
+  return (pos + _utf8len[buf[pos]] > max) ? pos : max;
+};
+
+},{"./common":1}],3:[function(require,module,exports){
+'use strict';
+
+// Note: adler32 takes 12% for level 0 and 2% for level 6.
+// It isn't worth it to make additional optimizations as in original.
+// Small size is preferable.
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function adler32(adler, buf, len, pos) {
+  var s1 = (adler & 0xffff) |0,
+      s2 = ((adler >>> 16) & 0xffff) |0,
+      n = 0;
+
+  while (len !== 0) {
+    // Set limit ~ twice less than 5552, to keep
+    // s2 in 31-bits, because we force signed ints.
+    // in other case %= will fail.
+    n = len > 2000 ? 2000 : len;
+    len -= n;
+
+    do {
+      s1 = (s1 + buf[pos++]) |0;
+      s2 = (s2 + s1) |0;
+    } while (--n);
+
+    s1 %= 65521;
+    s2 %= 65521;
+  }
+
+  return (s1 | (s2 << 16)) |0;
+}
+
+
+module.exports = adler32;
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+module.exports = {
+
+  /* Allowed flush values; see deflate() and inflate() below for details */
+  Z_NO_FLUSH:         0,
+  Z_PARTIAL_FLUSH:    1,
+  Z_SYNC_FLUSH:       2,
+  Z_FULL_FLUSH:       3,
+  Z_FINISH:           4,
+  Z_BLOCK:            5,
+  Z_TREES:            6,
+
+  /* Return codes for the compression/decompression functions. Negative values
+  * are errors, positive values are used for special but normal events.
+  */
+  Z_OK:               0,
+  Z_STREAM_END:       1,
+  Z_NEED_DICT:        2,
+  Z_ERRNO:           -1,
+  Z_STREAM_ERROR:    -2,
+  Z_DATA_ERROR:      -3,
+  //Z_MEM_ERROR:     -4,
+  Z_BUF_ERROR:       -5,
+  //Z_VERSION_ERROR: -6,
+
+  /* compression levels */
+  Z_NO_COMPRESSION:         0,
+  Z_BEST_SPEED:             1,
+  Z_BEST_COMPRESSION:       9,
+  Z_DEFAULT_COMPRESSION:   -1,
+
+
+  Z_FILTERED:               1,
+  Z_HUFFMAN_ONLY:           2,
+  Z_RLE:                    3,
+  Z_FIXED:                  4,
+  Z_DEFAULT_STRATEGY:       0,
+
+  /* Possible values of the data_type field (though see inflate()) */
+  Z_BINARY:                 0,
+  Z_TEXT:                   1,
+  //Z_ASCII:                1, // = Z_TEXT (deprecated)
+  Z_UNKNOWN:                2,
+
+  /* The deflate compression method */
+  Z_DEFLATED:               8
+  //Z_NULL:                 null // Use -1 or null inline, depending on var type
+};
+
+},{}],5:[function(require,module,exports){
+'use strict';
+
+// Note: we can't get significant speed boost here.
+// So write code to minimize size - no pregenerated tables
+// and array tools dependencies.
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+// Use ordinary array, since untyped makes no boost here
+function makeTable() {
+  var c, table = [];
+
+  for (var n = 0; n < 256; n++) {
+    c = n;
+    for (var k = 0; k < 8; k++) {
+      c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+    }
+    table[n] = c;
+  }
+
+  return table;
+}
+
+// Create table on load. Just 255 signed longs. Not a problem.
+var crcTable = makeTable();
+
+
+function crc32(crc, buf, len, pos) {
+  var t = crcTable,
+      end = pos + len;
+
+  crc ^= -1;
+
+  for (var i = pos; i < end; i++) {
+    crc = (crc >>> 8) ^ t[(crc ^ buf[i]) & 0xFF];
+  }
+
+  return (crc ^ (-1)); // >>> 0;
+}
+
+
+module.exports = crc32;
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function GZheader() {
+  /* true if compressed data believed to be text */
+  this.text       = 0;
+  /* modification time */
+  this.time       = 0;
+  /* extra flags (not used when writing a gzip file) */
+  this.xflags     = 0;
+  /* operating system */
+  this.os         = 0;
+  /* pointer to extra field or Z_NULL if none */
+  this.extra      = null;
+  /* extra field length (valid if extra != Z_NULL) */
+  this.extra_len  = 0; // Actually, we don't need it in JS,
+                       // but leave for few code modifications
+
+  //
+  // Setup limits is not necessary because in js we should not preallocate memory
+  // for inflate use constant limit in 65536 bytes
+  //
+
+  /* space at extra (only when reading header) */
+  // this.extra_max  = 0;
+  /* pointer to zero-terminated file name or Z_NULL */
+  this.name       = '';
+  /* {
+  "name": "which-module",
+  "version": "2.0.0",
+  "description": "Find the module object for something that was require()d",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "standard",
+    "test": "nyc ava",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "release": "standard-version"
+  },
+  "files": [
+    "index.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nexdrew/which-module.git"
+  },
+  "keywords": [
+    "which",
+    "module",
+    "exports",
+    "filename",
+    "require",
+    "reverse",
+    "lookup"
+  ],
+  "author": "nexdrew",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nexdrew/which-module/issues"
+  },
+  "homepage": "https://github.com/nexdrew/which-module#readme",
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "coveralls": "^2.13.1",
+    "nyc": "^10.3.0",
+    "standard": "^10.0.2",
+    "standard-version": "^4.0.0"
+  }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         INDX( 	 CB=„           (   ¯  Ë        ‹‹                yTG    h V     QTG    ÅÌb∫âŒ‹f@e∫âŒ‹f@e∫âŒ‹L˙Ë_~œ‹                      
+ i n d e x . d . t s   øTG    h R     QTG    ºp∫âŒ‹Öœr∫âŒ‹Öœr∫âŒ‹¯Ô_~œ‹∏      ±               i n d e x . j s       UG    p Z     QTG    ¨„~∫âŒ‹zπÖ∫âŒ‹zπÖ∫âŒ‹zπÖ∫âŒ‹H      G               i n d e x . j s . m a p       <UG    x b     QTG    !∏ê∫âŒ‹À{ë∫âŒ‹À{ë∫âŒ‹|›ı_~œ‹h       d                r e g e x p s - i r i . d . t s       vUG    p ^     QTG     √ó∫âŒ‹≠ô∫âŒ‹≠ô∫âŒ‹å1˙_~œ‹x       t                r e g e x p s - i r i . j s   ÆUG    x f     QTG     wû∫âŒ‹t[ü∫âŒ‹t[ü∫âŒ‹t[ü∫âŒ‹¿       ¿                r e g e x p s - i r i . j s . m a p   ÒUG    x b     QTG    ™j®∫âŒ‹Ê,™∫âŒ‹Ê,™∫âŒ‹ê `~œ‹®       §                r e g e x p s - u r i . d . t s       )VG    p ^     QTG    BP≤∫âŒ‹˜i¿∫âŒ‹˜i¿∫âŒ‹∏∂`~œ‹        Æ               r e g e x p s - u r i . j s   tVG    x f     QTG    Ø)√∫âŒ‹¸óƒ∫âŒ‹¸óƒ∫âŒ‹Ø)√∫âŒ  0      [                r e g e x p s - u r i . j s . m a p   ≥VG    ` P     QTG    •ÛÃ∫âŒ‹(“LªâŒ‹(“LªâŒ‹JÎ`~œ‹                        s c h e m e s YG    h R     QTG    ÌNªâŒ‹tmNªâŒ‹tmNªâŒ‹©§ö`~œ‹       …	               u r i . d . t s       7YG    ` N     QTG    mFOªâŒ‹«ıPªâŒ‹«ıPªâŒ‹B°`~œ‹ P      óN               u r i . j s   VYG    h V     QTG    Œ›QªâŒ‹zRªâŒ‹zRªâŒ‹¸RRªâŒ‹ P      ˙J              
+ u r i . j s . m a p   xYG    h T     QTG    £xSªâŒ‹¡TªâŒ‹¡TªâŒ [ˆ¶`~œ‹`      ]              	 u t i l . d . t s     èYG    ` P     QTG    hoVªâŒ‹>WªâŒ‹>WªâŒ‹Ò}¥`~œ‹       }               u t i l . j s §YG    h X     QTG    àüXªâŒ‹°€XªâŒ‹°€XªâŒ‹°€XªâŒ‹       ≥               u t i l . j s . m a p                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ings()
+	    };
+	    if (this._file != null) {
+	      map.file = this._file;
+	    }
+	    if (this._sourceRoot != null) {
+	      map.sourceRoot = this._sourceRoot;
+	    }
+	    if (this._sourcesContents) {
+	      map.sourcesContent = this._generateSourcesContent(map.sources, map.sourceRoot);
+	    }
+
+	    return map;
+	  };
+
+	/**
+	 * Render the source map being generated to a string.
+	 */
+	SourceMapGenerator.prototype.toString =
+	  function SourceMapGenerator_toString() {
+	    return JSON.stringify(this.toJSON());
+	  };
+
+	exports.SourceMapGenerator = SourceMapGenerator;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* -*- Mode: js; js-indent-level: 2; -*- */
+	/*
+	 * Copyright 2011 Mozilla Foundation and contributors
+	 * Licensed under the New BSD license. See LICENSE or:
+	 * http://opensource.org/licenses/BSD-3-Clause
+	 *
+	 * Based on the Base 64 VLQ implementation in Closure Compiler:
+	 * https://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/debugging/sourcemap/Base64VLQ.java
+	 *
+	 * Copyright 2011 The Closure Compiler Authors. All rights reserved.
+	 * Redistribution and use in source and binary forms, with or without
+	 * modification, are permitted provided that the following conditions are
+	 * met:
+	 *
+	 *  * Redistributions of source code must retain the above copyright
+	 *    notice, this list of conditions and the following disclaimer.
+	 *  * Redistributions in binary form must reproduce the above
+	 *    copyright notice, this list of conditions and the following
+	 *    disclaimer in the documentation and/or other materials provided
+	 *    with the distribution.
+	 *  * Neither the name of Google Inc. nor the names of its
+	 *    contributors may be used to endorse or promote products derived
+	 *    from this software without specific prior written permission.
+	 *
+	 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	 * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	 * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	 * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	 * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	 * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	 * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	 * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	 * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	 */
+
+	var base64 = __webpack_require__(3);
+
+	// A single base 64 digit can contain 6 bits of data. For the base 64 variable
+	// length quantities we use in the source map spec, the first bit is the sign,
+	// the next four bits are the actual value, and the 6th bit is the
+	// continuation bit. The continuation bit tells us whether there are more
+	// digits in this value following this digit.
+	//
+	//   Continuation
+	//   |    Sign
+	//   |    |
+	//   V    V
+	//   101011
+
+	var VLQ_BASE_SHIFT = 5;
+
+	// binary: 100000
+	var VLQ_BASE = 1 << VLQ_BASE_SHIFT;
+
+	// binary: 011111
+	var VLQ_BASE_MASK = VLQ_BASE - 1;
+
+	// binary: 100000
+	var VLQ_CONTINUATION_BIT = VLQ_BASE;
+
+	/**
+	 * Converts from a two-complement value to a value where the sign bit is
+	 * placed in the least significant bit.  For example, as decimals:
+	 *   1 becomes 2 (10 binary), -1 becomes 3 (11 binary)
+	 *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
+	 */
+	function toVLQSigned(aValue) {
+	  return aValue < 0
+	    ? ((-aValue) << 1) + 1
+	    : (aValue << 1) + 0;
+	}
+
+	/**
+	 * Converts to a two-complement value from a value where the sign bit is
+	 * placed in the least significant bit.  For example, as decimals:
+	 *   2 (10 binary) becomes 1, 3 (11 binary) becomes -1
+	 *   4 (100 binary) becomes 2, 5 (101 binary) becomes -2
+	 */
+	function fromVLQSigned(aValue) {
+	  var isNegative = (aValue & 1) === 1;
+	  var shifted = aValue >> 1;
+	  return isNegative
+	    ? -shifted
+	    : shifted;
+	}
+
+	/**
+	 * Returns the base 64 VLQ encoded value.
+	 */
+	exports.encode = function base64VLQ_encode(aValue) {
+	  var encoded = "";
+	  var digit;
+
+	  var vlq = toVLQSigned(aValue);
+
+	  do {
+	    digit = vlq & VLQ_BASE_MASK;
+	    vlq >>>= VLQ_BASE_SHIFT;
+	    if (vlq > 0) {
+	      // There are still more digits in this value, so we must make sure the
+	      // continuation bit is marked.
+	      digit |= VLQ_CONTINUATION_BIT;
+	    }
+	    encoded += base64.encode(digit);
+	  } while (vlq > 0);
+
+	  return encoded;
+	};
+
+	/**
+	 * Decodes the next base 64 VLQ value from the given string and returns the
+	 * value and the rest of the string via the out parameter.
+	 */
+	exports.decode = function base64VLQ_decode(aStr, aIndex, aOutParam) {
+	  var strLen = aStr.length;
+	  var result = 0;
+	  var shift = 0;
+	  var continuation, digit;
+
+	  do {
+	    if (aIndex >= strLen) {
+	      throw new Error("Expected more digits in base 64 VLQ value.");
+	    }
+
+	    digit = base64.decode(aStr.charCodeAt(aIndex++));
+	    if (digit === -1) {
+	      throw new Error("Invalid base64 digit: " + aStr.charAt(aIndex - 1));
+	    }
+
+	    continuation = !!(digit & VLQ_CONTINUATION_BIT);
+	    digit &= VLQ_BASE_MASK;
+	    result = result + (digit << shift);
+	    shift += VLQ_BASE_SHIFT;
+	  } while (continuation);
+
+	  aOutParam.value = fromVLQSigned(result);
+	  aOutParam.rest = aIndex;
+	};
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+	/* -*- Mode: js; js-indent-level: 2; -*- */
+	/*
+	 * Copyright 2011 Mozilla Foundation and contributors
+	 * Licensed under the New BSD license. See LICENSE or:
+	 * http://opensource.org/licenses/BSD-3-Clause
+	 */
+
+	var intToCharMap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
+
+	/**
+	 * Encode an integer in the range of 0 to 63 to a single base 64 digit.
+	 */
+	exports.encode = function (number) {
+	  if (0 <= number && number < intToCharMap.length) {
+	    return intToCharMap[number];
+	  }
+	  throw new TypeError("Must be between 0 and 63: " + number);
+	};
+
+	/**
+	 * Decode a single base 64 character code digit to an integer. Returns -1 on
+	 * failure.
+	 */
+	exports.decode = function (charCode) {
+	  var bigA = 65;     // 'A'
+	  var bigZ = 90;     // 'Z'
+
+	  var littleA = 97;  // 'a'
+	  var littleZ = 122; // 'z'
+
+	  var zero = 48;     // '0'
+	  var nine = 57;     // '9'
+
+	  var plus = 43;     // '+'
+	  var slash = 47;    // '/'
+
+	  var littleOffset = 26;
+	  var numberOffset = 52;
+
+	  // 0 - 25: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+	  if (bigA <= charCode && charCode <= bigZ) {
+	    return (charCode - bigA);
+	  }
+
+	  // 26 - 51: abcdefghijklmnopqrstuvwxyz
+	  if (littleA <= charCode && charCode <= littleZ) {
+	    return (charCode - littleA + littleOffset);
+	  }
+
+	  // 52 - 61: 0123456789
+	  if (zero <= charCode && charCode <= nine) {
+	    return (charCode - zero + numberOffset);
+	  }
+
+	  // 62: +
+	  if (charCode == plus) {
+	    return 62;
+	  }
+
+	  // 63: /
+	  if (charCode == slash) {
+	    return 63;
+	  }
+
+	  // Invalid base64 digit.
+	  return -1;
+	};
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+	/* -*- Mode: js; js-indent-level: 2; -*- */
+	/*
+	 * Copyright 2011 Mozilla Foundation and contributors
+	 * Licensed under the New BSD license. See LICENSE or:
+	 * http://opensource.org/licenses/BSD-3-Clause
+	 */
+
+	/**
+	 * This is a helper function for getting values from parameter/options
+	 * objects.
+	 *
+	 * @param args The object we are extracting values from
+	 * @param name The name of the property we are getting.
+	 * @param defaultValue An optional value to return if the property is missing
+	 * from the object. If this is not specified and the property is missing, an
+	 * error will be thrown.
+	 */
+	function getArg(aArgs, aName, aDefaultValue) {
+	  if (aName in aArgs) {
+	    return aArgs[aName];
+	  } else if (arguments.length === 3) {
+	    return aDefaultValue;
+	  } else {
+	    throw new Error('"' + aName + '" is a required argument.');
+	  }
+	}
+	exports.getArg = getArg;
+
+	var urlRegexp = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
+	var dataUrlRegexp = /^data:.+\,.+$/;
+
+	function urlParse(aUrl) {
+	  var match = aUrl.match(urlRegexp);
+	  if (!match) {
+	    return null;
+	  }
+	  return {
+	    scheme: match[1],
+	    auth: match[2],
+	    host: match[3],
+	    port: match[4],
+	    path: match[5]
+	  };
+	}
+	exports.urlParse = urlParse;
+
+	function urlGenerate(aParsedUrl) {
+	  var url = '';
+	  if (aParsedUrl.scheme) {
+	    url += aParsedUrl.scheme + ':';
+	  }
+	  url += '//';
+	  if (aParsedUrl.auth) {
+	    url += aParsedUrl.auth + '@';
+	  }
+	  if (aParsedUrl.host) {
+	    url += aParsedUrl.host;
+	  }
+	  if (aParsedUrl.port) {
+	    url += ":" + aParsedUrl.port
+	  }
+	  if (aParsedUrl.path) {
+	    url += aParsedUrl.path;
+	  }
+	  return url;
+	}
+	exports.urlGenerate = urlGenerate;
+
+	/**
+	 * Normalizes a path, or the path portion of a URL:
+	 *
+	 * - Replaces consecutive slashes with one slash.
+	 * - Removes unnecessary '.' parts.
+	 * - Removes unnecessary '<dir>/..' parts.
+	 *
+	 * Based on code in the Node.js 'path' core module.
+	 *
+	 * @param aPath The path or url to normalize.
+	 */
+	function normalize(aPath) {
+	  var path = aPath;
+	  var url = urlParse(aPath);
+	  if (url) {
+	    if (!url.path) {
+	      return aPath;
+	    }
+	    path = url.path;
+	  }
+	  var isAbsolute = exports.isAbsolute(path);
+
+	  var parts = path.split(/\/+/);
+	  for (var part, up = 0, i = parts.length - 1; i >= 0; i--) {
+	    part = parts[i];
+	    if (part === '.') {
+	      parts.splice(i, 1);
+	    } else if (part === '..') {
+	      up++;
+	    } else if (up > 0) {
+	      if (part === '') {
+	        // The first part is blank if the path is absolute. Trying to go
+	        // above the root is a no-op. Therefore we can remove all '..' parts
+	        // directly after the root.
+	        parts.splice(i + 1, up);
+	        up = 0;
+	      } else {
+	        parts.splice(i, 2);
+	        up--;
+	      }
+	    }
+	  }
+	  path = parts.join('/');
+
+	  if (path === '') {
+	    path = isAbsolute ? '/' : '.';
+	  }
+
+	  if (url) {
+	    url.path = path;
+	    return urlGenerate(url);
+	  }
+	  return path;
+	}
+	exports.normalize = normalize;
+
+	/**
+	 * Joins two paths/URLs.
+	 *
+	 * @param aRoot The root path or URL.
+	 * @param aPath The path or URL to be joined with the root.
+	 *
+	 * - If aPath is a URL or a data URI, aPath is returned, unless aPath is a
+	 *   scheme-relative URL: Then the scheme of aRoot, if any, is prepended
+	 *   first.
+	 * - Otherwise aPath is a path. If aRoot is a URL, then its path portion
+	 *   is updated with the result and aRoot is returned. Otherwise the result
+	 *   is returned.
+	 *   - If aPath is absolute, the result is aPath.
+	 *   - Otherwise the two paths are joined with a slash.
+	 * - Joining for example 'http://' and 'www.example.com' is also supported.
+	 */
+	function join(aRoot, aPath) {
+	  if (aRoot === "") {
+	    aRoot = ".";
+	  }
+	  if (aPath === "") {
+	    aPath = ".";
+	  }
+	  var aPathUrl = urlParse(aPath);
+	  var aRootUrl = urlParse(aRoot);
+	  if (aRootUrl) {
+	    aRoot = aRootUrl.path || '/';
+	  }
+
+	  // `join(foo, '//www.example.org')`
+	  if (aPathUrl && !aPathUrl.scheme) {
+	    if (aRootUrl) {
+	      aPathUrl.scheme = aRootUrl.scheme;
+	    }
+	    return urlGenerate(aPathUrl);
+	  }
+
+	  if (aPathUrl || aPath.match(dataUrlRegexp)) {
+	    return aPath;
+	  }
+
+	  // `join('http://', 'www.example.com')`
+	  if (aRootUrl && !aRootUrl.host && !aRootUrl.path) {
+	    aRootUrl.host = aPath;
+	    return urlGenerate(aRootUrl);
+	  }
+
+	  var joined = aPath.charAt(0) === '/'
+	    ? aPath
+	    : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
+
+	  if (aRootUrl) {
+	    aRootUrl.path = joined;
+	    return urlGenerate(aRootUrl);
+	  }
+	  return joined;
+	}
+	exports.join = join;
+
+	exports.isAbsolute = function (aPath) {
+	  return aPath.charAt(0) === '/' || urlRegexp.test(aPath);
+	};
+
+	/**
+	 * Make a path relative to a URL or another path.
+	 *
+	 * @param aRoot The root path or URL.
+	 * @param aPath The path or URL to be made relative to aRoot.
+	 */
+	function relative(aRoot, aPath) {
+	  if (aRoot === "") {
+	    aRoot = ".";
+	  }
+
+	  aRoot = aRoot.replace(/\/$/, '');
+
+	  // It is possible for the path to be above the root. In this case, simply
+	  // checking whether the root is a prefix of the path won't work. Instead, we
+	  // need to remove components from the root one by one, until either we find
+	  // a prefix that fits, or we run out of components to remove.
+	  var level = 0;
+	  while (aPath.indexOf(aRoot + '/') !== 0) {
+	    var index = aRoot.lastIndexOf("/");
+	    if (index < 0) {
+	      return aPath;
+	    }
+
+	    // If the only part of the root that is left is the scheme (i.e. http://,
+	    // file:///, etc.), one or more slashes (/), or simply nothing at all, we
+	    // have exhausted all components, so the path is not relative to the root.
+	    aRoot = aRoot.slice(0, index);
+	    if (aRoot.match(/^([^\/]+:\/)?\/*$/)) {
+	      return aPath;
+	    }
+
+	    ++level;
+	  }
+
+	  // Make sure we add a "../" for each component we removed from the root.
+	  return Array(level + 1).join("../") + aPath.substr(aRoot.length + 1);
+	}
+	exports.relative = relative;
+
+	var supportsNullProto = (function () {
+	  var obj = Object.create(null);
+	  return !('__proto__' in obj);
+	}());
+
+	function identity (s) {
+	  return s;
+	}
+
+	/**
+	 * Because behavior goes wacky when you set `__proto__` on objects, we
+	 * have to prefix all the strings in our set with an arbitrary character.
+	 *
+	 * See https://github.com/mozilla/source-map/pull/31 and
+	 * https://github.com/mozilla/source-map/issues/30
+	 *
+	 * @param String aStr
+	 */
+	function toSetString(aStr) {
+	  if (isProtoString(aStr)) {
+	    return '$' + aStr;
+	  }
+
+	  return aStr;
+	}
+	exports.toSetString = supportsNullProto ? identity : toSetString;
+
+	function fromSetString(aStr) {
+	  if (isProtoString(aStr)) {
+	    return aStr.slice(1);
+	  }
+
+	  return aStr;
+	}
+	exports.fromSetString = supportsNullProto ? identity : fromSetString;
+
+	function isProtoString(s) {
+	  if (!s) {
+	    return false;
+	  }
+
+	  var length = s.length;
+
+	  if (length < 9 /* "__proto__".length */) {
+	    return false;
+	  }
+
+	  if (s.charCodeAt(length - 1) !== 95  /* '_' */ ||
+	      s.charCodeAt(length - 2) !== 95  /* '_' */ ||
+	      s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
+	      s.charCodeAt(length - 4) !== 116 /* 't' */ ||
+	      s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
+	      s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
+	      s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
+	      s.charCodeAt(length - 8) !== 95  /* '_' */ ||
+	      s.charCodeAt(length - 9) !== 95  /* '_' */) {
+	    return false;
+	  }
+
+	  for (var i = length - 10; i >= 0; i--) {
+	    if (s.charCodeAt(i) !== 36 /* '$' */) {
+	      return false;
+	    }
+	  }
+
+	  return true;
+	}
+
+	/**
+	 * Comparator between two mappings where the original positions are compared.
+	 *
+	 * Optionally pass in `true` as `onlyCompareGenerated` to consider two
+	 * mappings with the same original source/line/column, but different generated
+	 * line and column the same. Useful when searching for a mapping with a
+	 * stubbed out mapping.
+	 */
+	function compareByOriginalPositions(mappingA, mappingB, onlyCompareOriginal) {
+	  var cmp = strcmp(mappingA.source, mappingB.source);
+	  if (cmp !== 0) {
+	    return cmp;
+	  }
+
+	  cmp = mappingA.originalLine - mappingB.originalLine;
+	  if (cmp !== 0) {
+	    return cmp;
+	  }
+
+	  cmp = mappingA.originalColumn - mappingB.originalColumn;
+	  if (cmp !== 0 || onlyCompareOriginal) {
+	    return cmp;
+	  }
+
+	  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
+	  if (cmp !== 0) {
+	    return cmp;
+	  }
+
+	  cmp = mappingA.generatedLine - mappingB.generatedLine;
+	  if (cmp !== 0) {
+	    return cmp;
+	  }
+
+	  return strcmp(mappingA.name, mappingB.name);
+	}
+	exports.compareByOriginalPositions = compareByOriginalPositions;
+
+	/**
+	 * Comparator between two mappings with deflated source and name indices where
+	 * the generated positions are compared.
+	 *
+	 * Optionally pass in `true` as `onlyCompareGenerated` to consider two
+	 * mappings with the same generated line and column, but different
+	 * source/name/original line and column the same. Useful when searching for a
+	 * mapping with a stubbed out mapping.
+	 */
+	function compareByGeneratedPositionsDeflated(mappingA, m/* ajv 6.12.6: Another JSON Schema Validator */
+!function(e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define([],e):("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).Ajv=e()}(function(){return function o(i,n,l){function c(r,e){if(!n[r]){if(!i[r]){var t="function"==typeof require&&require;if(!e&&t)return t(r,!0);if(u)return u(r,!0);var a=new Error("Cannot find module '"+r+"'");throw a.code="MODULE_NOT_FOUND",a}var s=n[r]={exports:{}};i[r][0].call(s.exports,function(e){return c(i[r][1][e]||e)},s,s.exports,o,i,n,l)}return n[r].exports}for(var u="function"==typeof require&&require,e=0;e<l.length;e++)c(l[e]);return c}({1:[function(e,r,t){"use strict";var a=r.exports=function(){this._cache={}};a.prototype.put=function(e,r){this._cache[e]=r},a.prototype.get=function(e){return this._cache[e]},a.prototype.del=function(e){delete this._cache[e]},a.prototype.clear=function(){this._cache={}}},{}],2:[function(e,r,t){"use strict";var a=e("./error_classes").MissingRef;function s(r,n,t){var l=this;if("function"!=typeof this._opts.loadSchema)throw new Error("options.loadSchema should be a function");"function"==typeof n&&(t=n,n=void 0);var e=c(r).then(function(){var e=l._addSchema(r,void 0,n);return e.validate||function o(i){try{return l._compile(i)}catch(e){if(e instanceof a)return r(e);throw e}function r(e){var r=e.missingSchema;if(s(r))throw new Error("Schema "+r+" is loaded but "+e.missingRef+" cannot be resolved");var t=l._loadingSchemas[r];return t||(t=l._loadingSchemas[r]=l._opts.loadSchema(r)).then(a,a),t.then(function(e){if(!s(r))return c(e).then(function(){s(r)||l.addSchema(e,r,void 0,n)})}).then(function(){return o(i)});function a(){delete l._loadingSchemas[r]}function s(e){return l._refs[e]||l._schemas[e]}}}(e)});return t&&e.then(function(e){t(null,e)},t),e;function c(e){var r=e.$schema;return r&&!l.getSchema(r)?s.call(l,{$ref:r},!0):Promise.resolve()}}r.exports=s},{"./error_classes":3}],3:[function(e,r,t){"use strict";var a=e("./resolve");function s(e,r,t){this.message=t||s.message(e,r),this.missingRef=a.url(e,r),this.missingSchema=a.normalizeId(a.fullPath(this.missingRef))}function o(e){return e.prototype=Object.create(Error.prototype),e.prototype.constructor=e}r.exports={Validation:o(function(e){this.message="validation failed",this.errors=e,this.ajv=this.validation=!0}),MissingRef:o(s)},s.message=function(e,r){return"can't resolve reference "+r+" from id "+e}},{"./resolve":6}],4:[function(e,r,t){"use strict";var a=e("./util"),o=/^(\d\d\d\d)-(\d\d)-(\d\d)$/,i=[0,31,28,31,30,31,30,31,31,30,31,30,31],n=/^(\d\d):(\d\d):(\d\d)(\.\d+)?(z|[+-]\d\d(?::?\d\d)?)?$/i,s=/^(?=.{1,253}\.?$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*\.?$/i,l=/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i,c=/^(?:(?:[^\x00-\x20"'<>%\\^`{|}]|%[0-9a-f]{2})|\{[+#./;?&=,!@|]?(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?(?:,(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?)*\})*$/i,u=/^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+(?::(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?@)?(?:(?!10(?:\.[0-9]{1,3}){3})(?!127(?:\.[0-9]{1,3}){3})(?!169\.254(?:\.[0-9]{1,3}){2})(?!192\.168(?:\.[0-9]{1,3}){2})(?!172\.(?:1[6-9]|2[0-9]|3[01])(?:\.[0-9]{1,3}){2})(?:[1-9][0-9]?|1[0-9][0-9]|2[01][0-9]|22[0-3])(?:\.(?:1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])){2}(?:\.(?:[1-9][0-9]?|1[0-9][0-9]|2[0-4][0-9]|25[0-4]))|(?:(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)(?:\.(?:(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-)*(?:[0-9a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)*(?:\.(?:(?:[a-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]){2,})))(?::[0-9]{2,5})?(?:\/(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?$/i,h=/^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i,d=/^(?:\/(?:[^~/]|~0|~1)*)*$/,p=/^#(?:\/(?:[a-z0-9_\-.!$&'()*+,;:=@]|%[0-9a-f]{2}|~0|~1)*)*$/i,f=/^(?:0|[1-9][0-9]*)(?:#|(?:\/(?:[^~/]|~0|~1)*)*)$/;function m(e){return a.copy(m[e="full"==e?"full":"fast"])}function v(e){var r=e.match(o);if(!r)return!1;var t,a=+r[2],s=+r[3];return 1<=a&&a<=12&&1<=s&&s<=(2!=a||((t=+r[1])%4!=0||t%100==0&&t%400!=0)?i[a]:29)}function y(e,r){var t=e.match(n);if(!t)return!1;var a=t[1],s=t[2],o=t[3];return(a<=23&&s<=59&&o<=59||23==a&&59==s&&60==o)&&(!r||t[5])}(r.exports=m).fast={date:/^\d\d\d\d-[0-1]\d-[0-3]\d$/,time:/^(?:[0-2]\d:[0-5]\d:[0-5]\d|23:59:60)(?:\.\d+)?(?:z|[+-]\d\d(?::?\d\d)?)?$/i,"date-time":/^\d\d\d\d-[0-1]\d-[0-3]\d[t\s](?:[0-2]\d:[0-5]\d:[0-5]\d|23:59:60)(?:\.\d+)?(?:z|[+-]\d\d(?::?\d\d)?)$/i,uri:/^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i,"uri-reference":/^(?:(?:[a-z][a-z0-9+\-.]*:)?\/?\/)?(?:[^\\\s#][^\s#]*)?(?:#[^\\\s]*)?$/i,"uri-template":c,url:u,email:/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$/i,hostname:s,ipv4:/^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,ipv6:/^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|ings()
+	    };
+	    if (this._file != null) {
+	      map.file = this._file;
+	    }
+	    if (this._sourceRoot != null) {
+	      map.sourceRoot = this._sourceRoot;
+	    }
+	    if (this._sourcesContents) {
+	      map.sourcesContent = this._generateSourcesContent(map.sources, map.sourceRoot);
+	    }
+
+	    return map;
+	  };
+
+	/**
+	 * Render the source map being generated to a string.
+	 */
+	SourceMapGenerator.prototype.toString =
+	  function SourceMapGenerator_toString() {
+	    return JSON.stringify(this.toJSON());
+	  };
+
+	exports.SourceMapGenerator = SourceMapGenerator;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* -*- Mode: js; js-indent-level: 2; -*- */
+	/*
+	 * Copyright 2011 Mozilla Foundation and contributors
+	 * Licensed under the New BSD license. See LICENSE or:
+	 * http://opensource.org/licenses/BSD-3-Clause
+	 *
+	 * Based on the Base 64 VLQ implementation in Closure Compiler:
+	 * https://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/debugging/sourcemap/Base64VLQ.java
+	 *
+	 * Copyright 2011 The Closure Compiler Authors. All rights reserved.
+	 * Redistribution and use in source and binary forms, with or without
+	 * modification, are permitted provided that the following conditions are
+	 * met:
+	 *
+	 *  * Redistributions of source code must retain the above copyright
+	 *    notice, this list of conditions and the following disclaimer.
+	 *  * Redistributions in binary form must reproduce the above
+	 *    copyright notice, this list of conditions and the following
+	 *    disclaimer in the documentation and/or other materials provided
+	 *    with the distribution.
+	 *  * Neither the name of Google Inc. nor the names of its
+	 *    contributors may be used to endorse or promote products derived
+	 *    from this software without specific prior written permission.
+	 *
+	 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	 * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	 * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	 * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	 * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	 * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	 * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	 * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	 * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	 */
+
+	var base64 = __webpack_require__(3);
+
+	// A single base 64 digit can contain 6 bits of data. For the base 64 variable
+	// length quantities we use in the source map spec, the first bit is the sign,
+	// the next four bits are the actual value, and the 6th bit is the
+	// continuation bit. The continuation bit tells us whether there are more
+	// digits in this value following this digit.
+	//
+	//   Continuation
+	//   |    Sign
+	//   |    |
+	//   V    V
+	//   101011
+
+	var VLQ_BASE_SHIFT = 5;
+
+	// binary: 100000
+	var VLQ_BASE = 1 << VLQ_BASE_SHIFT;
+
+	// binary: 011111
+	var VLQ_BASE_MASK = VLQ_BASE - 1;
+
+	// binary: 100000
+	var VLQ_CONTINUATION_BIT = VLQ_BASE;
+
+	/**
+	 * Converts from a two-complement value to a value where the sign bit is
+	 * placed in the least significant bit.  For example, as decimals:
+	 *   1 becomes 2 (10 binary), -1 becomes 3 (11 binary)
+	 *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
+	 */
+	function toVLQSigned(aValue) {
+	  return aValue < 0
+	    ? ((-aValue) << 1) + 1
+	    : (aValue << 1) + 0;
+	}
+
+	/**
+	 * Converts to a two-complement value from a value where the sign bit is
+	 * placed in the least significant bit.  For example, as decimals:
+	 *   2 (10 binary) becomes 1, 3 (11 binary) becomes -1
+	 *   4 (100 binary) becomes 2, 5 (101 binary) becomes -2
+	 */
+	function fromVLQSigned(aValue) {
+	  var isNegative = (aValue & 1) === 1;
+	  var shifted = aValue >> 1;
+	  return isNegative
+	    ? -shifted
+	    : shifted;
+	}
+
+	/**
+	 * Returns the base 64 VLQ encoded value.
+	 */
+	exports.encode = function base64VLQ_encode(aValue) {
+	  var encoded = "";
+	  var digit;
+
+	  var vlq = toVLQSigned(aValue);
+
+	  do {
+	    digit = vlq & VLQ_BASE_MASK;
+	    vlq >>>= VLQ_BASE_SHIFT;
+	    if (vlq > 0) {
+	      // There are still more digits in this value, so we must make sure the
+	      // continuation bit is marked.
+	      digit |= VLQ_CONTINUATION_BIT;
+	    }
+	    encoded += base64.encode(digit);
+	  } while (vlq > 0);
+
+	  return encoded;
+	};
+
+	/**
+	 * Decodes the next base 64 VLQ value from the given string and returns the
+	 * value and the rest of the string via the out parameter.
+	 */
+	exports.decode = function base64VLQ_decode(aStr, aIndex, aOutParam) {
+	  var strLen = aStr.length;
+	  var result = 0;
+	  var shift = 0;
+	  var continuation, digit;
+
+	  do {
+	    if (aIndex >= strLen) {
+	      throw new Error("Expected more digits in base 64 VLQ value.");
+	    }
+
+	    digit = base64.decode(aStr.charCodeAt(aIndex++));
+	    if (digit === -1) {
+	      throw new Error("Invalid base64 digit: " + aStr.charAt(aIndex - 1));
+	    }
+
+	    continuation = !!(digit & VLQ_CONTINUATION_BIT);
+	    digit &= VLQ_BASE_MASK;
+	    result = result + (digit << shift);
+	    shift += VLQ_BASE_SHIFT;
+	  } while (continuation);
+
+	  aOutParam.value = fromVLQSigned(result);
+	  aOutParam.rest = aIndex;
+	};
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+	/* -*- Mode: js; js-indent-level: 2; -*- */
+	/*
+	 * Copyright 2011 Mozilla Foundation and contributors
+	 * Licensed under the New BSD license. See LICENSE or:
+	 * http://opensource.org/licenses/BSD-3-Clause
+	 */
+
+	var intToCharMap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
+
+	/**
+	 * Encode an integer in the range of 0 to 63 to a single base 64 digit.
+	 */
+	exports.encode = function (number) {
+	  if (0 <= number && number < intToCharMap.length) {
+	    return intToCharMap[number];
+	  }
+	  throw new TypeError("Must be between 0 and 63: " + number);
+	};
+
+	/**
+	 * Decode a single base 64 character code digit to an integer. Returns -1 on
+	 * failure.
+	 */
+	exports.decode = function (charCode) {
+	  var bigA = 65;     // 'A'
+	  var bigZ = 90;     // 'Z'
+
+	  var littleA = 97;  // 'a'
+	  var littleZ = 122; // 'z'
+
+	  var zero = 48;     // '0'
+	  var nine = 57;     // '9'
+
+	  var plus = 43;     // '+'
+	  var slash = 47;    // '/'
+
+	  var littleOffset = 26;
+	  var numberOffset = 52;
+
+	  // 0 - 25: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+	  if (bigA <= charCode && charCode <= bigZ) {
+	    return (charCode - bigA);
+	  }
+
+	  // 26 - 51: abcdefghijklmnopqrstuvwxyz
+	  if (littleA <= charCode && charCode <= littleZ) {
+	    return (charCode - littleA + littleOffset);
+	  }
+
+	  // 52 - 61: 0123456789
+	  if (zero <= charCode && charCode <= nine) {
+	    return (charCode - zero + numberOffset);
+	 

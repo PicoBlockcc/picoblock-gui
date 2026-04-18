@@ -1,0 +1,1081 @@
+language: node_js
+os:
+ - linux
+node_js:
+  - "11.8"
+  - "10.15"
+  - "9.11"
+  - "8.15"
+  - "7.10"
+  - "6.16"
+  - "5.12"
+  - "4.9"
+  - "iojs-v3.3"
+  - "iojs-v2.5"
+  - "iojs-v1.8"
+  - "0.12"
+  - "0.10"
+  - "0.8"
+before_install:
+  - 'case "${TRAVIS_NODE_VERSION}" in 0.*) export NPM_CONFIG_STRICT_SSL=false ;; esac'
+  - 'nvm install-latest-npm'
+install:
+  - 'if [ "${TRAVIS_NODE_VERSION}" = "0.6" ] || [ "${TRAVIS_NODE_VERSION}" = "0.9" ]; then nvm install --latest-npm 0.8 && npm install && nvm use "${TRAVIS_NODE_VERSION}"; else npm install; fi;'
+script:
+  - 'if [ -n "${PRETEST-}" ]; then npm run pretest ; fi'
+  - 'if [ -n "${POSTTEST-}" ]; then npm run posttest ; fi'
+  - 'if [ -n "${COVERAGE-}" ]; then npm run coverage ; fi'
+  - 'if [ -n "${TEST-}" ]; then npm run tests-only ; fi'
+sudo: false
+env:
+  - TEST=true
+matrix:
+  fast_finish: true
+  include:
+    - node_js: "lts/*"
+      env: PRETEST=true
+    - node_js: "lts/*"
+      env: POSTTEST=true
+    - node_js: "4"
+      env: COVERAGE=true
+    - node_js: "11.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.14"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.13"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.12"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.14"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.13"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.12"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.15"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.14"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.13"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.12"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.4"
+      env: TEST=true ALLOW_FAILURE=true
+  allow_failures:
+    - os: osx
+    - env: TEST=true ALLOW_FAILURE=true
+    - env: COVERAGE=true
+    - env: POSTTEST=true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      # has-flag [![Build Status](https://travis-ci.org/sindresorhus/has-flag.svg?branch=master)](https://travis-ci.org/sindresorhus/has-flag)
+
+> Check if [`argv`](https://nodejs.org/docs/latest/api/process.html#process_process_argv) has a specific flag
+
+Correctly stops looking after an `--` argument terminator.
+
+
+## Install
+
+```
+$ npm install --save has-flag
+```
+
+
+## Usage
+
+```js
+// foo.js
+const hasFlag = require('has-flag');
+
+hasFlag('unicorn');
+//=> true
+
+hasFlag('--unicorn');
+//=> true
+
+hasFlag('-f');
+//=> true
+
+hasFlag('foo=bar');
+//=> true
+
+hasFlag('foo');
+//=> false
+
+hasFlag('rainbow');
+//=> false
+```
+
+```
+$ node foo.js -f --unicorn --foo=bar -- --rainbow
+```
+
+
+## API
+
+### hasFlag(flag, [argv])
+
+Returns a boolean whether the flag exists.
+
+#### flag
+
+Type: `string`
+
+CLI flag to look for. The `--` prefix is optional.
+
+#### argv
+
+Type: `array`<br>
+Default: `process.argv`
+
+CLI arguments.
+
+
+## License
+
+MIT © [Sindre Sorhus](https://sindresorhus.com)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               language: node_js
+os:
+ - linux
+node_js:
+  - "11.8"
+  - "10.15"
+  - "9.11"
+  - "8.15"
+  - "7.10"
+  - "6.16"
+  - "5.12"
+  - "4.9"
+  - "iojs-v3.3"
+  - "iojs-v2.5"
+  - "iojs-v1.8"
+  - "0.12"
+  - "0.10"
+  - "0.8"
+before_install:
+  - 'case "${TRAVIS_NODE_VERSION}" in 0.*) export NPM_CONFIG_STRICT_SSL=false ;; esac'
+  - 'nvm install-latest-npm'
+install:
+  - 'if [ "${TRAVIS_NODE_VERSION}" = "0.6" ] || [ "${TRAVIS_NODE_VERSION}" = "0.9" ]; then nvm install --latest-npm 0.8 && npm install && nvm use "${TRAVIS_NODE_VERSION}"; else npm install; fi;'
+script:
+  - 'if [ -n "${PRETEST-}" ]; then npm run pretest ; fi'
+  - 'if [ -n "${POSTTEST-}" ]; then npm run posttest ; fi'
+  - 'if [ -n "${COVERAGE-}" ]; then npm run coverage ; fi'
+  - 'if [ -n "${TEST-}" ]; then npm run tests-only ; fi'
+sudo: false
+env:
+  - TEST=true
+matrix:
+  fast_finish: true
+  include:
+    - node_js: "lts/*"
+      env: PRETEST=true
+    - node_js: "lts/*"
+      env: POSTTEST=true
+    - node_js: "4"
+      env: COVERAGE=true
+    - node_js: "11.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "11.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.14"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.13"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.12"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.14"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.13"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.12"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.15"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.14"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.13"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.12"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.4"
+      env: TEST=true ALLOW_FAILURE=true
+  allow_failures:
+    - os: osx
+    - env: TEST=true ALLOW_FAILURE=true
+    - env: COVERAGE=true
+    - env: POSTTEST=true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      # ms
+
+[![Build Status](https://travis-ci.org/zeit/ms.svg?branch=master)](https://travis-ci.org/zeit/ms)
+[![Slack Channel](http://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
+
+Use this package to easily convert various time formats to milliseconds.
+
+## Examples
+
+```js
+ms('2 days')  // 172800000
+ms('1d')      // 86400000
+ms('10h')     // 36000000
+ms('2.5 hrs') // 9000000
+ms('2h')      // 7200000
+ms('1m')      // 60000
+ms('5s')      // 5000
+ms('1y')      // 31557600000
+ms('100')     // 100
+```
+
+### Convert from milliseconds
+
+```js
+ms(60000)             // "1m"
+ms(2 * 60000)         // "2m"
+ms(ms('10 hours'))    // "10h"
+```
+
+### Time format written-out
+
+```js
+ms(60000, { long: true })             // "1 minute"
+ms(2 * 60000, { long: true })         // "2 minutes"
+ms(ms('10 hours'), { long: true })    // "10 hours"
+```
+
+## Features
+
+- Works both in [node](https://nodejs.org) and in the browser.
+- If a number is supplied to `ms`, a string with a unit is returned.
+- If a string that contains the number is supplied, it returns it as a number (e.g.: it returns `100` for `'100'`).
+- If you pass a string with a number and a valid unit, the number of equivalent ms is returned.
+
+## Caught a bug?
+
+1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
+2. Link the package to the global module directory: `npm link`
+3. Within the module you want to test your local development instance of ms, just link it to the dependencies: `npm link ms`. Instead of the default one from npm, node will now use your clone of ms!
+
+As always, you can run the tests using: `npm test`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # ms
+
+![CI](https://github.com/vercel/ms/workflows/CI/badge.svg)
+
+Use this package to easily convert various time formats to milliseconds.
+
+## Examples
+
+```js
+ms('2 days')  // 172800000
+ms('1d')      // 86400000
+ms('10h')     // 36000000
+ms('2.5 hrs') // 9000000
+ms('2h')      // 7200000
+ms('1m')      // 60000
+ms('5s')      // 5000
+ms('1y')      // 31557600000
+ms('100')     // 100
+ms('-3 days') // -259200000
+ms('-1h')     // -3600000
+ms('-200')    // -200
+```
+
+### Convert from Milliseconds
+
+```js
+ms(60000)             // "1m"
+ms(2 * 60000)         // "2m"
+ms(-3 * 60000)        // "-3m"
+ms(ms('10 hours'))    // "10h"
+```
+
+### Time Format Written-Out
+
+```js
+ms(60000, { long: true })             // "1 minute"
+ms(2 * 60000, { long: true })         // "2 minutes"
+ms(-3 * 60000, { long: true })        // "-3 minutes"
+ms(ms('10 hours'), { long: true })    // "10 hours"
+```
+
+## Features
+
+- Works both in [Node.js](https://nodejs.org) and in the browser
+- If a number is supplied to `ms`, a string with a unit is returned
+- If a string that contains the number is supplied, it returns it as a number (e.g.: it returns `100` for `'100'`)
+- If you pass a string with a number and a valid unit, the number of equivalent milliseconds is returned
+
+## Related Packages
+
+- [ms.macro](https://github.com/knpwrs/ms.macro) - Run `ms` as a macro at build-time.
+
+## Caught a Bug?
+
+1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
+2. Link the package to the global module directory: `npm link`
+3. Within the module you want to test your local development instance of ms, just link it to the dependencies: `npm link ms`. Instead of the default one from npm, Node.js will now use your clone of ms!
+
+As always, you can run the tests using: `npm test`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           The MIT License (MIT)
+
+Copyright (c) Feross Aboukhadijeh
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # pify [![Build Status](https://travis-ci.org/sindresorhus/pify.svg?branch=master)](https://travis-ci.org/sindresorhus/pify)
+
+> Promisify a callback-style function
+
+
+## Install
+
+```
+$ npm install --save pify
+```
+
+
+## Usage
+
+```js
+const fs = require('fs');
+const pify = require('pify');
+
+// Promisify a single function
+pify(fs.readFile)('package.json', 'utf8').then(data => {
+	console.log(JSON.parse(data).name);
+	//=> 'pify'
+});
+
+// Promisify all methods in a module
+pify(fs).readFile('package.json', 'utf8').then(data => {
+	console.log(JSON.parse(data).name);
+	//=> 'pify'
+});
+```
+
+
+## API
+
+### pify(input, [options])
+
+Returns a `Promise` wrapped version of the supplied function or module.
+
+#### input
+
+Type: `Function` `Object`
+
+Callback-style function or module whose methods you want to promisify.
+
+#### options
+
+##### multiArgs
+
+Type: `boolean`<br>
+Default: `false`
+
+By default, the promisified function will only return the second argument from the callback, which works fine for most APIs. This option can be useful for modules like `request` that return multiple arguments. Turning this on will make it return an array of all arguments from the callback, excluding the error argument, instead of just the second argument. This also applies to rejections, where it returns an array of all the callback arguments, including the error.
+
+```js
+const request = require('request');
+const pify = require('pify');
+
+pify(request, {multiArgs: true})('https://sindresorhus.com').then(result => {
+	const [httpResponse, body] = result;
+});
+```
+
+##### include
+
+Type: `string[]` `RegExp[]`
+
+Methods in a module to promisify. Remaining methods will be left untouched.
+
+##### exclude
+
+Type: `string[]` `RegExp[]`<br>
+Default: `[/.+(Sync|Stream)$/]`
+
+Methods in a module **not** to promisify. Methods with names ending with `'Sync'` are excluded by default.
+
+##### excludeMain
+
+Type: `boolean`<br>
+Default: `false`
+
+If given module is a function itself, it will be promisified. Turn this option on if you want to promisify only methods of the module.
+
+```js
+const pify = require('pify');
+
+function fn() {
+	return true;
+}
+
+fn.method = (data, callback) => {
+	setImmediate(() => {
+		callback(null, data);
+	});
+};
+
+// Promisify methods but not `fn()`
+const promiseFn = pify(fn, {excludeMain: true});
+
+if (promiseFn()) {
+	promiseFn.method('hi').then(data => {
+		console.log(data);
+	});
+}
+```
+
+##### errorFirst
+
+Type: `boolean`<br>
+Default: `true`
+
+Whether the callback has an error as the first argument. You'll want to set this to `false` if you're dealing with an API that doesn't have an error as the first argument, like `fs.exists()`, some browser APIs, Chrome Extension APIs, etc.
+
+##### promiseModule
+
+Type: `Function`
+
+Custom promise module to use instead of the native one.
+
+Check out [`pinkie-promise`](https://github.com/floatdrop/pinkie-promise) if you need a tiny promise polyfill.
+
+
+## Related
+
+- [p-event](https://github.com/sindresorhus/p-event) - Promisify an event by waiting for it to be emitted
+- [p-map](https://github.com/sindresorhus/p-map) - Map over promises concurrently
+- [More…](https://github.com/sindresorhus/promise-fun)
+
+
+## License
+
+MIT © [Sindre Sorhus](https://sindresorhus.com)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             # strip-json-comments [![Build Status](https://travis-ci.com/sindresorhus/strip-json-comments.svg?branch=master)](https://travis-ci.com/github/sindresorhus/strip-json-comments)
+
+> Strip comments from JSON. Lets you use comments in your JSON files!
+
+This is now possible:
+
+```js
+{
+	// Rainbows
+	"unicorn": /* ❤ */ "cake"
+}
+```
+
+It will replace single-line comments `//` and multi-line comments `/**/` with whitespace. This allows JSON error positions to remain as close as possible to the original source.
+
+Also available as a [Gulp](https://github.com/sindresorhus/gulp-strip-json-comments)/[Grunt](https://github.com/sindresorhus/grunt-strip-json-comments)/[Broccoli](https://github.com/sindresorhus/broccoli-strip-json-comments) plugin.
+
+## Install
+
+```
+$ npm install strip-json-comments
+```
+
+## Usage
+
+```js
+const json = `{
+	// Rainbows
+	"unicorn": /* ❤ */ "cake"
+}`;
+
+JSON.parse(stripJsonComments(json));
+//=> {unicorn: 'cake'}
+```
+
+## API
+
+### stripJsonComments(jsonString, options?)
+
+#### jsonString
+
+Type: `string`
+
+Accepts a string with JSON and returns a string without comments.
+
+#### options
+
+Type: `object`
+
+##### whitespace
+
+Type: `boolean`\
+Default: `true`
+
+Replace comments with whitespace instead of stripping them entirely.
+
+## Benchmark
+
+```
+$ npm run bench
+```
+
+## Related
+
+- [strip-json-comments-cli](https://github.com/sindresorhus/strip-json-comments-cli) - CLI for this module
+- [strip-css-comments](https://github.com/sindresorhus/strip-css-comments) - Strip comments from CSS
+
+---
+
+<div align="center">
+	<b>
+		<a href="https://tidelift.com/subscription/pkg/npm-strip-json-comments?utm_source=npm-strip-json-comments&utm_medium=referral&utm_campaign=readme">Get professional support for this package with a Tidelift subscription</a>
+	</b>
+	<br>
+	<sub>
+		Tidelift helps make open source sustainable for maintainers while giving companies<br>assurances about security, maintenance, and licensing for their dependencies.
+	</sub>
+</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           # strip-ansi [![Build Status](https://travis-ci.org/chalk/strip-ansi.svg?branch=master)](https://travis-ci.org/chalk/strip-ansi)
+
+> Strip [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code)
+
+
+## Install
+
+```
+$ npm install strip-ansi
+```
+
+
+## Usage
+
+```js
+const stripAnsi = require('strip-ansi');
+
+stripAnsi('\u001B[4mUnicorn\u001B[0m');
+//=> 'Unicorn'
+```
+
+
+## Related
+
+- [strip-ansi-cli](https://github.com/chalk/strip-ansi-cli) - CLI for this module
+- [has-ansi](https://github.com/chalk/has-ansi) - Check if a string has ANSI escape codes
+- [ansi-regex](https://github.com/chalk/ansi-regex) - Regular expression for matching ANSI escape codes
+- [chalk](https://github.com/chalk/chalk) - Terminal string styling done right
+
+
+## Maintainers
+
+- [Sindre Sorhus](https://github.com/sindresorhus)
+- [Josh Junon](https://github.com/qix-)
+
+
+## License
+
+MIT
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            // shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

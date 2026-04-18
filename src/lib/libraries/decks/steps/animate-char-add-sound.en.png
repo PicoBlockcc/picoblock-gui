@@ -1,0 +1,334 @@
+n. You can still use `transpile` option with [ajv-async](https://github.com/ajv-validator/ajv-async) package. See [Asynchronous validation](#asynchronous-validation) for more information.
+- _cache_: an optional instance of cache to store compiled schemas using stable-stringified schema as a key. For example, set-associative cache [sacjs](https://github.com/epoberezkin/sacjs) can be used. If not passed then a simple hash is used which is good enough for the common use case (a limited number of statically defined schemas). Cache should have methods `put(key, value)`, `get(key)`, `del(key)` and `clear()`.
+- _serialize_: an optional function to serialize schema to cache key. Pass `false` to use schema itself as a key (e.g., if WeakMap used as a cache). By default [fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify) is used.
+
+
+## Validation errors
+
+In case of validation failure, Ajv assigns the array of errors to `errors` property of validation function (or to `errors` property of Ajv instance when `validate` or `validateSchema` methods were called). In case of [asynchronous validation](#asynchronous-validation), the returned promise is rejected with exception `Ajv.ValidationError` that has `errors` property.
+
+
+### Error objects
+
+Each error is an object with the following properties:
+
+- _keyword_: validation keyword.
+- _dataPath_: the path to the part of the data that was validated. By default `dataPath` uses JavaScript property access notation (e.g., `".prop[1].subProp"`). When the option `jsonPointers` is true (see [Options](#options)) `dataPath` will be set using JSON pointer standard (e.g., `"/prop/1/subProp"`).
+- _schemaPath_: the path (JSON-pointer as a URI fragment) to the schema of the keyword that failed validation.
+- _params_: the object with the additional information about error that can be used to create custom error messages (e.g., using [ajv-i18n](https://github.com/ajv-validator/ajv-i18n) package). See below for parameters set by all keywords.
+- _message_: the standard error message (can be excluded with option `messages` set to false).
+- _schema_: the schema of the keyword (added with `verbose` option).
+- _parentSchema_: the schema containing the keyword (added with `verbose` option)
+- _data_: the data validated by the keyword (added with `verbose` option).
+
+__Please note__: `propertyNames` keyword schema validation errors have an additional property `propertyName`, `dataPath` points to the object. After schema validation for each property name, if it is invalid an additional error is added with the property `keyword` equal to `"propertyNames"`.
+
+
+### Error parameters
+
+Properties of `params` object in errors depend on the keyword that failed validation.
+
+- `maxItems`, `minItems`, `maxLength`, `minLength`, `maxProperties`, `minProperties` - property `limit` (number, the schema of the keyword).
+- `additionalItems` - property `limit` (the maximum number of allowed items in case when `items` keyword is an array of schemas and `additionalItems` is false).
+- `additionalProperties` - property `additionalProperty` (the property not used in `properties` and `patternProperties` keywords).
+- `dependencies` - properties:
+  - `property` (dependent property),
+  - `missingProperty` (required missing dependency - only the first one is reported currently)
+  - `deps` (required dependencies, comma separated list as a string),
+  - `depsCount` (the number of required dependencies).
+- `format` - property `format` (the schema of the keyword).
+- `maximum`, `minimum` - properties:
+  - `limit` (number, the schema of the keyword),
+  - `exclusive` (boolean, the schema of `exclusiveMaximum` or `exclusiveMinimum`),
+  - `comparison` (string, comparison operation to compare the data to the limit, with the data on the left and the limit on the right; can be "<", "<=", ">", ">=")
+- `multipleOf` - property `multipleOf` (the schema of the keyword)
+- `pattern` - property `pattern` (the schema of the keyword)
+- `required` - property `missingProperty` (required property that is missing).
+- `propertyNames` - property `propertyName` (an invalid property name).
+- `patternRequired` (in ajv-keywords) - property `missingPattern` (required pattern that did not match any property).
+- `type` - property `type` (required type(s), a string, can be a comma-separated list)
+- `uniqueItems` - properties `i` and `j` (indices of duplicate items).
+- `const` - property `allowedValue` pointing to the value (the schema of the keyword).
+- `enum` - property `allowedValues` pointing to the array of values (the schema of the keyword).
+- `$ref` - property `ref` with the referenced schema URI.
+- `oneOf` - property `passingSchemas` (array of indices of passing schemas, null if no schema passes).
+- custom keywords (in case keyword definition doesn't create errors) - property `keyword` (the keyword name).
+
+
+### Error logging
+
+Using the `logger` option when initiallizing Ajv will allow you to define custom logging. Here you can build upon the exisiting logging. The use of other logging packages is supported as long as the package or its associated wrapper exposes the required methods. If any of the required methods are missing an exception will be thrown.
+- **Required Methods**: `log`, `warn`, `error`
+
+```javascript
+var otherLogger = new OtherLogger();
+var ajv = new Ajv({
+  logger: {
+    log: console.log.bind(console),
+    warn: function warn() {
+      otherLogger.logWarn.apply(otherLogger, arguments);
+    },
+    error: function error() {
+      otherLogger.logError.apply(otherLogger, arguments);
+      console.error.apply(console, arguments);
+    }
+  }
+});
+```
+
+
+## Plugins
+
+Ajv can be extended with plugins that add custom keywords, formats or functions to process generated code. When such plugin is published as npm package it is recommended that it follows these conventions:
+
+- it exports a function
+- this function accepts ajv instance as the first parameter and returns the same instance to allow chaining
+- this function can accept an optional configuration as the second parameter
+
+If you have published a useful plugin please submit a PR to add it to the next section.
+
+
+## Related packages
+
+- [ajv-async](https://github.com/ajv-validator/ajv-async) - plugin to configure async validation mode
+- [ajv-bsontype](https://github.com/BoLaMN/ajv-bsontype) - plugin to validate mongodb's bsonType formats
+- [ajv-cli](https://github.com/jessedc/ajv-cli) - command line interface
+- [ajv-errors](https://github.com/ajv-validator/ajv-errors) - plugin for custom error messages
+- [ajv-i18n](https://github.com/ajv-validator/ajv-i18n) - internationalised error messages
+- [ajv-istanbul](https://github.com/ajv-validator/ajv-istanbul) - plugin to instrument generated validation code to measure test coverage of your schemas
+- [ajv-keywords](https://github.com/ajv-validator/ajv-keywords) - plugin with custom validation keywords (select, typeof, etc.)
+- [ajv-merge-patch](https://github.com/ajv-validator/ajv-merge-patch) - plugin with keywords $merge and $patch
+- [ajv-pack](https://github.com/ajv-validator/ajv-pack) - produces a compact module exporting validation functions
+- [ajv-formats-draft2019](https://github.com/luzlab/ajv-formats-draft2019) - format validators for draft2019 that aren't already included in ajv (ie. `idn-hostname`, `idn-email`, `iri`, `iri-reference` and `duration`).
+
+## Some packages using Ajv
+
+- [webpack](https://github.com/webpack/webpack) - a module bundler. Its main purpose is to bundle JavaScript files for usage in a browser
+- [jsonscript-js](https://github.com/JSONScript/jsonscript-js) - the interpreter for [JSONScript](http://www.jsonscript.org) - scripted processing of existing endpoints and services
+- [osprey-method-handler](https://github.com/mulesoft-labs/osprey-method-handler) - Express middleware for validating requests and responses based on a RAML method object, used in [osprey](https://github.com/mulesoft/osprey) - validating API proxy generated from a RAML definition
+- [har-validator](https://github.com/ahmadnassri/har-validator) - HTTP Archive (HAR) validator
+- [jsoneditor](https://github.com/josdejong/jsoneditor) - a web-based tool to view, edit, /**
+ * @fileoverview Rule to control spacing within function calls
+ * @author Matt DuVall <http://www.mattduvall.com>
+ */
+
+"use strict";
+
+//------------------------------------------------------------------------------
+// Requirements
+//------------------------------------------------------------------------------
+
+const astUtils = require("../ast-utils");
+
+//------------------------------------------------------------------------------
+// Rule Definition
+//------------------------------------------------------------------------------
+
+module.exports = {
+    meta: {
+        docs: {
+            description: "require or disallow spacing between function identifiers and their invocations",
+            category: "Stylistic Issues",
+            recommended: false,
+            url: "https://eslint.org/docs/rules/func-call-spacing"
+        },
+
+        fixable: "whitespace",
+        schema: {
+            anyOf: [
+                {
+                    type: "array",
+                    items: [
+                        {
+                            enum: ["never"]
+                        }
+                    ],
+                    minItems: 0,
+                    maxItems: 1
+                },
+                {
+                    type: "array",
+                    items: [
+                        {
+                            enum: ["always"]
+                        },
+                        {
+                            type: "object",
+                            properties: {
+                                allowNewlines: {
+                                    type: "boolean"
+                                }
+                            },
+                            additionalProperties: false
+                        }
+                    ],
+                    minItems: 0,
+                    maxItems: 2
+                }
+            ]
+        }
+    },
+
+    create(context) {
+
+        const never = context.options[0] !== "always";
+        const allowNewlines = !never && context.options[1] && context.options[1].allowNewlines;
+        const sourceCode = context.getSourceCode();
+        const text = sourceCode.getText();
+
+        /**
+         * Check if open space is present in a function name
+         * @param {ASTNode} node node to evaluate
+         * @returns {void}
+         * @private
+         */
+        function checkSpacing(node) {
+            const lastToken = sourceCode.getLastToken(node);
+            const lastCalleeToken = sourceCode.getLastToken(node.callee);
+            const parenToken = sourceCode.getFirstTokenBetween(lastCalleeToken, lastToken, astUtils.isOpeningParenToken);
+            const prevToken = parenToken && sourceCode.getTokenBefore(parenToken);
+
+            // Parens in NewExpression are optional
+            if (!(parenToken && parenToken.range[1] < node.range[1])) {
+                return;
+            }
+
+            const textBetweenTokens = text.slice(prevToken.range[1], parenToken.range[0]).replace(/\/\*.*?\*\//g, "");
+            const hasWhitespace = /\s/.test(textBetweenTokens);
+            const hasNewline = hasWhitespace && astUtils.LINEBREAK_MATCHER.test(textBetweenTokens);
+
+            /*
+             * never allowNewlines hasWhitespace hasNewline message
+             * F     F             F             F          Missing space between function name and paren.
+             * F     F             F             T          (Invalid `!hasWhitespace && hasNewline`)
+             * F     F             T             T          Unexpected newline between function name and paren.
+             * F     F             T             F          (OK)
+             * F     T             T             F          (OK)
+             * F     T             T             T          (OK)
+             * F     T             F             T          (Invalid `!hasWhitespace && hasNewline`)
+             * F     T             F             F          Missing space between function name and paren.
+             * T     T             F             F          (Invalid `never && allowNewlines`)
+             * T     T             F             T          (Invalid `!hasWhitespace && hasNewline`)
+             * T     T             T             T          (Invalid `never && allowNewlines`)
+             * T     T             T             F          (Invalid `never && allowNewlines`)
+             * T     F             T             F          Unexpected space between function name and paren.
+             * T     F             T             T          Unexpected space between function name and paren.
+             * T     F             F             T          (Invalid `!hasWhitespace && hasNewline`)
+             * T     F             F             F          (OK)
+             *
+             * T                   T                        Unexpected space between function name and paren.
+             * F                   F                        Missing space between function name and paren.
+             * F     F                           T          Unexpected newline between function name and paren.
+             */
+
+            if (never && hasWhitespace) {
+                context.report({
+                    node,
+                    loc: lastCalleeToken.loc.start,
+                    message: "Unexpected space between function name and paren.",
+                    fix(fixer) {
+
+                        /*
+                         * Only autofix if there is no newline
+                         * https://github.com/eslint/eslint/issues/7787
+                         */
+                        if (!hasNewline) {
+                            return fixer.removeRange([prevToken.range[1], parenToken.range[0]]);
+                        }
+
+                        return null;
+                    }
+                });
+            } else if (!never && !hasWhitespace) {
+                context.report({
+                    node,
+                    loc: lastCalleeToken.loc.start,
+                    message: "Missing space between function name and paren.",
+                    fix(fixer) {
+                        return fixer.insertTextBefore(parenToken, " ");
+                    }
+                });
+            } else if (!never && !allowNewlines && hasNewline) {
+                context.report({
+                    node,
+                    loc: lastCalleeToken.loc.start,
+                    message: "Unexpected newline between function name and paren.",
+                    fix(fixer) {
+                        return fixer.replaceTextRange([prevToken.range[1], parenToken.range[0]], " ");
+                    }
+                });
+            }
+        }
+
+        return {
+            CallExpression: checkSpacing,
+            NewExpression: checkSpacing
+        };
+
+    }
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         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 and validate JSON http://jsoneditoronline.org
+- [JSON Schema Lint](https://github.com/nickcmaynard/jsonschemalint) - a web tool to validate JSON/YAML document against a single JSON Schema http://jsonschemalint.com
+- [objection](https://github.com/vincit/objection.js) - SQL-friendly ORM for Node.js
+- [table](https://github.com/gajus/table) - formats data into a string table
+- [ripple-lib](https://github.com/ripple/ripple-lib) - a JavaScript API for interacting with [Ripple](https://ripple.com) in Node.js and the browser
+- [restbase](https://github.com/wikimedia/restbase) - distributed storage with REST API & dispatcher for backend services built to provide a low-latency & high-throughput API for Wikipedia / Wikimedia content
+- [hippie-swagger](https://github.com/CacheControl/hippie-swagger) - [Hippie](https://github.com/vesln/hippie) wrapper that provides end to end API testing with swagger validation
+- [react-form-controlled](https://github.com/seeden/react-form-controlled) - React controlled form components with validation
+- [rabbitmq-schema](https://github.com/tjmehta/rabbitmq-schema) - a schema definition module for RabbitMQ graphs and messages
+- [@query/schema](https://www.npmjs.com/package/@query/schema) - stream filtering with a URI-safe query syntax parsing to JSON Schema
+- [chai-ajv-json-schema](https://github.com/peon374/chai-ajv-json-schema) - chai plugin to us JSON Schema with expect in mocha tests
+- [grunt-jsonschema-ajv](https://github.com/SignpostMarv/grunt-jsonschema-ajv) - Grunt plugin for validating files against JSON Schema
+- [extract-text-webpack-plugin](https://github.com/webpack-contrib/extract-text-webpack-plugin) - extract text from bundle into a file
+- [electron-builder](https://github.com/electron-userland/electron-builder) - a solution to package and build a ready for distribution Electron app
+- [addons-linter](https://github.com/mozilla/addons-linter) - Mozilla Add-ons Linter
+- [gh-pages-generator](https://github.com/epoberezkin/gh-pages-generator) - multi-page site generator converting markdown files to GitHub pages
+- [ESLint](https://github.com/eslint/eslint) - the pluggable linting utility for JavaScript and JSX
+
+
+## Tests
+
+```
+npm install
+git submodule update --init
+npm test
+```
+
+## Contributing
+
+All validation functions are generated using doT templates in [dot](https://github.com/ajv-validator/ajv/tree/master/lib/dot) folder. Templates are precompiled so doT is not a run-time dependency.
+
+`npm run build` - compiles templates to [dotjs](https://github.com/ajv-validator/ajv/tree/master/lib/dotjs) folder.
+
+`npm run watch` - automatically compiles templates when files in dot folder change
+
+Please see [Contributing guidelines](https://github.com/ajv-validator/ajv/blob/master/CONTRIBUTING.md)
+
+
+## Changes history
+
+See https://github.com/ajv-validator/ajv/releases
+
+__Please note__: [Changes in version 7.0.0-beta](https://github.com/ajv-validator/ajv/releases/tag/v7.0.0-beta.0)
+
+[Version 6.0.0](https://github.com/ajv-validator/ajv/releases/tag/v6.0.0).
+
+## Code of conduct
+
+Please review and follow the [Code of conduct](https://github.com/ajv-validator/ajv/blob/master/CODE_OF_CONDUCT.md).
+
+Please report any unacceptable behaviour to ajv.validator@gmail.com - it will be reviewed by the project team.
+
+
+## Open-source software support
+
+Ajv is a part of [Tidelift subscription](https://tidelift.com/subscription/pkg/npm-ajv?utm_source=npm-ajv&utm_medium=referral&utm_campaign=readme) - it provides a centralised support to open-source software users, in addition to the support provided by software maintainers.
+
+
+## License
+
+[MIT](https://github.com/ajv-validator/ajv/blob/master/LICENSE)
+                                                                                                                                                                                                                                                                                                                                                                                                                                  /*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache Licens

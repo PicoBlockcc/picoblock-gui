@@ -1,0 +1,1558 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _core = require("@babel/core");
+
+var _default = (0, _helperPluginUtils.declare)((api, options) => {
+  var _api$assumption, _options$allowArrayLi, _api$assumption2;
+
+  api.assertVersion(7);
+  const {
+    useBuiltIns = false
+  } = options;
+  const iterableIsArray = (_api$assumption = api.assumption("iterableIsArray")) != null ? _api$assumption : options.loose;
+  const arrayLikeIsIterable = (_options$allowArrayLi = options.allowArrayLike) != null ? _options$allowArrayLi : api.assumption("arrayLikeIsIterable");
+  const objectRestNoSymbols = (_api$assumption2 = api.assumption("objectRestNoSymbols")) != null ? _api$assumption2 : options.loose;
+
+  function getExtendsHelper(file) {
+    return useBuiltIns ? _core.types.memberExpression(_core.types.identifier("Object"), _core.types.identifier("assign")) : file.addHelper("extends");
+  }
+
+  function variableDeclarationHasPattern(node) {
+    for (const declar of node.declarations) {
+      if (_core.types.isPattern(declar.id)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function hasRest(pattern) {
+    for (const elem of pattern.elements) {
+      if (_core.types.isRestElement(elem)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function hasObjectRest(pattern) {
+    for (const elem of pattern.properties) {
+      if (_core.types.isRestElement(elem)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  const STOP_TRAVERSAL = {};
+
+  const arrayUnpackVisitor = (node, ancestors, state) => {
+    if (!ancestors.length) {
+      return;
+    }
+
+    if (_core.types.isIdentifier(node) && _core.types.isReferenced(node, ancestors[ancestors.length - 1]) && state.bindings[node.name]) {
+      state.deopt = true;
+      throw STOP_TRAVERSAL;
+    }
+  };
+
+  class DestructuringTransformer {
+    constructor(opts) {
+      this.blockHoist = opts.blockHoist;
+      this.operator = opts.operator;
+      this.arrays = {};
+      this.nodes = opts.nodes || [];
+      this.scope = opts.scope;
+      this.kind = opts.kind;
+      this.iterableIsArray = opts.iterableIsArray;
+      this.arrayLikeIsIterable = opts.arrayLikeIsIterable;
+      this.addHelper = opts.addHelper;
+    }
+
+    buildVariableAssignment(id, init) {
+      let op = this.operator;
+      if (_core.types.isMemberExpression(id)) op = "=";
+      let node;
+
+      if (op) {
+        node = _core.types.expressionStatement(_core.types.assignmentExpression(op, id, _core.types.cloneNode(init) || this.scope.buildUndefinedNode()));
+      } else {
+        node = _core.types.variableDeclaration(this.kind, [_core.types.variableDeclarator(id, _core.types.cloneNode(init))]);
+      }
+
+      node._blockHoist = this.blockHoist;
+      return node;
+    }
+
+    buildVariableDeclaration(id, init) {
+      const declar = _core.types.variableDeclaration("var", [_core.types.variableDeclarator(_core.types.cloneNode(id), _core.types.cloneNode(init))]);
+
+      declar._blockHoist = this.blockHoist;
+      return declar;
+    }
+
+    push(id, _init) {
+      const init = _core.types.cloneNode(_init);
+
+      if (_core.types.isObjectPattern(id)) {
+        this.pushObjectPattern(id, init);
+      } else if (_core.types.isArrayPattern(id)) {
+        this.pushArrayPattern(id, init);
+      } else if (_core.types.isAssignmentPattern(id)) {
+        this.pushAssignmentPattern(id, init);
+      } else {
+        this.nodes.push(this.buildVariableAssignment(id, init));
+      }
+    }
+
+    toArray(node, count) {
+      if (this.iterableIsArray || _core.types.isIdentifier(node) && this.arrays[node.name]) {
+        return node;
+      } else {
+        return this.scope.toArray(node, count, this.arrayLikeIsIterable);
+      }
+    }
+
+    pushAssignmentPattern({
+      left,
+      right
+    }, valueRef) {
+      const tempId = this.scope.generateUidIdentifierBasedOnNode(valueRef);
+      this.nodes.push(this.buildVariableDeclaration(tempId, valueRef));
+
+      const tempConditional = _core.types.conditionalExpression(_core.types.binaryExpression("===", _core.types.cloneNode(tempId), this.scope.buildUndefinedNode()), right, _core.types.cloneNode(tempId));
+
+      if (_core.types.isPattern(left)) {
+        let patternId;
+        let node;
+
+        if (this.kind === "const" || this.kind === "let") {
+          patternId = this.scope.generateUidIdentifier(tempId.name);
+          node = this.buildVariableDeclaration(patternId, tempConditional);
+        } else {
+          patternId = tempId;
+          node = _core.types.expressionStatement(_core.types.assignmentExpression("=", _core.types.cloneNode(tempId), tempConditional));
+        }
+
+        this.nodes.push(node);
+        this.push(left, patternId);
+      } else {
+        this.nodes.push(this.buildVariableAssignment(left, tempConditional));
+      }
+    }
+
+    pushObjectRest(pattern, objRef, spreadProp, spreadPropIndex) {
+      const keys = [];
+      let allLiteral = true;
+      let hasTemplateLiteral = false;
+
+      for (let i = 0; i < pattern.properties.length; i++) {
+        const prop = pattern.properties[i];
+        if (i >= spreadPropIndex) break;
+        if (_core.types.isRestElement(prop)) continue;
+        const key = prop.key;
+
+        if (_core.types.isIdentifier(key) && !prop.computed) {
+          keys.push(_core.types.stringLiteral(key.name));
+        } else if (_core.types.isTemplateLiteral(key)) {
+          keys.push(_core.types.cloneNode(key));
+          hasTemplateLiteral = true;
+        } else if (_core.types.isLiteral(key)) {
+          keys.push(_core.types.stringLiteral(String(key.value)));
+        } else {
+          keys.push(_core.types.cloneNode(key));
+          allLiteral = false;
+        }
+      }
+
+      let value;
+
+      if (keys.length === 0) {
+        value = _core.types.callExpression(getExtendsHelper(this), [_core.types.objectExpression([]), _core.types.cloneNode(objRef)]);
+      } else {
+        let keyExpression = _core.types.arrayExpression(keys);
+
+        if (!allLiteral) {
+          keyExpression = _core.types.callExpression(_core.types.memberExpression(keyExpression, _core.types.identifier("map")), [this.addHelper("toPropertyKey")]);
+        } else if (!hasTemplateLiteral && !_core.types.isProgram(this.scope.block)) {
+          const program = this.scope.path.findParent(path => path.isProgram());
+          const id = this.scope.generateUidIdentifier("excluded");
+          program.scope.push({
+            id,
+            init: keyExpression,
+            kind: "const"
+          });
+          keyExpression = _core.types.cloneNode(id);
+        }
+
+        value = _core.types.callExpression(this.addHelper(`objectWithoutProperties${objectRestNoSymbols ? "Loose" : ""}`), [_core.types.cloneNode(objRef), keyExpression]);
+      }
+
+      this.nodes.push(this.buildVariableAssignment(spreadProp.argument, value));
+    }
+
+    pushObjectProperty(prop, propRef) {
+      if (_core.types.isLiteral(prop.key)) prop.computed = true;
+      const pattern = prop.value;
+
+      const objRef = _core.types.memberExpression(_core.types.cloneNode(propRef), prop.key, prop.computed);
+
+      if (_core.types.isPattern(pattern)) {
+        this.push(pattern, objRef);
+      } else {
+        this.nodes.push(this.buildVariableAssignment(pattern, objRef));
+      }
+    }
+
+    pushObjectPattern(pattern, objRef) {
+      if (!pattern.properties.length) {
+        this.nodes.push(_core.types.expressionStatement(_core.types.callExpression(this.addHelper("objectDestructuringEmpty"), [objRef])));
+      }
+
+      if (pattern.properties.length > 1 && !this.scope.isStatic(objRef)) {
+        const temp = this.scope.generateUidIdentifierBasedOnNode(objRef);
+        this.nodes.push(this.buildVariableDeclaration(temp, objRef));
+        objRef = temp;
+      }
+
+      if (hasObjectRest(pattern)) {
+        let copiedPattern;
+
+        for (let i = 0; i < pattern.properties.length; i++) {
+          const prop = pattern.properties[i];
+
+          if (_core.types.isRestElement(prop)) {
+            break;
+          }
+
+          const key = prop.key;
+
+          if (prop.computed && !this.scope.isPure(key)) {
+            const name = this.scope.generateUidIdentifierBasedOnNode(key);
+            this.nodes.push(this.buildVariableDeclaration(name, key));
+
+            if (!copiedPattern) {
+              copiedPattern = pattern = Object.assign({}, pattern, {
+                properties: pattern.properties.slice()
+              });
+            }
+
+            copiedPattern.properties[i] = Object.assign({}, copiedPattern.properties[i], {
+              key: name
+            });
+          }
+        }
+      }
+
+      for (let i = 0; i < pattern.properties.length; i++) {
+        const prop = pattern.properties[i];
+
+        if (_core.types.isRestElement(prop)) {
+          this.pushObjectRest(pattern, objRef, prop, i);
+        } else {
+          this.pushObjectProperty(prop, objRef);
+        }
+      }
+    }
+
+    canUnpackArrayPattern(pattern, arr) {
+      if (!_core.types.isArrayExpression(arr)) return false;
+      if (pattern.elements.length > arr.elements.length) return;
+
+      if (pattern.elements.length < arr.elements.length && !hasRest(pattern)) {
+        return false;
+      }
+
+      for (const elem of pattern.elements) {
+        if (!elem) return false;
+        if (_core.types.isMemberExpression(elem)) return false;
+      }
+
+      for (const elem of arr.elements) {
+        if (_core.types.isSpreadElement(elem)) return false;
+        if (_core.types.isCallExpression(elem)) return false;
+        if (_core.types.isMemberExpression(elem)) return false;
+      }
+
+      const bindings = _core.types.getBindingIdentifiers(pattern);
+
+      const state = {
+        deopt: false,
+        bindings
+      };
+
+      try {
+        _core.types.traverse(arr, arrayUnpackVisitor, state);
+      } catch (e) {
+        if (e !== STOP_TRAVERSAL) throw e;
+      }
+
+      return !state.deopt;
+    }
+
+    pushUnpackedArrayPattern(pattern, arr) {
+      for (let i = 0; i < pattern.elements.length; i++) {
+        const elem = pattern.elements[i];
+
+        if (_core.types.isRestElement(elem)) {
+          this.push(elem.argument, _core.types.arrayExpression(arr.elements.slice(i)));
+        } else {
+          this.push(elem, arr.elements[i]);
+        }
+      }
+    }
+
+    pushArrayPattern(pattern, arrayRef) {
+      if (!pattern.elements) return;
+
+      if (this.canUnpackArrayPattern(pattern, arrayRef)) {
+        return this.pushUnpackedArrayPattern(pattern, arrayRef);
+      }
+
+      const count = !hasRest(pattern) && pattern.elements.length;
+      const toArray = this.toArray(arrayRef, count);
+
+      if (_core.types.isIdentifier(toArray)) {
+        arrayRef = toArray;
+      } else {
+        arrayRef = this.scope.generateUidIdentifierBasedOnNode(arrayRef);
+        this.arrays[arrayRef.name] = true;
+        this.nodes.push(this.buildVariableDeclaration(arrayRef, toArray));
+      }
+
+      for (let i = 0; i < pattern.elements.length; i++) {
+        let elem = pattern.elements[i];
+        if (!elem) continue;
+        let elemRef;
+
+        if (_core.types.isRestElement(elem)) {
+          elemRef = this.toArray(arrayRef);
+          elemRef = _core.types.callExpression(_core.types.memberExpression(elemRef, _core.types.identifier("slice")), [_core.types.numericLiteral(i)]);
+          elem = elem.argument;
+        } else {
+          elemRef = _core.types.memberExpression(arrayRef, _core.types.numericLiteral(i), true);
+        }
+
+        this.push(elem, elemRef);
+      }
+    }
+
+    init(pattern, ref) {
+      if (!_core.types.isArrayExpression(ref) && !_core.types.isMemberExpression(ref)) {
+        const memo = this.scope.maybeGenerateMemoised(ref, true);
+
+        if (memo) {
+          this.nodes.push(this.buildVariableDeclaration(memo, _core.types.cloneNode(ref)));
+          ref = memo;
+        }
+      }
+
+      this.push(pattern, ref);
+      return this.nodes;
+    }
+
+  }
+
+  return {
+    name: "transform-destructuring",
+    visitor: {
+      ExportNamedDeclaration(path) {
+        const declaration = path.get("declaration");
+        if (!declaration.isVariableDeclaration()) return;
+        if (!variableDeclarationHasPattern(declaration.node)) return;
+        const specifiers = [];
+
+        for (const name of Object.keys(path.getOuterBindingIdentifiers(path))) {
+          specifiers.push(_core.types.exportSpecifier(_core.types.identifier(name), _core.types.identifier(name)));
+        }
+
+        path.replaceWith(declaration.node);
+        path.insertAfter(_core.types.exportNamedDeclaration(null, specifiers));
+      },
+
+      ForXStatement(path) {
+        const {
+          node,
+          scope
+        } = path;
+        const left = node.left;
+
+        if (_core.types.isPattern(left)) {
+          const temp = scope.generateUidIdentifier("ref");
+          node.left = _core.types.variableDeclaration("var", [_core.types.variableDeclarator(temp)]);
+          path.ensureBlock();
+
+          if (node.body.body.length === 0 && path.isCompletionRecord()) {
+            node.body.body.unshift(_core.types.expressionStatement(scope.buildUndefinedNode()));
+          }
+
+          node.body.body.unshift(_core.types.expressionStatement(_core.types.assignmentExpression("=", left, temp)));
+          return;
+        }
+
+        if (!_core.types.isVariableDeclaration(left)) return;
+        const pattern = left.declarations[0].id;
+        if (!_core.types.isPattern(pattern)) return;
+        const key = scope.generateUidIdentifier("ref");
+        node.left = _core.types.variableDeclaration(left.kind, [_core.types.variableDeclarator(key, null)]);
+        const nodes = [];
+        const destructuring = new DestructuringTransformer({
+          kind: left.kind,
+          scope: scope,
+          nodes: nodes,
+          iterableIsArray,
+          arrayLikeIsIterable,
+          addHelper: name => this.addHelper(name)
+        });
+        destructuring.init(pattern, key);
+        path.ensureBlock();
+        const block = node.body;
+        block.body = nodes.concat(block.body);
+      },
+
+      CatchClause({
+        node,
+        scope
+      }) {
+        const pattern = node.param;
+        if (!_core.types.isPattern(pattern)) return;
+        const ref = scope.generateUidIdentifier("ref");
+        node.param = ref;
+        const nodes = [];
+        const destructuring = new DestructuringTransformer({
+          kind: "let",
+          scope: scope,
+          nodes: nodes,
+          iterableIsArray,
+          arrayLikeIsIterable,
+          addHelper: name => this.addHelper(name)
+        });
+        destructuring.init(pattern, ref);
+        node.body.body = nodes.concat(node.body.body);
+      },
+
+      AssignmentExpression(path) {
+        const {
+          node,
+          scope
+        } = path;
+        if (!_core.types.isPattern(node.left)) return;
+        const nodes = [];
+        const destructuring = new DestructuringTransformer({
+          operator: node.operator,
+          scope: scope,
+          nodes: nodes,
+          iterableIsArray,
+          arrayLikeIsIterable,
+          addHelper: name => this.addHelper(name)
+        });
+        let ref;
+
+        if (path.isCompletionRecord() || !path.parentPath.isExpressionStatement()) {
+          ref = scope.generateUidIdentifierBasedOnNode(node.right, "ref");
+          nodes.push(_core.types.variableDeclaration("var", [_core.types.variableDeclarator(ref, node.right)]));
+
+          if (_core.types.isArrayExpression(node.right)) {
+            destructuring.arrays[ref.name] = true;
+          }
+        }
+
+        destructuring.init(node.left, ref || node.right);
+
+        if (ref) {
+          if (path.parentPath.isArrowFunctionExpression()) {
+            path.replaceWith(_core.types.blockStatement([]));
+            nodes.push(_core.types.returnStatement(_core.types.cloneNode(ref)));
+          } else {
+            nodes.push(_core.types.expressionStatement(_core.types.cloneNode(ref)));
+          }
+        }
+
+        path.replaceWithMultiple(nodes);
+        path.scope.crawl();
+      },
+
+      VariableDeclaration(path) {
+        const {
+          node,
+          scope,
+          parent
+        } = path;
+        if (_core.types.isForXStatement(parent)) return;
+        if (!parent || !path.container) return;
+        if (!variableDeclarationHasPattern(node)) return;
+        const nodeKind = node.kind;
+      "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _core = require("@babel/core");
+
+var _default = (0, _helperPluginUtils.declare)((api, options) => {
+  var _api$assumption;
+
+  api.assertVersion(7);
+  const setComputedProperties = (_api$assumption = api.assumption("setComputedProperties")) != null ? _api$assumption : options.loose;
+  const pushComputedProps = setComputedProperties ? pushComputedPropsLoose : pushComputedPropsSpec;
+  const buildMutatorMapAssign = (0, _core.template)(`
+    MUTATOR_MAP_REF[KEY] = MUTATOR_MAP_REF[KEY] || {};
+    MUTATOR_MAP_REF[KEY].KIND = VALUE;
+  `);
+
+  function getValue(prop) {
+    if (_core.types.isObjectProperty(prop)) {
+      return prop.value;
+    } else if (_core.types.isObjectMethod(prop)) {
+      return _core.types.functionExpression(null, prop.params, prop.body, prop.generator, prop.async);
+    }
+  }
+
+  function pushAssign(objId, prop, body) {
+    if (prop.kind === "get" && prop.kind === "set") {
+      pushMutatorDefine(objId, prop, body);
+    } else {
+      body.push(_core.types.expressionStatement(_core.types.assignmentExpression("=", _core.types.memberExpression(_core.types.cloneNode(objId), prop.key, prop.computed || _core.types.isLiteral(prop.key)), getValue(prop))));
+    }
+  }
+
+  function pushMutatorDefine({
+    body,
+    getMutatorId,
+    scope
+  }, prop) {
+    let key = !prop.computed && _core.types.isIdentifier(prop.key) ? _core.types.stringLiteral(prop.key.name) : prop.key;
+    const maybeMemoise = scope.maybeGenerateMemoised(key);
+
+    if (maybeMemoise) {
+      body.push(_core.types.expressionStatement(_core.types.assignmentExpression("=", maybeMemoise, key)));
+      key = maybeMemoise;
+    }
+
+    body.push(...buildMutatorMapAssign({
+      MUTATOR_MAP_REF: getMutatorId(),
+      KEY: _core.types.cloneNode(key),
+      VALUE: getValue(prop),
+      KIND: _core.types.identifier(prop.kind)
+    }));
+  }
+
+  function pushComputedPropsLoose(info) {
+    for (const prop of info.computedProps) {
+      if (prop.kind === "get" || prop.kind === "set") {
+        pushMutatorDefine(info, prop);
+      } else {
+        pushAssign(_core.types.cloneNode(info.objId), prop, info.body);
+      }
+    }
+  }
+
+  function pushComputedPropsSpec(info) {
+    const {
+      objId,
+      body,
+      computedProps,
+      state
+    } = info;
+
+    for (const prop of computedProps) {
+      const key = _core.types.toComputedKey(prop);
+
+      if (prop.kind === "get" || prop.kind === "set") {
+        pushMutatorDefine(info, prop);
+      } else {
+        if (computedProps.length === 1) {
+          return _core.types.callExpression(state.addHelper("defineProperty"), [info.initPropExpression, key, getValue(prop)]);
+        } else {
+          body.push(_core.types.expressionStatement(_core.types.callExpression(state.addHelper("defineProperty"), [_core.types.cloneNode(objId), key, getValue(prop)])));
+        }
+      }
+    }
+  }
+
+  return {
+    name: "transform-computed-properties",
+    visitor: {
+      ObjectExpression: {
+        exit(path, state) {
+          const {
+            node,
+            parent,
+            scope
+          } = path;
+          let hasComputed = false;
+
+          for (const prop of node.properties) {
+            hasComputed = prop.computed === true;
+            if (hasComputed) break;
+          }
+
+          if (!hasComputed) return;
+          const initProps = [];
+          const computedProps = [];
+          let foundComputed = false;
+
+          for (const prop of node.properties) {
+            if (prop.computed) {
+              foundComputed = true;
+            }
+
+            if (foundComputed) {
+              computedProps.push(prop);
+            } else {
+              initProps.push(prop);
+            }
+          }
+
+          const objId = scope.generateUidIdentifierBasedOnNode(parent);
+
+          const initPropExpression = _core.types.objectExpression(initProps);
+
+          const body = [];
+          body.push(_core.types.variableDeclaration("var", [_core.types.variableDeclarator(objId, initPropExpression)]));
+          let mutatorRef;
+
+          const getMutatorId = function () {
+            if (!mutatorRef) {
+              mutatorRef = scope.generateUidIdentifier("mutatorMap");
+              body.push(_core.types.variableDeclaration("var", [_core.types.variableDeclarator(mutatorRef, _core.types.objectExpression([]))]));
+            }
+
+            return _core.types.cloneNode(mutatorRef);
+          };
+
+          const single = pushComputedProps({
+            scope,
+            objId,
+            body,
+            computedProps,
+            initPropExpression,
+            getMutatorId,
+            state
+          });
+
+          if (mutatorRef) {
+            body.push(_core.types.expressionStatement(_core.types.callExpression(state.addHelper("defineEnumerableProperties"), [_core.types.cloneNode(objId), _core.types.cloneNode(mutatorRef)])));
+          }
+
+          if (single) {
+            path.replaceWith(single);
+          } else {
+            body.push(_core.types.expressionStatement(_core.types.cloneNode(objId)));
+            path.replaceWithMultiple(body);
+          }
+        }
+
+      }
+    }
+  };
+});
+
+exports.default = _default;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _tdz = require("./tdz");
+
+var _core = require("@babel/core");
+
+const DONE = new WeakSet();
+
+var _default = (0, _helperPluginUtils.declare)((api, opts) => {
+  api.assertVersion(7);
+  const {
+    throwIfClosureRequired = false,
+    tdz: tdzEnabled = false
+  } = opts;
+
+  if (typeof throwIfClosureRequired !== "boolean") {
+    throw new Error(`.throwIfClosureRequired must be a boolean, or undefined`);
+  }
+
+  if (typeof tdzEnabled !== "boolean") {
+    throw new Error(`.tdz must be a boolean, or undefined`);
+  }
+
+  return {
+    name: "transform-block-scoping",
+    visitor: {
+      VariableDeclaration(path) {
+        const {
+          node,
+          parent,
+          scope
+        } = path;
+        if (!isBlockScoped(node)) return;
+        convertBlockScopedToVar(path, null, parent, scope, true);
+
+        if (node._tdzThis) {
+          const nodes = [node];
+
+          for (let i = 0; i < node.declarations.length; i++) {
+            const decl = node.declarations[i];
+
+            const assign = _core.types.assignmentExpression("=", _core.types.cloneNode(decl.id), decl.init || scope.buildUndefinedNode());
+
+            assign._ignoreBlockScopingTDZ = true;
+            nodes.push(_core.types.expressionStatement(assign));
+            decl.init = this.addHelper("temporalUndefined");
+          }
+
+          node._blockHoist = 2;
+
+          if (path.isCompletionRecord()) {
+            nodes.push(_core.types.expressionStatement(scope.buildUndefinedNode()));
+          }
+
+          path.replaceWithMultiple(nodes);
+        }
+      },
+
+      Loop(path, state) {
+        const {
+          parent,
+          scope
+        } = path;
+        path.ensureBlock();
+        const blockScoping = new BlockScoping(path, path.get("body"), parent, scope, throwIfClosureRequired, tdzEnabled, state);
+        const replace = blockScoping.run();
+        if (replace) path.replaceWith(replace);
+      },
+
+      CatchClause(path, state) {
+        const {
+          parent,
+          scope
+        } = path;
+        const blockScoping = new BlockScoping(null, path.get("body"), parent, scope, throwIfClosureRequired, tdzEnabled, state);
+        blockScoping.run();
+      },
+
+      "BlockStatement|SwitchStatement|Program"(path, state) {
+        if (!ignoreBlock(path)) {
+          const blockScoping = new BlockScoping(null, path, path.parent, path.scope, throwIfClosureRequired, tdzEnabled, state);
+          blockScoping.run();
+        }
+      }
+
+    }
+  };
+});
+
+exports.default = _default;
+
+function ignoreBlock(path) {
+  return _core.types.isLoop(path.parent) || _core.types.isCatchClause(path.parent);
+}
+
+const buildRetCheck = (0, _core.template)(`
+  if (typeof RETURN === "object") return RETURN.v;
+`);
+
+function isBlockScoped(node) {
+  if (!_core.types.isVariableDeclaration(node)) return false;
+  if (node[_core.types.BLOCK_SCOPED_SYMBOL]) return true;
+  if (node.kind !== "let" && node.kind !== "const") return false;
+  return true;
+}
+
+function isInLoop(path) {
+  const loopOrFunctionParent = path.find(path => path.isLoop() || path.isFunction());
+  return loopOrFunctionParent == null ? void 0 : loopOrFunctionParent.isLoop();
+}
+
+function convertBlockScopedToVar(path, node, parent, scope, moveBindingsToParent = false) {
+  if (!node) {
+    node = path.node;
+  }
+
+  if (isInLoop(path) && !_core.types.isFor(parent)) {
+    for (let i = 0; i < node.declarations.length; i++) {
+      const declar = node.declarations[i];
+      declar.init = declar.init || scope.buildUndefinedNode();
+    }
+  }
+
+  node[_core.types.BLOCK_SCOPED_SYMBOL] = true;
+  node.kind = "var";
+
+  if (moveBindingsToParent) {
+    const parentScope = scope.getFunctionParent() || scope.getProgramParent();
+
+    for (const name of Object.keys(path.getBindingIdentifiers())) {
+      const binding = scope.getOwnBinding(name);
+      if (binding) binding.kind = "var";
+      scope.moveBindingTo(name, parentScope);
+    }
+  }
+}
+
+function isVar(node) {
+  return _core.types.isVariableDeclaration(node, {
+    kind: "var"
+  }) && !isBlockScoped(node);
+}
+
+const letReferenceBlockVisitor = _core.traverse.visitors.merge([{
+  Loop: {
+    enter(path, state) {
+      state.loopDepth++;
+    },
+
+    exit(path, state) {
+      state.loopDepth--;
+    }
+
+  },
+
+  FunctionParent(path, state) {
+    if (state.loopDepth > 0) {
+      path.traverse(letReferenceFunctionVisitor, state);
+    } else {
+      path.traverse(_tdz.visitor, state);
+    }
+
+    return path.skip();
+  }
+
+}, _tdz.visitor]);
+
+const letReferenceFunctionVisitor = _core.traverse.visitors.merge([{
+  ReferencedIdentifier(path, state) {
+    const ref = state.letReferences.get(path.node.name);
+    if (!ref) return;
+    const localBinding = path.scope.getBindingIdentifier(path.node.name);
+    if (localBinding && localBinding !== ref) return;
+    state.closurify = true;
+  }
+
+}, _tdz.visitor]);
+
+const hoistVarDeclarationsVisitor = {
+  enter(path, self) {
+    const {
+      node,
+      parent
+    } = path;
+
+    if (path.isForStatement()) {
+      if (isVar(node.init, node)) {
+        const nodes = self.pushDeclar(node.init);
+
+        if (nodes.length === 1) {
+          node.init = nodes[0];
+        } else {
+          node.init = _core.types.sequenceExpression(nodes);
+        }
+      }
+    } else if (path.isFor()) {
+      if (isVar(node.left, node)) {
+        self.pushDeclar(node.left);
+        node.left = node.left.declarations[0].id;
+      }
+    } else if (isVar(node, parent)) {
+      path.replaceWithMultiple(self.pushDeclar(node).map(expr => _core.types.expressionStatement(expr)));
+    } else if (path.isFunction()) {
+      return path.skip();
+    }
+  }
+
+};
+const loopLabelVisitor = {
+  LabeledStatement({
+    node
+  }, state) {
+    state.innerLabels.push(node.label.name);
+  }
+
+};
+const continuationVisitor = {
+  enter(path, state) {
+    if (path.isAssignmentExpression() || path.isUpdateExpression()) {
+      for (const name of Object.keys(path.getBindingIdentifiers())) {
+        if (state.outsideReferences.get(name) !== path.scope.getBindingIdentifier(name)) {
+          continue;
+        }
+
+        state.reassignments[name] = true;
+      }
+    } else if (path.isReturnStatement()) {
+      state.returnStatements.push(path);
+    }
+  }
+
+};
+
+function loopNodeTo(node) {
+  if (_core.types.isBreakStatement(node)) {
+    return "break";
+  } else if (_core.types.isContinueStatement(node)) {
+    return "continue";
+  }
+}
+
+const loopVisitor = {
+  Loop(path, state) {
+    const oldIgnoreLabeless = state.ignoreLabeless;
+    state.ignoreLabeless = true;
+    path.traverse(loopVisitor, state);
+    state.ignoreLabeless = oldIgnoreLabeless;
+    path.skip();
+  },
+
+  Function(path) {
+    path.skip();
+  },
+
+  SwitchCase(path, state) {
+    const oldInSwitchCase = state.inSwitchCase;
+    state.inSwitchCase = true;
+    path.traverse(loopVisitor, state);
+    state.inSwitchCase = oldInSwitchCase;
+    path.skip();
+  },
+
+  "BreakStatement|ContinueStatement|ReturnStatement"(path, state) {
+    const {
+      node,
+      scope
+    } = path;
+    if (node[this.LOOP_IGNORE]) return;
+    let replace;
+    let loopText = loopNodeTo(node);
+
+    if (loopText) {
+      if (node.label) {
+        if (state.innerLabels.indexOf(node.label.name) >= 0) {
+          return;
+        }
+
+        loopText = `${loopText}|${node.label.name}`;
+      } else {
+        if (state.ignoreLabeless) return;
+        if (_core.types.isBreakStatement(node) && state.inSwitchCase) return;
+      }
+
+      state.hasBreakContinue = true;
+      state.map[loopText] = node;
+      replace = _core.types.stringLiteral(loopText);
+    }
+
+    if (path.isReturnStatement()) {
+      state.hasReturn = true;
+      replace = _core.types.objectExpression([_core.types.objectProperty(_core.types.identifier("v"), node.argument || scope.buildUndefinedNode())]);
+    }
+
+    if (replace) {
+      replace = _core.types.returnStatement(replace);
+      replace[this.LOOP_IGNORE] = true;
+      path.skip();
+      path.replaceWith(_core.types.inherits(replace, node));
+    }
+  }
+
+};
+
+function isStrict(path) {
+  return !!path.find(({
+    node
+  }) => {
+    if (_core.types.isProgram(node)) {
+      if (node.sourceType === "module") return true;
+    } else if (!_core.types.isBlockStatement(node)) return false;
+
+    return node.directives.some(directive => directive.value.value === "use strict");
+  });
+}
+
+class BlockScoping {
+  constructor(loopPath, blockPath, parent, scope, throwIfClosureRequired, tdzEnabled, state) {
+    this.parent = parent;
+    this.scope = scope;
+    this.state = state;
+    this.throwIfClosureRequired = throwIfClosureRequired;
+    this.tdzEnabled = tdzEnabled;
+    this.blockPath = blockPath;
+    this.block = blockPath.node;
+    this.outsideLetReferences = new Map();
+    this.hasLetReferences = false;
+    this.letReferences = new Map();
+    this.body = [];
+
+    if (loopPath) {
+      this.loopParent = loopPath.parent;
+      this.loopLabel = _core.types.isLabeledStatement(this.loopParent) && this.loopParent.label;
+      this.loopPath = loopPath;
+      this.loop = loopPath.node;
+    }
+  }
+
+  run() {
+    const block = this.block;
+    if (DONE.has(block)) return;
+    DONE.add(block);
+    const needsClosure = this.getLetReferences();
+    this.checkConstants();
+
+    if (_core.types.isFunction(this.parent) || _core.types.isProgram(this.block)) {
+      this.updateScopeInfo();
+      return;
+    }
+
+    if (!this.hasLetReferences) return;
+
+    if (needsClosure) {
+      this.wrapClosure();
+    } else {
+      this.remap();
+    }
+
+    this.updateScopeInfo(needsClosure);
+
+    if (this.loopLabel && !_core.types.isLabeledStatement(this.loopParent)) {
+      return _core.types.labeledStatement(this.loopLabel, this.loop);
+    }
+  }
+
+  checkConstants() {
+    const scope = this.scope;
+    const state = this.state;
+
+    for (const name of Object.keys(scope.bindings)) {
+      const binding = scope.bindings[name];
+      if (binding.kind !== "const") continue;
+
+      for (const violation of binding.constantViolations) {
+        const readOnlyError = state.addHelper("readOnlyError");
+
+        const throwNode = _core.types.callExpression(readOnlyError, [_core.types.stringLiteral(name)]);
+
+        if (violation.isAssignmentExpression()) {
+          const {
+            operator
+          } = violation.node;
+
+          if (operator === "=") {
+            violation.replaceWith(_core.types.sequenceExpression([violation.get("right").node, throwNode]));
+          } else if (["&&=", "||=", "??="].includes(operator)) {
+            violation.replaceWith(_core.types.logicalExpression(operator.slice(0, -1), violation.get("left").node, _core.types.sequenceExpression([violation.get("right").node, throwNode])));
+          } else {
+            violation.replaceWith(_core.types.sequenceExpression([_core.types.binaryExpression(operator.slice(0, -1), violation.get("left").node, violation.get("right").node), throwNode]));
+          }
+        } else if (violation.isUpdateExpression()) {
+          violation.replaceWith(_core.types.sequenceExpression([_core.types.unaryExpression("+", violation.get("argument").node), throwNode]));
+        } else if (violation.isForXStatement()) {
+          violation.ensureBlock();
+          violation.get("left").replaceWith(_core.types.variableDeclaration("var", [_core.types.variableDeclarator(violation.scope.generateUidIdentifier(name))]));
+          violation.node.body.body.unshift(_core.types.expressionStatement(throwNode));
+        }
+      }
+    }
+  }
+
+  updateScopeInfo(wrappedInClosure) {
+    const blockScope = this.blockPath.scope;
+    const parentScope = blockScope.getFunctionParent() || blockScope.getProgramParent();
+    const letRefs = this.letReferences;
+
+    for (const key of letRefs.keys()) {
+      const ref = letRefs.get(key);
+      const binding = blockScope.getBinding(ref.name);
+      if (!binding) continue;
+
+      if (binding.kind === "let" || binding.kind === "const") {
+        binding.kind = "var";
+
+        if (wrappedInClosure) {
+          if (blockScope.hasOwnBinding(ref.name)) {
+            blockScope.removeBinding(ref.name);
+          }
+        } else {
+          blockScope.moveBindingTo(ref.name, parentScope);
+        }
+      }
+    }
+  }
+
+  remap() {
+    const letRefs = this.letReferences;
+    const outsideLetRefs = this.outsideLetReferences;
+    const scope = this.scope;
+    const blockPathScope = this.blockPath.scope;
+
+    for (const key of letRefs.keys()) {
+      const ref = letRefs.get(key);
+
+      if (scope.parentHasBinding(key) || scope.hasGlobal(key)) {
+        const binding = scope.getOwnBinding(key);
+
+        if (binding) {
+          const parentBinding = scope.parent.getOwnBinding(key);
+
+          if (binding.kind === "hoisted" && !binding.path.node.async && !binding.path.node.generator && (!parentBinding || isVar(parentBinding.path.parent)) && !isStrict(binding.path.parentPath)) {
+            continue;
+          }
+
+          scope.rename(ref.name);
+        }
+
+        if (blockPathScope.hasOwnBinding(key)) {
+          blockPathScope.rename(ref.name);
+        }
+      }
+    }
+
+    for (const key of outsideLetRefs.keys()) {
+      const ref = letRefs.get(key);
+
+      if (isInLoop(this.blockPath) && blockPathScope.hasOwnBinding(key)) {
+        blockPathScope.rename(ref.name);
+      }
+    }
+  }
+
+  wrapClosure() {
+    if (this.throwIfClosureRequired) {
+      throw this.blockPath.buildCodeFrameError("Compiling let/const in this block would add a closure " + "(throwIfClosureRequired).");
+    }
+
+    const block = this.block;
+    const outsideRefs = this.outsideLetReferences;
+
+    if (this.loop) {
+      for (const name of Array.from(outsideRefs.keys())) {
+        const id = outsideRefs.get(name);
+
+        if (this.scope.hasGlobal(id.name) || this.scope.parentHasBinding(id.name)) {
+          outsideRefs.delete(id.name);
+          this.letReferences.delete(id.name);
+          this.scope.rename(id.name);
+          this.letReferences.set(id.name, id);
+          outsideRefs.set(id.name, id);
+        }
+      }
+    }
+
+    this.has = this.checkLoop();
+    this.hoistVarDeclarations();
+    const args = Array.from(outsideRefs.values(), node => _core.types.cloneNode(node));
+    const params = args.map(id => _core.types.cloneNode(id));
+    const isSwitch = this.blockPath.isSwitchStatement();
+
+    const fn = _core.types.functionExpression(null, params, _core.types.blockStatement(isSwitch ? [block] : block.body));
+
+    this.addContinuations(fn);
+
+    let call = _core.types.callExpression(_core.types.nullLiteral(), args);
+
+    let basePath = ".callee";
+
+    const hasYield = _core.traverse.hasType(fn.body, "YieldExpression", _core.types.FUNCTION_TYPES);
+
+    if (hasYield) {
+      fn.generator = true;
+      call = _core.types.yieldExpression(call, true);
+      basePath = ".argument" + basePath;
+    }
+
+    const hasAsync = _core.traverse.hasType(fn.body, "AwaitExpression", _core.types.FUNCTION_TYPES);
+
+    if (hasAsync) {
+      fn.async = true;
+      call = _core.types.awaitExpression(call);
+      basePath = ".argument" + basePath;
+    }
+
+    let placeholderPath;
+    let index;
+
+    if (this.has.hasReturn || this.has.hasBreakContinue) {
+      const ret = this.scope.generateUid("ret");
+      this.body.push(_core.types.variableDeclaration("var", [_core.types.variableDeclarator(_core.types.identifier(ret), call)]));
+      placeholderPath = "declarations.0.init" + basePath;
+      index = this.body.length - 1;
+      this.buildHas(ret);
+    } else {
+      this.body.push(_core.types.expressionStatement(call));
+      placeholderPath = "expression" + basePath;
+      index = this.body.length - 1;
+    }
+
+    let callPath;
+
+    if (isSwitch) {
+      const {
+        parentPath,
+        listKey,
+        key
+      } = this.blockPath;
+      this.blockPath.replaceWithMultiple(this.body);
+      callPath = parentPath.get(listKey)[key + index];
+    } else {
+      block.body = this.body;
+      callPath = this.blockPath.get("body")[index];
+    }
+
+    const placeholder = callPath.get(placeholderPath);
+    let fnPath;
+
+    if (this.loop) {
+      const loopId = this.scope.generateUid("loop");
+      const p = this.loopPath.insertBefore(_core.types.variableDeclaration("var", [_core.types.variableDeclarator(_core.types.identifier(loopId), fn)]));
+      placeholder.replaceWith(_core.types.identifier(loopId));
+      fnP"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _core = require("@babel/core");
+
+var _default = (0, _helperPluginUtils.declare)(api => {
+  api.assertVersion(7);
+
+  function statementList(key, path) {
+    const paths = path.get(key);
+
+    for (const path of paths) {
+      const func = path.node;
+      if (!path.isFunctionDeclaration()) continue;
+
+      const declar = _core.types.variableDeclaration("let", [_core.types.variableDeclarator(func.id, _core.types.toExpression(func))]);
+
+      declar._blockHoist = 2;
+      func.id = null;
+      path.replaceWith(declar);
+    }
+  }
+
+  return {
+    name: "transform-block-scoped-functions",
+    visitor: {
+      BlockStatement(path) {
+        const {
+          node,
+          parent
+        } = path;
+
+        if (_core.types.isFunction(parent, {
+          body: node
+        }) || _core.types.isExportDeclaration(parent)) {
+          return;
+        }
+
+        statementList("body", path);
+      },
+
+      SwitchCase(path) {
+        statementList("consequent", path);
+      }
+
+    }
+  };
+});
+
+exports.default = _default;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _core = require("@babel/core");
+
+var _default = (0, _helperPluginUtils.declare)(api => {
+  api.assertVersion(7);
+  return {
+    name: "transform-member-expression-literals",
+    visitor: {
+      MemberExpression: {
+        exit({
+          node
+        }) {
+          const prop = node.property;
+
+          if (!node.computed && _core.types.isIdentifier(prop) && !_core.types.isValidES3Identifier(prop.name)) {
+            node.property = _core.types.stringLiteral(prop.name);
+            node.computed = true;
+          }
+        }
+
+      }
+    }
+  };
+});
+
+exports.default = _default;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _default = (0, _helperPluginUtils.declare)((api, options) => {
+  var _api$assumption;
+
+  api.assertVersion(7);
+  const noNewArrows = (_api$assumption = api.assumption("noNewArrows")) != null ? _api$assumption : !options.spec;
+  return {
+    name: "transform-arrow-functions",
+    visitor: {
+      ArrowFunctionExpression(path) {
+        if (!path.isArrowFunctionExpression()) return;
+        path.arrowFunctionToExpression({
+          allowInsertArrow: false,
+          noNewArrows,
+          specCompliant: !noNewArrows
+        });
+      }
+
+    }
+  };
+});
+
+exports.default = _default;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _core = require("@babel/core");
+
+var _default = (0, _helperPluginUtils.declare)(api => {
+  api.assertVersion(7);
+  const surrogate = /[\ud800-\udfff]/g;
+  const unicodeEscape = /(\\+)u\{([0-9a-fA-F]+)\}/g;
+
+  function escape(code) {
+    let str = code.toString(16);
+
+    while (str.length < 4) str = "0" + str;
+
+    return "\\u" + str;
+  }
+
+  function replacer(match, backslashes, code) {
+    if (backslashes.length % 2 === 0) {
+      return match;
+    }
+
+    const char = String.fromCodePoint(parseInt(code, 16));
+    const escaped = backslashes.slice(0, -1) + escape(char.charCodeAt(0));
+    return char.length === 1 ? escaped : escaped + escape(char.charCodeAt(1));
+  }
+
+  function replaceUnicodeEscapes(str) {
+    return str.replace(unicodeEscape, replacer);
+  }
+
+  function getUnicodeEscape(str) {
+    let match;
+
+    while (match = unicodeEscape.exec(str)) {
+      if (match[1].length % 2 === 0) continue;
+      unicodeEscape.lastIndex = 0;
+      return match[0];
+    }
+
+    return null;
+  }
+
+  return {
+    name: "transform-unicode-escapes",
+
+    manipulateOptions({
+      generatorOpts
+    }) {
+      var _generatorOpts$jsescO, _generatorOpts$jsescO2;
+
+      if (!generatorOpts.jsescOption) {
+        generatorOpts.jsescOption = {};
+      }
+
+      (_generatorOpts$jsescO2 = (_generatorOpts$jsescO = generatorOpts.jsescOption).minimal) != null ? _generatorOpts$jsescO2 : _generatorOpts$jsescO.minimal = false;
+    },
+
+    visitor: {
+      Identifier(path) {
+        const {
+          node,
+          key
+        } = path;
+        const {
+          name
+        } = node;
+        const replaced = name.replace(surrogate, c => {
+          return `_u${c.charCodeAt(0).toString(16)}`;
+        });
+        if (name === replaced) return;
+
+        const str = _core.types.inherits(_core.types.stringLiteral(name), node);
+
+        if (key === "key") {
+          path.replaceWith(str);
+          return;
+        }
+
+        const {
+          parentPath,
+          scope
+        } = path;
+
+        if (parentPath.isMemberExpression({
+          property: node
+        }) || parentPath.isOptionalMemberExpression({
+          property: node
+        })) {
+          parentPath.node.computed = true;
+          path.replaceWith(str);
+          return;
+        }
+
+        const binding = scope.getBinding(name);
+
+        if (binding) {
+          scope.rename(name, scope.generateUid(replaced));
+          return;
+        }
+
+        throw path.buildCodeFrameError(`Can't reference '${name}' as a bare identifier`);
+      },
+
+      "StringLiteral|DirectiveLiteral"(path) {
+        const {
+          node
+        } = path;
+        const {
+          extra
+        } = node;
+        if (extra != null && extra.raw) extra.raw = replaceUnicodeEscapes(extra.raw);
+      },
+
+      TemplateElement(path) {
+        const {
+          node,
+          parentPath
+        } = path;
+        const {
+          value
+        } = node;
+        const firstEscape = getUnicodeEscape(value.raw);
+        if (!firstEscape) return;
+        const grandParent = parentPath.parentPath;
+
+        if (grandParent.isTaggedTemplateExpression()) {
+          throw path.buildCodeFrameError(`Can't replace Unicode escape '${firstEscape}' inside tagged template literals. You can enable '@babel/plugin-transform-template-literals' to compile them to classic strings.`);
+        }
+
+        value.raw = replaceUnicodeEscapes(value.raw);
+      }
+
+    }
+  };
+});
+
+exports.default = _default;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               {
+  "name": "@babel/plugin-syntax-numeric-separator",
+  "version": "7.10.4",
+  "description": "Allow parsing of Decimal, Binary, Hex and Octal literals that contain a Numeric Literal Separator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-plugin-syntax-numeric-separator"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "keywords": [
+    "babel-plugin"
+  ],
+  "dependencies": {
+    "@babel/helper-plugin-utils": "^7.10.4"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0-0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4"
+  },
+  "gitHead": "7fd40d86a0d03ff0e9c3ea16b29689945433d4df"
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperCreateRegexpFeaturesPlugin = require("@babel/helper-create-regexp-features-plugin");
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _default = (0, _helperPluginUtils.declare)((api, options) => {
+  api.assertVersion(7);
+  const {
+    useUnicodeFlag = true
+  } = options;
+
+  if (typeof useUnicodeFlag !== "boolean") {
+    throw new Error(".useUnicodeFlag must be a boolean, or undefined");
+  }
+
+  return (0, _helperCreateRegexpFeaturesPlugin.createRegExpFeaturePlugin)({
+    name: "proposal-unicode-property-regex",
+    feature: "unicodePropertyEscape",
+    options: {
+      useUnicodeFlag
+    }
+  });
+});
+
+exports.default = _default;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _helperPluginUtils = require("@babel/helper-plugin-utils");
+
+var _helperRemapAsyncToGenerator = require("@babel/helper-remap-async-to-generator");
+
+var _helperModuleImports = require("@babel/helper-module-imports");
+
+var _core = require("@babel/core");
+
+var _default 

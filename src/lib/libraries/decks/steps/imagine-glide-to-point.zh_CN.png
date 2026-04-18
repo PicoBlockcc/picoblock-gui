@@ -1,0 +1,978 @@
+    newMapping.source = util.relative(sourceRoot, newMapping.source);
+	        }
+
+	        newMapping.original = {
+	          line: mapping.originalLine,
+	          column: mapping.originalColumn
+	        };
+
+	        if (mapping.name != null) {
+	          newMapping.name = mapping.name;
+	        }
+	      }
+
+	      generator.addMapping(newMapping);
+	    });
+	    aSourceMapConsumer.sources.forEach(function (sourceFile) {
+	      var content = aSourceMapConsumer.sourceContentFor(sourceFile);
+	      if (content != null) {
+	        generator.setSourceContent(sourceFile, content);
+	      }
+	    });
+	    return generator;
+	  };
+
+	/**
+	 * Add a single mapping from original source line and column to the generated
+	 * source's line and column for this source map being created. The mapping
+	 * object should have the following properties:
+	 *
+	 *   - generated: An object with the generated line and column positions.
+	 *   - original: An object with the original line and column positions.
+	 *   - source: The original source file (relative to the sourceRoot).
+	 *   - name: An optional original token name for this mapping.
+	 */
+	SourceMapGenerator.prototype.addMapping =
+	  function SourceMapGenerator_addMapping(aArgs) {
+	    var generated = util.getArg(aArgs, 'generated');
+	    var original = util.getArg(aArgs, 'original', null);
+	    var source = util.getArg(aArgs, 'source', null);
+	    var name = util.getArg(aArgs, 'name', null);
+
+	    if (!this._skipValidation) {
+	      this._validateMapping(generated, original, source, name);
+	    }
+
+	    if (source != null) {
+	      source = String(source);
+	      if (!this._sources.has(source)) {
+	        this._sources.add(source);
+	      }
+	    }
+
+	    if (name != null) {
+	      name = String(name);
+	      if (!this._names.has(name)) {
+	        this._names.add(name);
+	      }
+	    }
+
+	    this._mappings.add({
+	      generatedLine: generated.line,
+	      generatedColumn: generated.column,
+	      originalLine: original != null && original.line,
+	      originalColumn: original != null && original.column,
+	      source: source,
+	      name: name
+	    });
+	  };
+
+	/**
+	 * Set the source content for a source file.
+	 */
+	SourceMapGenerator.prototype.setSourceContent =
+	  function SourceMapGenerator_setSourceContent(aSourceFile, aSourceContent) {
+	    var source = aSourceFile;
+	    if (this._sourceRoot != null) {
+	      source = util.relative(this._sourceRoot, source);
+	    }
+
+	    if (aSourceContent != null) {
+	      // Add the source content to the _sourcesContents map.
+	      // Create a new _sourcesContents map if the property is null.
+	      if (!this._sourcesContents) {
+	        this._sourcesContents = Object.create(null);
+	      }
+	      this._sourcesContents[util.toSetString(source)] = aSourceContent;
+	    } else if (this._sourcesContents) {
+	      // Remove the source file from the _sourcesContents map.
+	      // If the _sourcesContents map is empty, set the property to null.
+	      delete this._sourcesContents[util.toSetString(source)];
+	      if (Object.keys(this._sourcesContents).length === 0) {
+	        this._sourcesContents = null;
+	      }
+	    }
+	  };
+
+	/**
+	 * Applies the mappings of a sub-source-map for a specific source file to the
+	 * source map being generated. Each mapping to the supplied source file is
+	 * rewritten using the supplied source map. Note: The resolution for the
+	 * resulting mappings is the minimium of this map and the supplied map.
+	 *
+	 * @param aSourceMapConsumer The source map to be applied.
+	 * @param aSourceFile Optional. The filename of the source file.
+	 *        If omitted, SourceMapConsumer's file property will be used.
+	 * @param aSourceMapPath Optional. The dirname of the path to the source map
+	 *        to be applied. If relative, it is relative to the SourceMapConsumer.
+	 *        This parameter is needed when the two source maps aren't in the same
+	 *        directory, and the source map to be applied contains relative source
+	 *        paths. If so, those relative source paths need to be rewritten
+	 *        relative to the SourceMapGenerator.
+	 */
+	SourceMapGenerator.prototype.applySourceMap =
+	  function SourceMapGenerator_applySourceMap(aSourceMapConsumer, aSourceFile, aSourceMapPath) {
+	    var sourceFile = aSourceFile;
+	    // If aSourceFile is omitted, we will use the file property of the SourceMap
+	    if (aSourceFile == null) {
+	      if (aSourceMapConsumer.file == null) {
+	        throw new Error(
+	          'SourceMapGenerator.prototype.applySourceMap requires either an explicit source file, ' +
+	          'or the source map\'s "file" property. Both were omitted.'
+	        );
+	      }
+	      sourceFile = aSourceMapConsumer.file;
+	    }
+	    var sourceRoot = this._sourceRoot;
+	    // Make "sourceFile" relative if an absolute Url is passed.
+	    if (sourceRoot != null) {
+	      sourceFile = util.relative(sourceRoot, sourceFile);
+	    }
+	    // Applying the SourceMap can add and remove items from the sources and
+	    // the names array.
+	    var newSources = new ArraySet();
+	    var newNames = new ArraySet();
+
+	    // Find mappings for the "sourceFile"
+	    this._mappings.unsortedForEach(function (mapping) {
+	      if (mapping.source === sourceFile && mapping.originalLine != null) {
+	        // Check if it can be mapped by the source map, then update the mapping.
+	        var original = aSourceMapConsumer.originalPositionFor({
+	          line: mapping.originalLine,
+	          column: mapping.originalColumn
+	        });
+	        if (original.source != null) {
+	          // Copy mapping
+	          mapping.source = original.source;
+	          if (aSourceMapPath != null) {
+	            mapping.source = util.join(aSourceMapPath, mapping.source)
+	          }
+	          if (sourceRoot != null) {
+	            mapping.source = util.relative(sourceRoot, mapping.source);
+	          }
+	          mapping.originalLine = original.line;
+	          mapping.originalColumn = original.column;
+	          if (original.name != null) {
+	            mapping.name = original.name;
+	          }
+	        }
+	      }
+
+	      var source = mapping.source;
+	      if (source != null && !newSources.has(source)) {
+	        newSources.add(source);
+	      }
+
+	      var name = mapping.name;
+	      if (name != null && !newNames.has(name)) {
+	        newNames.add(name);
+	      }
+
+	    }, this);
+	    this._sources = newSources;
+	    this._names = newNames;
+
+	    // Copy sourcesContents of applied map.
+	    aSourceMapConsumer.sources.forEach(function (sourceFile) {
+	      var content = aSourceMapConsumer.sourceContentFor(sourceFile);
+	      if (content != null) {
+	        if (aSourceMapPath != null) {
+	          sourceFile = util.join(aSourceMapPath, sourceFile);
+	        }
+	        if (sourceRoot != null) {
+	          sourceFile = util.relative(sourceRoot, sourceFile);
+	        }
+	        this.setSourceContent(sourceFile, content);
+	      }
+	    }, this);
+	  };
+
+	/**
+	 * A mapping can have one of the three levels of data:
+	 *
+	 *   1. Just the generated position.
+	 *   2. The Generated position, original position, and original source.
+	 *   3. Generated and original position, original source, as well as a name
+	 *      token.
+	 *
+	 * To maintain consistency, we validate that any new mapping being added falls
+	 * in to one of these categories.
+	 */
+	SourceMapGenerator.prototype._validateMapping =
+	  function SourceMapGenerator_validateMapping(aGenerated, aOriginal, aSource,
+	                                              aName) {
+	    // When aOriginal is truthy but has empty values for .line and .column,
+	    // it is most likely a programmer error. In this case we throw a very
+	    // specific error message to try to guide them the right way.
+	    // For example: https://github.com/Polymer/polymer-bundler/pull/519
+	    if (aOriginal && typeof aOriginal.line !== 'number' && typeof aOriginal.column !== 'number') {
+	        throw new Error(
+	            'original.line and original.column are not numbers -- you probably meant to omit ' +
+	            'the original mapping entirely and only map the generated position. If so, pass ' +
+	            'null for the original mapping instead of an object with empt// YAML error class. http://stackoverflow.com/questions/8458984
+//
+'use strict';
+
+function YAMLException(reason, mark) {
+  // Super constructor
+  Error.call(this);
+
+  this.name = 'YAMLException';
+  this.reason = reason;
+  this.mark = mark;
+  this.message = (this.reason || '(unknown reason)') + (this.mark ? ' ' + this.mark.toString() : '');
+
+  // Include stack trace in error object
+  if (Error.captureStackTrace) {
+    // Chrome and NodeJS
+    Error.captureStackTrace(this, this.constructor);
+  } else {
+    // FF, IE 10+ and Safari 6+. Fallback for others
+    this.stack = (new Error()).stack || '';
+  }
+}
+
+
+// Inherit from Error
+YAMLException.prototype = Object.create(Error.prototype);
+YAMLException.prototype.constructor = YAMLException;
+
+
+YAMLException.prototype.toString = function toString(compact) {
+  var result = this.name + ': ';
+
+  result += this.reason || '(unknown reason)';
+
+  if (!compact && this.mark) {
+    result += ' ' + this.mark.toString();
+  }
+
+  return result;
+};
+
+
+module.exports = YAMLException;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for __root__/</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> __root__/
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">77.03% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>57/74</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">57.14% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>28/49</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">93.33% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>14/15</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">79.1% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>53/67</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<div class="pad1">
+<table class="coverage-summary">
+<thead>
+<tr>
+   <th data-col="file" data-fmt="html" data-html="true" class="file">File</th>
+   <th data-col="pic" data-type="number" data-fmt="html" data-html="true" class="pic"></th>
+   <th data-col="statements" data-type="number" data-fmt="pct" class="pct">Statements</th>
+   <th data-col="statements_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="branches" data-type="number" data-fmt="pct" class="pct">Branches</th>
+   <th data-col="branches_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="functions" data-type="number" data-fmt="pct" class="pct">Functions</th>
+   <th data-col="functions_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="lines" data-type="number" data-fmt="pct" class="pct">Lines</th>
+   <th data-col="lines_raw" data-type="number" data-fmt="html" class="abs"></th>
+</tr>
+</thead>
+<tbody><tr>
+	<td class="file medium" data-value="mute.js"><a href="mute.js.html">mute.js</a></td>
+	<td data-value="77.03" class="pic medium"><div class="chart"><div class="cover-fill" style="width: 77%;"></div><div class="cover-empty" style="width:23%;"></div></div></td>
+	<td data-value="77.03" class="pct medium">77.03%</td>
+	<td data-value="74" class="abs medium">57/74</td>
+	<td data-value="57.14" class="pct medium">57.14%</td>
+	<td data-value="49" class="abs medium">28/49</td>
+	<td data-value="93.33" class="pct high">93.33%</td>
+	<td data-value="15" class="abs high">14/15</td>
+	<td data-value="79.1" class="pct medium">79.1%</td>
+	<td data-value="67" class="abs medium">53/67</td>
+	</tr>
+
+</tbody>
+</table>
+</div><div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Feb 12 2016 22:19:00 GMT-0800 (PST)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ng {\n\treturn str.replace(/^0*(.*)/, \"$1\") || \"0\";\n}\n\nfunction _normalizeIPv4(host:string, protocol:URIRegExps):string {\n\tconst matches = host.match(protocol.IPV4ADDRESS) || [];\n\tconst [, address] = matches;\n\t\n\tif (address) {\n\t\treturn address.split(\".\").map(_stripLeadingZeros).join(\".\");\n\t} else {\n\t\treturn host;\n\t}\n}\n\nfunction _normalizeIPv6(host:string, protocol:URIRegExps):string {\n\tconst matches = host.match(protocol.IPV6ADDRESS) || [];\n\tconst [, address, zone] = matches;\n\n\tif (address) {\n\t\tconst [last, first] = address.toLowerCase().split('::').reverse();\n\t\tconst firstFields = first ? first.split(\":\").map(_stripLeadingZeros) : [];\n\t\tconst lastFields = last.split(\":\").map(_stripLeadingZeros);\n\t\tconst isLastFieldIPv4Address = protocol.IPV4ADDRESS.test(lastFields[lastFields.length - 1]);\n\t\tconst fieldCount = isLastFieldIPv4Address ? 7 : 8;\n\t\tconst lastFieldsStart = lastFields.length - fieldCount;\n\t\tconst fields = Array<string>(fieldCount);\n\n\t\tfor (let x = 0; x < fieldCount; ++x) {\n\t\t\tfields[x] = firstFields[x] || lastFields[lastFieldsStart + x] || '';\n\t\t}\n\n\t\tif (isLastFieldIPv4Address) {\n\t\t\tfields[fieldCount - 1] = _normalizeIPv4(fields[fieldCount - 1], protocol);\n\t\t}\n\n\t\tconst allZeroFields = fields.reduce<Array<{index:number,length:number}>>((acc, field, index) => {\n\t\t\tif (!field || field === \"0\") {\n\t\t\t\tconst lastLongest = acc[acc.length - 1];\n\t\t\t\tif (lastLongest && lastLongest.index + lastLongest.length === index) {\n\t\t\t\t\tlastLongest.length++;\n\t\t\t\t} else {\n\t\t\t\t\tacc.push({ index, length : 1 });\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn acc;\n\t\t}, []);\n\n\t\tconst longestZeroFields = allZeroFields.sort((a, b) => b.length - a.length)[0];\n\n\t\tlet newHost:string;\n\t\tif (longestZeroFields && longestZeroFields.length > 1) {\n\t\t\tconst newFirst = fields.slice(0, longestZeroFields.index) ;\n\t\t\tconst newLast = fields.slice(longestZeroFields.index + longestZeroFields.length);\n\t\t\tnewHost = newFirst.join(\":\") + \"::\" + newLast.join(\":\");\n\t\t} else {\n\t\t\tnewHost = fields.join(\":\");\n\t\t}\n\n\t\tif (zone) {\n\t\t\tnewHost += \"%\" + zone;\n\t\t}\n\n\t\treturn newHost;\n\t} else {\n\t\treturn host;\n\t}\n}\n\nconst URI_PARSE = /^(?:([^:\\/?#]+):)?(?:\\/\\/((?:([^\\/?#@]*)@)?(\\[[^\\/?#\\]]+\\]|[^\\/?#:]*)(?:\\:(\\d*))?))?([^?#]*)(?:\\?([^#]*))?(?:#((?:.|\\n|\\r)*))?/i;\nconst NO_MATCH_IS_UNDEFINED = (<RegExpMatchArray>(\"\").match(/(){0}/))[1] === undefined;\n\nexport function parse(uriString:string, options:URIOptions = {}):URIComponents {\n\tconst components:URIComponents = {};\n\tconst protocol = (options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL);\n\n\tif (options.reference === \"suffix\") uriString = (options.scheme ? options.scheme + \":\" : \"\") + \"//\" + uriString;\n\n\tconst matches = uriString.match(URI_PARSE);\n\n\tif (matches) {\n\t\tif (NO_MATCH_IS_UNDEFINED) {\n\t\t\t//store each component\n\t\t\tcomponents.scheme = matches[1];\n\t\t\tcomponents.userinfo = matches[3];\n\t\t\tcomponents.host = matches[4];\n\t\t\tcomponents.port = parseInt(matches[5], 10);\n\t\t\tcomponents.path = matches[6] || \"\";\n\t\t\tcomponents.query = matches[7];\n\t\t\tcomponents.fragment = matches[8];\n\n\t\t\t//fix port number\n\t\t\tif (isNaN(components.port)) {\n\t\t\t\tcomponents.port = matches[5];\n\t\t\t}\n\t\t} else {  //IE FIX for improper RegExp matching\n\t\t\t//store each component\n\t\t\tcomponents.scheme = matches[1] || undefined;\n\t\t\tcomponents.userinfo = (uriString.indexOf(\"@\") !== -1 ? matches[3] : undefined);\n\t\t\tcomponents.host = (uriString.indexOf(\"//\") !== -1 ? matches[4] : undefined);\n\t\t\tcomponents.port = parseInt(matches[5], 10);\n\t\t\tcomponents.path = matches[6] || \"\";\n\t\t\tcomponents.query = (uriString.indexOf(\"?\") !== -1 ? matches[7] : undefined);\n\t\t\tcomponents.fragment = (uriString.indexOf(\"#\") !== -1 ? matches[8] : undefined);\n\n\t\t\t//fix port number\n\t\t\tif (isNaN(components.port)) {\n\t\t\t\tcomponents.port = (uriString.match(/\\/\\/(?:.|\\n)*\\:(?:\\/|\\?|\\#|$)/) ? matches[4] : undefined);\n\t\t\t}\n\t\t}\n\n\t\tif (components.host) {\n\t\t\t//normalize IP hosts\n\t\t\tcomponents.host = _normalizeIPv6(_normalizeIPv4(components.host, protocol), protocol);\n\t\t}\n\n\t\t//determine reference type\n\t\tif (components.scheme === undefined && components.userinfo === undefined && components.host === undefined && components.port === undefined && !components.path && components.query === undefined) {\n\t\t\tcomponents.reference = \"same-document\";\n\t\t} else if (components.scheme === undefined) {\n\t\t\tcomponents.reference = \"relative\";\n\t\t} else if (components.fragment === undefined) {\n\t\t\tcomponents.reference = \"absolute\";\n\t\t} else {\n\t\t\tcomponents.reference = \"uri\";\n\t\t}\n\n\t\t//check for reference errors\n\t\tif (options.reference && options.reference !== \"suffix\" && options.reference !== components.reference) {\n\t\t\tcomponents.error = components.error || \"URI is not a \" + options.reference + \" reference.\";\n\t\t}\n\n\t\t//find scheme handler\n\t\tconst schemeHandler = SCHEMES[(options.scheme || components.scheme || \"\").toLowerCase()];\n\n\t\t//check if scheme can't handle IRIs\n\t\tif (!options.unicodeSupport && (!schemeHandler || !schemeHandler.unicodeSupport)) {\n\t\t\t//if host component is a domain name\n\t\t\tif (components.host && (options.domainHost || (schemeHandler && schemeHandler.domainHost))) {\n\t\t\t\t//convert Unicode IDN -> ASCII IDN\n\t\t\t\ttry {\n\t\t\t\t\tcomponents.host = punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase());\n\t\t\t\t} catch (e) {\n\t\t\t\t\tcomponents.error = components.error || \"Host's domain name can not be converted to ASCII via punycode: \" + e;\n\t\t\t\t}\n\t\t\t}\n\t\t\t//convert IRI -> URI\n\t\t\t_normalizeComponentEncoding(components, URI_PROTOCOL);\n\t\t} else {\n\t\t\t//normalize encodings\n\t\t\t_normalizeComponentEncoding(components, protocol);\n\t\t}\n\n\t\t//perform scheme specific parsing\n\t\tif (schemeHandler && schemeHandler.parse) {\n\t\t\tschemeHandler.parse(components, options);\n\t\t}\n\t} else {\n\t\tcomponents.error = components.error || \"URI can not be parsed.\";\n\t}\n\n\treturn components;\n};\n\nfunction _recomposeAuthority(components:URIComponents, options:URIOptions):string|undefined {\n\tconst protocol = (options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL);\n\tconst uriTokens:Array<string> = [];\n\n\tif (components.userinfo !== undefined) {\n\t\turiTokens.push(components.userinfo);\n\t\turiTokens.push(\"@\");\n\t}\n\n\tif (components.host !== undefined) {\n\t\t//normalize IP hosts, add brackets and escape zone separator for IPv6\n\t\turiTokens.push(_normalizeIPv6(_normalizeIPv4(String(components.host), protocol), protocol).replace(protocol.IPV6ADDRESS, (_, $1, $2) => \"[\" + $1 + ($2 ? \"%25\" + $2 : \"\") + \"]\"));\n\t}\n\n\tif (typeof components.port === \"number\") {\n\t\turiTokens.push(\":\");\n\t\turiTokens.push(components.port.toString(10));\n\t}\n\n\treturn uriTokens.length ? uriTokens.join(\"\") : undefined;\n};\n\nconst RDS1 = /^\\.\\.?\\//;\nconst RDS2 = /^\\/\\.(\\/|$)/;\nconst RDS3 = /^\\/\\.\\.(\\/|$)/;\nconst RDS4 = /^\\.\\.?$/;\nconst RDS5 = /^\\/?(?:.|\\n)*?(?=\\/|$)/;\n\nexport function removeDotSegments(input:string):string {\n\tconst output:Array<string> = [];\n\n\twhile (input.length) {\n\t\tif (input.match(RDS1)) {\n\t\t\tinput = input.replace(RDS1, \"\");\n\t\t} else if (input.match(RDS2)) {\n\t\t\tinput = input.replace(RDS2, \"/\");\n\t\t} else if (input.match(RDS3)) {\n\t\t\tinput = input.replace(RDS3, \"/\");\n\t\t\toutput.pop();\n\t\t} else if (input === \".\" || input === \"..\") {\n\t\t\tinput = \"\";\n\t\t} else {\n\t\t\tconst im = input.match(RDS5);\n\t\t\tif (im) {\n\t\t\t\tconst s = im[0];\n\t\t\t\tinput = input.slice(s.length);\n\t\t\t\toutput.push(s);\n\t\t\t} else {\n\t\t\t\tthrow new Error(\"Unexpected dot segment condition\");\n\t\t\t}\n\t\t}\n\t}\n\n\treturn output.join(\"\");\n};\n\nexport function serialize(components:URIComponents, options:URIOptions = {}):string {\n\tconst protocol = (options.iri ? IRI_PROTOCOL : URI_PROTOCOL);\n\tconst uriTokens:Array<string> = [];\n\n\t//find scheme handler\n\tconst schemeHandler = SCHEMES[(options.scheme || components.scheme || \"\").toLowerCase()];\n\n\t//perform scheme specific serialization\n\tif (schemeHandler && schemeHandler.serialize) schemeHandler.serialize(components, options);\n\n\tif (components.host) {\n\t\t//if host component is an IPv6 address\n\t\tif (protocol.IPV6ADDRESS.test(components.host)) {\n\t\t\t//TODO: normalize IPv6 address as per RFC 5952\n\t\t}\n\n\t\t//if host component is a domain name\n\t\telse if (options.domainHost || (schemeHandler && schemeHandler.domainHost)) {\n\t\t\t//convert IDN via punycode\n\t\t\ttry {\n\t\t\t\tcomponents.host = (!options.iri ? punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase()) : punycode.toUnicode(components.host));\n\t\t\t} catch (e) {\n\t\t\t\tcomponents.error = components.error || \"Host's domain name can not be converted to \" + (!options.iri ? \"ASCII\" : \"Unicode\") + \" via punycode: \" + e;\n\t\t\t}\n\t\t}\n\t}\n\n\t//normalize encoding\n\t_normalizeComponentEncoding(components, protocol);\n\n\tif (options.reference !== \"suffix\" && components.scheme) {\n\t\turiTokens.push(components.scheme);\n\t\turiTokens.push(\":\");\n\t}\n\n\tconst authority = _recomposeAuthority(components, options);\n\tif (authority !== undefined) {\n\t\tif (options.reference !== \"suffix\") {\n\t\t\turiTokens.push(\"//\");\n\t\t}\n\n\t\turiTokens.push(authority);\n\n\t\tif (components.path && components.path.charAt(0) !== \"/\") {\n\t\t\turiTokens.push(\"/\");\n\t\t}\n\t}\n\n\tif (components.path !== undefined) {\n\t\tlet s = components.path;\n\n\t\tif (!options.absolutePath && (!schemeHandler || !schemeHandler.absolutePath)) {\n\t\t\ts = removeDotSegments(s);\n\t\t}\n\n\t\tif (authority === undefined) {\n\t\t\ts = s.replace(/^\\/\\//, \"/%2F\");  //don't allow the path to start with \"//\"\n\t\t}\n\n\t\turiTokens.push(s);\n\t}\n\n\tif (components.query !== undefined) {\n\t\turiTokens.push(\"?\");\n\t\turiTokens.push(components.query);\n\t}\n\n\tif (components.fragment !== undefined) {\n\t\turiTokens.push(\"#\");\n\t\turiTokens.push(components.fragment);\n\t}\n\n\treturn uriTokens.join(\"\");  //merge tokens into a string\n};\n\nexport function resolveComponents(base:URIComponents, relative:URIComponents, options:URIOptions = {}, skipNormalization?:boolean):URIComponents {\n\tconst target:URIComponents = {};\n\n\tif (!skipNormalization) {\n\t\tbase = parse(serialize(base, options), options);  //normalize base components\n\t\trelative = parse(serialize(relative, options), options);  //normalize relative components\n\t}\n\toptions = options || {};\n\n\tif (!options.tolerant && relative.scheme) {\n\t\ttarget.scheme = relative.scheme;\n\t\t//target.authority = relative.authority;\n\t\ttarget.userinfo = relative.userinfo;\n\t\ttarget.host = relative.host;\n\t\ttarget.port = relative.port;\n\t\ttarget.path = removeDotSegments(relative.path || \"\");\n\t\ttarget.query = relative.query;\n\t} else {\n\t\tif (relative.userinfo !== undefined || relative.host !== undefined || relative.port !== undefined) {\n\t\t\t//target.authority = relative.authority;\n\t\t\ttarget.userinfo = relative.userinfo;\n\t\t\ttarget.host = relative.host;\n\t\t\ttarget.port = relative.port;\n\t\t\ttarget.path = removeDotSegments(relative.path || \"\");\n\t\t\ttarget.query = relative.query;\n\t\t} else {\n\t\t\tif (!relative.path) {\n\t\t\t\ttarget.path = base.path;\n\t\t\t\tif (relative.query !== undefined) {\n\t\t\t\t\ttarget.query = relative.query;\n\t\t\t\t} else {\n\t\t\t\t\ttarget.query = base.query;\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\tif (relative.path.charAt(0) === \"/\") {\n\t\t\t\t\ttarget.path = removeDotSegments(relative.path);\n\t\t\t\t} else {\n\t\t\t\t\tif ((base.userinfo !== undefined || base.host !== undefined || base.port !== undefined) && !base.path) {\n\t\t\t\t\t\ttarget.path = \"/\" + relative.path;\n\t\t\t\t\t} else if (!base.path) {\n\t\t\t\t\t\ttarget.path = relative.path;\n\t\t\t\t\t} else {\n\t\t\t\t\t\ttarget.path = base.path.slice(0, base.path.lastIndexOf(\"/\") + 1) + relative.path;\n\t\t\t\t\t}\n\t\t\t\t\ttarget.path = removeDotSegments(target.path);\n\t\t\t\t}\n\t\t\t\ttarget.query = relative.query;\n\t\t\t}\n\t\t\t//target.authority = base.authority;\n\t\t\ttarget.userinfo = base.userinfo;\n\t\t\ttarget.host = base.host;\n\t\t\ttarget.port = base.port;\n\t\t}\n\t\ttarget.scheme = base.scheme;\n\t}\n\n\ttarget.fragment = relative.fragment;\n\n\treturn target;\n};\n\nexport function resolve(baseURI:string, relativeURI:string, options?:URIOptions):string {\n\tconst schemelessOptions = assign({ scheme : 'null' }, options);\n\treturn serialize(resolveComponents(parse(baseURI, schemelessOptions), parse(relativeURI, schemelessOptions), schemelessOptions, true), schemelessOptions);\n};\n\nexport function normalize(uri:string, options?:URIOptions):string;\nexport function normalize(uri:URIComponents, options?:URIOptions):URIComponents;\nexport function normalize(uri:any, options?:URIOptions):any {\n\tif (typeof uri === \"string\") {\n\t\turi = serialize(parse(uri, options), options);\n\t} else if (typeOf(uri) === \"object\") {\n\t\turi = parse(serialize(<URIComponents>uri, options), options);\n\t}\n\n\treturn uri;\n};\n\nexport function equal(uriA:string, uriB:string, options?: URIOptions):boolean;\nexport function equal(uriA:URIComponents, uriB:URIComponents, options?:URIOptions):boolean;\nexport function equal(uriA:any, uriB:any, options?:URIOptions):boolean {\n\tif (typeof uriA === \"string\") {\n\t\turiA = serialize(parse(uriA, options), options);\n\t} else if (typeOf(uriA) === \"object\") {\n\t\turiA = serialize(<URIComponents>uriA, options);\n\t}\n\n\tif (typeof uriB === \"string\") {\n\t\turiB = serialize(parse(uriB, options), options);\n\t} else if (typeOf(uriB) === \"object\") {\n\t\turiB = serialize(<URIComponents>uriB, options);\n\t}\n\n\treturn uriA === uriB;\n};\n\nexport function escapeComponent(str:string, options?:URIOptions):string {\n\treturn str && str.toString().replace((!options || !options.iri ? URI_PROTOCOL.ESCAPE : IRI_PROTOCOL.ESCAPE), pctEncChar);\n};\n\nexport function unescapeComponent(str:string, options?:URIOptions):string {\n\treturn str && str.toString().replace((!options || !options.iri ? URI_PROTOCOL.PCT_ENCODED : IRI_PROTOCOL.PCT_ENCODED), pctDecChars);\n};\n","'use strict';\n\n/** Highest positive signed 32-bit float value */\nconst maxInt = 2147483647; // aka. 0x7FFFFFFF or 2^31-1\n\n/** Bootstring parameters */\nconst base = 36;\nconst tMin = 1;\nconst tMax = 26;\nconst skew = 38;\nconst damp = 700;\nconst initialBias = 72;\nconst initialN = 128; // 0x80\nconst delimiter = '-'; // '\\x2D'\n\n/** Regular expressions */\nconst regexPunycode = /^xn--/;\nconst regexNonASCII = /[^\\0-\\x7E]/; // non-ASCII chars\nconst regexSeparators = /[\\x2E\\u3002\\uFF0E\\uFF61]/g; // RFC 3490 separators\n\n/** Error messages */\nconst errors = {\n\t'overflow': 'Overflow: input needs wider integers to process',\n\t'not-basic': 'Illegal input >= 0x80 (not a basic code point)',\n\t'invalid-input': 'Invalid input'\n};\n\n/** Convenience shortcuts */\nconst baseMinusTMin = base - tMin;\nconst floor = Math.floor;\nconst stringFromCharCode = String.fromCharCode;\n\n/*--------------------------------------------------------------------------*/\n\n/**\n * A generic error utility function.\n * @private\n * @param {String} type The error type.\n * @returns {Error} Throws a `RangeError` with the applicable error message.\n */\nfunction error(type) {\n\tthrow new RangeError(errors[type]);\n}\n\n/**\n * A generic `Array#map` utility function.\n * @private\n * @param {Array} array The array to iterate over.\n * @param {Function} callback The function that gets called for every array\n * item.\n * @returns {Array} A new array of values returned by the callback function.\n */\nfunction map(array, fn) {\n\tconst result = [];\n\tlet length = array.length;\n\twhile (length--) {\n\t\tresult[length] = fn(array[length]);\n\t}\n\treturn result;\n}\n\n/**\n * A simple `Array#map`-like wrapper to work with d{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+
+    /* Projects */
+
+    /* Language and Environment */
+    "target": "ESNext",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    // "lib": [],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+    // "noLib": true,                                    /* Disable including any library files, including the default lib.d.ts. */
+    "useDefineForClassFields": true,                     /* Emit ECMAScript-standard-compliant class fields. */
+    // "moduleDetection": "auto",                        /* Control what method is used to detect module-format JS files. */
+
+    /* Modules */
+    "module": "commonjs",                                /* Specify what module code is generated. */
+    // "rootDir": "./",                                  /* Specify the root folder within your source files. */
+    // "moduleResolution": "node10",                     /* Specify how TypeScript looks up a file from a given module specifier. */
+    // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
+    // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
+    // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
+    "typeRoots": ["types"],                              /* Specify multiple folders that act like './node_modules/@types'. */
+    "resolveJsonModule": true,                           /* Enable importing .json files. */
+    // "allowArbitraryExtensions": true,                 /* Enable importing files with any extension, provided a declaration file is present. */
+
+    /* JavaScript Support */
+    "allowJs": true,                                     /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
+    "checkJs": true,                                     /* Enable error reporting in type-checked JavaScript files. */
+    "maxNodeModuleJsDepth": 0,                           /* Specify the maximum folder depth used for checking JavaScript files from 'node_modules'. Only applicable with 'allowJs'. */
+
+    /* Emit */
+    "declaration": true,                                 /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
+    "declarationMap": true,                              /* Create sourcemaps for d.ts files. */
+    "noEmit": true,                                      /* Disable emitting files from a compilation. */
+
+    /* Interop Constraints */
+    "allowSyntheticDefaultImports": true,                /* Allow 'import x from y' when a module doesn't have a default export. */
+    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
+
+    /* Type Checking */
+    "strict": true,                                      /* Enable all strict type-checking options. */
+
+    /* Completeness */
+    //"skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+  },
+  "exclude": [
+    "coverage"
+  ]
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     'use strict';
+
+var utils = require('../utils');
+var common = require('../common');
+var shaCommon = require('./common');
+
+var rotl32 = utils.rotl32;
+var sum32 = utils.sum32;
+var sum32_5 = utils.sum32_5;
+var ft_1 = shaCommon.ft_1;
+var BlockHash = common.BlockHash;
+
+var sha1_K = [
+  0x5A827999, 0x6ED9EBA1,
+  0x8F1BBCDC, 0xCA62C1D6
+];
+
+function SHA1() {
+  if (!(this instanceof SHA1))
+    return new SHA1();
+
+  BlockHash.call(this);
+  this.h = [
+    0x67452301, 0xefcdab89, 0x98badcfe,
+    0x10325476, 0xc3d2e1f0 ];
+  this.W = new Array(80);
+}
+
+utils.inherits(SHA1, BlockHash);
+module.exports = SHA1;
+
+SHA1.blockSize = 512;
+SHA1.outSize = 160;
+SHA1.hmacStrength = 80;
+SHA1.padLength = 64;
+
+SHA1.prototype._update = function _update(msg, start) {
+  var W = this.W;
+
+  for (var i = 0; i < 16; i++)
+    W[i] = msg[start + i];
+
+  for(; i < W.length; i++)
+    W[i] = rotl32(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
+
+  var a = this.h[0];
+  var b = this.h[1];
+  var c = this.h[2];
+  var d = this.h[3];
+  var e = this.h[4];
+
+  for (i = 0; i < W.length; i++) {
+    var s = ~~(i / 20);
+    var t = sum32_5(rotl32(a, 5), ft_1(s, b, c, d), e, W[i], sha1_K[s]);
+    e = d;
+    d = c;
+    c = rotl32(b, 30);
+    b = a;
+    a = t;
+  }
+
+  this.h[0] = sum32(this.h[0], a);
+  this.h[1] = sum32(this.h[1], b);
+  this.h[2] = sum32(this.h[2], c);
+  this.h[3] = sum32(this.h[3], d);
+  this.h[4] = sum32(this.h[4], e);
+};
+
+SHA1.prototype._digest = function digest(enc) {
+  if (enc === 'hex')
+    return utils.toHex32(this.h, 'big');
+  else
+    return utils.split32(this.h, 'big');
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 /*
+ MIT License http://www.opensource.org/licenses/mit-license.php
+ Author Tobias Koppers @sokra
+ */
+
+"use strict";
+
+const { ConcatSource } = require("webpack-sources");
+const Template = require("./Template");
+
+/** @typedef {import("./Compilation")} Compilation */
+
+/**
+ * @typedef {Object} AmdMainTemplatePluginOptions
+ * @param {string=} name the library name
+ * @property {boolean=} requireAsWrapper
+ */
+
+class AmdMainTemplatePlugin {
+	/**
+	 * @param {AmdMainTemplatePluginOptions} options the plugin options
+	 */
+	constructor(options) {
+		if (!options || typeof options === "string") {
+			this.name = options;
+			this.requireAsWrapper = false;
+		} else {
+			this.name = options.name;
+			this.requireAsWrapper = options.requireAsWrapper;
+		}
+	}
+
+	/**
+	 * @param {Compilation} compilation the compilation instance
+	 * @returns {void}
+	 */
+	apply(compilation) {
+		const { mainTemplate, chunkTemplate } = compilation;
+
+		const onRenderWithEntry = (source, chunk, hash) => {
+			const externals = chunk.getModules().filter(m => m.external);
+			const externalsDepsArray = JSON.stringify(
+				externals.map(m =>
+					typeof m.request === "object" ? m.request.amd : m.request
+				)
+			);
+			const externalsArguments = externals
+				.map(
+					m => `__WEBPACK_EXTERNAL_MODULE_${Template.toIdentifier(`${m.id}`)}__`
+				)
+				.join(", ");
+
+			if (this.requireAsWrapper) {
+				return new ConcatSource(
+					`require(${externalsDepsArray}, function(${externalsArguments}) { return `,
+					source,
+					"});"
+				);
+			} else if (this.name) {
+				const name = mainTemplate.getAssetPath(this.name, {
+					hash,
+					chunk
+				});
+
+				return new ConcatSource(
+					`define(${JSON.stringify(
+						name
+					)}, ${externalsDepsArray}, function(${externalsArguments}) { return `,
+					source,
+					"});"
+				);
+			} else if (externalsArguments) {
+				return new ConcatSource(
+					`define(${externalsDepsArray}, function(${externalsArguments}) { return `,
+					source,
+					"});"
+				);
+			} else {
+				return new ConcatSource("define(function() { return ", source, "});");
+			}
+		};
+
+		for (const template of [mainTemplate, chunkTemplate]) {
+			template.hooks.renderWithEntry.tap(
+				"AmdMainTemplatePlugin",
+				onRenderWithEntry
+			);
+		}
+
+		mainTemplate.hooks.globalHashPaths.tap("AmdMainTemplatePlugin", paths => {
+			if (this.name) {
+				paths.push(this.name);
+			}
+			return paths;
+		});
+
+		mainTemplate.hooks.hash.tap("AmdMainTemplatePlugin", hash => {
+			hash.update("exports amd");
+			if (this.name) {
+				hash.update(this.name);
+			}
+		});
+	}
+}
+
+module.exports = AmdMainTemplatePlugin;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'use strict';
+var immediate = require('immediate');
+
+/* istanbul ignore next */
+function INTERNAL() {}
+
+var handlers = {};
+
+var REJECTED = ['REJECTED'];
+var FULFILLED = ['FULFILLED'];
+var PENDING = ['PENDING'];
+/* istanbul ignore else */
+if (!process.browser) {
+  // in which we actually take advantage of JS scoping
+  var UNHANDLED = ['UNHANDLED'];
+}
+
+module.exports = Promise;
+
+function Promise(resolver) {
+  if (typeof resolver !== 'function') {
+    throw new TypeError('resolver must be a function');
+  }
+  this.state = PENDING;
+  this.queue = [];
+  this.outcome = void 0;
+  /* istanbul ignore else */
+  if (!process.browser) {
+    this.handled = UNHANDLED;
+  }
+  if (resolver !== INTERNAL) {
+    safelyResolveThenable(this, resolver);
+  }
+}
+
+Promise.prototype.finally = function (callback) {
+  if (typeof callback !== 'function') {
+    return this;
+  }
+  var p = this.constructor;
+  return this.then(resolve, reject);
+
+  function resolve(value) {
+    function yes () {
+      return value;
+    }
+    return p.resolve(callback()).then(yes);
+  }
+  function reject(reason) {
+    function no () {
+      throw reason;
+    }
+    return p.resolve(callback()).then(no);
+  }
+};
+Promise.prototype.catch = function (onRejected) {
+  return this.then(null, onRejected);
+};
+Promise.prototype.then = function (onFulfilled, onRejected) {
+  if (typeof onFulfilled !== 'function' && this.state === FULFILLED ||
+    typeof onRejected !== 'function' && this.state === REJECTED) {
+    return this;
+  }
+  var promise = new this.constructor(INTERNAL);
+  /* istanbul ignore else */
+  if (!process.browser) {
+    if (this.handled === UNHANDLED) {
+      this.handled = null;
+    }
+  }
+  if (this.state !== PENDING) {
+    var resolver = this.state === FULFILLED ? onFulfilled : onRejected;
+    unwrap(promise, resolver, this.outcome);
+  } else {
+    this.queue.push(new QueueItem(promise, onFulfilled, onRejected));
+  }
+
+  return promise;
+};
+function QueueItem(promise, onFulfilled, onRejected) {
+  this.promise = promise;
+  if (typeof onFulfilled === 'function') {
+    this.onFulfilled = onFulfilled;
+    this.callFulfilled = this.otherCallFulfilled;
+  }
+  if (typeof onRejected === 'function') {
+    this.onRejected = onRejected;
+    this.callRejected = this.otherCallRejected;
+  }
+}
+QueueItem.prototype.callFulfilled = function (value) {
+  handlers.resolve(this.promise, value);
+};
+QueueItem.prototype.otherCallFulfilled = function (value) {
+  unwrap(this.promise, this.onFulfilled, value);
+};
+QueueItem.prototype.callRejected = function (value) {
+  handlers.reject(this.promise, value);
+};
+QueueItem.prototype.otherCallRejected = function (value) {
+  unwrap(this.promise, this.onRejected, value);
+};
+
+function unwrap(promise, func, value) {
+  immediate(function () {
+    var returnValue;
+    try {
+      returnValue = func(value);
+    } catch (e) {
+      return handlers.reject(promise, e);
+    }
+    if (returnValue === promise) {
+      handlers.reject(promise, new TypeError('Cannot resolve promise with itself'));
+    } else {
+      handlers.resolve(promise, returnValue);
+    }
+  });
+}
+
+handlers.resolve = function (self, value) {
+  var result = tryCatch(getThen, value);
+  if (result.status === 'error') {
+    return handlers.reject(self, result.value);
+  }
+  var thenable = result.value;
+
+  if (thenable) {
+    safelyResolveThenable(self, thenable);
+  } else {
+    self.state = FULFILLED;
+    self.outcome = value;
+    var i = -1;
+    var len = self.queue.length;
+    while (++i < len) {
+      self.queue[i].callFulfilled(value);
+    }
+  }
+  return self;
+};
+handlers.reject = function (self, error) {
+  self.state = REJECTED;
+  self.outcome = error;
+  /* istanbul ignore else */
+  if (!process.browser) {
+    if (self.handled === UNHANDLED) {
+      immediate(function () {
+        if (self.handled === UNHANDLED) {
+          process.emit('unhandledRejection', error, self);
+        }
+      });
+    }
+  }
+  var i = -1;
+  var len = self.queue.length;
+  while (++i < len) {
+    self.queue[i].callRejected(error);
+  }
+  return self;
+};
+
+function getThen(obj) {
+  // Make sure we only access the accessor once as r// Copyright 2015 Joyent, Inc.
+
+var assert = require('assert-plus');
+var crypto = require('crypto');
+var sshpk = require('sshpk');
+var utils = require('./utils');
+
+var HASH_ALGOS = utils.HASH_ALGOS;
+var PK_ALGOS = utils.PK_ALGOS;
+var InvalidAlgorithmError = utils.InvalidAlgorithmError;
+var HttpSignatureError = utils.HttpSignatureError;
+var validateAlgorithm = utils.validateAlgorithm;
+
+///--- Exported API
+
+module.exports = {
+  /**
+   * Verify RSA/DSA signature against public key.  You are expected to pass in
+   * an object that was returned from `parse()`.
+   *
+   * @param {Object} parsedSignature the object you got from `parse`.
+   * @param {String} pubkey RSA/DSA private key PEM.
+   * @return {Boolean} true if valid, false otherwise.
+   * @throws {TypeError} if you pass in bad arguments.
+   * @throws {InvalidAlgorithmError}
+   */
+  verifySignature: function verifySignature(parsedSignature, pubkey) {
+    assert.object(parsedSignature, 'parsedSignature');
+    if (typeof (pubkey) === 'string' || Buffer.isBuffer(pubkey))
+      pubkey = sshpk.parseKey(pubkey);
+    assert.ok(sshpk.Key.isKey(pubkey, [1, 1]), 'pubkey must be a sshpk.Key');
+
+    var alg = validateAlgorithm(parsedSignature.algorithm);
+    if (alg[0] === 'hmac' || alg[0] !== pubkey.type)
+      return (false);
+
+    var v = pubkey.createVerify(alg[1]);
+    v.update(parsedSignature.signingString);
+    return (v.verify(parsedSignature.params.signature, 'base64'));
+  },
+
+  /**
+   * Verify HMAC against shared secret.  You are expected to pass in an object
+   * that was returned from `parse()`.
+   *
+   * @param {Object} parsedSignature the object you got from `parse`.
+   * @param {String} secret HMAC shared secret.
+   * @return {Boolean} true if valid, false otherwise.
+   * @throws {TypeError} if you pass in bad arguments.
+   * @throws {InvalidAlgorithmError}
+   */
+  verifyHMAC: function verifyHMAC(parsedSignature, secret) {
+    assert.object(parsedSignature, 'parsedHMAC');
+    assert.string(secret, 'secret');
+
+    var alg = validateAlgorithm(parsedSignature.algorithm);
+    if (alg[0] !== 'hmac')
+      return (false);
+
+    var hashAlg = alg[1].toUpperCase();
+
+    var hmac = crypto.createHmac(hashAlg, secret);
+    hmac.update(parsedSignature.signingString);
+
+    /*
+     * Now double-hash to avoid leaking timing information - there's
+     * no easy constant-time compare in JS, so we use this approach
+     * instead. See for more info:
+     * https://www.isecpartners.com/blog/2011/february/double-hmac-
+     * verification.aspx
+     */
+    var h1 = crypto.createHmac(hashAlg, secret);
+    h1.update(hmac.digest());
+    h1 = h1.digest();
+    var h2 = crypto.createHmac(hashAlg, secret);
+    h2.update(new Buffer(parsedSignature.params.signature, 'base64'));
+    h2 = h2.digest();
+
+    /* Node 0.8 returns strings from .digest(). */
+    if (typeof (h1) === 'string')
+      return (h1 === h2);
+    /* And node 0.10 lacks the .equals() method on Buffers. */
+    if (Buffer.isBuffer(h1) && !h1.equals)
+      return (h1.toString('binary') === h2.toString('binary'));
+
+    return (h1.equals(h2));
+  }
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                /// <reference types="node" />
+/// <reference types="node" />
+/// <reference types="node" />
+/// <reference types="node" />
+import * as net from 'net';
+import * as tls from 'tls';
+import * as http from 'http';
+import { Agent, AgentConnectOpts } from 'agent-base';
+import { URL } from 'url';
+import type { OutgoingHttpHeaders } from 'http';
+type Protocol<T> = T extends `${infer Protocol}:${infer _}` ? Protocol : never;
+type ConnectOptsMap = {
+    http: Omit<net.TcpNetConnectOpts, 'host' | 'port'>;
+    https: Omit<tls.ConnectionOptions, 'host' | 'port'>;
+};
+type ConnectOpts<T> = {
+    [P in keyof ConnectOptsMap]: Protocol<T> extends P ? ConnectOptsMap[P] : never;
+}[keyof ConnectOptsMap];
+export type HttpsProxyAgentOptions<T> = ConnectOpts<T> & http.AgentOptions & {
+    headers?: OutgoingHttpHeaders | (() => OutgoingHttpHeaders);
+};
+/**
+ * The `HttpsProxyAgent` implements an HTTP Agent subclass that connects to
+ * the specified "HTTP(s) proxy server" in order to proxy HTTPS requests.
+ *
+ * Outgoing HTTP requests are first tunneled through the proxy server using the
+ * `CONNECT` HTTP request method to establish a connection to the proxy server,
+ * and then the proxy server connects to the destination target and issues the
+ * HTTP request from the proxy server.
+ *
+ * `https:` requests have their socket connection upgraded to TLS once
+ * the connection to the proxy server has been established.
+ */
+export declare class HttpsProxyAgent<Uri extends string> extends Agent {
+    static protocols: readonly ["http", "https"];
+    readonly proxy: URL;
+    proxyHeaders: OutgoingHttpHeaders | (() => OutgoingHttpHeaders);
+    connectOpts: net.TcpNetConnectOpts & tls.ConnectionOptions;
+    constructor(proxy: Uri | URL, opts?: HttpsProxyAgentOptions<Uri>);
+    /**
+     * Called when the node-core HTTP client library is creating a
+     * new HTTP request.
+     */
+    connect(req: http.ClientRequest, opts: AgentConnectOpts): Promise<net.Socket>;
+}
+export {};
+//# sourceMappingURL=index.d.ts.map                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'use strict';
+var toIndexedObject = require('../internals/to-indexed-object');
+var toAbsoluteIndex = require('../internals/to-absolute-index');
+var lengthOfArrayLike = require('../internals/length-of-array-like');
+
+// `Array.prototype.{ indexOf, includes }` methods implementation
+var createMethod = function (IS_INCLUDES) {
+  return function ($this, el, fromIndex) {
+    var O = toIndexedObject($this);
+    var length = lengthOfArrayLike(O);
+    if (length === 0) return !IS_INCLUDES && -1;
+    var index = toAbsoluteIndex(fromIndex, length);
+    var value;
+    // Array#includes uses SameValueZero equality algorithm
+    // eslint-disable-next-line no-self-compare -- NaN check
+    if (IS_INCLUDES && el !== el) while (length > index) {
+      value = O[index++];
+      // eslint-disable-next-line no-self-compare -- NaN check
+      if (value !== value) return true;
+    // Array#indexOf ignores holes, Array#includes - not
+    } else for (;length > index; index++) {
+      if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
+    } return !IS_INCLUDES && -1;
+  };
+};
+
+module.exports = {
+  // `Array.prototype.includes` method
+  // https://tc39.es/ecma262/#sec-array.prototype.includes
+  includes: createMethod(true),
+  // `Array.prototype.indexOf` method
+  // https://tc39.es/ecma262/#sec-array.prototype.indexof
+  indexOf: createMethod(false)
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProgressTracker = void 0;
+/**
+ * Tracks progress of one socket data transfer at a time.
+ */
+class ProgressTracker {
+    constructor() {
+        this.bytesOverall = 0;
+        this.intervalMs = 500;
+        this.onStop = noop;
+        this.onHandle = noop;
+    }
+    /**
+     * Register a new handler for progress info. Use `undefined` to disable reporting.
+     */
+    reportTo(onHandle = noop) {
+        this.onHandle = onHandle;
+    }
+    /**
+     * Start tracking transfer progress of a socket.
+     *
+     * @param socket  The socket to observe.
+     * @param name  A name associated with this progress tracking, e.g. a filename.
+     * @param type  The type of the transfer, typically "upload" or "download".
+     */
+    start(socket, name, type) {
+        let lastBytes = 0;
+        this.onStop = poll(this.intervalMs, () => {
+            const bytes = socket.bytesRead + socket.bytesWritten;
+            this.bytesOverall += bytes - lastBytes;
+            lastBytes = bytes;
+            this.onHandle({
+                name,
+                type,
+                bytes,
+                bytesOverall: this.bytesOverall
+            });
+        });
+    }
+    /**
+     * Stop tracking transfer progress.
+     */
+    stop() {
+        this.onStop(false);
+    }
+    /**
+     * Call the progress handler one more time, then stop tracking.
+     */
+    updateAndStop() {
+        this.onStop(true);
+    }
+}
+exports.ProgressTracker = ProgressTracker;
+/**
+ * Starts calling a callback function at a regular interval. The first call will go out
+ * immediately. The function returns a function to stop the polling.
+ */
+function poll(intervalMs, updateFunc) {
+    const id = setInterval(updateFunc, intervalMs);
+    const stopFunc = (stopWithUpdate) => {
+        clearInterval(id);
+        if (stopWithUpdate) {
+            updateFunc();
+        }
+        // Prevent repeated calls to stop calling handler.
+        updateFunc = noop;
+    };
+    updateFunc();
+    return stopFunc;
+}
+function noop() { }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 

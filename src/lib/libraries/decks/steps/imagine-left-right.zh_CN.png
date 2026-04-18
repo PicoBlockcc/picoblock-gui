@@ -1,0 +1,1840 @@
+/vnd.hbci": {
+    "source": "iana",
+    "extensions": ["hbci"]
+  },
+  "application/vnd.hc+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hcl-bireports": {
+    "source": "iana"
+  },
+  "application/vnd.hdt": {
+    "source": "iana"
+  },
+  "application/vnd.heroku+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hhe.lesson-player": {
+    "source": "iana",
+    "extensions": ["les"]
+  },
+  "application/vnd.hp-hpgl": {
+    "source": "iana",
+    "extensions": ["hpgl"]
+  },
+  "application/vnd.hp-hpid": {
+    "source": "iana",
+    "extensions": ["hpid"]
+  },
+  "application/vnd.hp-hps": {
+    "source": "iana",
+    "extensions": ["hps"]
+  },
+  "application/vnd.hp-jlyt": {
+    "source": "iana",
+    "extensions": ["jlt"]
+  },
+  "application/vnd.hp-pcl": {
+    "source": "iana",
+    "extensions": ["pcl"]
+  },
+  "application/vnd.hp-pclxl": {
+    "source": "iana",
+    "extensions": ["pclxl"]
+  },
+  "application/vnd.httphone": {
+    "source": "iana"
+  },
+  "application/vnd.hydrostatix.sof-data": {
+    "source": "iana",
+    "extensions": ["sfd-hdstx"]
+  },
+  "application/vnd.hyper+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hyper-item+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hyperdrive+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hzn-3d-crossword": {
+    "source": "iana"
+  },
+  "application/vnd.ibm.afplinedata": {
+    "source": "iana"
+  },
+  "application/vnd.ibm.electronic-media": {
+    "source": "iana"
+  },
+  "application/vnd.ibm.minipay": {
+    "source": "iana",
+    "extensions": ["mpy"]
+  },
+  "application/vnd.ibm.modcap": {
+    "source": "iana",
+    "extensions": ["afp","listafp","list3820"]
+  },
+  "application/vnd.ibm.rights-management": {
+    "source": "iana",
+    "extensions": ["irm"]
+  },
+  "application/vnd.ibm.secure-container": {
+    "source": "iana",
+    "extensions": ["sc"]
+  },
+  "application/vnd.iccprofile": {
+    "source": "iana",
+    "extensions": ["icc","icm"]
+  },
+  "application/vnd.ieee.1905": {
+    "source": "iana"
+  },
+  "application/vnd.igloader": {
+    "source": "iana",
+    "extensions": ["igl"]
+  },
+  "application/vnd.imagemeter.folder+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/vnd.imagemeter.image+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/vnd.immervision-ivp": {
+    "source": "iana",
+    "extensions": ["ivp"]
+  },
+  "application/vnd.immervision-ivu": {
+    "source": "iana",
+    "extensions": ["ivu"]
+  },
+  "application/vnd.ims.imsccv1p1": {
+    "source": "iana"
+  },
+  "application/vnd.ims.imsccv1p2": {
+    "source": "iana"
+  },
+  "application/vnd.ims.imsccv1p3": {
+    "source": "iana"
+  },
+  "application/vnd.ims.lis.v2.result+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolconsumerprofile+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolproxy+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolproxy.id+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolsettings+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolsettings.simple+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.informedcontrol.rms+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.informix-visionary": {
+    "source": "iana"
+  },
+  "application/vnd.infotech.project": {
+    "source": "iana"
+  },
+  "application/vnd.infotech.project+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.innopath.wamp.notification": {
+    "source": "iana"
+  },
+  "application/vnd.insors.igm": {
+    "source": "iana",
+    "extensions": ["igm"]
+  },
+  "application/vnd.intercon.formnet": {
+    "source": "iana",
+    "extensions": ["xpw","xpx"]
+  },
+  "application/vnd.intergeo": {
+    "source": "iana",
+    "extensions": ["i2g"]
+  },
+  "application/vnd.intertrust.digibox": {
+    "source": "iana"
+  },
+  "application/vnd.intertrust.nncp": {
+    "source": "iana"
+  },
+  "application/vnd.intu.qbo": {
+    "source": "iana",
+    "extensions": ["qbo"]
+  },
+  "application/vnd.intu.qfx": {
+    "source": "iana",
+    "extensions": ["qfx"]
+  },
+  "application/vnd.iptc.g2.catalogitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.conceptitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.knowledgeitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.newsitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.newsmessage+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.packageitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.planningitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ipunplugged.rcprofile": {
+    "source": "iana",
+    "extensions": ["rcprofile"]
+  },
+  "application/vnd.irepository.package+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["irp"]
+  },
+  "application/vnd.is-xpr": {
+    "source": "iana",
+    "extensions": ["xpr"]
+  },
+  "application/vnd.isac.fcs": {
+    "source": "iana",
+    "extensions": ["fcs"]
+  },
+  "application/vnd.iso11783-10+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/vnd.jam": {
+    "source": "iana",
+    "extensions": ["jam"]
+  },
+  "application/vnd.japannet-directory-service": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-jpnstore-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-payment-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-registration": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-registration-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-setstore-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-verification": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-verification-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.jcp.javame.midlet-rms": {
+    "source": "iana",
+    "extensions": ["rms"]
+  },
+  "application/vnd.jisp": {
+    "source": "iana",
+    "extensions": ["jisp"]
+  },
+  "application/vnd.joost.joda-archive": {
+    "source": "iana",
+    "extensions": ["joda"]
+  },
+  "application/vnd.jsk.isdn-ngn": {
+    "source": "iana"
+  },
+  "application/vnd.kahootz": {
+    "source": "iana",
+    "extensions": ["ktz","ktr"]
+  },
+  "application/vnd.kde.karbon": {
+    "source": "iana",
+    "extensions": ["karbon"]
+  },
+  "application/vnd.kde.kchart": {
+    "source": "iana",
+    "extensions": ["chrt"]
+  },
+  "application/vnd.kde.kformula": {
+    "source": "iana",
+    "extensions": ["kfo"]
+  },
+  "application/vnd.kde.kivio": {
+    "source": "iana",
+    "extensions": ["flw"]
+  },
+  "application/vnd.kde.kontour": {
+    "source": "iana",
+    "extensions": ["kon"]
+  },
+  "application/vnd.kde.kpresenter": {
+    "source": "iana",
+    "extensions": ["kpr","kpt"]
+  },
+  "application/vnd.kde.kspread": {
+    "source": "iana",
+    "extensions": ["ksp"]
+  },
+  "application/vnd.kde.kword": {
+    "source": "iana",
+    "extensions": ["kwd","kwt"]
+  },
+  "application/vnd.kenameaapp": {
+    "source": "iana",
+    "extensions": ["htke"]
+  },
+  "application/vnd.kidspiration": {
+    "source": "iana",
+    "extensions": ["kia"]
+  },
+  "application/vnd.kinar": {
+    "source": "iana",
+    "extensions": ["kne","knp"]
+  },
+  "application/vnd.koan": {
+    "source": "iana",
+    "extensions": ["skp","skd","skt","skm"]
+  },
+  "application/vnd.kodak-descriptor": {
+    "source": "iana",
+    "extensions": ["sse"]
+  },
+  "application/vnd.las": {
+    "source": "iana"
+  },
+  "application/vnd.las.las+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.las.las+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["lasxml"]
+  },
+  "application/vnd.laszip": {
+    "source": "iana"
+  },
+  "application/vnd.leap+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.liberty-request+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.llamagraphics.life-balance.desktop": {
+    "source": "iana",
+    "extensions": ["lbd"]
+  },
+  "application/vnd.llamagraphics.life-balance.exchange+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["lbe"]
+  },
+  "application/vnd.logipipe.circuit+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/vnd.loom": {
+    "source": "iana"
+  },
+  "application/vnd.lotus-1-2-3": {
+    "source": "iana",
+    "extensions": ["123"]
+  },
+  "application/vnd.lotus-approach": {
+    "source": "iana",
+    "extensions": ["apr"]
+  },
+  "application/vnd.lotus-freelance": {
+    "source": "iana",
+    "extensions": ["pre"]
+  },
+  "application/vnd.lotus-notes": {
+    "source": "iana",
+    "extensions": ["nsf"]
+  },
+  "application/vnd.lotus-organizer": {
+    "source": "iana",
+    "extensions": ["org"]
+  },
+  "application/vnd.lotus-screencam": {
+    "source": "iana",
+    "extensions": ["scm"]
+  },
+  "application/vnd.lotus-wordpro": {
+    "source": "iana",
+    "extensions": ["lwp"]
+  },
+  "application/vnd.macports.portpkg": {
+    "source": "iana",
+    "extensions": ["portpkg"]
+  },
+  "application/vnd.mapbox-vector-tile": {
+    "source": "iana"
+  },
+  "application/vnd.marlin.drm.actiontoken+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.marlin.drm.conftoken+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.marlin.drm.license+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.marlin.drm.mdcf": {
+    "source": "iana"
+  },
+  "application/vnd.mason+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.maxmind.maxmind-db": {
+    "source": "iana"
+  },
+  "application/vnd.mcd": {
+    "source": "iana",
+    "extensions": ["mcd"]
+  },
+  "application/vnd.medcalcdata": {
+    "source": "iana",
+    "extensions": ["mc1"]
+  },
+  "application/vnd.mediastation.cdkey": {
+    "source": "iana",
+    "extensions": ["cdkey"]
+  },
+  "application/vnd.meridian-slingshot": {
+    "source": "iana"
+  },
+  "application/vnd.mfer": {
+    "source": "iana",
+    "extensions": ["mwf"]
+  },
+  "application/vnd.mfmp": {
+    "source": "iana",
+    "extensions": ["mfm"]
+  },
+  "application/vnd.micro+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.micrografx.flo": {
+    "source": "iana",
+    "extensions": ["flo"]
+  },
+  "application/vnd.micrografx.igx": {
+    "source": "iana",
+    "extensions": ["igx"]
+  },
+  "application/vnd.microsoft.portable-executable": {
+    "source": "iana"
+  },
+  "application/vnd.microsoft.windows.thumbnail-cache": {
+    "source": "iana"
+  },
+  "application/vnd.miele+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.mif": {
+    "source": "iana",
+    "extensions": ["mif"]
+  },
+  "application/vnd.minisoft-hp3000-save": {
+    "source": "iana"
+  },
+  "application/vnd.mitsubishi.misty-guard.trustweb": {
+    "source": "iana"
+  },
+  "application/vnd.mobius.daf": {
+    "source": "iana",
+    "extensions": ["daf"]
+  },
+  "application/vnd.mobius.dis": {
+    "source": "iana",
+    "extensions": ["dis"]
+  },
+  "application/vnd.mobius.mbk": {
+    "source": "iana",
+    "extensions": ["mbk"]
+  },
+  "application/vnd.mobius.mqy": {
+    "source": "iana",
+    "extensions": ["mqy"]
+  },
+  "application/vnd.mobius.msl": {
+    "source": "iana",
+    "extensions": ["msl"]
+  },
+  "application/vnd.mobius.plc": {
+    "source": "iana",
+    "extensions": ["plc"]
+  },
+  "application/vnd.mobius.txf": {
+    "source": "iana",
+    "extensions": ["txf"]
+  },
+  "application/vnd.mophun.application": {
+    "source": "iana",
+    "extensions": ["mpn"]
+  },
+  "application/vnd.mophun.certificate": {
+    "source": "iana",
+    "extensions": ["mpc"]
+  },
+  "application/vnd.motorola.flexsuite": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.adsi": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.fis": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.gotap": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.kmr": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.ttc": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.wem": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.iprm": {
+    "source": "iana"
+  },
+  "application/vnd.mozilla.xul+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xul"]
+  },
+  "application/vnd.ms-3mfdocument": {
+    "source": "iana"
+  },
+  "application/vnd.ms-artgalry": {
+    "source": "iana",
+    "extensions": ["cil"]
+  },
+  "application/vnd.ms-asf": {
+    "source": "iana"
+  },
+  "application/vnd.ms-cab-compressed": {
+    "source": "iana",
+    "extensions": ["cab"]
+  },
+  "application/vnd.ms-color.iccprofile": {
+    "source": "apache"
+  },
+  "application/vnd.ms-excel": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["xls","xlm","xla","xlc","xlt","xlw"]
+  },
+  "application/vnd.ms-excel.addin.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["xlam"]
+  },
+  "application/vnd.ms-excel.sheet.binary.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["xlsb"]
+  },
+  "application/vnd.ms-excel.sheet.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["xlsm"]
+  },
+  "application/vnd.ms-excel.template.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["xltm"]
+  },
+  "application/vnd.ms-fontobject": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["eot"]
+  },
+  "application/vnd.ms-htmlhelp": {
+    "source": "iana",
+    "extensions": ["chm"]
+  },
+  "application/vnd.ms-ims": {
+    "source": "iana",
+    "extensions": ["ims"]
+  },
+  "application/vnd.ms-lrm": {
+    "source": "iana",
+    "extensions": ["lrm"]
+  },
+  "application/vnd.ms-office.activex+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ms-officetheme": {
+    "source": "iana",
+    "extensions": ["thmx"]
+  },
+  "application/vnd.ms-opentype": {
+    "source": "apache",
+    "compressible": true
+  },
+  "application/vnd.ms-outlook": {
+    "compressible": false,
+    "extensions": ["msg"]
+  },
+  "application/vnd.ms-package.obfuscated-opentype": {
+    "source": "apache"
+  },
+  "application/vnd.ms-pki.seccat": {
+    "source": "apache",
+    "extensions": ["cat"]
+  },
+  "application/vnd.ms-pki.stl": {
+    "source": "apache",
+    "extensions": ["stl"]
+  },
+  "application/vnd.ms-playready.initiator+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ms-powerpoint": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["ppt","pps","pot"]
+  },
+  "application/vnd.ms-powerpoint.addin.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["ppam"]
+  },
+  "application/vnd.ms-powerpoint.presentation.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["pptm"]
+  },
+  "application/vnd.ms-powerpoint.slide.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["sldm"]
+  },
+  "application/vnd.ms-powerpoint.slideshow.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["ppsm"]
+  },
+  "application/vnd.ms-powerpoint.template.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["potm"]
+  },
+  "application/vnd.ms-printdevicecapabilities+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ms-printing.printticket+xml": {
+    "source": "apache",
+    "compressible": true
+  },
+  "application/vnd.ms-printschematicket+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ms-project": {
+    "source": "iana",
+    "extensions": ["mpp","mpt"]
+  },
+  "application/vnd.ms-tnef": {
+    "source": "iana"
+  },
+  "application/vnd.ms-windows.devicepairing": {
+    "source": "iana"
+  },
+  "application/vnd.ms-windows.nwprinting.oob": {
+    "source": "iana"
+  },
+  "application/vnd.ms-windows.printerpairing": {
+    "source": "iana"
+  },
+  "application/vnd.ms-windows.wsd.oob": {
+    "source": "iana"
+  },
+  "application/vnd.ms-wmdrm.lic-chlg-req": {
+    "source": "iana"
+  },
+ {
+	"es3": true,
+
+	"additionalRules": [],
+
+	"requireSemicolons": true,
+
+	"disallowMultipleSpaces": true,
+
+	"disallowIdentifierNames": [],
+
+	"requireCurlyBraces": {
+		"allExcept": [],
+		"keywords": ["if", "else", "for", "while", "do", "try", "catch"]
+	},
+
+	"requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch", "function"],
+
+	"disallowSpaceAfterKeywords": [],
+
+	"disallowSpaceBeforeComma": true,
+	"disallowSpaceAfterComma": false,
+	"disallowSpaceBeforeSemicolon": true,
+
+	"disallowNodeTypes": [
+		"DebuggerStatement",
+		"LabeledStatement",
+		"SwitchCase",
+		"SwitchStatement",
+		"WithStatement"
+	],
+
+	"requireObjectKeysOnNewLine": { "allExcept": ["sameLine"] },
+
+	"requireSpacesInAnonymousFunctionExpression": { "beforeOpeningRoundBrace": true, "beforeOpeningCurlyBrace": true },
+	"requireSpacesInNamedFunctionExpression": { "beforeOpeningCurlyBrace": true },
+	"disallowSpacesInNamedFunctionExpression": { "beforeOpeningRoundBrace": true },
+	"requireSpacesInFunctionDeclaration": { "beforeOpeningCurlyBrace": true },
+	"disallowSpacesInFunctionDeclaration": { "beforeOpeningRoundBrace": true },
+
+	"requireSpaceBetweenArguments": true,
+
+	"disallowSpacesInsideParentheses": true,
+
+	"disallowSpacesInsideArrayBrackets": true,
+
+	"disallowQuotedKeysInObjects": { "allExcept": ["reserved"] },
+
+	"disallowSpaceAfterObjectKeys": true,
+
+	"requireCommaBeforeLineBreak": true,
+
+	"disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "~", "!"],
+	"requireSpaceAfterPrefixUnaryOperators": [],
+
+	"disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
+	"requireSpaceBeforePostfixUnaryOperators": [],
+
+	"disallowSpaceBeforeBinaryOperators": [],
+	"requireSpaceBeforeBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+
+	"requireSpaceAfterBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+	"disallowSpaceAfterBinaryOperators": [],
+
+	"disallowImplicitTypeConversion": ["binary", "string"],
+
+	"disallowKeywords": ["with", "eval"],
+
+	"requireKeywordsOnNewLine": [],
+	"disallowKeywordsOnNewLine": ["else"],
+
+	"requireLineFeedAtFileEnd": true,
+
+	"disallowTrailingWhitespace": true,
+
+	"disallowTrailingComma": true,
+
+	"excludeFiles": ["node_modules/**", "vendor/**"],
+
+	"disallowMultipleLineStrings": true,
+
+	"requireDotNotation": { "allExcept": ["keywords"] },
+
+	"requireParenthesesAroundIIFE": true,
+
+	"validateLineBreaks": "LF",
+
+	"validateQuoteMarks": {
+		"escape": true,
+		"mark": "'"
+	},
+
+	"disallowOperatorBeforeLineBreak": [],
+
+	"requireSpaceBeforeKeywords": [
+		"do",
+		"for",
+		"if",
+		"else",
+		"switch",
+		"case",
+		"try",
+		"catch",
+		"finally",
+		"while",
+		"with",
+		"return"
+	],
+
+	"validateAlignedFunctionParameters": {
+		"lineBreakAfterOpeningBraces": true,
+		"lineBreakBeforeClosingBraces": true
+	},
+
+	"requirePaddingNewLinesBeforeExport": true,
+
+	"validateNewlineAfterArrayElements": {
+		"maximum": 3
+	},
+
+	"requirePaddingNewLinesAfterUseStrict": true,
+
+	"disallowArrowFunctions": true,
+
+	"disallowMultiLineTernary": true,
+
+	"validateOrderInObjectKeys": "asc-insensitive",
+
+	"disallowIdenticalDestructuringNames": true,
+
+	"disallowNestedTernaries": { "maxLevel": 1 },
+
+	"requireSpaceAfterComma": { "allExcept": ["trailing"] },
+	"requireAlignedMultilineParams": false,
+
+	"requireSpacesInGenerator": {
+		"afterStar": true
+	},
+
+	"disallowSpacesInGenerator": {
+		"beforeStar": true
+	},
+
+	"disallowVar": false,
+
+	"requireArrayDestructuring": false,
+
+	"requireEnhancedObjectLiterals": false,
+
+	"requireObjectDestructuring": false,
+
+	"requireEarlyReturn": false,
+
+	"requireCapitalizedConstructorsNew": {
+		"allExcept": ["Function", "String", "Object", "Symbol", "Number", "Date", "RegExp", "Error", "Boolean", "Array"]
+	},
+
+	"requireImportAlphabetized": false,
+
+	"requireSpaceBeforeObjectValues": true,
+	"requireSpaceBeforeDestructuredValues": true,
+
+	"disallowSpacesInsideTemplateStringPlaceholders": true,
+
+	"disallowArrayDestructuringReturn": false,
+
+	"requireNewlineBeforeSingleStatementsInIf": false,
+
+	"disallowUnusedVariables": true,
+
+	"requireSpacesInsideImportedObjectBraces": true,
+
+	"requireUseStrict": true
+}
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    # pify [![Build Status](https://travis-ci.org/sindresorhus/pify.svg?branch=master)](https://travis-ci.org/sindresorhus/pify)
+
+> Promisify a callback-style function
+
+
+## Install
+
+```
+$ npm install --save pify
+```
+
+
+## Usage
+
+```js
+const fs = require('fs');
+const pify = require('pify');
+
+// Promisify a single function
+pify(fs.readFile)('package.json', 'utf8').then(data => {
+	console.log(JSON.parse(data).name);
+	//=> 'pify'
+});
+
+// Promisify all methods in a module
+pify(fs).readFile('package.json', 'utf8').then(data => {
+	console.log(JSON.parse(data).name);
+	//=> 'pify'
+});
+```
+
+
+## API
+
+### pify(input, [options])
+
+Returns a `Promise` wrapped version of the supplied function or module.
+
+#### input
+
+Type: `Function` `Object`
+
+Callback-style function or module whose methods you want to promisify.
+
+#### options
+
+##### multiArgs
+
+Type: `boolean`<br>
+Default: `false`
+
+By default, the promisified function will only return the second argument from the callback, which works fine for most APIs. This option can be useful for modules like `request` that return multiple arguments. Turning this on will make it return an array of all arguments from the callback, excluding the error argument, instead of just the second argument. This also applies to rejections, where it returns an array of all the callback arguments, including the error.
+
+```js
+const request = require('request');
+const pify = require('pify');
+
+pify(request, {multiArgs: true})('https://sindresorhus.com').then(result => {
+	const [httpResponse, body] = result;
+});
+```
+
+##### include
+
+Type: `string[]` `RegExp[]`
+
+Methods in a module to promisify. Remaining methods will be left untouched.
+
+##### exclude
+
+Type: `string[]` `RegExp[]`<br>
+Default: `[/.+(Sync|Stream)$/]`
+
+Methods in a module **not** to promisify. Methods with names ending with `'Sync'` are excluded by default.
+
+##### excludeMain
+
+Type: `boolean`<br>
+Default: `false`
+
+If given module is a function itself, it will be promisified. Turn this option on if you want to promisify only methods of the module.
+
+```js
+const pify = require('pify');
+
+function fn() {
+	return true;
+}
+
+fn.method = (data, callback) => {
+	setImmediate(() => {
+		callback(null, data);
+	});
+};
+
+// Promisify methods but not `fn()`
+const promiseFn = pify(fn, {excludeMain: true});
+
+if (promiseFn()) {
+	promiseFn.method('hi').then(data => {
+		console.log(data);
+	});
+}
+```
+
+##### errorFirst
+
+Type: `boolean`<br>
+Default: `true`
+
+Whether the callback has an error as the first argument. You'll want to set this to `false` if you're dealing with an API that doesn't have an error as the first argument, like `fs.exists()`, some browser APIs, Chrome Extension APIs, etc.
+
+##### promiseModule
+
+Type: `Function`
+
+Custom promise module to use instead of the native one.
+
+Check out [`pinkie-promise`](https://github.com/floatdrop/pinkie-promise) if you need a tiny promise polyfill.
+
+
+## Related
+
+- [p-event](https://github.com/sindresorhus/p-event) - Promisify an event by waiting for it to be emitted
+- [p-map](https://github.com/sindresorhus/p-map) - Map over promises concurrently
+- [More…](https://github.com/sindresorhus/promise-fun)
+
+
+## License
+
+MIT © [Sindre Sorhus](https://sindresorhus.com)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             MIT License
+
+Copyright (c) 2016 Jordan Harband
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 r parentDir = this._getWatchedDir(sysPath.dirname(dir));
+  var tracked = parentDir.has(sysPath.basename(dir));
+  if (!(initialAdd && this.options.ignoreInitial) && !target && !tracked) {
+    if (!wh.hasGlob || wh.globFilter(dir)) this._emit('addDir', dir, stats);
+  }
+
+  // ensure dir is tracked (harmless if redundant)
+  parentDir.add(sysPath.basename(dir));
+  this._getWatchedDir(dir);
+
+  var read = function(directory, initialAdd, done) {
+    // Normalize the directory name on Windows
+    directory = sysPath.join(directory, '');
+
+    if (!wh.hasGlob) {
+      var throttler = this._throttle('readdir', directory, 1000);
+      if (!throttler) return;
+    }
+
+    var previous = this._getWatchedDir(wh.path);
+    var current = [];
+
+    readdirp({
+      root: directory,
+      entryType: 'all',
+      fileFilter: wh.filterPath,
+      directoryFilter: wh.filterDir,
+      depth: 0,
+      lstat: true
+    }).on('data', function(entry) {
+      var item = entry.path;
+      var path = sysPath.join(directory, item);
+      current.push(item);
+
+      if (entry.stat.isSymbolicLink() &&
+        this._handleSymlink(entry, directory, path, item)) return;
+
+      // Files that present in current directory snapshot
+      // but absent in previous are added to watch list and
+      // emit `add` event.
+      if (item === target || !target && !previous.has(item)) {
+        this._readyCount++;
+
+        // ensure relativeness of path is preserved in case of watcher reuse
+        path = sysPath.join(dir, sysPath.relative(dir, path));
+
+        this._addToNodeFs(path, initialAdd, wh, depth + 1);
+      }
+    }.bind(this)).on('end', function() {
+      var wasThrottled = throttler ? throttler.clear() : false;
+      if (done) done();
+
+      // Files that absent in current directory snapshot
+      // but present in previous emit `remove` event
+      // and are removed from @watched[directory].
+      previous.children().filter(function(item) {
+        return item !== directory &&
+          current.indexOf(item) === -1 &&
+          // in case of intersecting globs;
+          // a path may have been filtered out of this readdir, but
+          // shouldn't be removed because it matches a different glob
+          (!wh.hasGlob || wh.filterPath({
+            fullPath: sysPath.resolve(directory, item)
+          }));
+      }).forEach(function(item) {
+        this._remove(directory, item);
+      }, this);
+
+      // one more time for any missed in case changes came in extremely quickly
+      if (wasThrottled) read(directory, false);
+    }.bind(this)).on('error', this._handleError.bind(this));
+  }.bind(this);
+
+  var closer;
+
+  if (this.options.depth == null || depth <= this.options.depth) {
+    if (!target) read(dir, initialAdd, callback);
+    closer = this._watchWithNodeFs(dir, function(dirPath, stats) {
+      // if current directory is removed, do nothing
+      if (stats && stats.mtime.getTime() === 0) return;
+
+      read(dirPath, false);
+    });
+  } else {
+    callback();
+  }
+  return closer;
+};
+
+// Private method: Handle added file, directory, or glob pattern.
+// Delegates call to _handleFile / _handleDir after checks.
+
+// * path       - string, path to file or directory.
+// * initialAdd - boolean, was the file added at watch instantiation?
+// * depth      - int, depth relative to user-supplied path
+// * target     - string, child path actually targeted for watch
+// * callback   - function, indicates whether the path was found or not
+
+// Returns nothing
+NodeFsHandler.prototype._addToNodeFs =
+function(path, initialAdd, priorWh, depth, target, callback) {
+  if (!callback) callback = Function.prototype;
+  var ready = this._emitReady;
+  if (this._isIgnored(path) || this.closed) {
+    ready();
+    return callback(null, false);
+  }
+
+  var wh = this._getWatchHelpers(path, depth);
+  if (!wh.hasGlob && priorWh) {
+    wh.hasGlob = priorWh.hasGlob;
+    wh.globFilter = priorWh.globFilter;
+    wh.filterPath = priorWh.filterPath;
+    wh.filterDir = priorWh.filterDir;
+  }
+
+  // evaluate what is at the path we're being asked to watch
+  fs[wh.statMethod](wh.watchPath, function(error, stats) {
+    if (this._handleError(error)) return callback(null, path);
+    if (this._isIgnored(wh.watchPath, stats)) {
+      ready();
+      return callback(null, false);
+    }
+
+    var initDir = function(dir, target) {
+      return this._handleDir(dir, stats, initialAdd, depth, target, wh, ready);
+    }.bind(this);
+
+    var closer;
+    if (stats.isDirectory()) {
+      closer = initDir(wh.watchPath, target);
+    } else if (stats.isSymbolicLink()) {
+      var parent = sysPath.dirname(wh.watchPath);
+      this._getWatchedDir(parent).add(wh.watchPath);
+      this._emit('add', wh.watchPath, stats);
+      closer = initDir(parent, path);
+
+      // preserve this symlink's target path
+      fs.realpath(path, function(error, targetPath) {
+        this._symlinkPaths[sysPath.resolve(path)] = targetPath;
+        ready();
+      }.bind(this));
+    } else {
+      closer = this._handleFile(wh.watchPath, stats, initialAdd, ready);
+    }
+
+    if (closer) {
+      this._closers[path] = this._closers[path] || [];
+      this._closers[path].push(closer);
+    }
+    callback(null, false);
+  }.bind(this));
+};
+
+module.exports = NodeFsHandler;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    = fragment.length; i < iz; ++i) {
+                    if (!esutils.code.isWhiteSpace(fragment.charCodeAt(i))) {
+                        break;
+                    }
+                }
+                if (i === iz) {
+                    return false;
+                }
+                if (fragment.slice(i, i + 8) !== 'function') {
+                    return false;
+                }
+                code = fragment.charCodeAt(i + 8);
+                return code === 0x28 /* '(' */ || esutils.code.isWhiteSpace(code) || code === 0x2A  /* '*' */ || esutils.code.isLineTerminator(code);
+            }
+
+            result = [this.generateExpression(stmt.expression, Precedence.Sequence, E_TTT)];
+            // 12.4 '{', 'function', 'class' is not allowed in this position.
+            // wrap expression with parentheses
+            fragment = toSourceNodeWhenNeeded(result).toString();
+            if (fragment.charCodeAt(0) === 0x7B  /* '{' */ ||  // ObjectExpression
+                    isClassPrefixed(fragment) ||
+                    isFunctionPrefixed(fragment) ||
+                    isAsyncPrefixed(fragment) ||
+                    (directive && (flags & F_DIRECTIVE_CTX) && stmt.expression.type === Syntax.Literal && typeof stmt.expression.value === 'string')) {
+                result = ['(', result, ')' + this.semicolon(flags)];
+            } else {
+                result.push(this.semicolon(flags));
+            }
+            return result;
+        },
+
+        ImportDeclaration: function (stmt, flags) {
+            // ES6: 15.2.1 valid import declarations:
+            //     - import ImportClause FromClause ;
+            //     - import ModuleSpecifier ;
+            var result, cursor, that = this;
+
+            // If no ImportClause is present,
+            // this should be `import ModuleSpecifier` so skip `from`
+            // ModuleSpecifier is StringLiteral.
+            if (stmt.specifiers.length === 0) {
+                // import ModuleSpecifier ;
+                return [
+                    'import',
+                    space,
+                    // ModuleSpecifier
+                    this.generateExpression(stmt.source, Precedence.Sequence, E_TTT),
+                    this.semicolon(flags)
+                ];
+            }
+
+            // import ImportClause FromClause ;
+            result = [
+                'import'
+            ];
+            cursor = 0;
+
+            // ImportedBinding
+            if (stmt.specifiers[cursor].type === Syntax.ImportDefaultSpecifier) {
+                result = join(result, [
+                        this.generateExpression(stmt.specifiers[cursor], Precedence.Sequence, E_TTT)
+                ]);
+                ++cursor;
+            }
+
+            if (stmt.specifiers[cursor]) {
+                if (cursor !== 0) {
+                    result.push(',');
+                }
+
+                if (stmt.specifiers[cursor].type === Syntax.ImportNamespaceSpecifier) {
+                    // NameSpaceImport
+                    result = join(result, [
+                            space,
+                            this.generateExpression(stmt.specifiers[cursor], Precedence.Sequence, E_TTT)
+                    ]);
+                } else {
+                    // NamedImports
+                    result.push(space + '{');
+
+                    if ((stmt.specifiers.length - cursor) === 1) {
+                        // import { ... } from "...";
+                        result.push(space);
+                        result.push(this.generateExpression(stmt.specifiers[cursor], Precedence.Sequence, E_TTT));
+                        result.push(space + '}' + space);
+                    } else {
+                        // import {
+                        //    ...,
+                        //    ...,
+                        // } from "...";
+                        withIndent(function (indent) {
+                            var i, iz;
+                            result.push(newline);
+                            for (i = cursor, iz = stmt.specifiers.length; i < iz; ++i) {
+                                result.push(indent);
+                                result.push(that.generateExpression(stmt.specifiers[i], Precedence.Sequence, E_TTT));
+                                if (i + 1 < iz) {
+                                    result.push(',' + newline);
+                                }
+                            }
+                        });
+                        if (!endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
+                            result.push(newline);
+                        }
+                        result.push(base + '}' + space);
+                    }
+                }
+            }
+
+            result = join(result, [
+                'from' + space,
+                // ModuleSpecifier
+                this.generateExpression(stmt.source, Precedence.Sequence, E_TTT),
+                this.semicolon(flags)
+            ]);
+            return result;
+        },
+
+        VariableDeclarator: function (stmt, flags) {
+            var itemFlags = (flags & F_ALLOW_IN) ? E_TTT : E_FTT;
+            if (stmt.init) {
+                return [
+                    this.generateExpression(stmt.id, Precedence.Assignment, itemFlags),
+                    space,
+                    '=',
+                    space,
+                    this.generateExpression(stmt.init, Precedence.Assignment, itemFlags)
+                ];
+            }
+            return this.generatePattern(stmt.id, Precedence.Assignment, itemFlags);
+        },
+
+        VariableDeclaration: function (stmt, flags) {
+            // VariableDeclarator is typed as Statement,
+            // but joined with comma (not LineTerminator).
+            // So if comment is attached to target node, we should specialize.
+            var result, i, iz, node, bodyFlags, that = this;
+
+            result = [ stmt.kind ];
+
+            bodyFlags = (flags & F_ALLOW_IN) ? S_TFFF : S_FFFF;
+
+            function block() {
+                node = stmt.declarations[0];
+                if (extra.comment && node.leadingComments) {
+                    result.push('\n');
+                    result.push(addIndent(that.generateStatement(node, bodyFlags)));
+                } else {
+                    result.push(noEmptySpace());
+                    result.push(that.generateStatement(node, bodyFlags));
+                }
+
+                for (i = 1, iz = stmt.declarations.length; i < iz; ++i) {
+                    node = stmt.declarations[i];
+                    if (extra.comment && node.leadingComments) {
+                        result.push(',' + newline);
+                        result.push(addIndent(that.generateStatement(node, bodyFlags)));
+                    } else {
+                        result.push(',' + space);
+                        result.push(that.generateStatement(node, bodyFlags));
+                    }
+                }
+            }
+
+            if (stmt.declarations.length > 1) {
+                withIndent(block);
+            } else {
+                block();
+            }
+
+            result.push(this.semicolon(flags));
+
+            return result;
+        },
+
+        ThrowStatement: function (stmt, flags) {
+            return [join(
+                'throw',
+                this.generateExpression(stmt.argument, Precedence.Sequence, E_TTT)
+            ), this.semicolon(flags)];
+        },
+
+        TryStatement: function (stmt, flags) {
+            var result, i, iz, guardedHandlers;
+
+            result = ['try', this.maybeBlock(stmt.block, S_TFFF)];
+            result = this.maybeBlockSuffix(stmt.block, result);
+
+            if (stmt.handlers) {
+                // old interface
+                for (i = 0, iz = stmt.handlers.length; i < iz; ++i) {
+                    result = join(result, this.generateStatement(stmt.handlers[i], S_TFFF));
+                    if (stmt.finalizer || i + 1 !== iz) {
+                        result = this.maybeBlockSuffix(stmt.handlers[i].body, result);
+                    }
+                }
+            } else {
+                guardedHandlers = stmt.guardedHandlers || [];
+
+                for (i = 0, iz = guardedHandlers.length; i < iz; ++i) {
+                    result = join(result, this.generateStatement(guardedHandlers[i], S_TFFF));
+                    if (stmt.finalizer || i + 1 !== iz) {
+                        result = this.maybeBlockSuffix(guardedHandlers[i].body, result);
+                    }
+                }
+
+                // new interface
+                if (stmt.handler) {
+                    if (Array.isArray(stmt.handler)) {
+                        for (i = 0, iz = stmt.handler.length; i < iz; ++i) {
+                            result = join(result, this.generateStatement(stmt.handler[i], S_TFFF));
+                            if (stmt.finalizer || i + 1 !== iz) {
+                                result = this.maybeBlockSuffix(stmt.handler[i].body, result);
+                            }
+                        }
+                    } else {
+                        result = join(result, this.generateStatement(stmt.handler, S_TFFF));
+                        if (stmt.finalizer) {
+                            result = this.maybeBlockSuffix(stmt.handler.body, result);
+                        }
+                    }
+                }
+            }
+            if (stmt.finalizer) {
+                result = join(result, ['finally', this.maybeBlock(stmt.finalizer, S_TFFF)]);
+            }
+            return result;
+        },
+
+        SwitchStatement: function (stmt, flags) {
+            var result, fragment, i, iz, bodyFlags, that = this;
+            withIndent(function () {
+                result = [
+                    'switch' + space + '(',
+                    that.generateExpression(stmt.discriminant, Precedence.Sequence, E_TTT),
+                    ')' + space + '{' + newline
+                ];
+            });
+            if (stmt.cases) {
+                bodyFlags = S_TFFF;
+                for (i = 0, iz = stmt.cases.length; i < iz; ++i) {
+                    if (i === iz - 1) {
+                        bodyFlags |= F_SEMICOLON_OPT;
+                    }
+                    fragment = addIndent(this.generateStatement(stmt.cases[i], bodyFlags));
+                    result.push(fragment);
+                    if (!endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
+                        result.push(newline);
+                    }
+                }
+            }
+            result.push(addIndent('}'));
+            return result;
+        },
+
+        SwitchCase: function (stmt, flags) {
+            var result, fragment, i, iz, bodyFlags, that = this;
+            withIndent(function () {
+                if (stmt.test) {
+                    result = [
+                        join('case', that.generateExpression(stmt.test, Precedence.Sequence, E_TTT)),
+                        ':'
+                    ];
+                } else {
+                    result = ['default:'];
+                }
+
+                i = 0;
+                iz = stmt.consequent.length;
+                if (iz && stmt.consequent[0].type === Syntax.BlockStatement) {
+                    fragment = that.maybeBlock(stmt.consequent[0], S_TFFF);
+                    result.push(fragment);
+                    i = 1;
+                }
+
+                if (i !== iz && !endsWithLineTerminator(toSourceNodeWhenNeeded(result).toString())) {
+                    result.push(newline);
+                }
+
+                bodyFlags = S_TFFF;
+                for (; i < iz; ++i) {
+                    if (i === iz - 1 && flags & F_SEMICOLON_OPT) {
+                        bodyFlags |= F_SEMICOLON_OPT;
+                    }
+                    fragment = addIndent(that.generateStatement(stmt.consequent[i], bodyFlags));
+                    result.push(fragment);
+                    if (i + 1 !== iz && !endsWithLineTerminator(toSourceNodeWhenNeeded(fragment).toString())) {
+                        result.push(newline);
+                    }
+                }
+            });
+            return result;
+        },
+
+        IfStatement: function (stmt, flags) {
+            var result, bodyFlags, semicolonOptional, that = this;
+            withIndent(function () {
+                result = [
+                    'if' + space + '(',
+                    that.generateExpression(stmt.test, Precedence.Sequence, E_TTT),
+                    ')'
+                ];
+            });
+            semicolonOptional = flags & F_SEMICOLON_OPT;
+            bodyFlags = S_TFFF;
+            if (semicolonOptional) {
+                bodyFlags |= F_SEMICOLON_OPT;
+            }
+            if (stmt.alternate) {
+                result.push(this.maybeBlock(stmt.consequent, S_TFFF));
+                result = this.maybeBlockSuffix(stmt.consequent, result);
+                if (stmt.alternate.type === Syntax.IfStatement) {
+                    result = join(result, ['else ', this.generateStatement(stmt.alternate, bodyFlags)]);
+                } else {
+                    result = join(result, join('else', this.maybeBlock(stmt.alternate, bodyFlags)));
+                }
+            } else {
+                result.push(this.maybeBlock(stmt.consequent, bodyFlags));
+            }
+            return result;
+        },
+
+        ForStatement: function (stmt, flags) {
+            var result, that = this;
+            withIndent(function () {
+                result = ['for' + space + '('];
+                if (stmt.init) {
+                    if (stmt.init.type === Syntax.VariableDeclaration) {
+                        result.push(that.generateStatement(stmt.init, S_FFFF));
+                    } else {
+                        // F_ALLOW_IN becomes false.
+                        result.push(that.generateExpression(stmt.init, Precedence.Sequence, E_FTT));
+                        result.push(';');
+                    }
+                } else {
+                    result.push(';');
+                }
+
+                if (stmt.test) {
+                    result.push(space);
+                    result.push(that.generateExpression(stmt.test, Precedence.Sequence, E_TTT));
+                    result.push(';');
+                } else {
+                    result.push(';');
+                }
+
+                if (stmt.update) {
+                    result.push(space);
+                    result.push(that.generateExpression(stmt.update, Precedence.Sequence, E_TTT));
+                    result.push(')');
+                } else {
+                    result.push(')');
+                }
+            });
+
+            result.push(this.maybeBlock(stmt.body, flags & F_SEMICOLON_OPT ? S_TFFT : S_TFFF));
+            return result;
+        },
+
+        ForInStatement: function (stmt, flags) {
+            return this.generateIterationForStatement('in', stmt, flags & F_SEMICOLON_OPT ? S_TFFT : S_TFFF);
+        },
+
+        ForOfStatement: function (stmt, flags) {
+            return this.generateIterationForStatement('of', stmt, flags & F_SEMICOLON_OPT ? S_TFFT : S_TFFF);
+        },
+
+        LabeledStatement: function (stmt, flags) {
+            return [stmt.label.name + ':', this.maybeBlock(stmt.body, flags & F_SEMICOLON_OPT ? S_TFFT : S_TFFF)];
+        },
+
+        Program: function (stmt, flags) {
+            var result, fragment, i, iz, bodyFlags;
+            iz = stmt.body.length;
+            result = [safeConcatenation && iz > 0 ? '\n' : ''];
+            bodyFlags = S_TFTF;
+            for (i = 0; i < iz; ++i) {
+                if (!safeConcatenation && i === iz - 1) {
+                    bodyFlags |= F_SEMICOLON_OPT;
+                }
+
+                if (preserveBlankLines) {
+                    // handle spaces before the first line
+                    if (i === 0) {
+                        if (!stmt.body[0].leadingComments) {
+                            generateBlankLines(stmt.range[0], stmt.body[i].range[0], result);
+                        }
+                    }
+
+                    // handle spaces between lines
+                    if (i > 0) {
+                        if (!stmt.body[i - 1].trailingComments && !stmt.body[i].leadingComments) {
+                            generateBlankLines(stmt.body[i - 1].range[1], stmt.body[i].range[0], result);
+                        }
+                    }
+                }
+
+                fragment = addIndent(this.generateStatement(stmt.body[i], bodyFlags))(The MIT License)
+
+Copyright (c) 2012-2014 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) 2015 Jed Watson <jed.watson@me.com>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               # sort-keys [![Build Status](https://travis-ci.org/sindresorhus/sort-keys.svg?branch=master)](https://travis-ci.org/sindresorhus/sort-keys)
+
+> Sort the keys of an object
+
+Useful to get a deterministically ordered object, as the order of keys can vary between engines.
+
+
+## Install
+
+```
+$ npm install --save sort-keys
+```
+
+
+## Usage
+
+```js
+const sortKeys = require('sort-keys');
+
+sortKeys({c: 0, a: 0, b: 0});
+//=> {a: 0, b: 0, c: 0}
+
+sortKeys({b: {b: 0, a: 0}, a: 0}, {deep: true});
+//=> {a: 0, b: {a: 0, b: 0}}
+
+sortKeys({c: 0, a: 0, b: 0}, {
+	compare: (a, b) => -a.localeCompare(b)
+});
+//=> {c: 0, b: 0, a: 0}
+```
+
+
+## API
+
+### sortKeys(input, [options])
+
+Returns a new object with sorted keys.
+
+#### input
+
+Type: `Object`
+
+#### options
+
+##### deep
+
+Type: `boolean`
+
+Recursively sort keys.
+
+##### compare
+
+Type: `Function`
+
+[Compare function.](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+
+
+## License
+
+MIT © [Sindre Sorhus](https://sindresorhus.com)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
+	"es3": true,
+
+	"additionalRules": [],
+
+	"requireSemicolons": true,
+
+	"disallowMultipleSpaces": true,
+
+	"disallowIdentifierNames": [],
+
+	"requireCurlyBraces": {
+		"allExcept": [],
+		"keywords": ["if", "else", "for", "while", "do", "try", "catch"]
+	},
+
+	"requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch", "function"],
+
+	"disallowSpaceAfterKeywords": [],
+
+	"disallowSpaceBeforeComma": true,
+	"disallowSpaceAfterComma": false,
+	"disallowSpaceBeforeSemicolon": true,
+
+	"disallowNodeTypes": [
+		"DebuggerStatement",
+		"LabeledStatement",
+		"SwitchCase",
+		"SwitchStatement",
+		"WithStatement"
+	],
+
+	"requireObjectKeysOnNewLine": { "allExcept": ["sameLine"] },
+
+	"requireSpacesInAnonymousFunctionExpression": { "beforeOpeningRoundBrace": true, "beforeOpeningCurlyBrace": true },
+	"requireSpacesInNamedFunctionExpression": { "beforeOpeningCurlyBrace": true },
+	"disallowSpacesInNamedFunctionExpression": { "beforeOpeningRoundBrace": true },
+	"requireSpacesInFunctionDeclaration": { "beforeOpeningCurlyBrace": true },
+	"disallowSpacesInFunctionDeclaration": { "beforeOpeningRoundBrace": true },
+
+	"requireSpaceBetweenArguments": true,
+
+	"disallowSpacesInsideParentheses": true,
+
+	"disallowSpacesInsideArrayBrackets": true,
+
+	"disallowQuotedKeysInObjects": { "allExcept": ["reserved"] },
+
+	"disallowSpaceAfterObjectKeys": true,
+
+	"requireCommaBeforeLineBreak": true,
+
+	"disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "~", "!"],
+	"requireSpaceAfterPrefixUnaryOperators": [],
+
+	"disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
+	"requireSpaceBeforePostfixUnaryOperators": [],
+
+	"disallowSpaceBeforeBinaryOperators": [],
+	"requireSpaceBeforeBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+
+	"requireSpaceAfterBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+	"disallowSpaceAfterBinaryOperators": [],
+
+	"disallowImplicitTypeConversion": ["binary", "string"],
+
+	"disallowKeywords": ["with", "eval"],
+
+	"requireKeywordsOnNewLine": [],
+	"disallowKeywordsOnNewLine": ["else"],
+
+	"requireLineFeedAtFileEnd": true,
+
+	"disallowTrailingWhitespace": true,
+
+	"disallowTrailingComma": true,
+
+	"excludeFiles": ["node_modules/**", "vendor/**"],
+
+	"disallowMultipleLineStrings": true,
+
+	"requireDotNotation": { "allExcept": ["keywords"] },
+
+	"requireParenthesesAroundIIFE": true,
+
+	"validateLineBreaks": "LF",
+
+	"validateQuoteMarks": {
+		"escape": true,
+		"mark": "'"
+	},
+
+	"disallowOperatorBeforeLineBreak": [],
+
+	"requireSpaceBeforeKeywords": [
+		"do",
+		"for",
+		"if",
+		"else",
+		"switch",
+		"case",
+		"try",
+		"catch",
+		"finally",
+		"while",
+		"with",
+		"return"
+	],
+
+	"validateAlignedFunctionParameters": {
+		"lineBreakAfterOpeningBraces": true,
+		"lineBreakBeforeClosingBraces": true
+	},
+
+	"requirePaddingNewLinesBeforeExport": true,
+
+	"validateNewlineAfterArrayElements": {
+		"maximum": 3
+	},
+
+	"requirePaddingNewLinesAfterUseStrict": true,
+
+	"disallowArrowFunctions": true,
+
+	"disallowMultiLineTernary": true,
+
+	"validateOrderInObjectKeys": "asc-insensitive",
+
+	"disallowIdenticalDestructuringNames": true,
+
+	"disallowNestedTernaries": { "maxLevel": 1 },
+
+	"requireSpaceAfterComma": { "allExcept": ["trailing"] },
+	"requireAlignedMultilineParams": false,
+
+	"requireSpacesInGenerator": {
+		"afterStar": true
+	},
+
+	"disallowSpacesInGenerator": {
+		"beforeStar": true
+	},
+
+	"disallowVar": false,
+
+	"requireArrayDestructuring": false,
+
+	"requireEnhancedObjectLiterals": false,
+
+	"requireObjectDestructuring": false,
+
+	"requireEarlyReturn": false,
+
+	"requireCapitalizedConstructorsNew": {
+		"allExcept": ["Function", "String", "Object", "Symbol", "Number", "Date", "RegExp", "Error", "Boolean", "Array"]
+	},
+
+	"requireImportAlphabetized": false,
+
+	"requireSpaceBeforeObjectValues": true,
+	"requireSpaceBeforeDestructuredValues": true,
+
+	"disallowSpacesInsideTemplateStringPlaceholders": true,
+
+	"disallowArrayDestructuringReturn": false,
+
+	"requireNewlineBeforeSingleStatementsInIf": false,
+
+	"disallowUnusedVariables": true,
+
+	"requireSpacesInsideImportedObjectBraces": true,
+
+	"requireUseStrict": true
+}
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

@@ -1,0 +1,1736 @@
+// A simple implementation of make-array
+function make_array (subject) {
+  return Array.isArray(subject)
+    ? subject
+    : [subject]
+}
+
+const REGEX_BLANK_LINE = /^\s+$/
+const REGEX_LEADING_EXCAPED_EXCLAMATION = /^\\!/
+const REGEX_LEADING_EXCAPED_HASH = /^\\#/
+const SLASH = '/'
+const KEY_IGNORE = typeof Symbol !== 'undefined'
+  ? Symbol.for('node-ignore')
+  /* istanbul ignore next */
+  : 'node-ignore'
+
+const define = (object, key, value) =>
+  Object.defineProperty(object, key, {value})
+
+const REGEX_REGEXP_RANGE = /([0-z])-([0-z])/g
+
+// Sanitize the range of a regular expression
+// The cases are complicated, see test cases for details
+const sanitizeRange = range => range.replace(
+  REGEX_REGEXP_RANGE,
+  (match, from, to) => from.charCodeAt(0) <= to.charCodeAt(0)
+    ? match
+    // Invalid range (out of order) which is ok for gitignore rules but
+    //   fatal for JavaScript regular expression, so eliminate it.
+    : ''
+)
+
+// > If the pattern ends with a slash,
+// > it is removed for the purpose of the following description,
+// > but it would only find a match with a directory.
+// > In other words, foo/ will match a directory foo and paths underneath it,
+// > but will not match a regular file or a symbolic link foo
+// >  (this is consistent with the way how pathspec works in general in Git).
+// '`foo/`' will not match regular file '`foo`' or symbolic link '`foo`'
+// -> ignore-rules will not deal with it, because it costs extra `fs.stat` call
+//      you could use option `mark: true` with `glob`
+
+// '`foo/`' should not continue with the '`..`'
+const DEFAULT_REPLACER_PREFIX = [
+
+  // > Trailing spaces are ignored unless they are quoted with backslash ("\")
+  [
+    // (a\ ) -> (a )
+    // (a  ) -> (a)
+    // (a \ ) -> (a  )
+    /\\?\s+$/,
+    match => match.indexOf('\\') === 0
+      ? ' '
+      : ''
+  ],
+
+  // replace (\ ) with ' '
+  [
+    /\\\s/g,
+    () => ' '
+  ],
+
+  // Escape metacharacters
+  // which is written down by users but means special for regular expressions.
+
+  // > There are 12 characters with special meanings:
+  // > - the backslash \,
+  // > - the caret ^,
+  // > - the dollar sign $,
+  // > - the period or dot .,
+  // > - the vertical bar or pipe symbol |,
+  // > - the question mark ?,
+  // > - the asterisk or star *,
+  // > - the plus sign +,
+  // > - the opening parenthesis (,
+  // > - the closing parenthesis ),
+  // > - and the opening square bracket [,
+  // > - the opening curly brace {,
+  // > These special characters are often called "metacharacters".
+  [
+    /[\\^$.|*+(){]/g,
+    match => `\\${match}`
+  ],
+
+  [
+    // > [abc] matches any character inside the brackets
+    // >    (in this case a, b, or c);
+    /\[([^\]/]*)($|\])/g,
+    (match, p1, p2) => p2 === ']'
+      ? `[${sanitizeRange(p1)}]`
+      : `\\${match}`
+  ],
+
+  [
+    // > a question mark (?) matches a single character
+    /(?!\\)\?/g,
+    () => '[^/]'
+  ],
+
+  // leading slash
+  [
+
+    // > A leading slash matches the beginning of the pathname.
+    // > For example, "/*.c" matches "cat-file.c" but not "mozilla-sha1/sha1.c".
+    // A leading slash matches the beginning of the pathname
+    /^\//,
+    () => '^'
+  ],
+
+  // replace special metacharacter slash after the leading slash
+  [
+    /\//g,
+    () => '\\/'
+  ],
+
+  [
+    // > A leading "**" followed by a slash means match in all directories.
+    // > For example, "**/foo" matches file or directory "foo" anywhere,
+    // > the same as pattern "foo".
+    // > "**/foo/bar" matches file or directory "bar" anywhere that is directly
+    // >   under directory "foo".
+    // Notice that the '*'s have been replaced as '\\*'
+    /^\^*\\\*\\\*\\\//,
+
+    // '**/foo' <-> 'foo'
+    () => '^(?:.*\\/)?'
+  ]
+]
+
+const DEFAULT_REPLACER_SUFFIX = [
+  // starting
+  [
+    // there will be no leading '/'
+    //   (which has been replaced by section "leading slash")
+    // If starts with '**', adding a '^' to the regular expression also works
+    /^(?=[^^])/,
+    function startingReplacer () {
+      return !/\/(?!$)/.test(this)
+        // > If the pattern does not contain a slash /,
+        // >   Git treats it as a shell glob pattern
+        // Actually, if there is only a trailing slash,
+        //   git also treats it as a shell glob pattern
+        ? '(?:^|\\/)'
+
+        // > Otherwise, Git treats the pattern as a shell glob suitable for
+        // >   consumption by fnmatch(3)
+        : '^'
+    }
+  ],
+
+  // two globstars
+  [
+    // Use lookahead assertions so that we could match more than one `'/**'`
+    /\\\/\\\*\\\*(?=\\\/|$)/g,
+
+    // Zero, one or several directories
+    // should not use '*', or it will be replaced by the next replacer
+
+    // Check if it is not the last `'/**'`
+    (match, index, str) => index + 6 < str.length
+
+      // case: /**/
+      // > A slash followed by two consecutive asterisks then a slash matches
+      // >   zero or more directories.
+      // > For example, "a/**/b" matches "a/b", "a/x/b", "a/x/y/b" and so on.
+      // '/**/'
+      ? '(?:\\/[^\\/]+)*'
+
+      // case: /**
+      // > A trailing `"/**"` matches everything inside.
+
+      // #21: everything inside but it should not include the current folder
+      : '\\/.+'
+  ],
+
+  // intermediate wildcards
+  [
+    // Never replace escaped '*'
+    // ignore rule '\*' will match the path '*'
+
+    // 'abc.*/' -> go
+    // 'abc.*'  -> skip this rule
+    /(^|[^\\]+)\\\*(?=.+)/g,
+
+    // '*.js' matches '.js'
+    // '*.js' doesn't match 'abc'
+    (match, p1) => `${p1}[^\\/]*`
+  ],
+
+  // trailing wildcard
+  [
+    /(\^|\\\/)?\\\*$/,
+    (match, p1) => {
+      const prefix = p1
+        // '\^':
+        // '/*' does not match ''
+        // '/*' does not match everything
+
+        // '\\\/':
+        // 'abc/*' does not match 'abc/'
+        ? `${p1}[^/]+`
+
+        // 'a*' matches 'a'
+        // 'a*' matches 'aa'
+        : '[^/]*'
+
+      return `${prefix}(?=$|\\/$)`
+    }
+  ],
+
+  [
+    // unescape
+    /\\\\\\/g,
+    () => '\\'
+  ]
+]
+
+const POSITIVE_REPLACERS = [
+  ...DEFAULT_REPLACER_PREFIX,
+
+  // 'f'
+  // matches
+  // - /f(end)
+  // - /f/
+  // - (start)f(end)
+  // - (start)f/
+  // doesn't match
+  // - oof
+  // - foo
+  // pseudo:
+  // -> (^|/)f(/|$)
+
+  // ending
+  [
+    // 'js' will not match 'js.'
+    // 'ab' will not match 'abc'
+    /(?:[^*/])$/,
+
+    // 'js*' will not match 'a.js'
+    // 'js/' will not match 'a.js'
+    // 'js' will match 'a.js' and 'a.js/'
+    match => `${match}(?=$|\\/)`
+  ],
+
+  ...DEFAULT_REPLACER_SUFFIX
+]
+
+const NEGATIVE_REPLACERS = [
+  ...DEFAULT_REPLACER_PREFIX,
+
+  // #24, #38
+  // The MISSING rule of [gitignore docs](https://git-scm.com/docs/gitignore)
+  // A negative pattern without a trailing wildcard should not
+  // re-include the things inside that directory.
+
+  // eg:
+  // ['node_modules/*', '!node_modules']
+  // should ignore `node_modules/a.js`
+  [
+    /(?:[^*])$/,
+    match => `${match}(?=$|\\/$)`
+  ],
+
+  ...DEFAULT_REPLACER_SUFFIX
+]
+
+// A simple cache, because an ignore rule only has only one certain meaning
+const cache = {}
+
+// @param {pattern}
+const make_regex = (pattern, negative, ignorecase) => {
+  const r = cache[pattern]
+  if (r) {
+    return r
+  }
+
+  const replacers = negative
+    ? NEGATIVE_REPLACERS
+    : POSITIVE_REPLACERS
+
+  const source = replacers.reduce(
+    (prev, current) => prev.replace(current[0], current[1].bind(pattern)),
+    pattern
+  )
+
+  return cache[pattern] = ignorecase
+    ? new RegExp(source, 'i')
+    : new RegExp(source)
+}
+
+// > A blank line matches no files, so it can serve as a separator for readability.
+const checkPattern = pattern => pattern
+  && typeof pattern === 'string'
+  && !REGEX_BLANK_LINE.test(pattern)
+
+  // > A line starting with # serves as a comment.
+  && pattern.indexOf('#') !== 0
+
+const createRule = (pattern, ignorecase) => {
+  const origin = pattern
+  let negative = false
+
+  // > An optional prefix "!" which negates the pattern;
+  if (pattern.indexOf('!') === 0) {
+    negative = true
+    pattern = pattern.substr(1)
+  }
+
+  pattern = pattern
+  // > Put a backslash ("\") in front of the first "!" for patterns that
+  // >   begin with a literal "!", for example, `"\!important!.txt"`.
+  .replace(REGEX_LEADING_EXCAPED_EXCLAMATION, '!')
+  // > Put a backslash ("\") in front of the first hash for patterns that
+  // >   begin with a hash.
+  .replace(REGEX_LEADING_EXCAPED_HASH, '#')
+
+  const regex = make_regex(pattern, negative, ignorecase)
+
+  return {
+    origin,
+    pattern,
+    negative,
+    regex
+  }
+}
+
+class IgnoreBase {
+  constructor ({
+    ignorecase = true
+  } = {}) {
+    this._rules = []
+    this._ignorecase = ignorecase
+    define(this, KEY_IGNORE, true)
+    this._initCache()
+  }
+
+  _initCache () {
+    this._cache = {}
+  }
+
+  // @param {Array.<string>|string|Ignore} pattern
+  add (pattern) {
+    this._added = false
+
+    if (typeof pattern === 'string') {
+      pattern = pattern.split(/\r?\n/g)
+    }
+
+    make_array(pattern).forEach(this._addPattern, this)
+
+    // Some rules have just added to the ignore,
+    // making the behavior changed.
+    if (this._added) {
+      this._initCache()
+    }
+
+    return this
+  }
+
+  // legacy
+  addPattern (pattern) {
+    return this.add(pattern)
+  }
+
+  _addPattern (pattern) {
+    // #32
+    if (pattern && pattern[KEY_IGNORE]) {
+      this._rules = this._rules.concat(pattern._rules)
+      this._added = true
+      return
+    }
+
+    if (checkPattern(pattern)) {
+      const rule = createRule(pattern, this._ignorecase)
+      this._added = true
+      this._rules.push(rule)
+    }
+  }
+
+  filter (paths) {
+    return make_array(paths).filter(path => this._filter(path))
+  }
+
+  createFilter () {
+    return path => this._filter(path)
+  }
+
+  ignores (path) {
+    return !this._filter(path)
+  }
+
+  // @returns `Boolean` true if the `path` is NOT ignored
+  _filter (path, slices) {
+    if (!path) {
+      return false
+    }
+
+    if (path in this._cache) {
+      return this._cache[path]
+    }
+
+    if (!slices) {
+      // path/to/a.js
+      // ['path', 'to', 'a.js']
+      slices = path.split(SLASH)
+    }
+
+    slices.pop()
+
+    return this._cache[path] = slices.length
+      // > It is not possible to re-include a file if a parent directory of
+      // >   that file is excluded.
+      // If the path contains a parent directory, check the parent first
+      ? this._filter(slices.join(SLASH) + SLASH, slices)
+        && this._test(path)
+
+      // Or only test the path
+      : this._test(path)
+  }
+
+  // @returns {Boolean} true if a file is NOT ignored
+  _test (path) {
+    // Explicitly define variable type by setting matched to `0`
+    let matched = 0
+
+    this._rules.forEach(rule => {
+      // if matched = true, then we only test negative rules
+      // if matched = false, then we test non-negative rules
+      if (!(matched ^ rule.negative)) {
+        matched = rule.negative ^ rule.regex.test(path)
+      }
+    })
+
+    return !matched
+  }
+}
+
+// Windows
+// --------------------------------------------------------------
+/* istanbul ignore if  */
+if (
+  // Detect `process` so that it can run in browsers.
+  typeof process !== 'undefined'
+  && (
+    process.env && process.env.IGNORE_TEST_WIN32
+    || process.platform === 'win32'
+  )
+) {
+  const filter = IgnoreBase.prototype._filter
+
+  /* eslint no-control-regex: "off" */
+  const make_posix = str => /^\\\\\?\\/.test(str)
+  || /[^\x00-\x80]+/.test(str)
+    ? str
+    : str.replace(/\\/g, '/')
+
+  IgnoreBase.prototype._filter = function filterWin32 (path, slices) {
+    path = make_posix(path)
+    return filter.call(this, path, slices)
+  }
+}
+
+module.exports = options => new IgnoreBase(options)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           var result = (function(){
+  /*
+   * Generated by PEG.js 0.7.0.
+   *
+   * http://pegjs.majda.cz/
+   */
+  
+  function quote(s) {
+    /*
+     * ECMA-262, 5th ed., 7.8.4: All characters may appear literally in a
+     * string literal except for the closing quote character, backslash,
+     * carriage return, line separator, paragraph separator, and line feed.
+     * Any character may appear in the form of an escape sequence.
+     *
+     * For portability, we also escape escape all control and non-ASCII
+     * characters. Note that "\0" and "\v" escape sequences are not used
+     * because JSHint does not like the first and IE the second.
+     */
+     return '"' + s
+      .replace(/\\/g, '\\\\')  // backslash
+      .replace(/"/g, '\\"')    // closing quote character
+      .replace(/\x08/g, '\\b') // backspace
+      .replace(/\t/g, '\\t')   // horizontal tab
+      .replace(/\n/g, '\\n')   // line feed
+      .replace(/\f/g, '\\f')   // form feed
+      .replace(/\r/g, '\\r')   // carriage return
+      .replace(/[\x00-\x07\x0B\x0E-\x1F\x80-\uFFFF]/g, escape)
+      + '"';
+  }
+  
+  var result = {
+    /*
+     * Parses the input with a generated parser. If the parsing is successfull,
+     * returns a value explicitly or implicitly specified by the grammar from
+     * which the parser was generated (see |PEG.buildParser|). If the parsing is
+     * unsuccessful, throws |PEG.parser.SyntaxError| describing the error.
+     */
+    parse: function(input, startRule) {
+      var parseFunctions = {
+        "start": parse_start,
+        "_": parse__,
+        "identifierName": parse_identifierName,
+        "binaryOp": parse_binaryOp,
+        "selectors": parse_selectors,
+        "selector": parse_selector,
+        "sequence": parse_sequence,
+        "atom": parse_atom,
+        "wildcard": parse_wildcard,
+        "identifier": parse_identifier,
+        "attr": parse_attr,
+        "attrOps": parse_attrOps,
+        "attrEqOps": parse_attrEqOps,
+        "attrName": parse_attrName,
+        "attrValue": parse_attrValue,
+        "string": parse_string,
+        "number": parse_number,
+        "path": parse_path,
+        "type": parse_type,
+        "regex": parse_regex,
+        "field": parse_field,
+        "negation": parse_negation,
+        "matches": parse_matches,
+        "has": parse_has,
+        "firstChild": parse_firstChild,
+        "lastChild": parse_lastChild,
+        "nthChild": parse_nthChild,
+        "nthLastChild": parse_nthLastChild,
+        "class": parse_class
+      };
+      
+      if (startRule !== undefined) {
+        if (parseFunctions[startRule] === undefined) {
+          throw new Error("Invalid rule name: " + quote(startRule) + ".");
+        }
+      } else {
+        startRule = "start";
+      }
+      
+      var pos = 0;
+      var reportFailures = 0;
+      var rightmostFailuresPos = 0;
+      var rightmostFailuresExpected = [];
+      var cache = {};
+      
+      function padLeft(input, padding, length) {
+        var result = input;
+        
+        var padLength = length - input.length;
+        for (var i = 0; i < padLength; i++) {
+          result = padding + result;
+        }
+        
+        return result;
+      }
+      
+      function escape(ch) {
+        var charCode = ch.charCodeAt(0);
+        var escapeChar;
+        var length;
+        
+        if (charCode <= 0xFF) {
+          escapeChar = 'x';
+          length = 2;
+        } else {
+          escapeChar = 'u';
+          length = 4;
+        }
+        
+        return '\\' + escapeChar + padLeft(charCode.toString(16).toUpperCase(), '0', length);
+      }
+      
+      function matchFailed(failure) {
+        if (pos < rightmostFailuresPos) {
+          return;
+        }
+        
+        if (pos > rightmostFailuresPos) {
+          rightmostFailuresPos = pos;
+          rightmostFailuresExpected = [];
+        }
+        
+        rightmostFailuresExpected.push(failure);
+      }
+      
+      function parse_start() {
+        var cacheKey = "start@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse__();
+        if (result0 !== null) {
+          result1 = parse_selectors();
+          if (result1 !== null) {
+            result2 = parse__();
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, ss) { return ss.length === 1 ? ss[0] : { type: 'matches', selectors: ss }; })(pos0, result0[1]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        if (result0 === null) {
+          pos0 = pos;
+          result0 = parse__();
+          if (result0 !== null) {
+            result0 = (function(offset) { return void 0; })(pos0);
+          }
+          if (result0 === null) {
+            pos = pos0;
+          }
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse__() {
+        var cacheKey = "_@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1;
+        
+        result0 = [];
+        if (input.charCodeAt(pos) === 32) {
+          result1 = " ";
+          pos++;
+        } else {
+          result1 = null;
+          if (reportFailures === 0) {
+            matchFailed("\" \"");
+          }
+        }
+        while (result1 !== null) {
+          result0.push(result1);
+          if (input.charCodeAt(pos) === 32) {
+            result1 = " ";
+            pos++;
+          } else {
+            result1 = null;
+            if (reportFailures === 0) {
+              matchFailed("\" \"");
+            }
+          }
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_identifierName() {
+        var cacheKey = "identifierName@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1;
+        var pos0;
+        
+        pos0 = pos;
+        if (/^[^ [\],():#!=><~+.]/.test(input.charAt(pos))) {
+          result1 = input.charAt(pos);
+          pos++;
+        } else {
+          result1 = null;
+          if (reportFailures === 0) {
+            matchFailed("[^ [\\],():#!=><~+.]");
+          }
+        }
+        if (result1 !== null) {
+          result0 = [];
+          while (result1 !== null) {
+            result0.push(result1);
+            if (/^[^ [\],():#!=><~+.]/.test(input.charAt(pos))) {
+              result1 = input.charAt(pos);
+              pos++;
+            } else {
+              result1 = null;
+              if (reportFailures === 0) {
+                matchFailed("[^ [\\],():#!=><~+.]");
+              }
+            }
+          }
+        } else {
+          result0 = null;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, i) { return i.join(''); })(pos0, result0);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_binaryOp() {
+        var cacheKey = "binaryOp@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse__();
+        if (result0 !== null) {
+          if (input.charCodeAt(pos) === 62) {
+            result1 = ">";
+            pos++;
+          } else {
+            result1 = null;
+            if (reportFailures === 0) {
+              matchFailed("\">\"");
+            }
+          }
+          if (result1 !== null) {
+            result2 = parse__();
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset) { return 'child'; })(pos0);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        if (result0 === null) {
+          pos0 = pos;
+          pos1 = pos;
+          result0 = parse__();
+          if (result0 !== null) {
+            if (input.charCodeAt(pos) === 126) {
+              result1 = "~";
+              pos++;
+            } else {
+              result1 = null;
+              if (reportFailures === 0) {
+                matchFailed("\"~\"");
+              }
+            }
+            if (result1 !== null) {
+              result2 = parse__();
+              if (result2 !== null) {
+                result0 = [result0, result1, result2];
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+          if (result0 !== null) {
+            result0 = (function(offset) { return 'sibling'; })(pos0);
+          }
+          if (result0 === null) {
+            pos = pos0;
+          }
+          if (result0 === null) {
+            pos0 = pos;
+            pos1 = pos;
+            result0 = parse__();
+            if (result0 !== null) {
+              if (input.charCodeAt(pos) === 43) {
+                result1 = "+";
+                pos++;
+              } else {
+                result1 = null;
+                if (reportFailures === 0) {
+                  matchFailed("\"+\"");
+                }
+              }
+              if (result1 !== null) {
+                result2 = parse__();
+                if (result2 !== null) {
+                  result0 = [result0, result1, result2];
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+            if (result0 !== null) {
+              result0 = (function(offset) { return 'adjacent'; })(pos0);
+            }
+            if (result0 === null) {
+              pos = pos0;
+            }
+            if (result0 === null) {
+              pos0 = pos;
+              pos1 = pos;
+              if (input.charCodeAt(pos) === 32) {
+                result0 = " ";
+                pos++;
+              } else {
+                result0 = null;
+                if (reportFailures === 0) {
+                  matchFailed("\" \"");
+                }
+              }
+              if (result0 !== null) {
+                result1 = parse__();
+                if (result1 !== null) {
+                  result0 = [result0, result1];
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+              if (result0 !== null) {
+                result0 = (function(offset) { return 'descendant'; })(pos0);
+              }
+              if (result0 === null) {
+                pos = pos0;
+              }
+            }
+          }
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_selectors() {
+        var cacheKey = "selectors@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2, result3, result4, result5;
+        var pos0, pos1, pos2;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse_selector();
+        if (result0 !== null) {
+          result1 = [];
+          pos2 = pos;
+          result2 = parse__();
+          if (result2 !== null) {
+            if (input.charCodeAt(pos) === 44) {
+              result3 = ",";
+              pos++;
+            } else {
+              result3 = null;
+              if (reportFailures === 0) {
+                matchFailed("\",\"");
+              }
+            }
+            if (result3 !== null) {
+              result4 = parse__();
+              if (result4 !== null) {
+                result5 = parse_selector();
+                if (result5 !== null) {
+                  result2 = [result2, result3, result4, result5];
+                } else {
+                  result2 = null;
+                  pos = pos2;
+                }
+              } else {
+                result2 = null;
+                pos = pos2;
+              }
+            } else {
+              result2 = null;
+              pos = pos2;
+            }
+          } else {
+            result2 = null;
+            pos = pos2;
+          }
+          while (result2 !== null) {
+            result1.push(result2);
+            pos2 = pos;
+            result2 = parse__();
+            if (result2 !== null) {
+              if (input.charCodeAt(pos) === 44) {
+                result3 = ",";
+                pos++;
+              } else {
+                result3 = null;
+                if (reportFailures === 0) {
+                  matchFailed("\",\"");
+                }
+              }
+              if (result3 !== null) {
+                result4 = parse__();
+                if (result4 !== null) {
+                  result5 = parse_selector();
+                  if (result5 !== null) {
+                    result2 = [result2, result3, result4, result5];
+                  } else {
+                    result2 = null;
+                    pos = pos2;
+                  }
+                } else {
+                  result2 = null;
+                  pos = pos2;
+                }
+              } else {
+                result2 = null;
+                pos = pos2;
+              }
+            } else {
+              result2 = null;
+              pos = pos2;
+            }
+          }
+          if (result1 !== null) {
+            result0 = [result0, result1];
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, s, ss) {
+          return [s].concat(ss.map(function (s) { return s[3]; }));
+        })(pos0, result0[0], result0[1]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_selector() {
+        var cacheKey = "selector@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2, result3;
+        var pos0, pos1, pos2;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse_sequence();
+        if (result0 !== null) {
+          result1 = [];
+          pos2 = pos;
+          result2 = parse_binaryOp();
+          if (result2 !== null) {
+            result3 = parse_sequence();
+            if (result3 !== null) {
+              result2 = [result2, result3];
+            } else {
+              result2 = null;
+              pos = pos2;
+            }
+          } else {
+            result2 = null;
+            pos = pos2;
+          }
+          while (result2# ESLint Scope
+
+ESLint Scope is the [ECMAScript](http://www.ecma-international.org/publications/standards/Ecma-262.htm) scope analyzer used in ESLint. It is a fork of [escope](http://github.com/estools/escope).
+
+## Usage
+
+Install:
+
+```
+npm i eslint-scope --save
+```
+
+Example:
+
+```js
+var eslintScope = require('eslint-scope');
+var espree = require('espree');
+var estraverse = require('estraverse');
+
+var ast = espree.parse(code);
+var scopeManager = eslintScope.analyze(ast);
+
+var currentScope = scopeManager.acquire(ast);   // global scope
+
+estraverse.traverse(ast, {
+    enter: function(node, parent) {
+        // do stuff
+
+        if (/Function/.test(node.type)) {
+            currentScope = scopeManager.acquire(node);  // get current function scope
+        }
+    },
+    leave: function(node, parent) {
+        if (/Function/.test(node.type)) {
+            currentScope = currentScope.upper;  // set to parent scope
+        }
+
+        // do stuff
+    }
+});
+```
+
+## Contributing
+
+Issues and pull requests will be triaged and responded to as quickly as possible. We operate under the [ESLint Contributor Guidelines](http://eslint.org/docs/developer-guide/contributing), so please be sure to read them before contributing. If you're not sure where to dig in, check out the [issues](https://github.com/eslint/eslint-scope/issues).
+
+## Build Commands
+
+* `npm test` - run all linting and tests
+* `npm run lint` - run all linting
+
+## License
+
+ESLint Scope is licensed under a permissive BSD 2-clause license.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           'use strict';
+
+var isArray = Array.isArray;
+var keyList = Object.keys;
+var hasProp = Object.prototype.hasOwnProperty;
+
+module.exports = function equal(a, b) {
+  if (a === b) return true;
+
+  if (a && b && typeof a == 'object' && typeof b == 'object') {
+    var arrA = isArray(a)
+      , arrB = isArray(b)
+      , i
+      , length
+      , key;
+
+    if (arrA && arrB) {
+      length = a.length;
+      if (length != b.length) return false;
+      for (i = length; i-- !== 0;)
+        if (!equal(a[i], b[i])) return false;
+      return true;
+    }
+
+    if (arrA != arrB) return false;
+
+    var dateA = a instanceof Date
+      , dateB = b instanceof Date;
+    if (dateA != dateB) return false;
+    if (dateA && dateB) return a.getTime() == b.getTime();
+
+    var regexpA = a instanceof RegExp
+      , regexpB = b instanceof RegExp;
+    if (regexpA != regexpB) return false;
+    if (regexpA && regexpB) return a.toString() == b.toString();
+
+    var keys = keyList(a);
+    length = keys.length;
+
+    if (length !== keyList(b).length)
+      return false;
+
+    for (i = length; i-- !== 0;)
+      if (!hasProp.call(b, keys[i])) return false;
+
+    for (i = length; i-- !== 0;) {
+      key = keys[i];
+      if (!equal(a[key], b[key])) return false;
+    }
+
+    return true;
+  }
+
+  return a!==a && b!==b;
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     # ansi-styles [![Build Status](https://travis-ci.org/chalk/ansi-styles.svg?branch=master)](https://travis-ci.org/chalk/ansi-styles)
+
+> [ANSI escape codes](http://en.wikipedia.org/wiki/ANSI_escape_code#Colors_and_Styles) for styling strings in the terminal
+
+You probably want the higher-level [chalk](https://github.com/chalk/chalk) module for styling your strings.
+
+<img src="https://cdn.rawgit.com/chalk/ansi-styles/8261697c95bf34b6c7767e2cbe9941a851d59385/screenshot.svg" width="900">
+
+
+## Install
+
+```
+$ npm install ansi-styles
+```
+
+
+## Usage
+
+```js
+const style = require('ansi-styles');
+
+console.log(`${style.green.open}Hello world!${style.green.close}`);
+
+
+// Color conversion between 16/256/truecolor
+// NOTE: If conversion goes to 16 colors or 256 colors, the original color
+//       may be degraded to fit that color palette. This means terminals
+//       that do not support 16 million colors will best-match the
+//       original color.
+console.log(style.bgColor.ansi.hsl(120, 80, 72) + 'Hello world!' + style.bgColor.close);
+console.log(style.color.ansi256.rgb(199, 20, 250) + 'Hello world!' + style.color.close);
+console.log(style.color.ansi16m.hex('#ABCDEF') + 'Hello world!' + style.color.close);
+```
+
+## API
+
+Each style has an `open` and `close` property.
+
+
+## Styles
+
+### Modifiers
+
+- `reset`
+- `bold`
+- `dim`
+- `italic` *(Not widely supported)*
+- `underline`
+- `inverse`
+- `hidden`
+- `strikethrough` *(Not widely supported)*
+
+### Colors
+
+- `black`
+- `red`
+- `green`
+- `yellow`
+- `blue`
+- `magenta`
+- `cyan`
+- `white`
+- `gray` ("bright black")
+- `redBright`
+- `greenBright`
+- `yellowBright`
+- `blueBright`
+- `magentaBright`
+- `cyanBright`
+- `whiteBright`
+
+### Background colors
+
+- `bgBlack`
+- `bgRed`
+- `bgGreen`
+- `bgYellow`
+- `bgBlue`
+- `bgMagenta`
+- `bgCyan`
+- `bgWhite`
+- `bgBlackBright`
+- `bgRedBright`
+- `bgGreenBright`
+- `bgYellowBright`
+- `bgBlueBright`
+- `bgMagentaBright`
+- `bgCyanBright`
+- `bgWhiteBright`
+
+
+## Advanced usage
+
+By default, you get a map of styles, but the styles are also available as groups. They are non-enumerable so they don't show up unless you access them explicitly. This makes it easier to expose only a subset in a higher-level module.
+
+- `style.modifier`
+- `style.color`
+- `style.bgColor`
+
+###### Example
+
+```js
+console.log(style.color.green.open);
+```
+
+Raw escape codes (i.e. without the CSI escape prefix `\u001B[` and render mode postfix `m`) are available under `style.codes`, which returns a `Map` with the open codes as keys and close codes as values.
+
+###### Example
+
+```js
+console.log(style.codes.get(36));
+//=> 39
+```
+
+
+## [256 / 16 million (TrueColor) support](https://gist.github.com/XVilka/8346728)
+
+`ansi-styles` uses the [`color-convert`](https://github.com/Qix-/color-convert) package to allow for converting between various colors and ANSI escapes, with support for 256 and 16 million colors.
+
+To use these, call the associated conversion function with the intended output, for example:
+
+```js
+style.color.ansi.rgb(100, 200, 15); // RGB to 16 color ansi foreground code
+style.bgColor.ansi.rgb(100, 200, 15); // RGB to 16 color ansi background code
+
+style.color.ansi256.hsl(120, 100, 60); // HSL to 256 color ansi foreground code
+style.bgColor.ansi256.hsl(120, 100, 60); // HSL to 256 color ansi foreground code
+
+style.color.ansi16m.hex('#C0FFEE'); // Hex (RGB) to 16 million color foreground code
+style.bgColor.ansi16m.hex('#C0FFEE'); // Hex (RGB) to 16 million color background code
+```
+
+
+## Related
+
+- [ansi-escapes](https://github.com/sindresorhus/ansi-escapes) - ANSI escape codes for manipulating the terminal
+
+
+## Maintainers
+
+- [Sindre Sorhus](https://github.com/sindresorhus)
+- [Josh Junon](https://github.com/qix-)
+
+
+## License
+
+MIT
+                                                                                                                                                                                                                                                                                                                                                                                                 The MIT License (MIT)
+
+Copyright (c) 2014 Mathias Buus
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          [![npm][npm]][npm-url]
+[![node][node]][node-url]
+[![deps][deps]][deps-url]
+[![test][test]][test-url]
+[![coverage][cover]][cover-url]
+[![chat][chat]][chat-url]
+
+<div align="center">
+  <a href="http://json-schema.org">
+    <img width="160" height="160"
+      src="https://raw.githubusercontent.com/webpack-contrib/schema-utils/master/docs/logo.png">
+  </a>
+  <a href="https://github.com/webpack/webpack">
+    <img width="200" height="200"
+      src="https://webpack.js.org/assets/icon-square-big.svg">
+  </a>
+  <h1>Schema Utils</h1>
+</div>
+
+<h2 align="center">Install</h2>
+
+```bash
+npm i schema-utils
+```
+
+<h2 align="center">Usage</h2>
+
+### `validateOptions`
+
+**`schema.json`**
+```js
+{
+  "type": "object",
+  "properties": {
+    // Options...
+  },
+  "additionalProperties": false
+}
+```
+
+#### Error Messages (Custom)
+
+**`schema.json`**
+```js
+{
+  "type": "object",
+  "properties": {
+    "option": {
+      "type": [ "boolean" ]
+    }
+  },
+  // Overrides the default err.message for option
+  "errorMessage": {
+    "option": "should be {Boolean} (https:/github.com/org/repo#anchor)"
+  }
+  "additionalProperties": false
+}
+```
+
+```js
+import schema from 'path/to/schema.json'
+import validateOptions from 'schema-utils'
+
+validateOptions(schema, options, 'Loader/Plugin Name')
+```
+
+<h2 align="center">Examples</h2>
+
+**schema.json**
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "test": {
+      "anyOf": [
+        { "type": "array" },
+        { "type": "string" },
+        { "instanceof": "RegExp" }
+      ]
+    },
+    "transform": {
+      "instanceof": "Function"
+    },
+    "sourceMap": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}
+```
+
+### `Loader`
+
+```js
+import { getOptions } from 'loader-utils'
+import validateOptions from 'schema-utils'
+
+import schema from 'path/to/schema.json'
+
+function loader (src, map) {
+  const options = getOptions(this) || {}
+
+  validateOptions(schema, options, 'Loader Name')
+
+  // Code...
+}
+```
+
+### `Plugin`
+
+```js
+import validateOptions from 'schema-utils'
+
+import schema from 'path/to/schema.json'
+
+class Plugin {
+  constructor (options) {
+    validateOptions(schema, options, 'Plugin Name')
+
+    this.options = options
+  }
+
+  apply (compiler) {
+    // Code...
+  }
+}
+```
+
+
+[npm]: https://img.shields.io/npm/v/schema-utils.svg
+[npm-url]: https://npmjs.com/package/schema-utils
+
+[node]: https://img.shields.io/node/v/schema-utils.svg
+[node-url]: https://nodejs.org
+
+[deps]: https://david-dm.org/webpack-contrib/schema-utils.svg
+[deps-url]: https://david-dm.org/webpack-contrib/schema-utils
+
+[test]: http://img.shields.io/travis/webpack-contrib/schema-utils.svg
+[test-url]: https://travis-ci.org/webpack-contrib/schema-utils
+
+[cover]: https://codecov.io/gh/webpack-contrib/schema-utils/branch/master/graph/badge.svg
+[cover-url]: https://codecov.io/gh/webpack-contrib/schema-utils
+
+[chat]: https://img.shields.io/badge/gitter-webpack%2Fwebpack-brightgreen.svg
+[chat-url]: https://gitter.im/webpack/webpack
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <h1 align="center">
+	<br>
+	<br>
+	<img width="360" src="https://cdn.rawgit.com/chalk/chalk/19935d6484811c5e468817f846b7b3d417d7bf4a/logo.svg" alt="chalk">
+	<br>
+	<br>
+	<br>
+</h1>
+
+> Terminal string styling done right
+
+[![Build Status](https://travis-ci.org/chalk/chalk.svg?branch=master)](https://travis-ci.org/chalk/chalk)
+[![Coverage Status](https://coveralls.io/repos/chalk/chalk/badge.svg?branch=master)](https://coveralls.io/r/chalk/chalk?branch=master)
+[![](http://img.shields.io/badge/unicorn-approved-ff69b4.svg)](https://www.youtube.com/watch?v=9auOCbH5Ns4)
+
+
+[colors.js](https://github.com/Marak/colors.js) used to be the most popular string styling module, but it has serious deficiencies like extending `String.prototype` which causes all kinds of [problems](https://github.com/yeoman/yo/issues/68). Although there are other ones, they either do too much or not enough.
+
+**Chalk is a clean and focused alternative.**
+
+![](https://github.com/chalk/ansi-styles/raw/master/screenshot.png)
+
+
+## Why
+
+- Highly performant
+- Doesn't extend `String.prototype`
+- Expressive API
+- Ability to nest styles
+- Clean and focused
+- Auto-detects color support
+- Actively maintained
+- [Used by ~4500 modules](https://www.npmjs.com/browse/depended/chalk) as of July 15, 2015
+
+
+## Install
+
+```
+$ npm install --save chalk
+```
+
+
+## Usage
+
+Chalk comes with an easy to use composable API where you just chain and nest the styles you want.
+
+```js
+var chalk = require('chalk');
+
+// style a string
+chalk.blue('Hello world!');
+
+// combine styled and normal strings
+chalk.blue('Hello') + 'World' + chalk.red('!');
+
+// compose multiple styles using the chainable API
+chalk.blue.bgRed.bold('Hello world!');
+
+// pass in multiple arguments
+chalk.blue('Hello', 'World!', 'Foo', 'bar', 'biz', 'baz');
+
+// nest styles
+chalk.red('Hello', chalk.underline.bgBlue('world') + '!');
+
+// nest styles of the same type even (color, underline, background)
+chalk.green(
+	'I am a green line ' +
+	chalk.blue.underline.bold('with a blue substring') +
+	' that becomes green again!'
+);
+```
+
+Easily define your own themes.
+
+```js
+var chalk = require('chalk');
+var error = chalk.bold.red;
+console.log(error('Error!'));
+```
+
+Take advantage of console.log [string substitution](http://nodejs.org/docs/latest/api/console.html#console_console_log_data).
+
+```js
+var name = 'Sindre';
+console.log(chalk.green('Hello %s'), name);
+//=> Hello Sindre
+```
+
+
+## API
+
+### chalk.`<style>[.<style>...](string, [string...])`
+
+Example: `chalk.red.bold.underline('Hello', 'world');`
+
+Chain [styles](#styles) and call the last one as a method with a string argument. Order doesn't matter, and later styles take precedent in case of a conflict. This simply means that `Chalk.red.yellow.green` is equivalent to `Chalk.green`.
+
+Multiple arguments will be separated by space.
+
+### chalk.enabled
+
+Color support is automatically detected, but you can override it by setting the `enabled` property. You should however only do this in your own code as it applies globally to all chalk consumers.
+
+If you need to change this in a reusable module create a new instance:
+
+```js
+var ctx = new chalk.constructor({enabled: false});
+```
+
+### chalk.supportsColor
+
+Detect whether the terminal [supports color](https://github.com/chalk/supports-color). Used internally and handled for you, but exposed for convenience.
+
+Can be overridden by the user with the flags `--color` and `--no-color`. For situations where using `--color` is not possible, add an environment variable `FORCE_COLOR` with any value to force color. Trumps `--no-color`.
+
+### chalk.styles
+
+Exposes the styles as [ANSI escape codes](https://github.com/chalk/ansi-styles).
+
+Generally not useful, but you might need just the `.open` or `.close` escape code if you're mixing externally styled strings with your own.
+
+```js
+var chalk = require('chalk');
+
+console.log(chalk.styles.red);
+//=> {open: '\u001b[31m', close: '\u001b[39m'}
+
+console.log(chalk.styles.red.open + 'Hello' + chalk.styles.red.close);
+```
+
+### chalk.hasColor(string)
+
+Check whether a string [has color](https://github.com/chalk/has-ansi).
+
+### chalk.stripColor(string)
+
+[Strip color](https://github.com/chalk/strip-ansi) from a string.
+
+Can be useful in combination with `.supportsColor` to strip color on externally styled text when it's not supported.
+
+Example:
+
+```js
+var chalk = require('chalk');
+var styledString = getText();
+
+if (!chalk.supportsColor) {
+	styledString = chalk.stripColor(styledString);
+}
+```
+
+
+## Styles
+
+### Modifiers
+
+- `reset`
+- `bold`
+- `dim`
+- `italic` *(not widely supported)*
+- `underline`
+- `inverse`
+- `hidden`
+- `strikethrough` *(not widely supported)*
+
+### Colors
+
+- `black`
+- `red`
+- `green`
+- `yellow`
+- `blue` *(on Windows the bright version is used as normal blue is illegible)*
+- `magenta`
+- `cyan`
+- `white`
+- `gray`
+
+### Background colors
+
+- `bgBlack`
+- `bgRed`
+- `bgGreen`
+- `bgYellow`
+- `bgBlue`
+- `bgMagenta`
+- `bgCyan`
+- `bgWhite`
+
+
+## 256-colors
+
+Chalk does not support anything other than the base eight colors, which guarantees it will work on all terminals and systems. Some terminals, specifically `xterm` compliant ones, will support the full range of 8-bit colors. For this the lower level [ansi-256-colors](https://github.com/jbnicolai/ansi-256-colors) package can be used.
+
+
+## Windows
+
+If you're on Windows, do yourself a favor and use [`cmder`](http://bliker.github.io/cmder/) instead of `cmd.exe`.
+
+
+## Related
+
+- [chalk-cli](https://github.com/chalk/chalk-cli) - CLI for this module
+- [ansi-styles](https://github.com/chalk/ansi-styles/) - ANSI escape codes for styling strings in the terminal
+- [supports-color](https://github.com/chalk/supports-color/) - Detect whether a terminal supports color
+- [strip-ansi](https://github.com/chalk/strip-ansi) - Strip ANSI escape codes
+- [has-ansi](https://github.com/chalk/has-ansi) - Check if a string has ANSI escape codes
+- [ansi-regex](https://github.com/chalk/ansi-regex) - Regular expression for matching ANSI escape codes
+- [wrap-ansi](https://github.com/chalk/wrap-ansi) - Wordwrap a string with ANSI escape codes
+
+
+## License
+
+MIT © [Sindre Sorhus](http://sindresorhus.com)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <img align="right" alt="Ajv logo" width="160" src="http://epoberezkin.github.io/ajv/images/ajv_logo.png">
+
+# Ajv: Another JSON Schema Validator
+
+The fastest JSON Schema validator for Node.js and browser. Supports draft-04/06/07.
+
+
+[![Build Status](https://travis-ci.org/epoberezkin/ajv.svg?branch=master)](https://travis-ci.org/epoberezkin/ajv)
+[![npm](https://img.shields.io/npm/v/ajv.svg)](https://www.npmjs.com/package/ajv)
+[![npm downloads](https://img.shields.io/npm/dm/ajv.svg)](https://www.npmjs.com/package/ajv)
+[![Coverage Status](https://coveralls.io/repos/epoberezkin/ajv/badge.svg?branch=master&service=github)](https://coveralls.io/github/epoberezkin/ajv?branch=master)
+[![Greenkeeper badge](https://badges.greenkeeper.io/epoberezkin/ajv.svg)](https://greenkeeper.io/)
+[![Gitter](https://img.shields.io/gitter/room/ajv-validator/ajv.svg)](https://gitter.im/ajv-validator/ajv)
+
+
+## Using version 6
+
+[JSON Schema draft-07](http://json-schema.org/latest/json-schema-validation.html) is published.
+
+[Ajv version 6.0.0](https://github.com/epoberezkin/ajv/releases/tag/v6.0.0) that supports draft-07 is released. It may require either migrating your schemas or updating your code (to continue using draft-04 and v5 schemas, draft-06 schemas will be supported without changes).
+
+__Please note__: To use Ajv with draft-06 schemas you need to explicitly add the meta-schema to the validator instance:
+
+```javascript
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+```
+
+To use Ajv with draft-04 schemas in addition to explicitly adding meta-schema you also need to use option schemaId:
+
+```javascript
+var ajv = new Ajv({schemaId: 'id'});
+// If you want to use both draft-04 and draft-06/07 schemas:
+// var ajv = new Ajv({schemaId: 'auto'});
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
+```
+
+
+## Contents
+
+- [Performance](#performance)
+- [Features](#features)
+- [Getting started](#getting-started)
+- [Frequently Asked Questions](https://github.com/epoberezkin/ajv/blob/master/FA

@@ -1,0 +1,1757 @@
+v3.19.0 - March 31, 2017
+
+* e09132f Fix: no-extra-parens false positive with exports and object literals (#8359) (Teddy Katz)
+* 91baed4 Update: allow custom messages in no-restricted-syntax (fixes #8298) (#8357) (Vitor Balocco)
+* 35c93e6 Fix: prevent space-before-function-paren from checking type annotations (#8349) (Teddy Katz)
+* 3342e9f Fix: don't modify operator precedence in operator-assignment autofixer (#8358) (Teddy Katz)
+* f88375f Docs: clarify that no-unsafe-negation is in eslint:recommended (#8371) (Teddy Katz)
+* 02f0d27 Docs: Add soda0289 to Development Team (#8367) (Kai Cataldo)
+* 155424c Fix: ignore empty path in patterns (fixes #8362) (#8364) (alberto)
+* 27616a8 Fix: prefer-const false positive with object spread (fixes #8187) (#8297) (Vitor Balocco)
+* 8569a90 Docs: add note about git's linebreak handling to linebreak-style docs (#8361) (Teddy Katz)
+* 5878593 Chore: fix invalid syntax in no-param-reassign test (#8360) (Teddy Katz)
+* 1b1046b Fix: don't classify plugins that throw errors as "missing" (fixes #6874) (#8323) (Teddy Katz)
+* 29f4ba5 Fix: no-useless-computed-key invalid autofix for getters and setters (#8335) (Teddy Katz)
+* 0541eaf Fix: no-implicit-coercion invalid autofix with consecutive identifiers (#8340) (Teddy Katz)
+* 41b9786 Fix: no-extra-parens false positive with objects following arrows (#8339) (Teddy Katz)
+* 3146167 Fix: `eslint.verify` should not mutate config argument (fixes #8329) (#8334) (alberto)
+* 927de90 Fix: dot-notation autofix produces invalid syntax for integer properties (#8332) (Teddy Katz)
+* a9d1bea Fix: comma-style autofix produces errors on parenthesized elements (#8331) (Teddy Katz)
+* d52173f Fix: don't generate invalid options in config-rule (#8326) (Teddy Katz)
+* 6eda3b5 Fix: no-extra-parens invalid autofix in for-of statements (#8337) (Teddy Katz)
+* 6c819d8 Fix: dot-notation autofix produces errors on parenthesized computed keys (#8330) (Teddy Katz)
+* 2d883d7 Fix: object-shorthand autofix produces errors on parenthesized functions (#8328) (Teddy Katz)
+* cd9b774 Fix: quotes false positive with backtick option in method names (#8327) (Teddy Katz)
+* d064ba2 Fix: no-else-return false positive for ifs in single-statement position (#8338) (Teddy Katz)
+* 6a718ba Chore: enable max-statements-per-line on ESLint codebase (#8321) (Teddy Katz)
+* 614b62e Chore: update sinon calls to deprecated API. (#8310) (alberto)
+* 0491572 Chore: use precalculated counts in codeframe formatter (#8296) (Vitor Balocco)
+* 8733e6a Chore: Fix incorrect error location properties in tests (#8307) (alberto)
+* c4ffb49 Chore: Fix typos in test option assertions (#8305) (Teddy Katz)
+* 79a97cb Upgrade: devDependencies (#8303) (alberto)
+* e4da200 Upgrade: Mocha to 3.2.0 (#8299) (Ilya Volodin)
+* 2f144ca Fix: operator-assignment autofix errors with parentheses (fixes #8293) (#8294) (Teddy Katz)
+* 7521cd5 Chore: update token logic in rules to use ast-utils (#8288) (Teddy Katz)
+* 9b509ce Chore: refactor space-before-function-paren rule (#8284) (Teddy Katz)
+* ddc6350 Fix: no-param-reassign false positive on destructuring (fixes #8279) (#8281) (Teddy Katz)
+* f8176b3 Chore: improve test coverage for node-event-generator (#8287) (Teddy Katz)
+* 602e9c2 Docs: fix incorrect selector examples (#8278) (Teddy Katz)
+
+v3.18.0 - March 17, 2017
+
+* 85f74ca Fix: broken code path of direct nested loops (fixes #8248) (#8274) (Toru Nagashima)
+* a61c359 Fix: Ignore hidden folders when resolving globs (fixes #8259) (#8270) (Ian VanSchooten)
+* 6f05546 Chore: convert StubModuleResolver in config tests to ES6 class (#8265) (Teddy Katz)
+* 0c0fc31 Fix: false positive of no-extra-parens about spread and sequense (#8275) (Toru Nagashima)
+* e104973 Docs: remove self-reference in no-restricted-syntax docs (#8277) (Vitor Balocco)
+* 23eca51 Update: Add allowTaggedTemplates to no-unused-expressions (fixes #7632) (#8253) (Kevin Partington)
+* f9ede3f Upgrade: doctrine to 2.0.0 (#8269) (alberto)
+* 1b678a6 New: allow rules to listen for AST selectors (fixes #5407) (#7833) (Teddy Katz)
+* 63ca0c5 Chore: use precalculated counts in stylish formatter (#8251) (alberto)
+* 47c3171 Fix: typo in console.error (#8258) (Jan Peer Stöcklmair)
+* e74ed6d Chore: convert Traverser to ES6 class (refs #7849) (#8232) (Teddy Katz)
+* 13eead9 Fix: sort-vars crash on mixed destructuring declarations (#8245) (Teddy Katz)
+* 133f489 Fix: func-name-matching crash on destructuring assignment to functions (#8247) (Teddy Katz)
+* a34b9c4 Fix: func-name-matching crash on non-string literal computed keys (#8246) (Teddy Katz)
+* 7276e6d Docs: remove unneeded semicolons in arrow-parens.md (#8249) (Dmitry Gershun)
+* 8c40a25 concat-stream known to be vulnerable prior 1.5.2 (#8228) (Samuel)
+* 149c055 Upgrade: mock-fs to v4.2.0 (fixes #8194) (#8243) (Teddy Katz)
+* a83bff9 Build: remove unneeded json config in demo (fixes #8237) (#8242) (alberto)
+* df12137 Docs: fix typos (#8235) (Gyandeep Singh)
+* b5e9788 Chore: rename no-extra-parens methods (#8225) (Vitor Balocco)
+* 7f8afe6 Update: no-extra-parens overlooked spread and superClass (fixes #8175) (#8209) (Toru Nagashima)
+* ce6ff56 Docs: set recommended true for no-global-assign (fixes #8215) (#8218) (BinYi LIU)
+* 5b5c236 Fix: wrong comment when module not found in config (fixes #8192) (#8196) (alberto)
+
+v3.17.1 - March 6, 2017
+
+* f8c8e6e Build: change mock-fs path without SSH (fixes #8207) (#8208) (Toru Nagashima)
+* f713f11 Fix: nonblock-statement-body-position multiline error (fixes #8202) (#8203) (Teddy Katz)
+* 41e3d9c Fix: `operator-assignment` with parenthesized expression (fixes #8190) (#8197) (alberto)
+* 5e3bca7 Chore: add eslint-plugin-eslint-plugin (#8198) (Teddy Katz)
+* 580da36 Chore: add missing `output` property to tests (#8195) (alberto)
+
+v3.17.0 - March 3, 2017
+
+* 4fdf6d7 Update: deprecate `applyDefaultPatterns` in `line-comment-position` (#8183) (alberto)
+* 25e5817 Fix: Don't autofix `+ +a` to `++a` in space-unary-ops (#8176) (Alan Pierce)
+* a6ce8f9 Build: Sort rules before dumping them to doc files (#8154) (Danny Andrews)
+* 0af9057 Chore: Upgrade to a patched version of mock-fs (fixes #8177) (#8188) (Teddy Katz)
+* bf4d8cf Update: ignore eslint comments in lines-arount-comment (fixes #4345) (#8155) (alberto)
+* dad20ad New: add SourceCode#getLocFromIndex and #getIndexFromLoc (fixes #8073) (#8158) (Teddy Katz)
+* 18a519f Update: let RuleTester cases assert that no autofix occurs (fixes #8157) (#8163) (Teddy Katz)
+* a30eb8d Docs: improve documentation for RuleTester cases (#8162) (Teddy Katz)
+* a78ec9f Chore: upgrade `coveralls` to ^2.11.16 (#8161) (alberto)
+* d02bd11 Fix: padded-blocks autofix problems with comments (#8149) (alberto)
+* 9994889 Docs: Add missing space to `create` in `no-use-before-define` (#8166) (Justin Anastos)
+* 4d542ba Docs: Remove unneeded statement about autofix (#8164) (alberto)
+* 20daea5 New: no-compare-neg-zero rule (#8091) (薛定谔的猫)
+* 4d35a81 Fix: Add a utility to avoid autofix conflicts (fixes #7928, fixes #8026) (#8067) (Alan Pierce)
+* 287e882 New: nonblock-statement-body-position rule (fixes #6067) (#8108) (Teddy Katz)
+* 7f1f4e5 Chore: remove unneeded devDeps `linefix` and `gh-got` (#8160) (alberto)
+* ca1694b Update: ignore negative ranges in fixes (#8133) (alberto)
+* 163d751 Docs: `lines-around-comment` doesn't disallow empty lines (#8151) (alberto)
+* 1c84922 Chore: upgrade eslint-plugin-node (#8156) (alberto)
+* 1ee5c27 Fix: Make RuleTester handle empty-string cases gracefully (fixes #8142) (#8143) (Teddy Katz)
+* 044bc10 Docs: Add details about "--fix" option for "sort-imports" rule (#8077) (Olivier Audard)
+* 3fec54a Add option to ignore property in no-param-reassign (#8087) (Christian Bundy)
+* 4e52cfc Fix: Improve keyword-spacing typescript support (fixes #8110) (#8111) (Reyad Attiyat)
+* 7ff42e8 New: Allow regexes in RuleTester (fixes #7837) (#8115) (Daniel Lo Nigro)
+* cbd7ded Build: display rules’ meta data in their docs (fixes #5774) (#8127) (Wilson Kurniawan)
+* da8e8af Update: include function name in report message if possible (fixes #7260) (#8058) (Dieter Luypaert)
+* 8f91e32 Fix: `ignoreRestSiblings` option didn't cover arguments (fixes #8119) (#8120) (Toru Nagashima)
+
+v3.16.1 - February 22, 2017
+
+* ff8a80c Fix: duplicated autofix output for inverted fix ranges (fixes #8116) (#8117) (Teddy Katz)
+* a421897 Docs: fix typo in arrow-parens.md (#8132) (Will Chen)
+* 22d7fbf Chore: fix invalid redeclared variables in tests (#8130) (Teddy Katz)
+* 8d95598 Chore: fix output assertion typos in rule tests (#8129) (Teddy Katz)
+* 9fa2559 Docs: Add missing quotes in key-spacing rule (#8121) (Glenn Reyes)
+* f3a6ced Build: package.json update for eslint-config-eslint release (ESLint Jenkins)
+
+v3.16.0 - February 20, 2017
+
+* d89d0b4 Update: fix quotes false negative for string literals as template tags (#8107) (Teddy Katz)
+* 21be366 Chore: Ensuring eslint:recommended rules are sorted. (#8106) (Kevin Partington)
+* 360dbe4 Update: Improve error message when extend config missing (fixes #6115) (#8100) (alberto)
+* f62a724 Chore: use updated token iterator methods (#8103) (Kai Cataldo)
+* daf6f26 Fix: check output in RuleTester when errors is a number (fixes #7640) (#8097) (alberto)
+* cfb65c5 Update: make no-lone-blocks report blocks in switch cases (fixes #8047) (#8062) (Teddy Katz)
+* 290fb1f Update: Add includeComments to getTokenByRangeStart (fixes #8068) (#8069) (Kai Cataldo)
+* ff066dc Chore: Incorrect source code test text (#8096) (Jack Ford)
+* 14d146d Docs: Clarify --ext only works with directories (fixes #7939) (#8095) (alberto)
+* 013a454 Docs: Add TSC meeting quorum requirement (#8086) (Kevin Partington)
+* 7516303 Fix: `sourceCode.getTokenAfter` shouldn't skip tokens after comments (#8055) (Toru Nagashima)
+* c53e034 Fix: unicode-bom fixer insert BOM in appropriate location (fixes #8083) (#8084) (pantosha)
+* 55ac302 Chore: fix the timing to define rules for tests (#8082) (Toru Nagashima)
+* c7e64f3 Upgrade: mock-fs (#8070) (Toru Nagashima)
+* acc3301 Update: handle uncommon linebreaks consistently in rules (fixes #7949) (#8049) (Teddy Katz)
+* 591b74a Chore: enable operator-linebreak on ESLint codebase (#8064) (Teddy Katz)
+* 6445d2a Docs: Add documentation for /* exported */ (fixes #7998) (#8065) (Lee Yi Min)
+* fcc38db Chore: simplify and improve performance for autofix (#8035) (Toru Nagashima)
+* b04fde7 Chore: improve performance of SourceCode constructor (#8054) (Teddy Katz)
+* 90fd555 Update: improve null detection in eqeqeq for ES6 regexes (fixes #8020) (#8042) (Teddy Katz)
+* 16248e2 Fix: no-extra-boolean-cast incorrect Boolean() autofixing (fixes #7977) (#8037) (Jonathan Wilsson)
+* 834f45d Update: rewrite TokenStore (fixes #7810) (#7936) (Toru Nagashima)
+* 329dcdc Chore: unify checks for statement list parents (#8048) (Teddy Katz)
+* c596690 Docs: Clarify generator-star-spacing config example (fixes #8027) (#8034) (Hòa Trần)
+* a11d4a6 Docs: fix a typo in shareable configs documentation (#8036) (Dan Homola)
+* 1e3d4c6 Update: add fixer for no-unused-labels (#7841) (Teddy Katz)
+* f47fb98 Update: ensure semi-spacing checks import/export declarations (#8033) (Teddy Katz)
+* e228d56 Update: no-undefined handles properties/classes/modules (fixes #7964) (#7966) (Kevin Partington)
+* 7bc92d9 Chore: fix invalid test cases (#8030) (Toru Nagashima)
+
+v3.15.0 - February 3, 2017
+
+* f2a3580 Fix: `no-extra-parens` incorrect precedence (fixes #7978) (#7999) (alberto)
+* d6b6ba1 Fix: no-var should fix ForStatement.init (#7993) (Toru Nagashima)
+* 99d386d Upgrade: Espree v3.4.0 (#8019) (Kai Cataldo)
+* 42390fd Docs: update README.md for team (#8016) (Toru Nagashima)
+* d7ffd88 Chore: enable template-tag-spacing on ESLint codebase (#8005) (Teddy Katz)
+* f2be7e3 Docs: Fix typo in object-curly-newline.md (#8002) (Danny Andrews)
+* df2351a Docs: Fix misleading section in brace-style documentation (#7996) (Teddy Katz)
+* 5ae6e00 Chore: avoid unnecessary feature detection for Symbol (#7992) (Teddy Katz)
+* 5d57c57 Chore: fix no-else-return lint error (refs #7986) (#7994) (Vitor Balocco)
+* 62fb054 Chore: enable no-else-return on ESLint codebase (#7986) (Teddy Katz)
+* c59a0ba Update: add ignoreRestSiblings option to no-unused-vars (#7968) (Zack Argyle)
+* 5cdfa99 Chore: enable no-unneeded-ternary on ESLint codebase (#7987) (Teddy Katz)
+* fbd7c13 Update: ensure operator-assignment handles exponentiation operators (#7970) (Teddy Katz)
+* c5066ce Update: add "variables" option to no-use-before-define (fixes #7111) (#7948) (Teddy Katz)
+* 09546a4 New: `template-tag-spacing` rule (fixes #7631) (#7913) (Jonathan Wilsson)
+
+v3.14.1 - January 25, 2017
+
+* 791f32b Fix: brace-style false positive for keyword method names (fixes #7974) (#7980) (Teddy Katz)
+* d7a0add Docs: Add ESLint tutorial embed to getting started (#7971) (Jamis Charles)
+* 72d41f0 Fix: no-var autofix syntax error in single-line statements (fixes #7961) (#7962) (Teddy Katz)
+* b9e5b68 Fix: indent rule crash on sparse array with object (fixes #7959) (#7960) (Gyandeep Singh)
+* a7bd66a Chore: Adding assign/redeclare tests to no-undefined (refs #7964) (#7965) (Kevin Partington)
+* 8bcbf5d Docs: typo in prefer-promise-reject-errors (#7958) (Patrick McElhaney)
+
+v3.14.0 - January 20, 2017
+
+* 506324a Fix: `no-var` does not fix if causes ReferenceError (fixes #7950) (#7953) (Toru Nagashima)
+* 05e7432 New: no-chained-assignments rule (fixes #6424) (#7904) (Stewart Rand)
+* 243e47d Update: Add fixer for no-else-return (fixes #7863) (#7864) (Xander Dumaine)
+* f091d95 New: `prefer-promise-reject-errors` rule (fixes #7685) (#7689) (Teddy Katz)
+* ca01e00 Fix: recognize all line terminators in func-call-spacing (fixes #7923) (#7924) (Francesco Trotta)
+* a664e8a Update: add ignoreJSX option to no-extra-parens (Fixes #7444) (#7926) (Robert Rossmann)
+* 8ac3518 Fix: no-useless-computed-key false positive with `__proto__` (#7934) (Teddy Katz)
+* c835e19 Docs: remove reference to deleted rule (#7942) (Alejandro Oviedo)
+* 3c1e63b Docs: Improve examples for no-case-declarations (fixes #6716) (#7920) (Kevin Rangel)
+* 7e04b33 Fix: Ignore inline plugin rule config in autoconfig (fixes #7860) (#7919) (Ian VanSchooten)
+* 6448ba0 Fix: add parentheses in no-extra-boolean-cast autofixer (fixes #7912) (#7914) (Szymon Przybylski)
+* b3f2094 Fix: brace-style crash with lone block statements (fixes #7908) (#7909) (Teddy Katz)
+* 5eb2e88 Docs: Correct typos in configuring.md (#7916) (Gabriel Delépine)
+* bd5e219 Update: ensure brace-style validates class bodies (fixes #7608) (#7871) (Teddy Katz)
+* 427543a Fix: catastrophic backtracking in astUtils linebreak regex (fixes #7893) (#7898) (Teddy Katz)
+* 995554c Fix: Correct typos in no-alert.md and lib/ast-utils.js (#7905) (Stewart Rand)
+* d6150e3 Chore: Enable comma-dangle on ESLint codebase (fixes #7725) (#7906) (Teddy Katz)
+* 075ec25 Chore: update to use ES6 classes (refs #7849) (#7891) (Claire Dranginis)
+* 55f0cb6 Update: refactor brace-style and fix inconsistencies (fixes #7869) (#7870) (Teddy Katz)
+
+v3.13.1 - January 9, 2017
+
+* 3fc4e3f Fix: prefer-destructuring reporting compound assignments (fixes #7881) (#7882) (Teddy Katz)
+* f90462e Fix: no-extra-label autofix should not remove labels used elsewhere (#7885) (Teddy Katz)
+
+v3.13.0 - January 6, 2017
+
+* cd4c025 Update: add fixer for no-extra-label (#7840) (Teddy Katz)
+* aa75c92 Fix: Ensure prefer-const fixes destructuring assignments (fixes #7852) (#7859) (Teddy Katz)
+* 4008022 Chore: Refactor to use ES6 Classes (Part 3)(refs #7849) (#7865) (Gyandeep Singh)
+* c9ba40a Update: add fixer for `no-unneeded-ternary` (#7540) (Teddy Katz)
+* dd56d87 Update: add object-shorthand option for arrow functions (fixes #7564) (#7746) (Teddy Katz)
+* fbafdc0 Docs: `padded-blocks` `never` case (fixes #7868) (#7878) (alberto)
+* ca1f841 Fix: no-useless-return stack overflow on loops after throw (fixes #7855) (#7856) (Teddy Katz)
+* d80d994 Update: add fixer for object-property-newline (fixes #7740) (#7808) (Teddy Katz)
+* bf3ea3a Fix: capitalized-comments: Ignore consec. comments if first is invalid (#7835) (Kevin Partington)
+* 616611a Chore: Refactor to use ES6 Classes (Part 2)(refs #7849) (#7847) (Gyandeep Singh)
+* 856084b Chore: Refactor to use ES6 Classes (Part 1)(refs #7849) (#7846) (Gyandeep Singh)
+* bf45893 Docs: Clarify that we only support Stage 4 proposals (#7845) (Kevin Partington)
+* 0fc24f7 Fix: adapt new-paren rule so it handles TypeScript (fixes #7817) (#7820) (Philipp A)
+* df0bth option `$comment` Ajv logs or passes the comment string to the user-supplied function. See [Options](#options).
+- `default`: a default value of the data instance, see [Assigning defaults](#assigning-defaults).
+- `examples` (NEW in draft-07): an array of data instances. Ajv does not check the validity of these instances against the schema.
+- `readOnly` and `writeOnly` (NEW in draft-07): marks data-instance as read-only or write-only in relation to the source of the data (database, api, etc.).
+- `contentEncoding`: [RFC 2045](https://tools.ietf.org/html/rfc2045#section-6.1 ), e.g., "base64".
+- `contentMediaType`: [RFC 2046](https://tools.ietf.org/html/rfc2046), e.g., "image/png".
+
+__Please note__:  Ajv does not implement validation of the keywords `examples`, `contentEncoding` and `contentMediaType` but it reserves them. If you want to create a plugin that implements some of them, it should remove these keywords from the instance.
+
+
+## Formats
+
+The following formats are supported for string validation with "format" keyword:
+
+- _date_: full-date according to [RFC3339](http://tools.ietf.org/html/rfc3339#section-5.6).
+- _time_: time with optional time-zone.
+- _date-time_: date-time from the same source (time-zone is mandatory). `date`, `time` and `date-time` validate ranges in `full` mode and only regexp in `fast` mode (see [options](#options)).
+- _uri_: full URI.
+- _uri-reference_: URI reference, including full and relative URIs.
+- _uri-template_: URI template according to [RFC6570](https://tools.ietf.org/html/rfc6570)
+- _url_: [URL record](https://url.spec.whatwg.org/#concept-url).
+- _email_: email address.
+- _hostname_: host name according to [RFC1034](http://tools.ietf.org/html/rfc1034#section-3.5).
+- _ipv4_: IP address v4.
+- _ipv6_: IP address v6.
+- _regex_: tests whether a string is a valid regular expression by passing it to RegExp constructor.
+- _uuid_: Universally Unique IDentifier according to [RFC4122](http://tools.ietf.org/html/rfc4122).
+- _json-pointer_: JSON-pointer according to [RFC6901](https://tools.ietf.org/html/rfc6901).
+- _relative-json-pointer_: relative JSON-pointer according to [this draft](http://tools.ietf.org/html/draft-luff-relative-json-pointer-00).
+
+__Please note__: JSON Schema draft-07 also defines formats `iri`, `iri-reference`, `idn-hostname` and `idn-email` for URLs, hostnames and emails with international characters. Ajv does not implement these formats. If you create Ajv plugin that implements them please make a PR to mention this plugin here.
+
+There are two modes of format validation: `fast` and `full`. This mode affects formats `date`, `time`, `date-time`, `uri`, `uri-reference`, `email`, and `hostname`. See [Options](#options) for details.
+
+You can add additional formats and replace any of the formats above using [addFormat](#api-addformat) method.
+
+The option `unknownFormats` allows changing the default behaviour when an unknown format is encountered. In this case Ajv can either fail schema compilation (default) or ignore it (default in versions before 5.0.0). You also can whitelist specific format(s) to be ignored. See [Options](#options) for details.
+
+You can find patterns used for format validation and the sources that were used in [formats.js](https://github.com/epoberezkin/ajv/blob/master/lib/compile/formats.js).
+
+
+## <a name="ref"></a>Combining schemas with $ref
+
+You can structure your validation logic across multiple schema files and have schemas reference each other using `$ref` keyword.
+
+Example:
+
+```javascript
+var schema = {
+  "$id": "http://example.com/schemas/schema.json",
+  "type": "object",
+  "properties": {
+    "foo": { "$ref": "defs.json#/definitions/int" },
+    "bar": { "$ref": "defs.json#/definitions/str" }
+  }
+};
+
+var defsSchema = {
+  "$id": "http://example.com/schemas/defs.json",
+  "definitions": {
+    "int": { "type": "integer" },
+    "str": { "type": "string" }
+  }
+};
+```
+
+Now to compile your schema you can either pass all schemas to Ajv instance:
+
+```javascript
+var ajv = new Ajv({schemas: [schema, defsSchema]});
+var validate = ajv.getSchema('http://example.com/schemas/schema.json');
+```
+
+or use `addSchema` method:
+
+```javascript
+var ajv = new Ajv;
+var validate = ajv.addSchema(defsSchema)
+                  .compile(schema);
+```
+
+See [Options](#options) and [addSchema](#api) method.
+
+__Please note__:
+- `$ref` is resolved as the uri-reference using schema $id as the base URI (see the example).
+- References can be recursive (and mutually recursive) to implement the schemas for different data structures (such as linked lists, trees, graphs, etc.).
+- You don't have to host your schema files at the URIs that you use as schema $id. These URIs are only used to identify the schemas, and according to JSON Schema specification validators should not expect to be able to download the schemas from these URIs.
+- The actual location of the schema file in the file system is not used.
+- You can pass the identifier of the schema as the second parameter of `addSchema` method or as a property name in `schemas` option. This identifier can be used instead of (or in addition to) schema $id.
+- You cannot have the same $id (or the schema identifier) used for more than one schema - the exception will be thrown.
+- You can implement dynamic resolution of the referenced schemas using `compileAsync` method. In this way you can store schemas in any system (files, web, database, etc.) and reference them without explicitly adding to Ajv instance. See [Asynchronous schema compilation](#asynchronous-schema-compilation).
+
+
+## $data reference
+
+With `$data` option you can use values from the validated data as the values for the schema keywords. See [proposal](https://github.com/json-schema/json-schema/wiki/$data-(v5-proposal)) for more information about how it works.
+
+`$data` reference is supported in the keywords: const, enum, format, maximum/minimum, exclusiveMaximum / exclusiveMinimum, maxLength / minLength, maxItems / minItems, maxProperties / minProperties, formatMaximum / formatMinimum, formatExclusiveMaximum / formatExclusiveMinimum, multipleOf, pattern, required, uniqueItems.
+
+The value of "$data" should be a [JSON-pointer](https://tools.ietf.org/html/rfc6901) to the data (the root is always the top level data object, even if the $data reference is inside a referenced subschema) or a [relative JSON-pointer](http://tools.ietf.org/html/draft-luff-relative-json-pointer-00) (it is relative to the current point in data; if the $data reference is inside a referenced subschema it cannot point to the data outside of the root level for this subschema).
+
+Examples.
+
+This schema requires that the value in property `smaller` is less or equal than the value in the property larger:
+
+```javascript
+var ajv = new Ajv({$data: true});
+
+var schema = {
+  "properties": {
+    "smaller": {
+      "type": "number",
+      "maximum": { "$data": "1/larger" }
+    },
+    "larger": { "type": "number" }
+  }
+};
+
+var validData = {
+  smaller: 5,
+  larger: 7
+};
+
+ajv.validate(schema, validData); // true
+```
+
+This schema requires that the properties have the same format as their field names:
+
+```javascript
+var schema = {
+  "additionalProperties": {
+    "type": "string",
+    "format": { "$data": "0#" }
+  }
+};
+
+var validData = {
+  'date-time': '1963-06-19T08:30:06.283185Z',
+  email: 'joe.bloggs@example.com'
+}
+```
+
+`$data` reference is resolved safely - it won't throw even if some property is undefined. If `$data` resolves to `undefined` the validation succeeds (with the exclusion of `const` keyword). If `$data` resolves to incorrect type (e.g. not "number" for maximum keyword) the validation fails.
+
+
+## $merge and $patch keywords
+
+With the package [ajv-merge-patch](https://github.com/epoberezkin/ajv-merge-patch) you can use the keywords `$merge` and `$patch` that allow extending JSON Schemas with patches using formats [JSON Merge Patch (RFC 7396)](https://tools.ietf.org/html/rfc7396) and [JSON Patch (RFC 6902)](https://tools.ietf.org/html/rfc6902).
+
+To add keywords `$merge` and `$patch` to Ajv instance use this code:
+
+```javascript
+require('ajv-merge-patch')(ajv);
+```
+
+Examples.
+
+Using `$merge`:
+
+```json
+{
+  "$merge": {
+    "source": {
+      "type": "object",
+      "properties": { "p": { "type": "string" } },
+      "additionalProperties": false
+    },
+    "with": {
+      "properties": { "q": { "type": "number" } }
+    }
+  }
+}
+```
+
+Using `$patch`:
+
+```json
+{
+  "$patch": {
+    "source": {
+      "type": "object",
+      "properties": { "p": { "type": "string" } },
+      "additionalProperties": false
+    },
+    "with": [
+      { "op": "add", "path": "/properties/q", "value": { "type": "number" } }
+    ]
+  }
+}
+```
+
+The schemas above are equivalent to this schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "p": { "type": "string" },
+    "q": { "type": "number" }
+  },
+  "additionalProperties": false
+}
+```
+
+The properties `source` and `with` in the keywords `$merge` and `$patch` can use absolute or relative `$ref` to point to other schemas previously added to the Ajv instance or to the fragments of the current schema.
+
+See the package [ajv-merge-patch](https://github.com/epoberezkin/ajv-merge-patch) for more information.
+
+
+## Defining custom keywords
+
+The advantages of using custom keywords are:
+
+- allow creating validation scenarios that cannot be expressed using JSON Schema
+- simplify your schemas
+- help bringing a bigger part of the validation logic to your schemas
+- make your schemas more expressive, less verbose and closer to your application domain
+- implement custom data processors that modify your data (`modifying` option MUST be used in keyword definition) and/or create side effects while the data is being validated
+
+If a keyword is used only for side-effects and its validation result is pre-defined, use option `valid: true/false` in keyword definition to simplify both generated code (no error handling in case of `valid: true`) and your keyword functions (no need to return any validation result).
+
+The concerns you have to be aware of when extending JSON Schema standard with custom keywords are the portability and understanding of your schemas. You will have to support these custom keywords on other platforms and to properly document these keywords so that everybody can understand them in your schemas.
+
+You can define custom keywords with [addKeyword](#api-addkeyword) method. Keywords are defined on the `ajv` instance level - new instances will not have previously defined keywords.
+
+Ajv allows defining keywords with:
+- validation function
+- compilation function
+- macro function
+- inline compilation function that should return code (as string) that will be inlined in the currently compiled schema.
+
+Example. `range` and `exclusiveRange` keywords using compiled schema:
+
+```javascript
+ajv.addKeyword('range', {
+  type: 'number',
+  compile: function (sch, parentSchema) {
+    var min = sch[0];
+    var max = sch[1];
+
+    return parentSchema.exclusiveRange === true
+            ? function (data) { return data > min && data < max; }
+            : function (data) { return data >= min && data <= max; }
+  }
+});
+
+var schema = { "range": [2, 4], "exclusiveRange": true };
+var validate = ajv.compile(schema);
+console.log(validate(2.01)); // true
+console.log(validate(3.99)); // true
+console.log(validate(2)); // false
+console.log(validate(4)); // false
+```
+
+Several custom keywords (typeof, instanceof, range and propertyNames) are defined in [ajv-keywords](https://github.com/epoberezkin/ajv-keywords) package - they can be used for your schemas and as a starting point for your own custom keywords.
+
+See [Defining custom keywords](https://github.com/epoberezkin/ajv/blob/master/CUSTOM.md) for more details.
+
+
+## Asynchronous schema compilation
+
+During asynchronous compilation remote references are loaded using supplied function. See `compileAsync` [method](#api-compileAsync) and `loadSchema` [option](#options).
+
+Example:
+
+```javascript
+var ajv = new Ajv({ loadSchema: loadSchema });
+
+ajv.compileAsync(schema).then(function (validate) {
+  var valid = validate(data);
+  // ...
+});
+
+function loadSchema(uri) {
+  return request.json(uri).then(function (res) {
+    if (res.statusCode >= 400)
+      throw new Error('Loading error: ' + res.statusCode);
+    return res.body;
+  });
+}
+```
+
+__Please note__: [Option](#options) `missingRefs` should NOT be set to `"ignore"` or `"fail"` for asynchronous compilation to work.
+
+
+## Asynchronous validation
+
+Example in Node.js REPL: https://tonicdev.com/esp/ajv-asynchronous-validation
+
+You can define custom formats and keywords that perform validation asynchronously by accessing database or some other service. You should add `async: true` in the keyword or format definition (see [addFormat](#api-addformat), [addKeyword](#api-addkeyword) and [Defining custom keywords](#defining-custom-keywords)).
+
+If your schema uses asynchronous formats/keywords or refers to some schema that contains them it should have `"$async": true` keyword so that Ajv can compile it correctly. If asynchronous format/keyword or reference to asynchronous schema is used in the schema without `$async` keyword Ajv will throw an exception during schema compilation.
+
+__Please note__: all asynchronous subschemas that are referenced from the current or other schemas should have `"$async": true` keyword as well, otherwise the schema compilation will fail.
+
+Validation function for an asynchronous custom format/keyword should return a promise that resolves with `true` or `false` (or rejects with `new Ajv.ValidationError(errors)` if you want to return custom errors from the keyword function).
+
+Ajv compiles asynchronous schemas to [es7 async functions](http://tc39.github.io/ecmascript-asyncawait/) that can optionally be transpiled with [nodent](https://github.com/MatAtBread/nodent). Async functions are supported in Node.js 7+ and all modern browsers. You can also supply any other transpiler as a function via `processCode` option. See [Options](#options).
+
+The compiled validation function has `$async: true` property (if the schema is asynchronous), so you can differentiate these functions if you are using both synchronous and asynchronous schemas.
+
+Validation result will be a promise that resolves with validated data or rejects with an exception `Ajv.ValidationError` that contains the array of validation errors in `errors` property.
+
+
+Example:
+
+```javascript
+var ajv = new Ajv;
+// require('ajv-async')(ajv);
+
+ajv.addKeyword('idExists', {
+  async: true,
+  type: 'number',
+  validate: checkIdExists
+});
+
+
+function checkIdExists(schema, data) {
+  return knex(schema.table)
+  .select('id')
+  .where('id', data)
+  .then(function (rows) {
+    return !!rows.length; // true if record is found
+  });
+}
+
+var schema = {
+  "$async": true,
+  "properties": {
+    "userId": {
+      "type": "integer",
+      "idExists": { "table": "users" }
+    },
+    "postId": {
+      "type": "integer",
+      "idExists": { "table": "posts" }
+    }
+  }
+};
+
+var validate = ajv.compile(schema);
+
+validate({ userId: 1, postId: 19 })
+.then(function (data) {
+  console.log('Data is valid', data); // { userId: 1, postId: 19 }
+})
+.catch(function (err) {
+  if (!(err instanceof Ajv.ValidationError)) throw err;
+  // data is invalid
+  console.log('Validation errors:', err.errors);
+});
+```
+
+### Using transpilers with asynchronous validation functions.
+
+[ajv-async](https://github.com/epoberezkin/ajv-async) uses [nodent](https://github.com/MatAtBread/nodent) to transpile async functions. To use another transpiler you should separately install it (or load its bundle in the browser).
+
+
+#### Using nodent
+
+```javascript
+var ajv = new Ajv;
+require('ajv-async')(ajv);
+// in the browser if you want to load ajv-async bundle separately you can:
+// window.ajvAsync(ajv);
+var validate = ajv.compile(schema); // transpiled es7 async function
+validate(data).then(successFunc).catch(errorFunc);
+```
+
+
+#### Using other transpilers
+
+```javascript
+var ajv = new Ajv({ processCode: transpileFunc });
+var validate = ajv.compile(schema); // transpiled es7 async function
+validate(data).then(successFunc).catch(errorFunc);
+```
+
+See [Options](#options).
+
+
+## Filtering data
+
+With [option `removeAdditional`](#options) (added by [andyscott](https://github.com/andyscott)) you can filter data during the validation.
+
+This option modifies original data.
+
+Example:
+
+```javascript
+var ajv = new Ajv({ removeAdditional: "application/vnd.ms-wmdrm.lic-resp": {
+    "source": "iana"
+  },
+  "application/vnd.ms-wmdrm.meter-chlg-req": {
+    "source": "iana"
+  },
+  "application/vnd.ms-wmdrm.meter-resp": {
+    "source": "iana"
+  },
+  "application/vnd.ms-word.document.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["docm"]
+  },
+  "application/vnd.ms-word.template.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["dotm"]
+  },
+  "application/vnd.ms-works": {
+    "source": "iana",
+    "extensions": ["wps","wks","wcm","wdb"]
+  },
+  "application/vnd.ms-wpl": {
+    "source": "iana",
+    "extensions": ["wpl"]
+  },
+  "application/vnd.ms-xpsdocument": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["xps"]
+  },
+  "application/vnd.msa-disk-image": {
+    "source": "iana"
+  },
+  "application/vnd.mseq": {
+    "source": "iana",
+    "extensions": ["mseq"]
+  },
+  "application/vnd.msign": {
+    "source": "iana"
+  },
+  "application/vnd.multiad.creator": {
+    "source": "iana"
+  },
+  "application/vnd.multiad.creator.cif": {
+    "source": "iana"
+  },
+  "application/vnd.music-niff": {
+    "source": "iana"
+  },
+  "application/vnd.musician": {
+    "source": "iana",
+    "extensions": ["mus"]
+  },
+  "application/vnd.muvee.style": {
+    "source": "iana",
+    "extensions": ["msty"]
+  },
+  "application/vnd.mynfc": {
+    "source": "iana",
+    "extensions": ["taglet"]
+  },
+  "application/vnd.ncd.control": {
+    "source": "iana"
+  },
+  "application/vnd.ncd.reference": {
+    "source": "iana"
+  },
+  "application/vnd.nearst.inv+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.nervana": {
+    "source": "iana"
+  },
+  "application/vnd.netfpx": {
+    "source": "iana"
+  },
+  "application/vnd.neurolanguage.nlu": {
+    "source": "iana",
+    "extensions": ["nlu"]
+  },
+  "application/vnd.nimn": {
+    "source": "iana"
+  },
+  "application/vnd.nintendo.nitro.rom": {
+    "source": "iana"
+  },
+  "application/vnd.nintendo.snes.rom": {
+    "source": "iana"
+  },
+  "application/vnd.nitf": {
+    "source": "iana",
+    "extensions": ["ntf","nitf"]
+  },
+  "application/vnd.noblenet-directory": {
+    "source": "iana",
+    "extensions": ["nnd"]
+  },
+  "application/vnd.noblenet-sealer": {
+    "source": "iana",
+    "extensions": ["nns"]
+  },
+  "application/vnd.noblenet-web": {
+    "source": "iana",
+    "extensions": ["nnw"]
+  },
+  "application/vnd.nokia.catalogs": {
+    "source": "iana"
+  },
+  "application/vnd.nokia.conml+wbxml": {
+    "source": "iana"
+  },
+  "application/vnd.nokia.conml+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.nokia.iptv.config+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.nokia.isds-radio-presets": {
+    "source": "iana"
+  },
+  "application/vnd.nokia.landmark+wbxml": {
+    "source": "iana"
+  },
+  "application/vnd.nokia.landmark+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.nokia.landmarkcollection+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.nokia.n-gage.ac+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["ac"]
+  },
+  "application/vnd.nokia.n-gage.data": {
+    "source": "iana",
+    "extensions": ["ngdat"]
+  },
+  "application/vnd.nokia.n-gage.symbian.install": {
+    "source": "iana",
+    "extensions": ["n-gage"]
+  },
+  "application/vnd.nokia.ncd": {
+    "source": "iana"
+  },
+  "application/vnd.nokia.pcd+wbxml": {
+    "source": "iana"
+  },
+  "application/vnd.nokia.pcd+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.nokia.radio-preset": {
+    "source": "iana",
+    "extensions": ["rpst"]
+  },
+  "application/vnd.nokia.radio-presets": {
+    "source": "iana",
+    "extensions": ["rpss"]
+  },
+  "application/vnd.novadigm.edm": {
+    "source": "iana",
+    "extensions": ["edm"]
+  },
+  "application/vnd.novadigm.edx": {
+    "source": "iana",
+    "extensions": ["edx"]
+  },
+  "application/vnd.novadigm.ext": {
+    "source": "iana",
+    "extensions": ["ext"]
+  },
+  "application/vnd.ntt-local.content-share": {
+    "source": "iana"
+  },
+  "application/vnd.ntt-local.file-transfer": {
+    "source": "iana"
+  },
+  "application/vnd.ntt-local.ogw_remote-access": {
+    "source": "iana"
+  },
+  "application/vnd.ntt-local.sip-ta_remote": {
+    "source": "iana"
+  },
+  "application/vnd.ntt-local.sip-ta_tcp_stream": {
+    "source": "iana"
+  },
+  "application/vnd.oasis.opendocument.chart": {
+    "source": "iana",
+    "extensions": ["odc"]
+  },
+  "application/vnd.oasis.opendocument.chart-template": {
+    "source": "iana",
+    "extensions": ["otc"]
+  },
+  "application/vnd.oasis.opendocument.database": {
+    "source": "iana",
+    "extensions": ["odb"]
+  },
+  "application/vnd.oasis.opendocument.formula": {
+    "source": "iana",
+    "extensions": ["odf"]
+  },
+  "application/vnd.oasis.opendocument.formula-template": {
+    "source": "iana",
+    "extensions": ["odft"]
+  },
+  "application/vnd.oasis.opendocument.graphics": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["odg"]
+  },
+  "application/vnd.oasis.opendocument.graphics-template": {
+    "source": "iana",
+    "extensions": ["otg"]
+  },
+  "application/vnd.oasis.opendocument.image": {
+    "source": "iana",
+    "extensions": ["odi"]
+  },
+  "application/vnd.oasis.opendocument.image-template": {
+    "source": "iana",
+    "extensions": ["oti"]
+  },
+  "application/vnd.oasis.opendocument.presentation": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["odp"]
+  },
+  "application/vnd.oasis.opendocument.presentation-template": {
+    "source": "iana",
+    "extensions": ["otp"]
+  },
+  "application/vnd.oasis.opendocument.spreadsheet": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["ods"]
+  },
+  "application/vnd.oasis.opendocument.spreadsheet-template": {
+    "source": "iana",
+    "extensions": ["ots"]
+  },
+  "application/vnd.oasis.opendocument.text": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["odt"]
+  },
+  "application/vnd.oasis.opendocument.text-master": {
+    "source": "iana",
+    "extensions": ["odm"]
+  },
+  "application/vnd.oasis.opendocument.text-template": {
+    "source": "iana",
+    "extensions": ["ott"]
+  },
+  "application/vnd.oasis.opendocument.text-web": {
+    "source": "iana",
+    "extensions": ["oth"]
+  },
+  "application/vnd.obn": {
+    "source": "iana"
+  },
+  "application/vnd.ocf+cbor": {
+    "source": "iana"
+  },
+  "application/vnd.oci.image.manifest.v1+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oftn.l10n+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.contentaccessdownload+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.contentaccessstreaming+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.cspg-hexbinary": {
+    "source": "iana"
+  },
+  "application/vnd.oipf.dae.svg+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.dae.xhtml+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.mippvcontrolmessage+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.pae.gem": {
+    "source": "iana"
+  },
+  "application/vnd.oipf.spdiscovery+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.spdlist+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.ueprofile+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oipf.userprofile+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.olpc-sugar": {
+    "source": "iana",
+    "extensions": ["xo"]
+  },
+  "application/vnd.oma-scws-config": {
+    "source": "iana"
+  },
+  "application/vnd.oma-scws-http-request": {
+    "source": "iana"
+  },
+  "application/vnd.oma-scws-http-response": {
+    "source": "iana"
+  },
+  "application/vnd.oma.bcast.associated-procedure-parameter+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.bcast.drm-trigger+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.bcast.imd+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.bcast.ltkm": {
+    "source": "iana"
+  },
+  "application/vnd.oma.bcast.notification+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.bcast.provisioningtrigger": {
+    "source": "iana"
+  },
+  "application/vnd.oma.bcast.sgboot": {
+    "source": "iana"
+  },
+  "application/vnd.oma.bcast.sgdd+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.bcast.sgdu": {
+    "source": "iana"
+  },
+  "application/vnd.oma.bcast.simple-symbol-container": {
+    "source": "iana"
+  },
+  "application/vnd.oma.bcast.smartcard-trigger+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.bcast.sprov+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.bcast.stkm": {
+    "source": "iana"
+  },
+  "application/vnd.oma.cab-address-book+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.cab-feature-handler+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.cab-pcc+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.cab-subs-invite+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.cab-user-prefs+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.dcd": {
+    "source": "iana"
+  },
+  "application/vnd.oma.dcdc": {
+    "source": "iana"
+  },
+  "application/vnd.oma.dd2+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["dd2"]
+  },
+  "application/vnd.oma.drm.risd+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.group-usage-list+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.lwm2m+cbor": {
+    "source": "iana"
+  },
+  "application/vnd.oma.lwm2m+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.lwm2m+tlv": {
+    "source": "iana"
+  },
+  "application/vnd.oma.pal+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.poc.detailed-progress-report+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.poc.final-report+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.poc.groups+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.poc.invocation-descriptor+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.poc.optimized-progress-report+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.push": {
+    "source": "iana"
+  },
+  "application/vnd.oma.scidm.messages+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.oma.xcap-directory+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.omads-email+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/vnd.omads-file+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/vnd.omads-folder+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/vnd.omaloc-supl-init": {
+    "source": "iana"
+  },
+  "application/vnd.onepager": {
+    "source": "iana"
+  },
+  "application/vnd.onepagertamp": {
+    "source": "iana"
+  },
+  "application/vnd.onepagertamx": {
+    "source": "iana"
+  },
+  "application/vnd.onepagertat": {
+    "source": "iana"
+  },
+  "application/vnd.onepagertatp": {
+    "source": "iana"
+  },
+  "application/vnd.onepagertatx": {
+    "source": "iana"
+  },
+  "application/vnd.openblox.game+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["obgx"]
+  },
+  "application/vnd.openblox.game-binary": {
+    "source": "iana"
+  },
+  "application/vnd.openeye.oeb": {
+    "source": "iana"
+  },
+  "application/vnd.openofficeorg.extension": {
+    "source": "apache",
+    "extensions": ["oxt"]
+  },
+  "application/vnd.openstreetmap.data+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["osm"]
+  },
+  "application/vnd.openxmlformats-officedocument.custom-properties+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.customxmlproperties+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.drawing+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.drawingml.chart+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.extended-properties+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.comments+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["pptx"]
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.presprops+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.slide": {
+    "source": "iana",
+    "extensions": ["sldx"]
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.slide+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.slideshow": {
+    "source": "iana",
+    "extensions": ["ppsx"]
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.tags+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.template": {
+    "source": "iana",
+    "extensions": ["potx"]
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.template.main+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.openxmlformats-officedocum/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var f = +(s + '.').split('.')[1]
+    var n = +s
+    return (n === 0 || n === 1) || i === 0 && f === 1 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    return v === 0 && i % 100 === 1 ? one
+      : v === 0 && i % 100 === 2 ? two
+      : v === 0 && (3 <= i % 100 && i % 100 <= 4) || v !== 0 ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return (0 <= n && n <= 1) || (11 <= n && n <= 99) ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 || n === 5 || n === 7 || n === 8 || n === 9 || n === 10 ? one
+      : n === 2 || n === 3 ? two
+      : n === 4 ? few
+      : n === 6 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    return (i % 10 === 1 || i % 10 === 2 || i % 10 === 5 || i % 10 === 7 || i % 10 === 8) || (i % 100 === 20 || i % 100 === 50 || i % 100 === 70 || i % 100 === 80) ? one
+      : (i % 10 === 3 || i % 10 === 4) || (i % 1000 === 100 || i % 1000 === 200 || i % 1000 === 300 || i % 1000 === 400 || i % 1000 === 500 || i % 1000 === 600 || i % 1000 === 700 || i % 1000 === 800 || i % 1000 === 900) ? few
+      : i === 0 || i % 10 === 6 || (i % 100 === 40 || i % 100 === 60 || i % 100 === 90) ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return (n % 10 === 2 || n % 10 === 3) && (n % 100 !== 12 && n % 100 !== 13) ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 || n === 3 ? one
+      : n === 2 ? two
+      : n === 4 ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 0 || n === 7 || n === 8 || n === 9 ? zero
+      : n === 1 ? one
+      : n === 2 ? two
+      : n === 3 || n === 4 ? few
+      : n === 5 || n === 6 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n % 10 === 1 && n % 100 !== 11 ? one
+      : n % 10 === 2 && n % 100 !== 12 ? two
+      : n % 10 === 3 && n % 100 !== 13 ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 ? one
+      : n === 2 || n === 3 ? two
+      : n === 4 ? few
+      : n === 6 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 || n === 5 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 11 || n === 8 || n === 80 || n === 800 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    return i === 1 ? one
+      : i === 0 || ((2 <= i % 100 && i % 100 <= 20) || i % 100 === 40 || i % 100 === 60 || i % 100 === 80) ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n % 10 === 6 || n % 10 === 9 || n % 10 === 0 && n !== 0 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    return i % 10 === 1 && i % 100 !== 11 ? one
+      : i % 10 === 2 && i % 100 !== 12 ? two
+      : (i % 10 === 7 || i % 10 === 8) && (i % 100 !== 17 && i % 100 !== 18) ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 ? one
+      : n === 2 || n === 3 ? two
+      : n === 4 ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return 1 <= n && n <= 4 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return (n === 1 || n === 5 || (7 <= n && n <= 9)) ? one
+      : n === 2 || n === 3 ? two
+      : n === 4 ? few
+      : n === 6 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 ? one
+      : n % 10 === 4 && n % 100 !== 14 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return (n % 10 === 1 || n % 10 === 2) && (n % 100 !== 11 && n % 100 !== 12) ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return (n % 10 === 6 || n % 10 === 9) || n === 10 ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n % 10 === 3 && n % 100 !== 13 ? few
+      : other
+  }
+]
+
+module.exports = {
+  af: { cardinal: f[0] },
+  ak: { cardinal: f[1] },
+  am: { cardinal: f[2] },
+  ar: { cardinal: f[3] },
+  ars: { cardinal: f[3] },
+  as: { cardinal: f[2], ordinal: f[34] },
+  asa: { cardinal: f[0] },
+  ast: { cardinal: f[4] },
+  az: { cardinal: f[0], ordinal: f[35] },
+  be: { cardinal: f[5], ordinal: f[36] },
+  bem: { cardinal: f[0] },
+  bez: { cardinal: f[0] },
+  bg: { cardinal: f[0] },
+  bh: { cardinal: f[1] },
+  bn: { cardinal: f[2], ordinal: f[34] },
+  br: { cardinal: f[6] },
+  brx: { cardinal: f[0] },
+  bs: { cardinal: f[7] },
+  ca: { cardinal: f[4], ordinal: f[37] },
+  ce: { cardinal: f[0] },
+  cgg: { cardinal: f[0] },
+  chr: { cardinal: f[0] },
+  ckb: { cardinal: f[0] },
+  cs: { cardinal: f[8] },
+  cy: { cardinal: f[9], ordinal: f[38] },
+  da: { cardinal: f[10] },
+  de: { cardinal: f[4] },
+  dsb: { cardinal: f[11] },
+  dv: { cardinal: f[0] },
+  ee: { cardinal: f[0] },
+  el: { cardinal: f[0] },
+  en: { cardinal: f[4], ordinal: f[39] },
+  eo: { cardinal: f[0] },
+  es: { cardinal: f[0] },
+  et: { cardinal: f[4] },
+  eu: { cardinal: f[0] },
+  fa: { cardinal: f[2] },
+  ff: { cardinal: f[12] },
+  fi: { cardinal: f[4] },
+  fil: { cardinal: f[13], ordinal: f[0] },
+  fo: { cardinal: f[0] },
+  fr: { cardinal: f[12], ordinal: f[0] },
+  fur: { cardinal: f[0] },
+  fy: { cardinal: f[4] },
+  ga: { cardinal: f[14], ordinal: f[0] },
+  gd: { cardinal: f[15] },
+  gl: { cardinal: f[4] },
+  gsw: { cardinal: f[0] },
+  gu: { cardinal: f[2], ordinal: f[40] },
+  guw: { cardinal: f[1] },
+  gv: { cardinal: f[16] },
+  ha: { cardinal: f[0] },
+  haw: { cardinal: f[0] },
+  he: { cardinal: f[17] },
+  hi: { cardinal: f[2], ordinal: f[40] },
+  hr: { cardinal: f[7] },
+  hsb: { cardinal: f[11] },
+  hu: { cardinal: f[0], ordinal: f[41] },
+  hy: { cardinal: f[12], ordinal: f[0] },
+  io: { cardinal: f[4] },
+  is: { cardinal: f[18] },
+  it: { cardinal: f[4], ordinal: f[42] },
+  iu: { cardinal: f[19] },
+  iw: { cardinal: f[17] },
+  jgo: { cardinal: f[0] },
+  ji: { cardinal: f[4] },
+  jmc: { cardinal: f[0] },
+  ka: { cardinal: f[0], ordinal: f[43] },
+  kab: { cardinal: f[12] },
+  kaj: { cardinal: f[0] },
+  kcg: { cardinal: f[0] },
+  kk: { cardinal: f[0], ordinal: f[44] },
+  kkj: { cardinal: f[0] },
+  kl: { cardinal: f[0] },
+  kn: { cardinal: f[2] },
+  ks: { cardinal: f[0] },
+  ksb: { cardinal: f[0] },
+  ksh: { cardinal: f[20] },
+  ku: { cardinal: f[0] },
+  kw: { cardinal: f[19] },
+  ky: { cardinal: f[0] },
+  lag: { cardinal: f[21] },
+  lb: { cardinal: f[0] },
+  lg: { cardinal: f[0] },
+  ln: { cardinal: f[1] },
+  lt: { cardinal: f[22] },
+  lv: { cardinal: f[23] },
+  mas: { cardinal: f[0] },
+  mg: { cardinal: f[1] },
+  mgo: { cardinal: f[0] },
+  mk: { cardinal: f[24], ordinal: f[45] },
+  ml: { cardinal: f[0] },
+  mn: { cardinal: f[0] },
+  mo: { cardinal: f[25], ordinal: f[0] },
+  mr: { cardinal: f[2], ordinal: f[46] },
+  mt: { cardinal: f[26] },
+  nah: { cardinal: f[0] },
+  naq: { cardinal: f[19] },
+  nb: { cardinal: f[0] },
+  nd: { cardinal: f[0] },
+  ne: { cardinal: f[0], ordinal: f[47] },
+  nl: { cardinal: f[4] },
+  nn: { cardinal: f[0] },
+  nnh: { cardinal: f[0] },
+  no: { cardinal: f[0] },
+  nr: { cardinal: f[0] },
+  nso: { cardinal: f[1] },
+  ny: { cardinal: f[0] },
+  nyn: { cardinal: f[0] },
+  om: { cardinal: f[0] },
+  or: { cardinal: f[0], ordinal: f[48] },
+  os: { cardinal: f[0] },
+  pa: { cardinal: f[1] },
+  pap: { cardinal: f[0] },
+  pl: { cardinal: f[27] },
+  prg: { cardinal: f[23] },
+  ps: { cardinal: f[0] },
+  pt: { cardinal: f[28] },
+  'pt-PT': { cardinal: f[4] },
+  rm: { cardinal: f[0] },
+  ro: { cardinal: f[25], ordinal: f[0] },
+  rof: { cardinal: f[0] },
+  ru: { cardinal: f[29] },
+  rwk: { cardinal: f[0] },
+  saq: { cardinal: f[0] },
+  scn: { cardinal: f[4], ordinal: f[42] },
+  sd: { cardinal: f[0] },
+  sdh: { cardinal: f[0] },
+  se: { cardinal: f[19] },
+  seh: { cardinal: f[0] },
+  sh: { cardinal: f[7] },
+  shi: { cardinal: f[30] },
+  si: { cardinal: f[31] },
+  sk: { cardinal: f[8] },
+  sl: { cardinal: f[32] },
+  sma: { cardinal: f[19] },
+  smi: { cardinal: f[19] },
+  smj: { cardinal: f[19] },
+  smn: { cardinal: f[19] },
+  sms: { cardinal: f[19] },
+  sn: { cardinal: f[0] },
+  so: { cardinal: f[0] },
+  sq: { cardinal: f[0], ordinal: f[49] },
+  sr: { cardinal: f[7] },
+  ss: { cardinal: f[0] },
+  ssy: { cardinal: f[0] },
+  st: { cardinal: f[0] },
+  sv: { cardinal: f[4], ordinal: f[50] },
+  sw: { cardinal: f[4] },
+  syr: { cardinal: f[0] },
+  ta: { cardinal: f[0] },
+  te: { cardinal: f[0] },
+  teo: { cardinal: f[0] },
+  ti: { cardinal: f[1] },
+  tig: { cardinal: f[0] },
+  tk: { cardinal: f[0], ordinal: f[51] },
+  tl: { cardinal: f[13], ordinal: f[0] },
+  tn: { cardinal: f[0] },
+  tr: { cardinal: f[0] },
+  ts: { cardinal: f[0] },
+  tzm: { cardinal: f[33] },
+  ug: { cardinal: f[0] },
+  uk: { cardinal: f[29], ordinal: f[52] },
+  ur: { cardinal: f[4] },
+  uz: { cardinal: f[0] },
+  ve: { cardinal: f[0] },
+  vo: { cardinal: f[0] },
+  vun: { cardinal: f[0] },
+  wa: { cardinal: f[1] },
+  wae: { cardinal: f[0] },
+  xh: { cardinal: f[0] },
+  xog: { cardinal: f[0] },
+  yi: { cardinal: f[4] },
+  zu: { cardinal: f[2] },
+  lo: { ordinal: f[0] },
+  ms: { ordinal: f[0] },
+  vi: { ordinal: f[0] }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        'use strict';
+
+/** Highest positive signed 32-bit float value */
+const maxInt = 2147483647; // aka. 0x7FFFFFFF or 2^31-1
+
+/** Bootstring parameters */
+const base = 36;
+const tMin = 1;
+const tMax = 26;
+const skew = 38;
+const damp = 700;
+const initialBias = 72;
+const initialN = 128; // 0x80
+const delimiter = '-'; // '\x2D'
+
+/** Regular expressions */
+const regexPunycode = /^xn--/;
+const regexNonASCII = /[^\0-\x7E]/; // non-ASCII chars
+const regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g; // RFC 3490 separators
+
+/** Error messages */
+const errors = {
+	'overflow': 'Overflow: input needs wider integers to process',
+	'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+	'invalid-input': 'Invalid input'
+};
+
+/** Convenience shortcuts */
+const baseMinusTMin = base - tMin;
+const floor = Math.floor;
+const stringFromCharCode = String.fromCharCode;
+
+/*--------------------------------------------------------------------------*/
+
+/**
+ * A generic error utility function.
+ * @private
+ * @param {String} type The error type.
+ * @returns {Error} Throws a `RangeError` with the applicable error message.
+ */
+function error(type) {
+	throw new RangeError(errors[type]);
+}
+
+/**
+ * A generic `Array#map` utility function.
+ * @private
+ * @param {Array} array The array to iterate over.
+ * @param {Function} callback The function that gets called for every array
+ * item.
+ * @returns {Array} A new array of values returned by the callback function.
+ */
+function map(array, fn) {
+	const result = [];
+	let length = array.length;
+	while (length--) {
+		result[length] = fn(array[length]);
+	}
+	return result;
+}
+
+/**
+ * A simple `Array#map`-like wrapper to work with domain name strings or email
+ * addresses.
+ * @private
+ * @param {String} domain The domain name or email address.
+ * @param {Function} callback The function that gets called for every
+ * character.
+ * @returns {Array} A new string of characters returned by the callback
+ * function.
+ */
+function mapDomain(string, fn) {
+	const parts = string.split('@');
+	let result = '';
+	if (parts.length > 1) {
+		// In email addresses, only the domain name should be punycoded. Leave
+		// the local part (i.e. everything up to `@`) intact.
+		result = parts[0] + '@';
+		string = parts[1];
+	}
+	// Avoid `split(regex)` for IE8 compatibility. See #17.
+	string = string.replace(regexSeparators, '\x2E');
+	const labels = string.split('.');
+	const encoded = map(labels, fn).join('.');
+	return result + encoded;
+}
+
+/**
+ * Creates an array containing the numeric code points of each Unicode
+ * character in the string. While JavaScript uses UCS-2 internally,
+ * this function will convert a pair of surrogate halves (each of which
+ * UCS-2 exposes as separate characters) into a single code point,
+ * matching UTF-16.
+ * @see `punycode.ucs2.encode`
+ * @see <https://mathiasbynens.be/notes/javascript-encoding>
+ * @memberOf punycode.ucs2
+ * @name decode
+ * @param {String} string The Unicode input string (UCS-2).
+ * @returns {Array} The new array of code points.
+ */
+function ucs2decode(string) {
+	const output = [];
+	let counter = 0;
+	const length = string.length;
+	while (counter < length) {
+		const value = string.charCodeAt(counter++);
+		if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+			// It's a high surrogate, and there is a next character.
+			const extra = string.charCodeAt(counter++);
+			if ((extra & 0xFC00) == 0xDC00) { // Low surrogate.
+				output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+			} else {
+				// It's an unmatched surrogate; only append this code unit, in case the
+				// next code unit is the high surrogate of a surrogate pair.
+				output.push(value);
+				counter--;
+			}
+		} else {
+			output.push(value);
+		}
+	}
+	return output;
+}
+
+/**
+ * Creates a string based on an array of numeric code points.
+ * @see `punycode.ucs2.decode`
+ * @memberOf punycode.ucs2
+ * @name encode
+ * @param {Array} codePoints The array of numeric code points.
+ * @returns {String} The new Unicode string (UCS-2).
+ */
+const ucs2encode = array => String.fromCodePoint(...array);
+
+/**
+ * Converts a basic code point into a digit/integer.
+ * @see `digitToBasic()`
+ * @private
+ * @param {Number} codePoint The basic numeric code point value.
+ * @returns {Number} The numeric value of a basic code point (for use in
+ * representing integers) in the range `0` to `base - 1`, or `base` if
+ * the code point does not represent a value.
+ */
+const basicToDigit = function(codePoint) {
+	if (codePoint - 0x30 < 0x0A) {
+		return codePoint - 0x16;
+	}
+	if (codePoint - 0x41 < 0x1A) {
+		return codePoint - 0x41;
+	}
+	if (codePoint - 0x61 < 0x1A) {
+		return codePoint - 0x61;
+	}
+	return base;
+};
+
+/**
+ * Converts a digit/integer into a basic code point.
+ * @see `basicToDigit()`
+ * @private
+ * @param {Number} digit The numeric value of a basic code point.
+ * @returns {Number} The basic code point whose value (when used for
+ * representing integers) is `digit`, which needs to be in the range
+ * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+ * used; else, the lowercase form is used. The behavior is undefined
+ * if `flag` is non-zero and `digit` has no uppercase form.
+ */
+const digitToBasic = function(digit, flag) {
+	//  0..25 map to ASCII a..z or A..Z
+	// 26..35 map to ASCII 0..9
+	return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+};
+
+/**
+ * Bias adaptation function as per section 3.4 of RFC 3492.
+ * https://tools.ietf.org/html/rfc3492#section-3.4
+ * @private
+ */
+const adapt = function(delta, numPoints, firstTime) {
+	let k = 0;
+	delta = firstTime ? floor(delta / damp) : delta >> 1;
+	delta += floor(delta / numPoints);
+	for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+		delta = floor(delta / baseMinusTMin);
+	}
+	return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+};
+
+/**
+ * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+ * symbols.
+ * @memberOf punycode
+ * @param {String} input The Punycode string of ASCII-onl

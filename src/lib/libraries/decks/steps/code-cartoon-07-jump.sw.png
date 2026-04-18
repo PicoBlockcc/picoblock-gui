@@ -1,0 +1,1319 @@
+/node-http-proxy/pull/666)
+- Added proxyTimeout option and two tests for timeout [`#658`](https://github.com/http-party/node-http-proxy/pull/658)
+
+### Fixed
+
+- Fix #657 [`#657`](https://github.com/http-party/node-http-proxy/issues/657)
+- Fix #657 [`#657`](https://github.com/http-party/node-http-proxy/issues/657)
+
+### Commits
+
+- Added targetTimeout option and two tests for timeout [`0f24351`](https://github.com/http-party/node-http-proxy/commit/0f243516e1c6737b95fba220a5028439264b5de6)
+- Change name targetTimeout to proxyTimeout [`7b79a74`](https://github.com/http-party/node-http-proxy/commit/7b79a7409ade7a8c79b2ae5761abc4843529063a)
+- Trimming contents of distributed npm package. [`431aba7`](https://github.com/http-party/node-http-proxy/commit/431aba79d8d521e228c1403aaf4fd4a26fba03c3)
+- [api] also emit the target on a proxy error [`d1baa36`](https://github.com/http-party/node-http-proxy/commit/d1baa3684e449610a2aae270816a7b8a907e588e)
+- [dist] Version bump. 1.1.5 [`7104a7c`](https://github.com/http-party/node-http-proxy/commit/7104a7c023073a49091969f825738c79ae036123)
+- fix balancer example [`9df4bc1`](https://github.com/http-party/node-http-proxy/commit/9df4bc1e1216a8e53675f0be16fb9081c11da225)
+
+## [v1.1.4](https://github.com/http-party/node-http-proxy/compare/v1.1.3...v1.1.4) - 2014-05-11
+
+### Merged
+
+- `proxyRes` event, provide access to the req and res objects [`#642`](https://github.com/http-party/node-http-proxy/pull/642)
+
+### Commits
+
+- Add a test for the proxyRes event [`1385635`](https://github.com/http-party/node-http-proxy/commit/1385635e18f081af759c8e088f2f6b0219df83db)
+- [dist] Version bump. 1.1.4 [`7cb98a4`](https://github.com/http-party/node-http-proxy/commit/7cb98a4e417312f01cf4432b52dbb3773aca60a0)
+- Add the req and res objects to the proxyRes event [`1213e46`](https://github.com/http-party/node-http-proxy/commit/1213e46b1b0975ad1d5c5d0aaeace40a0811118f)
+
+## [v1.1.3](https://github.com/http-party/node-http-proxy/compare/v1.1.2...v1.1.3) - 2014-05-11
+
+### Merged
+
+- Don't override connection header if Upgrading [`#640`](https://github.com/http-party/node-http-proxy/pull/640)
+
+### Commits
+
+- Adding test cases on preventing upgrade override [`8aa7c51`](https://github.com/http-party/node-http-proxy/commit/8aa7c519b15f734af7db34d2102781adbeae10aa)
+- Update README.md for benchmarks [`4947484`](https://github.com/http-party/node-http-proxy/commit/4947484806f839d5e0a1b615b56a1bc847b8f534)
+- [minor] style [`ccad177`](https://github.com/http-party/node-http-proxy/commit/ccad17795417de74bea2bcb6d6c559a4601af76d)
+- [dist] Version bump. 1.1.3 [`c472527`](https://github.com/http-party/node-http-proxy/commit/c472527ea60da8b2f737d5742bc61ad2772b7e0b)
+
+## [v1.1.2](https://github.com/http-party/node-http-proxy/compare/v1.1.1...v1.1.2) - 2014-04-14
+
+### Commits
+
+- [fix test] handle proxy error since we are properly aborting the proxy Request [`61c8734`](https://github.com/http-party/node-http-proxy/commit/61c8734e8b1115fab0e0db23fd8eeccbae61eee0)
+- [fix] handle error on incoming request as well and properly abort proxy if client request is aborted [`77a1cff`](https://github.com/http-party/node-http-proxy/commit/77a1cff9bcf697eab27819eef054024bdc0a2ba3)
+- [dist] Version bump. 1.1.2 [`c54278b`](https://github.com/http-party/node-http-proxy/commit/c54278bd3b00e82f4253393b6f6beb1d5a1b19e5)
+
+## [v1.1.1](https://github.com/http-party/node-http-proxy/compare/v1.1.0...v1.1.1) - 2014-04-11
+
+### Commits
+
+- [dist] Version bump. 1.1.1 [`d908e2a`](https://github.com/http-party/node-http-proxy/commit/d908e2ad61013ed1f6e2f80c4b67a6dce7d0f504)
+- [fix] let user make the decision on what to do with the buffer [`4f07dc2`](https://github.com/http-party/node-http-proxy/commit/4f07dc220d700ac90bd8405f7cb0724bdae4b430)
+
+## [v1.1.0](https://github.com/http-party/node-http-proxy/compare/v1.0.3...v1.1.0) - 2014-04-09
+
+### Merged
+
+- Update UPGRADING.md [`#616`](https://github.com/http-party/node-http-proxy/pull/616)
+
+### Fixed
+
+- [fix] always be an eventemitter for consistency fixes #606 [`#606`](https://github.com/http-party/node-http-proxy/issues/606)
+
+### Commits
+
+- [api] emit a start an an end event [`8b48a9f`](https://github.com/http-party/node-http-proxy/commit/8b48a9fdab01624f7249c53f25919b1295eefb10)
+- [dist] Version bump. 1.1.0 [`97ceeb3`](https://github.com/http-party/node-http-proxy/commit/97ceeb37d04e5d2195352365985165866323c4d7)
+- [minor] missing angle bracket [`eca765a`](https://github.com/http-party/node-http-proxy/commit/eca765a856164c077ff9128949019552cdaf9a67)
+
+## [v1.0.3](https://github.com/http-party/node-http-proxy/compare/v1.0.2...v1.0.3) - 2014-03-27
+
+### Merged
+
+- Fix for #591 [`#592`](https://github.com/http-party/node-http-proxy/pull/592)
+- Add Repository field to package.json [`#578`](https://github.com/http-party/node-http-proxy/pull/578)
+- Fix doc: option lines [`#575`](https://github.com/http-party/node-http-proxy/pull/575)
+
+### Fixed
+
+- [api] add toProxy method to allow absolute URLs to be sent when sending to another proxy fixes #603 [`#603`](https://github.com/http-party/node-http-proxy/issues/603)
+
+### Commits
+
+- [doc] update docs with toProxy option [`ece85b4`](https://github.com/http-party/node-http-proxy/commit/ece85b4e1ba379b3ed084bd8f606e285c14d4db3)
+- [fix] set connection to CLOSE in cases where the agent is false. [`89a22bc`](https://github.com/http-party/node-http-proxy/commit/89a22bc00396f069eeb054ce30891a204077d16d)
+- @xtreme-topher-bullock - update package.json to have proper repository key and formatting [`68fa17b`](https://github.com/http-party/node-http-proxy/commit/68fa17bbcaa73ae2d9539cba6f6ddff29f9e30d5)
+- [dist] Version bump. 1.0.3 [`07fceb7`](https://github.com/http-party/node-http-proxy/commit/07fceb7c7aed25a8991d0295db4b4a7e50d79cf9)
+- Add support for localAddress [`e633b0f`](https://github.com/http-party/node-http-proxy/commit/e633b0f7e4fd719d809eaeb4725e589f79c271ab)
+
+## [v1.0.2](https://github.com/http-party/node-http-proxy/compare/v1.0.1...v1.0.2) - 2014-01-28
+
+### Merged
+
+- Update README.md [`#566`](https://github.com/http-party/node-http-proxy/pull/566)
+- Fix argument order for ws stream pass [`#560`](https://github.com/http-party/node-http-proxy/pull/560)
+- Extend listen to enable IPv6 support. [`#558`](https://github.com/http-party/node-http-proxy/pull/558)
+- Fix before and after type check [`#556`](https://github.com/http-party/node-http-proxy/pull/556)
+
+### Fixed
+
+- Close outgoing ws if incoming ws emits error [`#559`](https://github.com/http-party/node-http-proxy/issues/559)
+- [fix] closes #555 [`#555`](https://github.com/http-party/node-http-proxy/issues/555)
+
+### Commits
+
+- [fix] replicate node core behavior and throw an error if the user does not add their own error listener [`daad470`](https://github.com/http-party/node-http-proxy/commit/daad4703f3a80014936c89f4d67affdc3246f478)
+- [dist] Version bump. 1.0.2 [`4bdc3e4`](https://github.com/http-party/node-http-proxy/commit/4bdc3e4f455b2749c03961404db74e3112a3e9e8)
+- [doc] Fix broken image in npm by using an absolute link [`8004f4e`](https://github.com/http-party/node-http-proxy/commit/8004f4e5fc0f535806e92ec4e1bd973a45367dac)
+
+## [v1.0.1](https://github.com/http-party/node-http-proxy/compare/v1.0.0...v1.0.1) - 2014-01-17
+
+### Fixed
+
+- [fix] closes #553 [`#553`](https://github.com/http-party/node-http-proxy/issues/553)
+
+### Commits
+
+- [dist] bump v1.0.1 [`68c5512`](https://github.com/http-party/node-http-proxy/commit/68c55123039369cdf8a55a64b36b719c96b672cf)
+- typo [`689459f`](https://github.com/http-party/node-http-proxy/commit/689459fe46885a1b3b8e32a4df55f2d1339143e5)
+
+## [v1.0.0](https://github.com/http-party/node-http-proxy/compare/v0.10.4...v1.0.0) - 2014-01-16
+
+### Merged
+
+- Http proxy 1.0 [`#552`](https://github.com/http-party/node-http-proxy/pull/552)
+- Caronte [`#551`](https://github.com/http-party/node-http-proxy/pull/551)
+- Only emit response if a valid server is present [`#549`](https://github.com/http-party/node-http-proxy/pull/549)
+- [fix] add `type` to before and after to grab correct `passes`, fixes #537 [`#539`](https://github.com/http-party/node-http-proxy/pull/539)
+- export the proxy itself from the main require [`#536`](https://github.com/http-party/node-http-proxy/pull/536)
+
+### Fixed
+
+- [fix] closes #547 [`#547`](https://github.com/http-party/node-http-proxy/issues/547)
+- Merge pull request #539 from nodejitsu/fix-before-after [`#537`](https://github.com/http-party/node-http-proxy/issues/537)
+- [fix] add `type` to before and after to grab correct `passes`, fixes #537 [`#537`](https://github.com/http-party/node-http-proxy/issues/537)
+
+### Commits
+
+- [nuke] old files [`a4ee8f9`](https://github.com/http-party/node-http-proxy/commit/a4ee8f9d82f71ef423c401b1f5e9f712b13cbc98)
+- [docs] upgrade UPGRADING.md [`e599151`](https://github.com/http-party/node-http-proxy/commit/e5991519dbc7838aa4b8aeb5077d1c1ec5a13813)
+- [api] export the httpProxy.Server as the main export but preserve the createServer factory [`182c76c`](https://github.com/http-party/node-http-proxy/commit/182c76cd2322d4d4c041c2a964d51db396c5c96b)
+- [fix] remove caronte [`d6d2d0c`](https://github.com/http-party/node-http-proxy/commit/d6d2d0c8821bba9888eee7c3881fc408b3b2008e)
+- [fix] ee3 error handling [`d23353d`](https://github.com/http-party/node-http-proxy/commit/d23353d980d8aa1b2606e3d36a83d27432952bef)
+- [fix] comments [`6fa23e1`](https://github.com/http-party/node-http-proxy/commit/6fa23e11f6dc0b9c09766b268611ade919bfaa08)
+
+## [v0.10.4](https://github.com/http-party/node-http-proxy/compare/v0.10.3...v0.10.4) - 2013-12-27
+
+### Merged
+
+- Update README.md [`#521`](https://github.com/http-party/node-http-proxy/pull/521)
+- Better examples [`#520`](https://github.com/http-party/node-http-proxy/pull/520)
+- Send path in req.path and not the url [`#416`](https://github.com/http-party/node-http-proxy/pull/416)
+- Fix websocket error handing [`#518`](https://github.com/http-party/node-http-proxy/pull/518)
+- attempting to fix links to 2 source locations in README.md [`#502`](https://github.com/http-party/node-http-proxy/pull/502)
+- [merge] rename codename to actual project name [`#492`](https://github.com/http-party/node-http-proxy/pull/492)
+- [merge] Added error handling example [`#484`](https://github.com/http-party/node-http-proxy/pull/484)
+- [merge] https & agent [`#482`](https://github.com/http-party/node-http-proxy/pull/482)
+- [merge] caronte tests [`#476`](https://github.com/http-party/node-http-proxy/pull/476)
+- FIX: ws error event [`#475`](https://github.com/http-party/node-http-proxy/pull/475)
+- Fix accidental write to global variable. [`#472`](https://github.com/http-party/node-http-proxy/pull/472)
+- [fix] 2 spelling mistakes [`#14`](https://github.com/http-party/node-http-proxy/pull/14)
+- [fix] add ability to proxy websockets over HTTPS [`#11`](https://github.com/http-party/node-http-proxy/pull/11)
+- Tests [`#3`](https://github.com/http-party/node-http-proxy/pull/3)
+
+### Fixed
+
+- determine x-forwarded-port from host header [`#341`](https://github.com/http-party/node-http-proxy/issues/341)
+- [fix] closes #529 [`#529`](https://github.com/http-party/node-http-proxy/issues/529)
+- [fix] fixes #341 [`#341`](https://github.com/http-party/node-http-proxy/issues/341)
+- [tests] https test pass, fix #511. Exposed the rejectUnauthorized flag [`#511`](https://github.com/http-party/node-http-proxy/issues/511)
+- [fix] pass proper options object that extend the global options and parse the per proxy args into options. fixes #510 [`#510`](https://github.com/http-party/node-http-proxy/issues/510)
+- [readme] add links to badges on readme, fix #483 [`#483`](https://github.com/http-party/node-http-proxy/issues/483)
+- [fix] pooled connections, closes #478 [`#478`](https://github.com/http-party/node-http-proxy/issues/478)
+- [fix] add 0.10 link, fixes #459 [`#459`](https://github.com/http-party/node-http-proxy/issues/459)
+- [fix] closes #473 [`#473`](https://github.com/http-party/node-http-proxy/issues/473)
+- [fix] add 0.10 compatibily.. closes #474 [`#474`](https://github.com/http-party/node-http-proxy/issues/474)
+- [fix] headers, closes #469 [`#469`](https://github.com/http-party/node-http-proxy/issues/469)
+- [fix] headers, fixes #467 [`#467`](https://github.com/http-party/node-http-proxy/issues/467)
+- [fix] yawnt baaaka .. fixes #8 [`#8`](https://github.com/http-party/node-http-proxy/issues/8)
+
+### Commits
+
+- [fix] more jshint intendation [`17399e7`](https://github.com/http-party/node-http-proxy/commit/17399e7c3ef9addf9dd8f7c628b273e693f128a1)
+- [fix] tests [`a255f98`](https://github.com/http-party/node-http-proxy/commit/a255f984fecf24c9290f3ad58d1b68e54a7509eb)
+- [minor] remove coverage [`335af81`](https://github.com/http-party/node-http-proxy/commit/335af81d0244e62ecb501690bd15bc5a04ec51a3)
+- [examples] updated websockets examples [`ed8c9ee`](https://github.com/http-party/node-http-proxy/commit/ed8c9eeba99d60f39f5c36c4f34ed1a781d2cfd8)
+- [tests] removed unused tests [`7e25bde`](https://github.com/http-party/node-http-proxy/commit/7e25bded27effc1b3d47121ce21465a4e2ec7c0b)
+- [tests] Added a test case for run all the examples [`bc236d7`](https://github.com/http-party/node-http-proxy/commit/bc236d7e95ef10bc17cf551eea2cd2fb9bf265eb)
+- [tests] drop the test of own streams, moved the usable tests [`dc9d7e5`](https://github.com/http-party/node-http-proxy/commit/dc9d7e5452c7d39ae1d242cb8021ca75e4f736d4)
+- [fix] default port [`d166354`](https://github.com/http-party/node-http-proxy/commit/d1663549ec070e7ae8bc45ffb148f40ee903192f)
+- [tests] added the ws passes test and the streams webscokets test [`8b3fe32`](https://github.com/http-party/node-http-proxy/commit/8b3fe32f6ae60ae067bc5e40cdc43015e689467f)
+- [refactor minor] s/caronte/http-proxy/ or s/caronte/httpProxy/ where appropriate. [`bb0d28c`](https://github.com/http-party/node-http-proxy/commit/bb0d28c58729e2cc70e8446f7fbf1113a6fa9310)
+- [examples] updated bodyDecoder middleware example [`c82ff2c`](https://github.com/http-party/node-http-proxy/commit/c82ff2c3c0c0165421fbc4e7e94fa3f59d59aa38)
+- [dist] first [`4d13156`](https://github.com/http-party/node-http-proxy/commit/4d131567211bcefc6ef0b0592d374fef7bd5abd8)
+- [examples] update forward and custom error examples [`b726116`](https://github.com/http-party/node-http-proxy/commit/b7261161343c3471201d6de36ba1030aced26425)
+- [refactor docs] add descriptions [`d05af4a`](https://github.com/http-party/node-http-proxy/commit/d05af4af60a5f3d308aa68bf09ab0cf9e5528c52)
+- [tests] make the tests run with the last refactor [`5bb83b9`](https://github.com/http-party/node-http-proxy/commit/5bb83b967edb514402698eecfe3db7ab5fe60b06)
+- [examples] deleted this examples [`bdeabb7`](https://github.com/http-party/node-http-proxy/commit/bdeabb767a537bcb9f98ef74f6efe9762a9b1c34)
+- websocket draft [`07551c6`](https://github.com/http-party/node-http-proxy/commit/07551c63e428551e5d6e52362efd9620a14c71b4)
+- [fix] naming [`2a59366`](https://github.com/http-party/node-http-proxy/commit/2a593664a5768c90d9b2edf4c298460416b38926)
+- [dist doc] Added documentation for consistent benchmarking of node-http-proxy [`f7f5fa7`](https://github.com/http-party/node-http-proxy/commit/f7f5fa727e8f1d3f4946e61ad03830dab1da01a5)
+- [examples] update old examples [`7e44d36`](https://github.com/http-party/node-http-proxy/commit/7e44d3669bbd1b13e6452f265d52b22396f68b5d)
+- [docs] more short examples to the Readme [`0393b5d`](https://github.com/http-party/node-http-proxy/commit/0393b5da990bb45e873bb80d87a0bc9e4dd6a477)
+- [examples] updated old proxy examples [`e02317c`](https://github.com/http-party/node-http-proxy/commit/e02317ce86ff2dabd496cf7e2741e219a22ac817)
+- [wip] Initial HTTPS-&gt;HTTP test, updated https-secure example. Work in progress, need to add more https tests [`33a2462`](https://github.com/http-party/node-http-proxy/commit/33a2462d28c7d1fa26b03bcf290242ff7cd83e7a)
+- [docs] readme [`886a870`](https://github.com/http-party/node-http-proxy/commit/886a8707078f59d0467b34686455bb5bdfadbc0c)
+- [examples] added error-handling using callbacks and HTTP-to-HTTPS examples [`d7064f2`](https://github.com/http-party/node-http-proxy/commit/d7064f2e1e149fe870cbb158932cb99f9f192fce)
+- [examples] updated old examples [`588327c`](https://github.com/http-party/node-http-proxy/commit/588327c2c4392618b515164989f08ef20a30842b)
+- stuff [`e45bfd6`](https://github.com/http-party/node-http-proxy/cINDX( 	 ÇÔmÍ           (   ê  Ë       e                     õÑH    p Z     ÑcH    RÜ/ ÉŒ‹Çb ÉŒ‹Çb ÉŒ‹Ä1a ÉŒ‹       Û               C H A N G E L O G . m d       uãH    x b     ÑcH    PG8ÉŒ‹!ıVÉŒ‹!ıVÉŒ‹±ÎUÉŒ‹       x               e x t r a c t - f i l e s . j s H    ëH    p ^     ÑcH    +æ$ÉŒ‹ûÃ@ÉŒ‹ûÃ@ÉŒ‹ûÃ@ÉŒ‹ò       ï                f o r m a t - m e s s a g e   JñH    h R     ÑcH    R'ÌÉŒ‹|]ÉŒ‹|]ÉŒ‹|]ÉŒ‹ 0      â%               i n d e x . j s u l  röH    p \     ÑcH    
+ØÉŒ‹~HÈÉŒ‹~HÈÉŒ‹]!ÈÉŒ‹                      l i n t - f i l e s . j s     ‡cH    p Z     ÑcH    9ç≥ÛÇŒ‹€≈™ÉŒ‹€≈™ÉŒ‹aYí|œ‹                        n o d e _ m o d u l e s       ø~H    p Z     ÑcH    [=ˇÇŒ‹úQùˇÇŒ‹úQùˇÇŒ‹èâé|œ‹       z               p a c k a g e . j s o n       ùH    h V     ÑcH    à1ÉŒ‹ÁjgÉŒ‹ÁjgÉŒ‹ÁjgÉŒ‹–                     
+ p l u g i n s . j s   ZüH    h T     ÑcH    ÇT€ÉŒ‹§é{ÉŒ‹§é{ÉŒ‹§é{ÉŒ‹ 0      A#             	 R E A D M E . m d     ı†H    x f     ÑcH    I∑ÉŒ‹¡BˆÉŒ‹¡BˆÉŒ‹πˆÉŒ‹       é               t r a n s f o r m - f i l e s . j s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   pan(dueTime, scheduler) :
+      observableTimerTimeSpanAndPeriod(dueTime, period, scheduler);
+  };
+
+  function observableDelayRelative(source, dueTime, scheduler) {
+    return new AnonymousObservable(function (o) {
+      var active = false,
+        cancelable = new SerialDisposable(),
+        exception = null,
+        q = [],
+        running = false,
+        subscription;
+      subscription = source.materialize().timestamp(scheduler).subscribe(function (notification) {
+        var d, shouldRun;
+        if (notification.value.kind === 'E') {
+          q = [];
+          q.push(notification);
+          exception = notification.value.exception;
+          shouldRun = !running;
+        } else {
+          q.push({ value: notification.value, timestamp: notification.timestamp + dueTime });
+          shouldRun = !active;
+          active = true;
+        }
+        if (shouldRun) {
+          if (exception !== null) {
+            o.onError(exception);
+          } else {
+            d = new SingleAssignmentDisposable();
+            cancelable.setDisposable(d);
+            d.setDisposable(scheduler.scheduleRecursiveWithRelative(dueTime, function (self) {
+              var e, recurseDueTime, result, shouldRecurse;
+              if (exception !== null) {
+                return;
+              }
+              running = true;
+              do {
+                result = null;
+                if (q.length > 0 && q[0].timestamp - scheduler.now() <= 0) {
+                  result = q.shift().value;
+                }
+                if (result !== null) {
+                  result.accept(o);
+                }
+              } while (result !== null);
+              shouldRecurse = false;
+              recurseDueTime = 0;
+              if (q.length > 0) {
+                shouldRecurse = true;
+                recurseDueTime = Math.max(0, q[0].timestamp - scheduler.now());
+              } else {
+                active = false;
+              }
+              e = exception;
+              running = false;
+              if (e !== null) {
+                o.onError(e);
+              } else if (shouldRecurse) {
+                self(recurseDueTime);
+              }
+            }));
+          }
+        }
+      });
+      return new CompositeDisposable(subscription, cancelable);
+    }, source);
+  }
+
+  function observableDelayAbsolute(source, dueTime, scheduler) {
+    return observableDefer(function () {
+      return observableDelayRelative(source, dueTime - scheduler.now(), scheduler);
+    });
+  }
+
+  function delayWithSelector(source, subscriptionDelay, delayDurationSelector) {
+    var subDelay, selector;
+    if (isFunction(subscriptionDelay)) {
+      selector = subscriptionDelay;
+    } else {
+      subDelay = subscriptionDelay;
+      selector = delayDurationSelector;
+    }
+    return new AnonymousObservable(function (o) {
+      var delays = new CompositeDisposable(), atEnd = false, subscription = new SerialDisposable();
+
+      function start() {
+        subscription.setDisposable(source.subscribe(
+          function (x) {
+            var delay = tryCatch(selector)(x);
+            if (delay === errorObj) { return o.onError(delay.e); }
+            var d = new SingleAssignmentDisposable();
+            delays.add(d);
+            d.setDisposable(delay.subscribe(
+              function () {
+                o.onNext(x);
+                delays.remove(d);
+                done();
+              },
+              function (e) { o.onError(e); },
+              function () {
+                o.onNext(x);
+                delays.remove(d);
+                done();
+              }
+            ));
+          },
+          function (e) { o.onError(e); },
+          function () {
+            atEnd = true;
+            subscription.dispose();
+            done();
+          }
+        ));
+      }
+
+      function done () {
+        atEnd && delays.length === 0 && o.onCompleted();
+      }
+
+      if (!subDelay) {
+        start();
+      } else {
+        subscription.setDisposable(subDelay.subscribe(start, function (e) { o.onError(e); }, start));
+      }
+
+      return new CompositeDisposable(subscription, delays);
+    }, this);
+  }
+
+  /**
+   *  Time shifts the observable sequence by dueTime.
+   *  The relative time intervals between the values are preserved.
+   *
+   * @param {Number} dueTime Absolute (specified as a Date object) or relative time (specified as an integer denoting milliseconds) by which to shift the observable sequence.
+   * @param {Scheduler} [scheduler] Scheduler to run the delay timers on. If not specified, the timeout scheduler is used.
+   * @returns {Observable} Time-shifted sequence.
+   */
+  observableProto.delay = function () {
+    if (typeof arguments[0] === 'number' || arguments[0] instanceof Date) {
+      var dueTime = arguments[0], scheduler = arguments[1];
+      isScheduler(scheduler) || (scheduler = timeoutScheduler);
+      return dueTime instanceof Date ?
+        observableDelayAbsolute(this, dueTime, scheduler) :
+        observableDelayRelative(this, dueTime, scheduler);
+    } else if (isFunction(arguments[0])) {
+      return delayWithSelector(this, arguments[0], arguments[1]);
+    } else {
+      throw new Error('Invalid arguments');
+    }
+  };
+
+  function debounce(source, dueTime, scheduler) {
+    isScheduler(scheduler) || (scheduler = timeoutScheduler);
+    return new AnonymousObservable(function (observer) {
+      var cancelable = new SerialDisposable(), hasvalue = false, value, id = 0;
+      var subscription = source.subscribe(
+        function (x) {
+          hasvalue = true;
+          value = x;
+          id++;
+          var currentId = id,
+            d = new SingleAssignmentDisposable();
+          cancelable.setDisposable(d);
+          d.setDisposable(scheduler.scheduleWithRelative(dueTime, function () {
+            hasvalue && id === currentId && observer.onNext(value);
+            hasvalue = false;
+          }));
+        },
+        function (e) {
+          cancelable.dispose();
+          observer.onError(e);
+          hasvalue = false;
+          id++;
+        },
+        function () {
+          cancelable.dispose();
+          hasvalue && observer.onNext(value);
+          observer.onCompleted();
+          hasvalue = false;
+          id++;
+        });
+      return new CompositeDisposable(subscription, cancelable);
+    }, this);
+  }
+
+  function debounceWithSelector(source, durationSelector) {
+    return new AnonymousObservable(function (o) {
+      var value, hasValue = false, cancelable = new SerialDisposable(), id = 0;
+      var subscription = source.subscribe(
+        function (x) {
+          var throttle = tryCatch(durationSelector)(x);
+          if (throttle === errorObj) { return o.onError(throttle.e); }
+
+          isPromise(throttle) && (throttle = observableFromPromise(throttle));
+
+          hasValue = true;
+          value = x;
+          id++;
+          var currentid = id, d = new SingleAssignmentDisposable();
+          cancelable.setDisposable(d);
+          d.setDisposable(throttle.subscribe(
+            function () {
+              hasValue && id === currentid && o.onNext(value);
+              hasValue = false;
+              d.dispose();
+            },
+            function (e) { o.onError(e); },
+            function () {
+              hasValue && id === currentid && o.onNext(value);
+              hasValue = false;
+              d.dispose();
+            }
+          ));
+        },
+        function (e) {
+          cancelable.dispose();
+          o.onError(e);
+          hasValue = false;
+          id++;
+        },
+        function () {
+          cancelable.dispose();
+          hasValue && o.onNext(value);
+          o.onCompleted();
+          hasValue = false;
+          id++;
+        }
+      );
+      return new CompositeDisposable(subscription, cancelable);
+    }, source);
+  }
+
+  observableProto.debounce = function () {
+    if (isFunction (arguments[0])) {
+      return debounceWithSelector(this, arguments[0]);
+    } else if (typeof arguments[0] === 'number') {
+      return debounce(this, arguments[0], arguments[1]);
+    } else {
+      throw new Error('Invalid arguments');
+    }
+  };
+
+  /**
+   *  Records the timestamp for each value in an observable sequence.
+   *
+   * @example
+   *  1 - res = source.timestamp(); // produces { value: x, timestamp: ts }
+   *  2 - res = source.timestamp(Rx.Scheduler.default);
+   *
+   * @param {Scheduler} [scheduler]  Scheduler used to compute timestamps. If not specified, the default scheduler is used.
+   * @returns {Observable} An observable sequence with timestamp information on values.
+   */
+  observableProto.timestamp = function (scheduler) {
+    isScheduler(scheduler) || (scheduler = timeoutScheduler);
+    return this.map(function (x) {
+      return { value: x, timestamp: scheduler.now() };
+    });
+  };
+
+  function sampleObservable(source, sampler) {
+    return new AnonymousObservable(function (o) {
+      var atEnd = false, value, hasValue = false;
+
+      function sampleSubscribe() {
+        if (hasValue) {
+          hasValue = false;
+          o.onNext(value);
+        }
+        atEnd && o.onCompleted();
+      }
+
+      var sourceSubscription = new SingleAssignmentDisposable();
+      sourceSubscription.setDisposable(source.subscribe(
+        function (newValue) {
+          hasValue = true;
+          value = newValue;
+        },
+        function (e) { o.onError(e); },
+        function () {
+          atEnd = true;
+          sourceSubscription.dispose(); 
+        }
+      ));
+
+      return new CompositeDisposable(
+        sourceSubscription,
+        sampler.subscribe(sampleSubscribe, function (e) { o.onError(e); }, sampleSubscribe)
+      );
+    }, source);
+  }
+
+  /**
+   *  Samples the observable sequence at each interval.
+   *
+   * @example
+   *  1 - res = source.sample(sampleObservable); // Sampler tick sequence
+   *  2 - res = source.sample(5000); // 5 seconds
+   *  2 - res = source.sample(5000, Rx.Scheduler.timeout); // 5 seconds
+   *
+   * @param {Mixed} intervalOrSampler Interval at which to sample (specified as an integer denoting milliseconds) or Sampler Observable.
+   * @param {Scheduler} [scheduler]  Scheduler to run the sampling timer on. If not specified, the timeout scheduler is used.
+   * @returns {Observable} Sampled observable sequence.
+   */
+  observableProto.sample = observableProto.throttleLatest = function (intervalOrSampler, scheduler) {
+    isScheduler(scheduler) || (scheduler = timeoutScheduler);
+    return typeof intervalOrSampler === 'number' ?
+      sampleObservable(this, observableinterval(intervalOrSampler, scheduler)) :
+      sampleObservable(this, intervalOrSampler);
+  };
+
+  var TimeoutError = Rx.TimeoutError = function(message) {
+    this.message = message || 'Timeout has occurred';
+    this.name = 'TimeoutError';
+    Error.call(this);
+  };
+  TimeoutError.prototype = Object.create(Error.prototype);
+
+  function timeoutWithSelector(source, firstTimeout, timeoutDurationSelector, other) {
+    if (isFunction(firstTimeout)) {
+      other = timeoutDurationSelector;
+      timeoutDurationSelector = firstTimeout;
+      firstTimeout = observableNever();
+    }
+    other || (other = observableThrow(new TimeoutError()));
+    return new AnonymousObservable(function (o) {
+      var subscription = new SerialDisposable(), timer = new SerialDisposable(), original = new SingleAssignmentDisposable();
+
+      subscription.setDisposable(original);
+
+      var id = 0, switched = false;
+
+      function setTimer(timeout) {
+        var myId = id, d = new SingleAssignmentDisposable();
+        timer.setDisposable(d);
+        d.setDisposable(timeout.subscribe(function () {
+          id === myId && subscription.setDisposable(other.subscribe(o));
+          d.dispose();
+        }, function (e) {
+          id === myId && o.onError(e);
+        }, function () {
+          id === myId && subscription.setDisposable(other.subscribe(o));
+        }));
+      };
+
+      setTimer(firstTimeout);
+
+      function oWins() {
+        var res = !switched;
+        if (res) { id++; }
+        return res;
+      }
+
+      original.setDisposable(source.subscribe(function (x) {
+        if (oWins()) {
+          o.onNext(x);
+          var timeout = tryCatch(timeoutDurationSelector)(x);
+          if (timeout === errorObj) { return o.onError(timeout.e); }
+          setTimer(isPromise(timeout) ? observableFromPromise(timeout) : timeout);
+        }
+      }, function (e) {
+        oWins() && o.onError(e);
+      }, function () {
+        oWins() && o.onCompleted();
+      }));
+      return new CompositeDisposable(subscription, timer);
+    }, source);
+  }
+
+  function timeout(source, dueTime, other, scheduler) {
+    if (other == null) { throw new Error('other or scheduler must be specified'); }
+    if (isScheduler(other)) {
+      scheduler = other;
+      other = observableThrow(new TimeoutError());
+    }
+    if (other instanceof Error) { other = observableThrow(other); }
+    isScheduler(scheduler) || (scheduler = timeoutScheduler);
+
+    var schedulerMethod = dueTime instanceof Date ?
+      'scheduleWithAbsolute' :
+      'scheduleWithRelative';
+
+    return new AnonymousObservable(function (o) {
+      var id = 0,
+        original = new SingleAssignmentDisposable(),
+        subscription = new SerialDisposable(),
+        switched = false,
+        timer = new SerialDisposable();
+
+      subscription.setDisposable(original);
+
+      function createTimer() {
+        var myId = id;
+        timer.setDisposable(scheduler[schedulerMethod](dueTime, function () {
+          if (id === myId) {
+            isPromise(other) && (other = observableFromPromise(other));
+            subscription.setDisposable(other.subscribe(o));
+          }
+        }));
+      }
+
+      createTimer();
+
+      original.setDisposable(source.subscribe(function (x) {
+        if (!switched) {
+          id++;
+          o.onNext(x);
+          createTimer();
+        }
+      }, function (e) {
+        if (!switched) {
+          id++;
+          o.onError(e);
+        }
+      }, function () {
+        if (!switched) {
+          id++;
+          o.onCompleted();
+        }
+      }));
+      return new CompositeDisposable(subscription, timer);
+    }, source);
+  }
+
+  observableProto.timeout = function () {
+    var firstArg = arguments[0];
+    if (firstArg instanceof Date || typeof firstArg === 'number') {
+      return timeout(this, firstArg, arguments[1], arguments[2]);
+    } else if (Observable.isObservable(firstArg) || isFunction(firstArg)) {
+      return timeoutWithSelector(this, firstArg, arguments[1], arguments[2]);
+    } else {
+      throw new Error('Invalid arguments');
+    }
+  };
+
+  /**
+   * Returns an Observable that emits only the first item emitted by the source Observable during sequential time windows of a specified duration.
+   * @param {Number} windowDuration time to wait before emitting another item after emitting the last item
+   * @param {Scheduler} [scheduler] the Scheduler to use internally to manage the timers that handle timeout for each item. If not provided, defaults to Scheduler.timeout.
+   * @returns {Observable} An Observable that performs the throttle operation.
+   */
+  observableProto.throttle = function (windowDuration, scheduler) {
+    isScheduler(scheduler) || (scheduler = timeoutScheduler);
+    var duration = +windowDuration || 0;
+    if (duration <= 0) { throw new RangeError('windowDuration cannot be less or equal zero.'); }
+    var source = this;
+    return new AnonymousObservable(function (o) {
+      var lastOnNext = 0;
+      return source.subscribe(
+        function (x) {
+          var now = scheduler.now();
+          if (lastOnNext === 0 || now - lastOnNext >= duration) {
+            lastOnNext = now;
+            o.onNext(x);
+          }
+        },function (e) { o.onError(e); }, function () { o.onCompleted(); }
+      );
+    }, source);
+  };
+
+  var PausableObservable = (function (__super__) {
+
+    inherits(PausableObservable, __super__);
+
+    function subscribe(observer) {
+      var conn = this.source.publish(),
+        subscription = conn.subscribe(observer),
+        connection = disposableEmpty;
+
+      var pausable = this.pauser.distinctUntilChanged().subscribe(function (b) {
+        if (b) {
+          connection = conn.connect();
+        } else {
+          connection.dispose();
+          connection = disposableEmpty;
+        }
+      });
+
+      return new CompositeDisposable(subscription, connection, pausable);
+    }
+
+    function Pausablenction(offset, t) { return { type: 'type', value: t.join('') }; })(pos0, result0[2]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_regex() {
+        var cacheKey = "regex@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        if (input.charCodeAt(pos) === 47) {
+          result0 = "/";
+          pos++;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"/\"");
+          }
+        }
+        if (result0 !== null) {
+          if (/^[^\/]/.test(input.charAt(pos))) {
+            result2 = input.charAt(pos);
+            pos++;
+          } else {
+            result2 = null;
+            if (reportFailures === 0) {
+              matchFailed("[^\\/]");
+            }
+          }
+          if (result2 !== null) {
+            result1 = [];
+            while (result2 !== null) {
+              result1.push(result2);
+              if (/^[^\/]/.test(input.charAt(pos))) {
+                result2 = input.charAt(pos);
+                pos++;
+              } else {
+                result2 = null;
+                if (reportFailures === 0) {
+                  matchFailed("[^\\/]");
+                }
+              }
+            }
+          } else {
+            result1 = null;
+          }
+          if (result1 !== null) {
+            if (input.charCodeAt(pos) === 47) {
+              result2 = "/";
+              pos++;
+            } else {
+              result2 = null;
+              if (reportFailures === 0) {
+                matchFailed("\"/\"");
+              }
+            }
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, d) { return { type: 'regexp', value: new RegExp(d.join('')) }; })(pos0, result0[1]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_field() {
+        var cacheKey = "field@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2, result3, result4;
+        var pos0, pos1, pos2;
+        
+        pos0 = pos;
+        pos1 = pos;
+        if (input.charCodeAt(pos) === 46) {
+          result0 = ".";
+          pos++;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\".\"");
+          }
+        }
+        if (result0 !== null) {
+          result1 = parse_identifierName();
+          if (result1 !== null) {
+            result2 = [];
+            pos2 = pos;
+            if (input.charCodeAt(pos) === 46) {
+              result3 = ".";
+              pos++;
+            } else {
+              result3 = null;
+              if (reportFailures === 0) {
+                matchFailed("\".\"");
+              }
+            }
+            if (result3 !== null) {
+              result4 = parse_identifierName();
+              if (result4 !== null) {
+                result3 = [result3, result4];
+              } else {
+                result3 = null;
+                pos = pos2;
+              }
+            } else {
+              result3 = null;
+              pos = pos2;
+            }
+            while (result3 !== null) {
+              result2.push(result3);
+              pos2 = pos;
+              if (input.charCodeAt(pos) === 46) {
+                result3 = ".";
+                pos++;
+              } else {
+                result3 = null;
+                if (reportFailures === 0) {
+                  matchFailed("\".\"");
+                }
+              }
+              if (result3 !== null) {
+                result4 = parse_identifierName();
+                if (result4 !== null) {
+                  result3 = [result3, result4];
+                } else {
+                  result3 = null;
+                  pos = pos2;
+                }
+              } else {
+                result3 = null;
+                pos = pos2;
+              }
+            }
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, i, is) {
+          return { type: 'field', name: is.reduce(function(memo, p){ return memo + p[0] + p[1]; }, i)};
+        })(pos0, result0[1], result0[2]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_negation() {
+        var cacheKey = "negation@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2, result3, result4;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        if (input.substr(pos, 5) === ":not(") {
+          result0 = ":not(";
+          pos += 5;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\":not(\"");
+          }
+        }
+        if (result0 !== null) {
+          result1 = parse__();
+          if (result1 !== null) {
+            result2 = parse_selectors();
+            if (result2 !== null) {
+              result3 = parse__();
+              if (result3 !== null) {
+                if (input.charCodeAt(pos) === 41) {
+                  result4 = ")";
+                  pos++;
+                } else {
+                  result4 = null;
+                  if (reportFailures === 0) {
+                    matchFailed("\")\"");
+                  }
+                }
+                if (result4 !== null) {
+                  result0 = [result0, result1, result2, result3, result4];
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, ss) { return { type: 'not', selectors: ss }; })(pos0, result0[2]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_matches() {
+        var cacheKey = "matches@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2, result3, result4;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        if (input.substr(pos, 9) === ":matches(") {
+          result0 = ":matches(";
+          pos += 9;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\":matches(\"");
+          }
+        }
+        if (result0 !== null) {
+          result1 = parse__();
+          if (result1 !== null) {
+            result2 = parse_selectors();
+            if (result2 !== null) {
+              result3 = parse__();
+              if (result3 !== null) {
+                if (input.charCodeAt(pos) === 41) {
+                  result4 = ")";
+                  pos++;
+                } else {
+                  result4 = null;
+                  if (reportFailures === 0) {
+                    matchFailed("\")\"");
+                  }
+                }
+                if (result4 !== null) {
+                  result0 = [result0, result1, result2, result3, result4];
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, ss) { return { type: 'matches', selectors: ss }; })(pos0, result0[2]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_has() {
+        var cacheKey = "has@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2, result3, result4;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        if (input.substr(pos, 5) === ":has(") {
+          result0 = ":has(";
+          pos += 5;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\":has(\"");
+          }
+        }
+        if (result0 !== null) {
+          result1 = parse__();
+          if (result1 !== null) {
+            result2 = parse_selectors();
+            if (result2 !== null) {
+              result3 = parse__();
+              if (result3 !== null) {
+                if (input.charCodeAt(pos) === 41) {
+                  result4 = ")";
+                  pos++;
+                } else {
+                  result4 = null;
+                  if (reportFailures === 0) {
+                    matchFailed("\")\"");
+                  }
+                }
+                if (result4 !== null) {
+                  result0 = [result0, result1, result2, result3, result4];
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, ss) { return { type: 'has', selectors: ss }; })(pos0, result0[2]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_firstChild() {
+        var cacheKey = "firstChild@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0;
+        var pos0;
+        
+        pos0 = pos;
+        if (input.substr(pos, 12) === ":first-child") {
+          result0 = ":first-child";
+          pos += 12;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\":first-child\"");
+          }
+        }
+        if (result0 !== null) {
+          result0 = (function(offset) { return nth(1); })(pos0);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_lastChild() {
+        var cacheKey = "lastChild@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0;
+        var pos0;
+        
+        pos0 = pos;
+        if (input.substr(pos, 11) === ":last-child") {
+          result0 = ":last-child";
+          pos += 11;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\":last-child\"");
+          }
+        }
+        if (result0 !== null) {
+          result0 = (function(offset) { return nthLast(1); })(pos0);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
+      function parse_nthChild() {
+        var cacheKey = "nthChild@" + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var result0, result1, result2, result3, result4;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        if (input.substr(pos, 11) === ":nth-child(") {
+          result0 = ":nth-child(";
+          pos += 11;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\":nth-child(\"");
+          }
+        }
+        if (result0 !== null) {
+          result1 = parse__();
+          if (result1 !== null) {
+            if (/^[0-9]/.test(input.charAt(pos))) {
+              result3 = input.charAt(pos);
+              pos++;
+            } else {
+              result3 = null;
+              if (reportFailures === 0) {
+                matchFailed("[0-9]");
+              }
+            }
+            if (result3 !== null) {
+              result2 = [];
+              while (result3 !== null) {
+                result2.push(result3);
+                if (/^[0-9]/.test(input.charAt(pos))) {
+                  result3 = input.charAt(pos);
+                  pos++;
+                } else {
+                  result3 = null;
+                  if (reportFailures === 0) {
+                    matchFailed("[0-9]");
+                  }
+                }
+              }
+            } else {
+              result2 = null;
+            }
+            if (result2 !== null) {
+              result3 = parse__();
+              if (result3 !== null) {
+                if (input.charCodeAt(pos) === 41) {
+                  result4 = ")";
+                  pos++;
+                } else {
+                  result4 = null;
+                  if (reportFailures === 0) {
+                    matchFailed("\")\"");
+                  }
+                }
+                if (result4 !== null) {
+                  result0 = [result0, result1, result2, result3, result4];
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, n) { return nth(parseInt(n.join(''), 10)); })(pos0, result0[2]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  rINDX( 	 ™8Î           (   p  Ë           r                 ˘ÑH    h T     scH    äÑ1 ÉŒ‹tzj ÉŒ‹tzj ÉŒ‹>∂i ÉŒ‹       π              	 c o m p a t . j s    rúH    h T     scH    IüÉŒ‹©Ü‡ÉŒ‹©Ü‡ÉŒ‹L¿ﬁÉŒ‹      ø             	 d a t a . j s o n e s µ†H    p Z     scH    ≈€®ÉŒ‹{ﬂÉŒ‹{ﬂÉŒ‹{ﬂÉŒ‹ ê     ˝Ö              e n t r i e s . j s o n l i s ¢¶H    p \     scH    ÜÉŒ‹hÉŒ‹hÉŒ‹hÉŒ‹ÿ       —                e x t e r n a l . j s o n i s  ãH    † é    scH    "F9ÉŒ‹¿Ä[ÉŒ‹¿Ä[ÉŒ‹¥Y[ÉŒ‹H      H              & g e t - m o d u l e s - l i s t - f o r - t a r g e t - v e r s i o n . j s   ]ëH    h V     scH    ”^%ÉŒ‹+üCÉŒ‹+üCÉŒ‹+üCÉŒ‹Ä      |              
+ h e l p e r s . j s  vñH    h R     scH    EâÌÉŒ‹Ù‡ÉŒ‹Ù‡ÉŒ‹Ù‡ÉŒ‹p      o               i n d e x . j s H     H    ` P     scH    ?ˇÇŒ‹·¢ˇÇŒ‹·¢ˇÇŒ‹iå¢ˇÇŒ‹       (               L I C E N S E πßH    à r     scH    ∏˚,ÉŒ‹]=ÉŒ‹]=ÉŒ‹⁄Ú<ÉŒ‹ 0     i(               m o d u l e s - b y - v e r s i o n s . j s o n H    ≥®H    p Z     scH    “∑NÉŒ‹£å^ÉŒ‹£å^ÉŒ‹%e^ÉŒ‹ 0      œ$               m o d u l e s . j s o n       tcH    p Z     scH    ®«ÆÛÇŒ‹€≈™ÉŒ‹€≈™ÉŒ‹‰Ní|œ‹                        n o d e _ m o d u l e s       À©H    p Z     scH    oæÉŒ‹í†«ÉŒ‹í†«ÉŒ‹1Úé|œ‹¯      ˜               p a c k a g e . j s o n e r . °™H    h T     scH    ≤^·ÉŒ‹`ïÏÉŒ‹`ïÏÉŒ‹[FÏÉŒ‹       Ä              	 R E A D M E . m d a  ÔôH    x d     scH    káÉŒ‹¥ ≥ÉŒ‹¥ ≥ÉŒ‹¥ ≥ÉŒ‹       ï               t a r g e t s - p a r s e r . j s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      3.0.0-nightly.20210118": "89.0.4386.0",
+	"13.0.0-nightly.20210122": "89.0.4386.0",
+	"13.0.0-nightly.20210125": "89.0.4386.0",
+	"13.0.0-nightly.20210127": "89.0.4389.0",
+	"13.0.0-nightly.20210128": "89.0.4389.0",
+	"13.0.0-nightly.20210129": "89.0.4389.0",
+	"13.0.0-nightly.20210201": "89.0.4389.0",
+	"13.0.0-nightly.20210202": "89.0.4389.0",
+	"13.0.0-nightly.20210203": "89.0.4389.0",
+	"13.0.0-nightly.20210205": "89.0.4389.0",
+	"13.0.0-nightly.20210208": "89.0.4389.0",
+	"13.0.0-nightly.20210209": "89.0.4389.0",
+	"13.0.0-nightly.20210210": "90.0.4402.0",
+	"13.0.0-nightly.20210211": "90.0.4402.0",
+	"13.0.0-nightly.20210212": "90.0.4402.0",
+	"13.0.0-nightly.20210216": "90.0.4402.0",
+	"13.0.0-nightly.20210217": "90.0.4402.0",
+	"13.0.0-nightly.20210218": "90.0.4402.0",
+	"13.0.0-nightly.20210219": "90.0.4402.0",
+	"13.0.0-nightly.20210222": "90.0.4402.0"
+};                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      INDX( 	 Ó—YÍ           (   »  Ë                            4ÖH    p Z      dH    ±—2 ÉŒ‹¯˚m ÉŒ‹¯˚m ÉŒ‹¯˚m ÉŒ‹      È               C H A N G E L O G . m d       ˛ãH    h R      dH    ´ª9ÉŒ‹∑¿^ÉŒ‹∑¿^ÉŒ‹¬G^ÉŒ‹       L               i n d e x . j s u l e ∆dH    p Z      dH    5ªÛÇŒ‹¶ãøÛÇŒ‹¶ãøÛÇŒ‹<.∑è|œ‹                        n o d e _ m o d u l e s       ^H    p Z      dH    ˆï@ˇÇŒ‹§Œ®ˇÇŒ‹§Œ®ˇÇŒ‹mèé|œ‹∏      ≤               p a c k a g e . j s o n       ÉëH    h T      dH    ƒ¿%ÉŒ‹°»EÉŒ‹°»EÉŒ‹1ØEÉŒ‹       	              	 R E A D M E . m d     éñH    p \      dH    ◊∞ÌÉŒ‹ÉŒ‹ÉŒ‹ÉŒ‹¿      ø               s i m p l e - y m l . j s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            i + 1 ))
+    done
+    trace "argv: '${argv[@]}'"
+    trace "argv[COMP_CWORD-1]: '${argv[$(( $COMP_CWORD - 1 ))]}'"
+    trace "argv[COMP_CWORD]: '${argv[$COMP_CWORD]}'"
+    trace "argv len: '$len'"
+
+    _dashdash_complete 1 ""
+}
+
+
+# ---- mainline
+
+# Note: This if-block to help work with 'compdef' and 'compctl' is
+# adapted from

@@ -1,0 +1,1209 @@
+/**
+ * @fileoverview Codeframe reporter
+ * @author Vitor Balocco
+ */
+"use strict";
+
+const chalk = require("chalk");
+const codeFrame = require("babel-code-frame");
+const path = require("path");
+
+//------------------------------------------------------------------------------
+// Helpers
+//------------------------------------------------------------------------------
+
+/**
+ * Given a word and a count, append an s if count is not one.
+ * @param   {string} word  A word in its singular form.
+ * @param   {number} count A number controlling whether word should be pluralized.
+ * @returns {string}       The original word with an s on the end if count is not one.
+ */
+function pluralize(word, count) {
+    return (count === 1 ? word : `${word}s`);
+}
+
+/**
+ * Gets a formatted relative file path from an absolute path and a line/column in the file.
+ * @param   {string} filePath The absolute file path to format.
+ * @param   {number} line     The line from the file to use for formatting.
+ * @param   {number} column   The column from the file to use for formatting.
+ * @returns {string}          The formatted file path.
+ */
+function formatFilePath(filePath, line, column) {
+    let relPath = path.relative(process.cwd(), filePath);
+
+    if (line && column) {
+        relPath += `:${line}:${column}`;
+    }
+
+    return chalk.green(relPath);
+}
+
+/**
+ * Gets the formatted output for a given message.
+ * @param   {Object} message      The object that represents this message.
+ * @param   {Object} parentResult The result object that this message belongs to.
+ * @returns {string}              The formatted output.
+ */
+function formatMessage(message, parentResult) {
+    const type = (message.fatal || message.severity === 2) ? chalk.red("error") : chalk.yellow("warning");
+    const msg = `${chalk.bold(message.message.replace(/([^ ])\.$/, "$1"))}`;
+    const ruleId = message.fatal ? "" : chalk.dim(`(${message.ruleId})`);
+    const filePath = formatFilePath(parentResult.filePath, message.line, message.column);
+    const sourceCode = parentResult.output ? parentResult.output : parentResult.source;
+
+    const firstLine = [
+        `${type}:`,
+        `${msg}`,
+        ruleId ? `${ruleId}` : "",
+        sourceCode ? `at ${filePath}:` : `at ${filePath}`
+    ].filter(String).join(" ");
+
+    const result = [firstLine];
+
+    if (sourceCode) {
+        result.push(
+            codeFrame(sourceCode, message.line, message.column, { highlightCode: false })
+        );
+    }
+
+    return result.join("\n");
+}
+
+/**
+ * Gets the formatted output summary for a given number of errors and warnings.
+ * @param   {number} errors   The number of errors.
+ * @param   {number} warnings The number of warnings.
+ * @param   {number} fixableErrors The number of fixable errors.
+ * @param   {number} fixableWarnings The number of fixable warnings.
+ * @returns {string}          The formatted output summary.
+ */
+function formatSummary(errors, warnings, fixableErrors, fixableWarnings) {
+    const summaryColor = errors > 0 ? "red" : "yellow";
+    const summary = [];
+    const fixablesSummary = [];
+
+    if (errors > 0) {
+        summary.push(`${errors} ${pluralize("error", errors)}`);
+    }
+
+    if (warnings > 0) {
+        summary.push(`${warnings} ${pluralize("warning", warnings)}`);
+    }
+
+    if (fixableErrors > 0) {
+        fixablesSummary.push(`${fixableErrors} ${pluralize("error", fixableErrors)}`);
+    }
+
+    if (fixableWarnings > 0) {
+        fixablesSummary.push(`${fixableWarnings} ${pluralize("warning", fixableWarnings)}`);
+    }
+
+    let output = chalk[summaryColor].bold(`${summary.join(" and ")} found.`);
+
+    if (fixableErrors || fixableWarnings) {
+        output += chalk[summaryColor].bold(`\n${fixablesSummary.join(" and ")} potentially fixable with the \`--fix\` option.`);
+    }
+
+    return output;
+}
+
+//------------------------------------------------------------------------------
+// Public Interface
+//------------------------------------------------------------------------------
+
+module.exports = function(results) {
+    let errors = 0;
+    let warnings = 0;
+    let fixableErrors = 0;
+'use strict';
+
+var resolve = require('./resolve')
+  , util = require('./util')
+  , errorClasses = require('./error_classes')
+  , stableStringify = require('fast-json-stable-stringify');
+
+var validateGenerator = require('../dotjs/validate');
+
+/**
+ * Functions below are used inside compiled validations function
+ */
+
+var ucs2length = util.ucs2length;
+var equal = require('fast-deep-equal');
+
+// this error is thrown by async schemas to return validation errors via exception
+var ValidationError = errorClasses.Validation;
+
+module.exports = compile;
+
+
+/**
+ * Compiles schema to validation function
+ * @this   Ajv
+ * @param  {Object} schema schema object
+ * @param  {Object} root object with information about the root schema for this schema
+ * @param  {Object} localRefs the hash of local references inside the schema (created by resolve.id), used for inline resolution
+ * @param  {String} baseId base ID for IDs in the schema
+ * @return {Function} validation function
+ */
+function compile(schema, root, localRefs, baseId) {
+  /* jshint validthis: true, evil: true */
+  /* eslint no-shadow: 0 */
+  var self = this
+    , opts = this._opts
+    , refVal = [ undefined ]
+    , refs = {}
+    , patterns = []
+    , patternsHash = {}
+    , defaults = []
+    , defaultsHash = {}
+    , customRules = [];
+
+  root = root || { schema: schema, refVal: refVal, refs: refs };
+
+  var c = checkCompiling.call(this, schema, root, baseId);
+  var compilation = this._compilations[c.index];
+  if (c.compiling) return (compilation.callValidate = callValidate);
+
+  var formats = this._formats;
+  var RULES = this.RULES;
+
+  try {
+    var v = localCompile(schema, root, localRefs, baseId);
+    compilation.validate = v;
+    var cv = compilation.callValidate;
+    if (cv) {
+      cv.schema = v.schema;
+      cv.errors = null;
+      cv.refs = v.refs;
+      cv.refVal = v.refVal;
+      cv.root = v.root;
+      cv.$async = v.$async;
+      if (opts.sourceCode) cv.source = v.source;
+    }
+    return v;
+  } finally {
+    endCompiling.call(this, schema, root, baseId);
+  }
+
+  /* @this   {*} - custom context, see passContext option */
+  function callValidate() {
+    /* jshint validthis: true */
+    var validate = compilation.validate;
+    var result = validate.apply(this, arguments);
+    callValidate.errors = validate.errors;
+    return result;
+  }
+
+  function localCompile(_schema, _root, localRefs, baseId) {
+    var isRoot = !_root || (_root && _root.schema == _schema);
+    if (_root.schema != root.schema)
+      return compile.call(self, _schema, _root, localRefs, baseId);
+
+    var $async = _schema.$async === true;
+
+    var sourceCode = validateGenerator({
+      isTop: true,
+      schema: _schema,
+      isRoot: isRoot,
+      baseId: baseId,
+      root: _root,
+      schemaPath: '',
+      errSchemaPath: '#',
+      errorPath: '""',
+      MissingRefError: errorClasses.MissingRef,
+      RULES: RULES,
+      validate: validateGenerator,
+      util: util,
+      resolve: resolve,
+      resolveRef: resolveRef,
+      usePattern: usePattern,
+      useDefault: useDefault,
+      useCustomRule: useCustomRule,
+      opts: opts,
+      formats: formats,
+      logger: self.logger,
+      self: self
+    });
+
+    sourceCode = vars(refVal, refValCode) + vars(patterns, patternCode)
+                   + vars(defaults, defaultCode) + vars(customRules, customRuleCode)
+                   + sourceCode;
+
+    if (opts.processCode) sourceCode = opts.processCode(sourceCode, _schema);
+    // console.log('\n\n\n *** \n', JSON.stringify(sourceCode));
+    var validate;
+    try {
+      var makeValidate = new Function(
+        'self',
+        'RULES',
+        'formats',
+        'root',
+        'refVal',
+        'defaults',
+        'customRules',
+        'equal',
+        'ucs2length',
+        'ValidationError',
+        sourceCode
+      );
+
+      validate = makeValidate(
+        self,
+        RULES,
+        formats,
+        root,
+        refVal,
+        defaults,
+        customRules,
+        equal,
+        ucs2length,
+        ValidationError
+      );
+
+      refVal[0] = validate;
+    } catch(e) {
+      self.logger.error('Error com'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _eachOfLimit = require('./eachOfLimit.js');
+
+var _eachOfLimit2 = _interopRequireDefault(_eachOfLimit);
+
+var _awaitify = require('./internal/awaitify.js');
+
+var _awaitify2 = _interopRequireDefault(_awaitify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * The same as [`eachOf`]{@link module:Collections.eachOf} but runs only a single async operation at a time.
+ *
+ * @name eachOfSeries
+ * @static
+ * @memberOf module:Collections
+ * @method
+ * @see [async.eachOf]{@link module:Collections.eachOf}
+ * @alias forEachOfSeries
+ * @category Collection
+ * @param {Array|Iterable|AsyncIterable|Object} coll - A collection to iterate over.
+ * @param {AsyncFunction} iteratee - An async function to apply to each item in
+ * `coll`.
+ * Invoked with (item, key, callback).
+ * @param {Function} [callback] - A callback which is called when all `iteratee`
+ * functions have finished, or an error occurs. Invoked with (err).
+ * @returns {Promise} a promise, if a callback is omitted
+ */
+function eachOfSeries(coll, iteratee, callback) {
+  return (0, _eachOfLimit2.default)(coll, 1, iteratee, callback);
+}
+exports.default = (0, _awaitify2.default)(eachOfSeries, 3);
+module.exports = exports['default'];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               s
+				);
+				this.hooks.chunkHash.call(chunk, chunkHash);
+				chunk.hash = /** @type {string} */ (chunkHash.digest(hashDigest));
+				hash.update(chunk.hash);
+				chunk.renderedHash = chunk.hash.substr(0, hashDigestLength);
+				this.hooks.contentHash.call(chunk);
+			} catch (err) {
+				this.errors.push(new ChunkRenderError(chunk, "", err));
+			}
+		}
+		this.fullHash = /** @type {string} */ (hash.digest(hashDigest));
+		this.hash = this.fullHash.substr(0, hashDigestLength);
+	}
+
+	/**
+	 * @param {string} update extra information
+	 * @returns {void}
+	 */
+	modifyHash(update) {
+		const outputOptions = this.outputOptions;
+		const hashFunction = outputOptions.hashFunction;
+		const hashDigest = outputOptions.hashDigest;
+		const hashDigestLength = outputOptions.hashDigestLength;
+		const hash = createHash(hashFunction);
+		hash.update(this.fullHash);
+		hash.update(update);
+		this.fullHash = /** @type {string} */ (hash.digest(hashDigest));
+		this.hash = this.fullHash.substr(0, hashDigestLength);
+	}
+
+	/**
+	 * @param {string} file file name
+	 * @param {Source} source asset source
+	 * @param {AssetInfo} assetInfo extra asset information
+	 * @returns {void}
+	 */
+	emitAsset(file, source, assetInfo = {}) {
+		if (this.assets[file]) {
+			if (!isSourceEqual(this.assets[file], source)) {
+				// TODO webpack 5: make this an error instead
+				this.warnings.push(
+					new WebpackError(
+						`Conflict: Multiple assets emit different content to the same filename ${file}`
+					)
+				);
+				this.assets[file] = source;
+				this.assetsInfo.set(file, assetInfo);
+				return;
+			}
+			const oldInfo = this.assetsInfo.get(file);
+			this.assetsInfo.set(file, Object.assign({}, oldInfo, assetInfo));
+			return;
+		}
+		this.assets[file] = source;
+		this.assetsInfo.set(file, assetInfo);
+	}
+
+	/**
+	 * @param {string} file file name
+	 * @param {Source | function(Source): Source} newSourceOrFunction new asset source or function converting old to new
+	 * @param {AssetInfo | function(AssetInfo | undefined): AssetInfo} assetInfoUpdateOrFunction new asset info or function converting old to new
+	 */
+	updateAsset(
+		file,
+		newSourceOrFunction,
+		assetInfoUpdateOrFunction = undefined
+	) {
+		if (!this.assets[file]) {
+			throw new Error(
+				`Called Compilation.updateAsset for not existing filename ${file}`
+			);
+		}
+		if (typeof newSourceOrFunction === "function") {
+			this.assets[file] = newSourceOrFunction(this.assets[file]);
+		} else {
+			this.assets[file] = newSourceOrFunction;
+		}
+		if (assetInfoUpdateOrFunction !== undefined) {
+			const oldInfo = this.assetsInfo.get(file);
+			if (typeof assetInfoUpdateOrFunction === "function") {
+				this.assetsInfo.set(file, assetInfoUpdateOrFunction(oldInfo || {}));
+			} else {
+				this.assetsInfo.set(
+					file,
+					Object.assign({}, oldInfo, assetInfoUpdateOrFunction)
+				);
+			}
+		}
+	}
+
+	getAssets() {
+		/** @type {Asset[]} */
+		const array = [];
+		for (const assetName of Object.keys(this.assets)) {
+			if (Object.prototype.hasOwnProperty.call(this.assets, assetName)) {
+				array.push({
+					name: assetName,
+					source: this.assets[assetName],
+					info: this.assetsInfo.get(assetName) || {}
+				});
+			}
+		}
+		return array;
+	}
+
+	/**
+	 * @param {string} name the name of the asset
+	 * @returns {Asset | undefined} the asset or undefined when not found
+	 */
+	getAsset(name) {
+		if (!Object.prototype.hasOwnProperty.call(this.assets, name))
+			return undefined;
+		return {
+			name,
+			source: this.assets[name],
+			info: this.assetsInfo.get(name) || {}
+		};
+	}
+
+	createModuleAssets() {
+		for (let i = 0; i < this.modules.length; i++) {
+			const module = this.modules[i];
+			if (module.buildInfo.assets) {
+				const assetsInfo = module.buildInfo.assetsInfo;
+				for (const assetName of Object.keys(module.buildInfo.assets)) {
+					const fileName = this.getPath(assetName);
+					this.emitAsset(
+						fileName,
+						module.buildInfo.assets[assetName],
+						assetsInfo ? assetsInfo.get(assetName) : undefined
+					);
+					this.hooks.moduleAsset.call(module, fileName);
+				}
+			}
+		}
+	}
+
+	createChunkAssets() {
+		const outputOptions = this.outputOptions;
+		const cachedSourceMap = new Map();
+		/** @type {Map<string, {hash: string, source: Source, chunk: Chunk}>} */
+		const alreadyWrittenFiles = new Map();
+		for (let i = 0; i < this.chunks.length; i++) {
+			const chunk = this.chunks[i];
+			chunk.files = [];
+			let source;
+			let file;
+			let filenameTemplate;
+			try {
+				const template = chunk.hasRuntime()
+					? this.mainTemplate
+					: this.chunkTemplate;
+				const manifest = template.getRenderManifest({
+					chunk,
+					hash: this.hash,
+					fullHash: this.fullHash,
+					outputOptions,
+					moduleTemplates: this.moduleTemplates,
+					dependencyTemplates: this.dependencyTemplates
+				}); // [{ render(), filenameTemplate, pathOptions, identifier, hash }]
+				for (const fileManifest of manifest) {
+					const cacheName = fileManifest.identifier;
+					const usedHash = fileManifest.hash;
+					filenameTemplate = fileManifest.filenameTemplate;
+					const pathAndInfo = this.getPathWithInfo(
+						filenameTemplate,
+						fileManifest.pathOptions
+					);
+					file = pathAndInfo.path;
+					const assetInfo = pathAndInfo.info;
+
+					// check if the same filename was already written by another chunk
+					const alreadyWritten = alreadyWrittenFiles.get(file);
+					if (alreadyWritten !== undefined) {
+						if (alreadyWritten.hash === usedHash) {
+							if (this.cache) {
+								this.cache[cacheName] = {
+									hash: usedHash,
+									source: alreadyWritten.source
+								};
+							}
+							chunk.files.push(file);
+							this.hooks.chunkAsset.call(chunk, file);
+							continue;
+						} else {
+							throw new Error(
+								`Conflict: Multiple chunks emit assets to the same filename ${file}` +
+									` (chunks ${alreadyWritten.chunk.id} and ${chunk.id})`
+							);
+						}
+					}
+					if (
+						this.cache &&
+						this.cache[cacheName] &&
+						this.cache[cacheName].hash === usedHash
+					) {
+						source = this.cache[cacheName].source;
+					} else {
+						source = fileManifest.render();
+						// Ensure that source is a cached source to avoid additional cost because of repeated access
+						if (!(source instanceof CachedSource)) {
+							const cacheEntry = cachedSourceMap.get(source);
+							if (cacheEntry) {
+								source = cacheEntry;
+							} else {
+								const cachedSource = new CachedSource(source);
+								cachedSourceMap.set(source, cachedSource);
+								source = cachedSource;
+							}
+						}
+						if (this.cache) {
+							this.cache[cacheName] = {
+								hash: usedHash,
+								source
+							};
+						}
+					}
+					this.emitAsset(file, source, assetInfo);
+					chunk.files.push(file);
+					this.hooks.chunkAsset.call(chunk, file);
+					alreadyWrittenFiles.set(file, {
+						hash: usedHash,
+						source,
+						chunk
+					});
+				}
+			} catch (err) {
+				this.errors.push(
+					new ChunkRenderError(chunk, file || filenameTemplate, err)
+				);
+			}
+		}
+	}
+
+	/**
+	 * @param {string} filename used to get asset path with hash
+	 * @param {TODO=} data // TODO: figure out this param type
+	 * @returns {string} interpolated path
+	 */
+	getPath(filename, data) {
+		data = data || {};
+		data.hash = data.hash || this.hash;
+		return this.mainTemplate.getAssetPath(filename, data);
+	}
+
+	/**
+	 * @param {string} filename used to get asset path with hash
+	 * @param {TODO=} data // TODO: figure out this param type
+	 * @returns {{ path: string, info: AssetInfo }} interpolated path and asset info
+	 */
+	getPathWithInfo(filename, data) {
+		data = data || {};
+		data.hash = data.hash || this.hash;
+		return this.mainTemplate.getAssetPathWithInfo(filename, data);
+	}
+
+	/**
+	 * This function allows you to run another instance of webpack inside of webpack however as
+	 * a child with different settings and configurations (if desired) applied. It copies all hooks, plugins
+	 * from parent (or top level compiler) and creates a child Compilation
+	 *
+	 * @param {string} name name of the child compiler
+	 * @param {TODO} outputOptions // Need to convert config schema to types for this
+	 * @param {Plugin[]} plugins webpack plugins that will be applied
+	 * @returns {Compiler} creates a child Compiler instance
+	 */
+	createChildCompiler(name, outputOptions, plugins) {
+		const idx = this.childrenCounters[name] || 0;
+		this.childrenCounters[name] = idx + 1;
+		return this.compiler.createChildCompiler(
+			this,
+			name,
+			idx,
+			outputOptions,
+			plugins
+		);
+	}
+
+	checkConstraints() {
+		/** @type {Set<number|string>} */
+		const usedIds = new Set();
+
+		const modules = this.modules;
+		for (let indexModule = 0; indexModule < modules.length; indexModule++) {
+			const moduleId = modules[indexModule].id;
+			if (moduleId === null) continue;
+			if (usedIds.has(moduleId)) {
+				throw new Error(`checkConstraints: duplicate module id ${moduleId}`);
+			}
+			usedIds.add(moduleId);
+		}
+
+		const chunks = this.chunks;
+		for (let indexChunk = 0; indexChunk < chunks.length; indexChunk++) {
+			const chunk = chunks[indexChunk];
+			if (chunks.indexOf(chunk) !== indexChunk) {
+				throw new Error(
+					`checkConstraints: duplicate chunk in compilation ${chunk.debugId}`
+				);
+			}
+		}
+
+		for (const chunkGroup of this.chunkGroups) {
+			chunkGroup.checkConstraints();
+		}
+	}
+}
+
+// TODO remove in webpack 5
+Compilation.prototype.applyPlugins = util.deprecate(
+	/**
+	 * @deprecated
+	 * @param {string} name Name
+	 * @param {any[]} args Other arguments
+	 * @returns {void}
+	 * @this {Compilation}
+	 */
+	function(name, ...args) {
+		this.hooks[
+			name.replace(/[- ]([a-z])/g, match => match[1].toUpperCase())
+		].call(...args);
+	},
+	"Compilation.applyPlugins is deprecated. Use new API on `.hooks` instead"
+);
+
+// TODO remove in webpack 5
+Object.defineProperty(Compilation.prototype, "moduleTemplate", {
+	configurable: false,
+	get: util.deprecate(
+		/**
+		 * @deprecated
+		 * @this {Compilation}
+		 * @returns {TODO} module template
+		 */
+		function() {
+			return this.moduleTemplates.javascript;
+		},
+		"Compilation.moduleTemplate: Use Compilation.moduleTemplates.javascript instead"
+	),
+	set: util.deprecate(
+		/**
+		 * @deprecated
+		 * @param {ModuleTemplate} value Template value
+		 * @this {Compilation}
+		 * @returns {void}
+		 */
+		function(value) {
+			this.moduleTemplates.javascript = value;
+		},
+		"Compilation.moduleTemplate: Use Compilation.moduleTemplates.javascript instead."
+	)
+});
+
+module.exports = Compilation;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'use strict';
+
+var support = require('./support');
+var base64 = require('./base64');
+var nodejsUtils = require('./nodejsUtils');
+var setImmediate = require('set-immediate-shim');
+var external = require("./external");
+
+
+/**
+ * Convert a string that pass as a "binary string": it should represent a byte
+ * array but may have > 255 char codes. Be sure to take only the first byte
+ * and returns the byte array.
+ * @param {String} str the string to transform.
+ * @return {Array|Uint8Array} the string in a binary format.
+ */
+function string2binary(str) {
+    var result = null;
+    if (support.uint8array) {
+      result = new Uint8Array(str.length);
+    } else {
+      result = new Array(str.length);
+    }
+    return stringToArrayLike(str, result);
+}
+
+/**
+ * Create a new blob with the given content and the given type.
+ * @param {String|ArrayBuffer} part the content to put in the blob. DO NOT use
+ * an Uint8Array because the stock browser of android 4 won't accept it (it
+ * will be silently converted to a string, "[object Uint8Array]").
+ *
+ * Use only ONE part to build the blob to avoid a memory leak in IE11 / Edge:
+ * when a large amount of Array is used to create the Blob, the amount of
+ * memory consumed is nearly 100 times the original data amount.
+ *
+ * @param {String} type the mime type of the blob.
+ * @return {Blob} the created blob.
+ */
+exports.newBlob = function(part, type) {
+    exports.checkSupport("blob");
+
+    try {
+        // Blob constructor
+        return new Blob([part], {
+            type: type
+        });
+    }
+    catch (e) {
+
+        try {
+            // deprecated, browser only, old way
+            var Builder = self.BlobBuilder || self.WebKitBlobBuilder || self.MozBlobBuilder || self.MSBlobBuilder;
+            var builder = new Builder();
+            builder.append(part);
+            return builder.getBlob(type);
+        }
+        catch (e) {
+
+            // well, fuck ?!
+            throw new Error("Bug : can't construct the Blob.");
+        }
+    }
+
+
+};
+/**
+ * The identity function.
+ * @param {Object} input the input.
+ * @return {Object} the same input.
+ */
+function identity(input) {
+    return input;
+}
+
+/**
+ * Fill in an array with a string.
+ * @param {String} str the string to use.
+ * @param {Array|ArrayBuffer|Uint8Array|Buffer} array the array to fill in (will be mutated).
+ * @return {Array|ArrayBuffer|Uint8Array|Buffer} the updated array.
+ */
+function stringToArrayLike(str, array) {
+    for (var i = 0; i < str.length; ++i) {
+        array[i] = str.charCodeAt(i) & 0xFF;
+    }
+    return array;
+}
+
+/**
+ * An helper for the function arrayLikeToString.
+ * This contains static information and functions that
+ * can be optimized by the browser JIT compiler.
+ */
+var arrayToStringHelper = {
+    /**
+     * Transform an array of int into a string, chunk by chunk.
+     * See the performances notes on arrayLikeToString.
+     * @param {Array|ArrayBuffer|Uint8Array|Buffer} array the array to transform.
+     * @param {String} type the type of the array.
+     * @param {Integer} chunk the chunk size.
+     * @return {String} the resulting string.
+     * @throws Error if the chunk is too big for the stack.
+     */
+    stringifyByChunk: function(array, type, chunk) {
+        var result = [], k = 0, len = array.length;
+        // shortcut
+        if (len <= chunk) {
+            return String.fromCharCode.apply(null, array);
+        }
+        while (k < len) {
+            if (type === "array" || type === "nodebuffer") {
+                result.push(String.fromCharCode.apply(null, array.slice(k, Math.min(k + chunk, len))));
+            }
+            else {
+                result.push(String.fromCharCode.apply(null, array.subarray(k, Math.min(k + chunk, len))));
+            }
+            k += chunk;
+        }
+        return result.join("");
+    },
+    /**
+     * Call String.fromCharCode on every item in the array.
+     * This is the naive implementation, which generate A LOT of intermediate string.
+     * This should be used when everything else fail.
+     * @param {Array|ArrayBuffer|Uint8Array|Buffer} array the array to transform.
+     * @return {String} the result.
+     */
+    stringifyByChar: function(array){
+        var resultStr = "";
+        for(var i = 0; i < array.length; i++) {
+            resultStr += String.fromCharCode(array[i]);
+        }
+        return resultStr;
+    },
+    applyCanBeUsed : {
+        /**
+         * true if the browser accepts to use String.fromCharCode on Uint8Array
+         */
+        uint8array : (function () {
+            try {
+                return support.uint8array && String.fromCharCode.apply(null, new Uint8Array(1)).length === 1;
+            } catch (e) {
+                return false;
+            }
+        })(),
+        /**
+         * true if the browser accepts to use String.fromCharCode on nodejs Buffer.
+         */
+        nodebuffer : (function () {
+            try {
+                return support.nodebuffer && String.fromCharCode.apply(null, nodejsUtils.allocBuffer(1)).length === 1;
+            } catch (e) {
+                return false;
+            }
+        })()
+    }
+};
+
+/**
+ * Transform an array-like object to a string.
+ * @param {Array|ArrayBuffer|Uint8Array|Buffer} array the array to transform.
+ * @return {String} the result.
+ */
+function arrayLikeToString(array) {
+    // Performances notes :
+    // --------------------
+    // String.fromCharCode.apply(null, array) is the fastest, see
+    // see http://jsperf.com/converting-a-uint8array-to-a-string/2
+    // but the stack is limited (and we can get huge arrays !).
+    //
+    // result += String.fromCharCode(array[i]); generate too many strings !
+    //
+    // This code is inspired by http://jsperf.com/arraybuffer-to-string-apply-performance/2
+    // TODO : we now have workers that split the work. Do we still need that ?
+    var chunk = 65536,
+        type = exports.getTypeOf(array),
+        canUseApply = true;
+    if (type === "uint8array") {
+        canUseApply = arrayToStringHelper.applyCanBeUsed.uint8array;
+    } else if (type === "nodebuffer") {
+        canUseApply = arrayToStringHelper.applyCanBeUsed.nodebuffer;
+    }
+
+    if (canUseApply) {
+        while (chunk > 1) {
+            try {
+                return arrayToStringHelper.stringifyByChunk(array, type, chunk);
+            } catch (e) {
+                chunk = Math.floor(chunk / 2);
+            }
+        }
+    }
+
+    // no apply or chunk error : slow and painful algorithm
+    // default browser on android 4.*
+    return arrayToStringHelper.stringifyByChar(array);
+}
+
+exports.applyFromCharCode = arrayLikeToString;
+
+
+/**
+ * Copy the data from an array-like to an other array-like.
+ * @param {Array|ArrayBuffer|Uint8Array|Buffer} arrayFrom the origin array.
+ * @param {Array|ArrayBuffer|Uint8Array|Buffer} arrayTo the destination array which will be mutated.
+ * @return {Array|ArrayBuffer|Uint8Array|Buffer} the updated destination array.
+ */
+function arrayLikeToArrayLike(arrayFrom, arrayTo) {
+    for (var i = 0; i < arrayFrom.length; i++) {
+        arrayTo[i] = arrayFrom[i];
+    }
+    return arrayTo;
+}
+
+// a matrix containing functions to transform everything into everything.
+var transform = {};
+
+// string to ?
+transform["string"] = {
+    "string": identity,
+    "array": function(input) {
+        return stringToArrayLike(input, new Array(input.length));
+    },
+    "arraybuffer": function(input) {
+        return transform["string"]["uint8array"](input).buffer;
+    },
+    "uint8array": function(input) {
+        return stringToArrayLike(input, new Uint8Array(input.length));
+    },
+    "nodebuffer": function(input) {
+        return stringToArrayLike(input, nodejsUtils.allocBuffer(input.length));
+    }
+};
+
+// array to ?
+transform["array"] = {
+    "string": arrayLikeToString,
+    "array": identity,
+    "arraybuffer": function(input) {
+        return (new Uint8Array(input)).buffer;
+    },
+    "uint8array": function(input) {
+        return new Uint8Array(input);
+    },
+    "nodebuffer": function(input) {
+        return nodejsUtils.newBufferFrom(input);
+    }
+};
+
+// arraybuffer to ?
+transform["arraybuffer"] = {
+    "string": function(input) {
+        return arrayLikeToString(new Uint8Array(input));
+    },
+    "array": function(input) {
+        return arrayLikeToArrayLike(new Uint8Array(input), new Array(input.byteLength));
+    },
+    "arraybuffer": identity,
+    "uint8array": function(input) {
+        return new Uint8Array(input);
+    },
+    "nodebuffer": function(input) {
+        return nodejsUtils.newBufferFrom(new Uint8Array(input));
+    }
+};
+
+// uint8array to ?
+transform["uint8array"] = {
+    "string": arrayLikeToString,
+    "array": function(input) {
+        return arrayLikeToArrayLike(input, new Array(input.length));
+    },
+    "arraybuffer": function(input) {
+        return input.buffer;
+    },
+    "uint8array": identity,
+    "nodebuffer": function(input) {
+        return nodejsUtils.newBufferFrom(input);
+    }
+};
+
+// nodebuffer to ?
+transform["nodebuffer"] = {
+    "string": arrayLikeToString,
+    "array": function(input) {
+        return arrayLikeToArrayLike(input, new Array(input.length));
+    },
+    "arraybuffer": function(input) {
+        return transform["nodebuffer"]["uint8array"](input).buffer;
+    },
+    "uint8array": function(input) {
+        return arrayLikeToArrayLike(input, new Uint8Array(input.length));
+    },
+    "nodebuffer": identity
+};
+
+/**
+ * Transform an input into any type.
+ * The supported output type are : string, array, uint8array, arraybuffer, nodebuffer.
+ * If no output type is specified, the unmodified input will be returned.
+ * @param {String} outputType the output type.
+ * @param {String|Array|ArrayBuffer|Uint8Array|Buffer} input the input to convert.
+ * @throws {Error} an Error if the browser doesn't support the requested output type.
+ */
+exports.transformTo = function(outputType, input) {
+    if (!input) {
+        // undefined, null, etc
+        // an empty string won't harm.
+        input = "";
+    }
+    if (!outputType) {
+        return input;
+    }
+    exports.checkSupport(outputType);
+    var inputType = exports.getTypeOf(input);
+    var result = transform[inputType][outputType](input);
+    return result;
+};
+
+/**
+ * Return the type of the input.
+ * The type will be in a format valid for JSZip.utils.transformTo : string, array, uint8array, arraybuffer.
+ * @param {Object} input the input to identify.
+ * @return {String} the (lowercase) type of the input.
+ */
+exports.getTypeOf = function(input) {
+    if (typeof input === "string") {
+        return "string";
+    }
+    if (Object.prototype.toString.call(input) === "[object Array]") {
+        return "array";
+    }
+    if (support.nodebuffer && nodejsUtils.isBuffer(input)) {
+        return "nodebuffer";
+    }
+    if (support.uint8array && input instanceof Uint8Array) {
+        return "uint8array";
+    }
+    if (support.arraybuffer && input instanceof ArrayBuffer) {
+        return "arraybuffer";
+    }
+};
+
+/**
+ * Throw an exception if the type is not supported.
+ * @param {String} type the type to check.
+ * @throws {Error} an Error if the browser doesn't support the requested type.
+ */
+exports.checkSupport = function(type) {
+    var supported = support[type.toLowerCase()];
+    if (!supported) {
+        throw new Error(type + " is not supported by this platform");
+    }
+};
+
+exports.MAX_VALUE_16BITS = 65535;
+exports.MAX_VALUE_32BITS = -1; // well, "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF" is parsed as -1
+
+/**
+ * Prettify a string read as binary.
+ * @param {string} str the string to prettify.
+ * @return {string} a pretty string.
+ */
+exports.pretty = function(str) {
+    var res = '',
+        code, i;
+    for (i = 0; i < (str || "").length; i++) {
+        code = str.charCodeAt(i);
+        res += '\\x' + (code < 16 ? "0" : "") + code.toString(16).toUpperCase();
+    }
+    return res;
+};
+
+/**
+ * Defer the call of a function.
+ * @param {Function} callback the function to call asynchronously.
+ * @param {Array} args the arguments to give to the callback.
+ */
+exports.delay = function(callback, args, self) {
+    setImmediate(function () {
+        callback.apply(self || null, args || []);
+    });
+};
+
+/**
+ * Extends a prototype with an other, without calling a constructor with
+ * side effects. Inspired by nodejs' `utils.inherits`
+ * @param {Function} ctor the constructor to augment
+ * @param {Function} superCtor the parent constructor to use
+ */
+exports.inherits = function (ctor, superCtor) {
+    var Obj = function() {};
+    Obj.prototype = superCtor.prototype;
+    ctor.prototype = new Obj();
+};
+
+/**
+ * Merge the objects passed as parameters into a new one.
+ * @private
+ * @param {...Object} var_args All objects to merge.
+ * @return {Object} a new object with the data of the others.
+ */
+exports.extend = function() {
+    var result = {}, i, attr;
+    for (i = 0; i < arguments.length; i++) { // arguments is not enumerable in some browsers
+        for (attr in arguments[i]) {
+            if (arguments[i].hasOwnProperty(attr) && typeof result[attr] === "undefined") {
+                result[attr] = arguments[i][attr];
+            }
+        }
+    }
+    return result;
+};
+
+/**
+ * Transform arbitrary content into a Promise.
+ * @param {String} name a name for the content being processed.
+ * @param {Object} inputData the content to process.
+ * @param {Boolean} isBinary true if the content is not an unicode string
+ * @param {Boolean} isOptimizedBinaryString true if the string content only has one byte per character.
+ * @param {Boolean} isBase64 true if the string content is encoded with base64.
+ * @return {Promise} a promise in a format usable by JSZip.
+ */
+exports.prepareContent = function(name, inputData, isBinary, isOptimizedBinaryString, isBase64) {
+
+    // if inputData is already a promise, this flatten it.
+    var promise = external.Promise.resolve(inputData).then(function(data) {
+        
+        
+        var isBlob = support.blob && (data instanceof Blob || ['[object File]', '[object Blob]'].indexOf(Object.prototype.toString.call(data)) !== -1);
+
+        if (isBlob && typeof FileReader !== "undefined") {
+            return new external.Promise(function (resolve, reject) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    resolve(e.target.result);
+                };
+                reader.onerror = function(e) {
+                    reject(e.target.error);
+                };
+                reader.readAsArrayBuffer(data);
+            });
+        } else {
+            return data;
+        }
+    });
+
+    return promise.then(function(data) {
+        var dataType = exports.getTypeOf(data);
+
+        if (!dataType) {
+            return external.Promise.reject(
+                new Error("Can't read the data of '" + name + "'. Is it " +
+                          "in a supported JavaScript type (String, Blob, ArrayBuffer, etc) ?")
+            );
+        }
+        // special case : it's way easier to work with Uint8Array than with ArrayBuffer
+        if (dataType === "arraybuffer") {
+            data = exports.transformTo("uint8array", data);
+        } else if (dataType === "string") {
+            if (isBase64) {
+                data = base64.decode(data);
+            }
+            else if (isBinary) {
+                // optimizedBinaryString === true means that the file has already been filtered with a 0xFF mask
+                if (isOptimizedBinaryString !== true) {
+                    // this is a string, not in a base64 format.
+                    // Be sure that this is a correct "binary string"
+                    data = string2binary(data);
+                }
+            }
+        }
+        return data;
+    });
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _eachLimit = require('./eachLimit');
+
+var _eachLimit2 = _interopRequireDefault(_eachLimit);
+
+var _doLimit = require('./internal/doLimit');
+
+var _doLimit2 = _interopRequireDefault(_doLimit);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * The same as [`each`]{@link module:Collections.each} but runs only a single async operation at a time.
+ *
+ * @name eachSeries
+ * @static
+ * @memberOf module:Collections
+ * @method
+ * @see [async.each]{@link module:Collections.each}
+ * @alias forEachSeries
+ * @category Collection
+ * @param {Array|Iterable|Object} coll - A collection to iterate over.
+ * @param {AsyncFunction} iteratee - An async function to apply to each
+ * item in `coll`.
+ * The array index is not passed to the iteratee.
+ * If you need the index, use `eachOfSeries`.
+ * Invoked with (item, callback).
+ * @param {Function} [callback] - A callback which is called when all
+ * `iteratee` functions have finished, or an error occurs. Invoked with (err).
+ */
+exports.default = (0, _doLimit2.default)(_eachLimit2.default, 1);
+module.exports = exports['default'];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          import {LooseParser} from "./state"
+import {isDummy} from "./parseutil"
+import {getLineInfo, tokTypes as tt} from "acorn"
+
+const lp = LooseParser.prototype
+
+lp.parseTopLevel = function() {
+  let node = this.startNodeAt(this.options.locations ? [0, getLineInfo(this.input, 0)] : 0)
+  node.body = []
+  while (this.tok.type !== tt.eof) node.body.push(this.parseStatement())
+  this.last = this.tok
+  if (this.options.ecmaVersion >= 6) {
+    node.sourceType = this.options.sourceType
+  }
+  return this.finishNode(node, "Program")
+}
+
+lp.parseStatement = function() {
+  let starttype = this.tok.type, node = this.startNode(), kind
+
+  if (this.toks.isLet()) {
+    starttype = tt._var
+    kind = "let"
+  }
+
+  switch (starttype) {
+  case tt._break: case tt._continue:
+    this.next()
+    let isBreak = starttype === tt._break
+    if (this.semicolon() || this.canInsertSemicolon()) {
+      node.label = null
+    } else {
+      node.label = this.tok.type === tt.name ? this.parseIdent() : null
+      this.semicolon()
+    }
+    return this.finishNode(node, isBreak ? "BreakStatement" : "ContinueStatement")
+
+  cas

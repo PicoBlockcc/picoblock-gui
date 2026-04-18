@@ -1,0 +1,1477 @@
+OnEscape = function() {
+  return this.hideOnEscape_;
+};
+
+
+/**
+ * Sets whether the Popup dismisses itself on the escape key.
+ * @param {boolean} hideOnEscape Whether to autohide on the escape key.
+ */
+goog.ui.PopupBase.prototype.setHideOnEscape = function(hideOnEscape) {
+  this.ensureNotVisible_();
+  this.hideOnEscape_ = hideOnEscape;
+};
+
+
+/**
+ * @return {boolean} Whether cross iframe dismissal is enabled.
+ */
+goog.ui.PopupBase.prototype.getEnableCrossIframeDismissal = function() {
+  return this.enableCrossIframeDismissal_;
+};
+
+
+/**
+ * Sets whether clicks in other iframes should dismiss this popup.  In some
+ * cases it should be disabled, because it can cause spurious
+ * @param {boolean} enable Whether to enable cross iframe dismissal.
+ */
+goog.ui.PopupBase.prototype.setEnableCrossIframeDismissal = function(enable) {
+  this.enableCrossIframeDismissal_ = enable;
+};
+
+
+/**
+ * Returns the region inside which the Popup dismisses itself when the user
+ * clicks, or null if it's the entire document.
+ * @return {Element} The DOM element for autohide, or null if it hasn't been
+ *     set.
+ */
+goog.ui.PopupBase.prototype.getAutoHideRegion = function() {
+  return this.autoHideRegion_;
+};
+
+
+/**
+ * Sets the region inside which the Popup dismisses itself when the user
+ * clicks.
+ * @param {Element} element The DOM element for autohide.
+ */
+goog.ui.PopupBase.prototype.setAutoHideRegion = function(element) {
+  this.autoHideRegion_ = element;
+};
+
+
+/**
+ * Sets transition animation on showing and hiding the popup.
+ * @param {goog.fx.Transition=} opt_showTransition Transition to play on
+ *     showing the popup.
+ * @param {goog.fx.Transition=} opt_hideTransition Transition to play on
+ *     hiding the popup.
+ */
+goog.ui.PopupBase.prototype.setTransition = function(
+    opt_showTransition, opt_hideTransition) {
+  this.showTransition_ = opt_showTransition;
+  this.hideTransition_ = opt_hideTransition;
+};
+
+
+/**
+ * Returns the time when the popup was last shown.
+ *
+ * @return {number} time in ms since epoch when the popup was last shown, or
+ * -1 if the popup was never shown.
+ */
+goog.ui.PopupBase.prototype.getLastShowTime = function() {
+  return this.lastShowTime_;
+};
+
+
+/**
+ * Returns the time when the popup was last hidden.
+ *
+ * @return {number} time in ms since epoch when the popup was last hidden, or
+ * -1 if the popup was never hidden or is currently showing.
+ */
+goog.ui.PopupBase.prototype.getLastHideTime = function() {
+  return this.lastHideTime_;
+};
+
+
+/**
+ * Returns the event handler for the popup. All event listeners belonging to
+ * this handler are removed when the tooltip is hidden. Therefore,
+ * the recommended usage of this handler is to listen on events in
+ * {@link #onShow}.
+ * @return {goog.events.EventHandler<T>} Event handler for this popup.
+ * @protected
+ * @this {T}
+ * @template T
+ */
+goog.ui.PopupBase.prototype.getHandler = function() {
+  // As the template type is unbounded, narrow the "this" type
+  var self = /** @type {!goog.ui.PopupBase} */ (this);
+
+  return self.handler_;
+};
+
+
+/**
+ * Helper to throw exception if the popup is showing.
+ * @private
+ */
+goog.ui.PopupBase.prototype.ensureNotVisible_ = function() {
+  if (this.isVisible_) {
+    throw new Error('Can not change this state of the popup while showing.');
+  }
+};
+
+
+/**
+ * Returns whether the popup is currently visible.
+ *
+ * @return {boolean} whether the popup is currently visible.
+ */
+goog.ui.PopupBase.prototype.isVisible = function() {
+  return this.isVisible_;
+};
+
+
+/**
+ * Returns whether the popup is currently visible or was visible within about
+ * 150 ms ago. This is used by clients to handle a very specific, but common,
+ * popup scenario. The button that launches the popup should close the popup
+ * on mouse down if the popup is alrady open. The problem is that the popup
+ * closes itself during the capture phase of the mouse down and thus the button
+ * thinks it's hidden and this should show it again. This method provides a
+ * good heuristic for clients. Typically in their event handler they will have
+ * code that is:
+ *
+ * if (menu.isOrWasRecentlyVisible()) {
+ *   menu.setVisible(false);
+ * } else {
+ *   ... // code to position menu and initialize other state
+ *   menu.setVisible(true);
+ * }
+ * @return {boolean} Whether the popup is currently visible or was visible
+ *     within about 150 ms ago.
+ */
+goog.ui.PopupBase.prototype.isOrWasRecentlyVisible = function() {
+  return this.isVisible_ ||
+      (goog.now() - this.lastHideTime_ < goog.ui.PopupBase.DEBOUNCE_DELAY_MS);
+};
+
+
+/**
+ * Sets whether the popup should be visible. After this method
+ * returns, isVisible() will always return the new state, even if
+ * there is a transition.
+ *
+ * @param {boolean} visible Desired visibility state.
+ */
+goog.ui.PopupBase.prototype.setVisible = function(visible) {
+  // Make sure that any currently running transition is stopped.
+  if (this.showTransition_) this.showTransition_.stop();
+  if (this.hideTransition_) this.hideTransition_.stop();
+
+  if (visible) {
+    this.show_();
+  } else {
+    this.hide_();
+  }
+};
+
+
+/**
+ * Repositions the popup according to the current state.
+ * Should be overriden by subclases.
+ */
+goog.ui.PopupBase.prototype.reposition = goog.nullFunction;
+
+
+/**
+ * Does the work to show the popup.
+ * @private
+ */
+goog.ui.PopupBase.prototype.show_ = function() {
+  // Ignore call if we are already showing.
+  if (this.isVisible_) {
+    return;
+  }
+
+  // Give derived classes and handlers a chance to customize popup.
+  if (!this.onBeforeShow()) {
+    return;
+  }
+
+  // Allow callers to set the element in the BEFORE_SHOW event.
+  if (!this.element_) {
+    throw new Error(
+        'Caller must call setElement before trying to show the popup');
+  }
+
+  // Call reposition after onBeforeShow, as it may change the style and/or
+  // content of the popup and thereby affecting the size which is used for the
+  // viewport calculation.
+  this.reposition();
+
+  var doc = goog.dom.getOwnerDocument(this.element_);
+
+  if (this.hideOnEscape_) {
+    // Handle the escape keys.  Listen in the capture phase so that we can
+    // stop the escape key from propagating to other elements.  For example,
+    // if there is a popup within a dialog box, we want the popup to be
+    // dismissed first, rather than the dialog.
+    this.handler_.listen(
+        doc, goog.events.EventType.KEYDOWN, this.onDocumentKeyDown_, true);
+  }
+
+  // Set up event handlers.
+  if (this.autoHide_) {
+    // Even if the popup is not in the focused document, we want to
+    // close it on mousedowns in the document it's in.
+    this.handler_.listen(
+        doc, goog.events.EventType.MOUSEDOWN, this.onDocumentMouseDown_, true);
+
+    if (goog.userAgent.IE) {
+      // We want to know about deactivates/mousedowns on the document with focus
+      // The top-level document won't get a deactivate event if the focus is
+      // in an iframe and the deactivate fires within that iframe.
+      // The active element in the top-level document will remain the iframe
+      // itself.
+      var activeElement;
+
+      try {
+        activeElement = doc.activeElement;
+      } catch (e) {
+        // There is an IE browser bug which can cause just the reading of
+        // document.activeElement to throw an Unspecified Error.  This
+        // may have to do with loading a popup within a hidden iframe.
+      }
+      while (activeElement &&
+             activeElement.nodeName == goog.dom.TagName.IFRAME) {
+
+        try {
+          var tempDoc = goog.dom.getFrameContentDocument(activeElement);
+        } catch (e) {
+          // The frame is on a different domain that its parent document
+          // This way, we grab the lowest-level document object we can get
+          // a handle on given cross-domain security.
+          break;
+        }
+        doc = tempDoc;
+        activeElement = doc.activeElement;
+      }
+
+      // Handle mousedowns in the focused document in case the user clicks
+      // on the activeElement (in which case the popup should hide).
+      this.handler_.listen(
+          doc, goog.events.EventType.MOUSEDOWN, this.onDocumentMouseDown_,
+          true);
+
+      // If the active element inside the focused document changes, then
+      // we probably need to hide the popup.
+      this.handler_.listen(
+          doc, goog.events.EventType.DEACTIVATE, this.onDocumentBlur_);
+
+    } else {
+      this.handler_.listen(
+          doc, goog.events.EventType.BLUR, this.onDocumentBlur_);
+    }
+  }
+
+  // Make the popup visible.
+  if (this.type_ == goog.ui.PopupBase.Type.TOGGLE_DISPLAY) {
+    this.showPopupElement();
+  } else if (this.type_ == goog.ui.PopupBase.Type.MOVE_OFFSCREEN) {
+    this.reposition();
+  }
+  this.isVisible_ = true;
+
+  this.lastShowTime_ = goog.now();
+  this.lastHideTime_ = -1;
+
+  // If there is transition to play, we play it and fire SHOW event after
+  // the transition is over.
+  if (this.showTransition_) {
+    goog.events.listenOnce(
+        /** @type {!goog.events.EventTarget} */ (this.showTransition_),
+        goog.fx.Transition.EventType.END, this.onShow, false, this);
+    this.showTransition_.play();
+  } else {
+    // Notify derived classes and handlers.
+    this.onShow();
+  }
+};
+
+
+/**
+ * Hides the popup. This call is idempotent.
+ *
+ * @param {?Node=} opt_target Target of the event causing the hide.
+ * @return {boolean} Whether the popup was hidden and not cancelled.
+ * @private
+ */
+goog.ui.PopupBase.prototype.hide_ = function(opt_target) {
+  // Give derived classes and handlers a chance to cancel hiding.
+  if (!this.isVisible_ || !this.onBeforeHide(opt_target)) {
+    return false;
+  }
+
+  // Remove any listeners we attached when showing the popup.
+  if (this.handler_) {
+    this.handler_.removeAll();
+  }
+
+  // Set visibility to hidden even if there is a transition.
+  this.isVisible_ = false;
+  this.lastHideTime_ = goog.now();
+
+  // If there is transition to play, we play it and only hide the element
+  // (and fire HIDE event) after the transition is over.
+  if (this.hideTransition_) {
+    goog.events.listenOnce(
+        /** @type {!goog.events.EventTarget} */ (this.hideTransition_),
+        goog.fx.Transition.EventType.END,
+        goog.partial(this.continueHidingPopup_, opt_target), false, this);
+    this.hideTransition_.play();
+  } else {
+    this.continueHidingPopup_(opt_target);
+  }
+
+  return true;
+};
+
+
+/**
+ * Continues hiding the popup. This is a continuation from hide_. It is
+ * a separate method so that we can add a transition before hiding.
+ * @param {?Node=} opt_target Target of the event causing the hide.
+ * @private
+ */
+goog.ui.PopupBase.prototype.continueHidingPopup_ = function(opt_target) {
+  // Hide the popup.
+  if (this.type_ == goog.ui.PopupBase.Type.TOGGLE_DISPLAY) {
+    if (this.shouldHideAsync_) {
+      goog.Timer.callOnce(this.hidePopupElement, 0, this);
+    } else {
+      this.hidePopupElement();
+    }
+  } else if (this.type_ == goog.ui.PopupBase.Type.MOVE_OFFSCREEN) {
+    this.moveOffscreen_();
+  }
+
+  // Notify derived classes and handlers.
+  this.onHide(opt_target);
+};
+
+
+/**
+ * Shows the popup element.
+ * @protected
+ */
+goog.ui.PopupBase.prototype.showPopupElement = function() {
+  this.element_.style.visibility = 'visible';
+  goog.style.setElementShown(this.element_, true);
+};
+
+
+/**
+ * Hides the popup element.
+ * @protected
+ */
+goog.ui.PopupBase.prototype.hidePopupElement = function() {
+  this.element_.style.visibility = 'hidden';
+  goog.style.setElementShown(this.element_, false);
+};
+
+
+/**
+ * Hides the popup by moving it offscreen.
+ *
+ * @private
+ */
+goog.ui.PopupBase.prototype.moveOffscreen_ = function() {
+  this.element_.style.top = '-10000px';
+};
+
+
+/**
+ * Called before the popup is shown. Derived classes can override to hook this
+ * event but should make sure to call the parent class method.
+ *
+ * @return {boolean} If anyone called preventDefault on the event object (or
+ *     if any of the handlers returns false this will also return false.
+ * @protected
+ */
+goog.ui.PopupBase.prototype.onBeforeShow = function() {
+  return this.dispatchEvent(goog.ui.PopupBase.EventType.BEFORE_SHOW);
+};
+
+
+/**
+ * Called after the popup is shown. Derived classes can override to hook this
+ * event but should make sure to call the parent class method.
+ * @protected
+ */
+goog.ui.PopupBase.prototype.onShow = function() {
+  this.dispatchEvent(goog.ui.PopupBase.EventType.SHOW);
+};
+
+
+/**
+ * Called before the popup is hidden. Derived classes can override to hook this
+ * event but should make sure to call the parent class method.
+ *
+ * @param {?Node=} opt_target Target of the event causing the hide.
+ * @return {boolean} If anyone called preventDefault on the event object (or
+ *     if any of the handlers returns false this will also return false.
+ * @protected
+ */
+goog.ui.PopupBase.prototype.onBeforeHide = function(opt_target) {
+  return this.dispatchEvent(
+      {type: goog.ui.PopupBase.EventType.BEFORE_HIDE, target: opt_target});
+};
+
+
+/**
+ * Called after the popup is hidden. Derived classes can override to hook this
+ * event but should make sure to call the parent class method.
+ * @param {?Node=} opt_target Target of the event causing the hide.
+ * @protected
+ */
+goog.ui.PopupBase.prototype.onHide = function(opt_target) {
+  this.dispatchEvent(
+      {type: goog.ui.PopupBase.EventType.HIDE, target: opt_target});
+};
+
+
+/**
+ * Mouse down handler for the document on capture phase. Used to hide the
+ * popup for auto-hide mode.
+ *
+ * @param {goog.events.BrowserEvent} e The event object.
+ * @private
+ */
+goog.ui.PopupBase.prototype.onDocumentMouseDown_ = function(e) {
+  var target = e.target;
+
+  if (!goog.dom.contains(this.element_, target) &&
+      !this.isOrWithinAutoHidePartner_(target) &&
+      this.isWithinAutoHideRegion_(target) && !this.shouldDebounce_()) {
+    // Mouse click was outside popup and partners, so hide.
+    this.hide_(target);
+  }
+};
+
+
+/**
+ * Handles key-downs on the document to handle the escape key.
+ *
+ * @param {goog.events.BrowserEvent} e The event object.
+ * @private
+ */
+goog.ui.PopupBase.prototype.onDocumentKeyDown_ = function(e) {
+  if (e.keyCode == goog.events.KeyCodes.ESC) {
+    if (this.hide_(e.target)) {
+      // Eat the escape key, but only if this popup was actually closed.
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }
+};
+
+
+/**
+ * Deactivate handler(IE) and blur handler (other browsers) for document.
+ * Used to hide the popup for auto-hide mode.
+ *
+ * @param {goog.events.BrowserEvent} e The event object.
+ * @private
+ */
+goog.ui.PopupBase.prototype.onDocumentBlur_ = function(e) {
+  if (!this.enableCrossIframeDismissal_) {
+    return;
+  }
+
+  var doc = goog.dom.getOwnerDocument(this.element_);
+
+  // Ignore blur events if the active element is still inside the popup or if
+  // there is no longer an active element.  For example, a widget like a
+  // goog.ui.Button might programatically blur itself before losing tabIndex.
+  if (typeof document.activeElement != 'undefined') {
+    var activeElement = doc.activeElement;
+    if (!activeElement || goog.dom.contains(this.element_, activeElement) ||
+        activeElement.tagName == goog.dom.TagName.BODY) {
+      return;
+    }
+
+    // Ignore blur events not for the document itself in non-IE browsers.
+  } else if (e.target != doc) {
+    return;
+  }
+
+  // Debounce the initial focus move.
+  if (this.shouldDebounce_()) {
+    return;
+  }
+
+  this.hide_();
+};
+
+
+/**
+ * @param {Node} element The element to inspect.
+ * @return {boolean} Returns true if the given element is one of the auto hide
+ *     partners or is a child of an auto hide partner.
+ * @private
+ */
+goog.ui.PopupBase.prototype.isOrWithinAutoHidePartner_ = function(element) {
+  return goog.array.some(this.autoHidePartners_ || [], function(partner) {
+    return element === partner || goog.dom.contains(partner, element);
+  });
+};
+
+
+/**
+ * @param {Node} element The element to inspect.
+ * @return {boolean} Returns true if the element is contained within
+ *     the autohide region. If unset, the autohide region is the entire
+ *     entire document.
+ * @private
+ */
+goog.ui.PopupBase.prototype.isWithinAutoHideRegion_ = function(element) {
+  return this.autoHideRegion_ ?
+      goog.dom.contains(this.autoHideRegion_, element) :
+      true;
+};
+
+
+/**
+ * @return {boolean} Whether the time since last show is less than the debounce
+ *     delay.
+ * @private
+ */
+goog.ui.PopupBase.prototype.shouldDebounce_ = function() {
+  return goog.now() - this.las{
+    "download.appTitle": "Download the Scratch App",
+    "download.appIntro": "Would you like to create and save Scratch projects without an internet connection? Download the free Scratch app.",
+    "download.requirements": "Requirements",
+    "download.imgAltDownloadIllustration": "Scratch 3.0 Desktop screenshot",
+    "download.troubleshootingTitle": "FAQ",
+    "download.startScratchDesktop": "Start Scratch Desktop",
+    "download.howDoIInstall": "How do I install Scratch Desktop?",
+    "download.whenSupportLinuxApp": "When will you have the Scratch app available for Linux?",
+    "download.whenSupportLinux": "When will you have Scratch Desktop for Linux?",
+    "download.supportLinuxAnswer": "Scratch Desktop on Linux is currently not supported. We are working with partners and the open-source community to determine if there is a way we can support Linux in the future. Stay tuned!",
+    "download.whenSupportLinuxAppAnswer": "The Scratch app is currently not supported on Linux. We are working with partners and the open-source community to determine if there is a way we can support Linux in the future. Stay tuned!",
+    "download.supportChromeOS": "When will you have Scratch Desktop for Chromebooks?",
+    "download.supportChromeOSAnswer": "Scratch Desktop for Chromebooks is not yet available. We are working on it and expect to release later in 2019.",
+    "download.olderVersionsTitle": "Older Versions",
+    "download.olderVersions": "Looking for an earlier version of Scratch?",
+    "download.scratch1-4Desktop": "Scratch 1.4",
+    "download.scratch2Desktop": "Scratch 2.0 Offline Editor",
+    "download.cannotAccessMacStore": "What if I can't access the Mac App Store?",
+    "download.cannotAccessWindowsStore": "What if I can't access the Microsoft Store?",
+    "download.macMoveAppToApplications": "Open the .dmg file. Move Scratch 3 into Applications.",
+    "download.macMoveToApplications": "Open the .dmg file. Move Scratch Desktop into Applications.",
+    "download.winMoveToApplications": "Run the .exe file.",
+    "download.doIHaveToDownload": "Do I have to download an app to use Scratch?",
+    "download.doIHaveToDownloadAnswer": "No. You can also use the Scratch project editor in most web browsers on most devices by going to scratch.mit.edu and clicking \"Create\".",
+    "download.canIUseScratchLink": "Can I use Scratch Link to connect to extensions?",
+    "download.canIUseScratchLinkAnswer": "Yes. However, you will need an Internet connection to use Scratch Link.",
+    "download.canIUseExtensions": "Can I connect to hardware extensions?",
+    "download.canIUseExtensionsAnswer": "Yes. With the Scratch app you can connect to extensions, and you do not need Scratch Link.",
+    "download.howConnectHardwareDevices": "How do I connect the Scratch app to hardware devices?",
+    "download.howConnectHardwareDevicesAnswerLink": "You will need to install and run Scratch Link in order to connect to hardware devices when using Scratch app for {operatingsystem}. You will also need an internet connection to use Scratch Link.",
+    "download.howConnectHardwareDevicesAnswerApp": "With the Scratch app you can connect to hardware devices like the micro:bit or LEGO Boost. When using the Scratch app for {operatingsystem} you do not need Scratch Link.",
+    "download.desktopAndBrowser": "Can I use Scratch Desktop and also have Scratch open in the browser?",
+    "download.appAndBrowser": "Can I use the Scratch app and also have Scratch open in the browser?",
+    "download.yesAnswer": "Yes.",
+    "download.onPhone": "Can I install Scratch on my Android phone?",
+    "download.onPhoneAnswer": "No. The current version of Scratch for Android only works on tablets.",
+    "download.howUpdateApp": "How do I update the Scratch app?",
+    "download.howUpdateAppAnswerPlayStore": "Open the Google Play store and check for updates. If your installation is managed by school administrators, they will need to update the version and make the update available to managed devices.",
+    "download.howUpdateAppAnswerDownload": "To update Scratch for {operatingsystem} from this page, download the latest version and install. To check which version you have, click the Scratch logo in the downloaded app.",
+    "download.canIShare": "Can I share from Scratch Desktop?",
+    "download.canIShareAnswer": "This isn’t supported currently. For now, you can save a project from Scratch Desktop, upload it to your Scratch account, and share it there. In a later version we will add the ability to upload to your Scratch account directly in Scratch Desktop.",
+    "download.canIShareApp": "Can I share to the online community from the Scratch app for {operatingsystem}?",
+    "download.canIShareAnswerPlayStore": "Yes. Click the 3-dots menu on a project in the lobby and select \"Share\" from the options. In addition to sharing by email, you can sign in to your Scratch account and share a project to the Scratch online community.",
+    "download.canIShareAnswerDownloaded": "Sharing directly to online community from the Scratch app for {operatingsystem} is not currently supported. For now, you can export a project from the Scratch app, then log onto the Scratch website, and upload and share your project there.",
+    "download.whyNoDevicesVisible": "Why doesn't Scratch show any devices when I try to connect hardware extensions?",
+    "download.whyNoDevicesVisibleAnswer": "We’ve found that turning your {devicePosessive} bluetooth off and on again in the system settings usually allows you to see hardware devices again. If the problem persists, check that Location services are enabled for your device. If you still do not see any devices, please {whyNoDevicesContactUsLink}.",
+    "download.whyNoDevicesContactUsLink": "contact us",
+    "download.chromebookPossessive": "Chromebook's",
+    "download.androidPossessive": "Android tablet's",
+    "download.whyAskForLocation": "Why is {operatingsystem} asking for my location?",
+    "download.whyAskForLocationAnswer": "Scratch uses bluetooth to connect to other devices, such as a micro:bit or LEGO BOOST.  Bluetooth can be used to provide location data to the app, so Google requires every app that uses bluetooth ask users for permission to access their location. Scratch will not use bluetooth to track your location.",
+    "download.whereProjectStored": "Where does the Scratch App store my projects?",
+    "download.whereProjectStoredAnswer": "Projects are saved internally in the app. To export a project file, click the 3-dot menu and select \"Share\". On the next screen select \"export\". The options visible depend on the applications installed on your device. Common options are Google Drive, Files, and email.",
+    "download.iconAltText": "Download"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       {
+    "scratchLink.headerText": "Scratch Link allows you to connect hardware to interact with your Scratch projects. Open new possibilities by combining your digital projects with the physical world.",
+    "scratchLink.headerTitle": "Scratch Link",
+    "scratchLink.linkLogo": "Scratch Link logo",
+    "scratchLink.troubleshootingTitle": "Troubleshooting",
+    "scratchLink.checkOSVersionTitle": "Make sure your operating system is compatible with Scratch Link",
+    "scratchLink.checkOSVersionText": "The minimum operating system versions are listed at the top of this page. See instructions for checking your version of {winOSVersionLink} or {macOSVersionLink}.",
+    "scratchLink.winOSVersionLinkText": "Windows",
+    "scratchLink.macOSVersionLinkText": "Mac OS",
+    "scratchLink.closeScratchCopiesTitle": "Close other copies of Scratch",
+    "scratchLink.closeScratchCopiesText": "Only one copy of Scratch can connect with Scratch Link at a time. If you have Scratch open in other browser tabs, close it and try again.",
+    "scratchLink.thingsToTry": "Things to Try",
+    "scratchLink.compatibleDevices": "Compatible with Scratch Link",
+    "scratchLink.microbitTitle": "micro:bit",
+    "scratchLink.microbitDescription": "micro:bit is a tiny circuit board designed to help kids learn to code and create with technology.",
+    "scratchLink.ev3Title": "LEGO MINDSTORMS EV3",
+    "scratchLink.ev3Description": "LEGO MINDSTORMS Education EV3 is an invention kit with motors and sensors you can use to build interactive robotic creations.",
+    "scratchLink.wedoTitle": "LEGO Education WeDo 2.0",
+    "scratchLink.wedoDescription": "LEGO Education WeDo 2.0 is an introductory invention kit you can use to build interactive robots and other creations.",
+    "scratchLink.boostTitle": "LEGO BOOST",
+    "scratchLink.boostDescription": "The LEGO BOOST kit brings your LEGO creations to life with powerful motors, a color sensor and more.",
+    "scratchLink.vernierTitle": "Vernier Force & Acceleration",
+    "scratchLink.vernierDescription": "The Vernier Go Direct Force & Acceleration sensor is a powerful scientific tool that unlocks new ways to connect the physical world to your Scratch projects."
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      // Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Popup Color Picker implementation.  This is intended to be
+ * less general than goog.ui.ColorPicker and presents a default set of colors
+ * that CCC apps currently use in their color pickers.
+ *
+ * @see ../demos/popupcolorpicker.html
+ */
+
+goog.provide('goog.ui.PopupColorPicker');
+
+goog.require('goog.asserts');
+goog.require('goog.dom.classlist');
+goog.require('goog.events.EventType');
+goog.require('goog.positioning.AnchoredPosition');
+goog.require('goog.positioning.Corner');
+goog.require('goog.ui.ColorPicker');
+goog.require('goog.ui.Component');
+goog.require('goog.ui.Popup');
+
+
+
+/**
+ * Popup color picker widget.
+ *
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
+ * @param {goog.ui.ColorPicker=} opt_colorPicker Optional color picker to use
+ *     for this popup.
+ * @extends {goog.ui.Component}
+ * @constructor
+ */
+goog.ui.PopupColorPicker = function(opt_domHelper, opt_colorPicker) {
+  goog.ui.Component.call(this, opt_domHelper);
+
+  if (opt_colorPicker) {
+    this.colorPicker_ = opt_colorPicker;
+  }
+};
+goog.inherits(goog.ui.PopupColorPicker, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.PopupColorPicker);
+
+
+/**
+ * Whether the color picker is initialized.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.initialized_ = false;
+
+
+/**
+ * Instance of a color picker control.
+ * @type {goog.ui.ColorPicker}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.colorPicker_ = null;
+
+
+/**
+ * Instance of goog.ui.Popup used to manage the behavior of the color picker.
+ * @type {goog.ui.Popup}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.popup_ = null;
+
+
+/**
+ * Corner of the popup which is pinned to the attaching element.
+ * @type {goog.positioning.Corner}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.pinnedCorner_ =
+    goog.positioning.Corner.TOP_START;
+
+
+/**
+ * Corner of the attaching element where the popup shows.
+ * @type {goog.positioning.Corner}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.popupCorner_ =
+    goog.positioning.Corner.BOTTOM_START;
+
+
+/**
+ * Reference to the element that triggered the last popup.
+ * @type {Element}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.lastTarget_ = null;
+
+
+/** @private {boolean} */
+goog.ui.PopupColorPicker.prototype.rememberSelection_;
+
+
+/**
+ * Whether the color picker can move the focus to its key event target when it
+ * is shown.  The default is true.  Setting to false can break keyboard
+ * navigation, but this is needed for certain scenarios, for example the
+ * toolbar menu in trogedit which can't have the selection changed.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.allowAutoFocus_ = true;
+
+
+/**
+ * Whether the color picker can accept focus.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.focusable_ = true;
+
+
+/**
+ * If true, then the colorpicker will toggle off if it is already visible.
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.toggleMode_ = true;
+
+
+/**
+ * If true, the colorpicker will appear on hover.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.showOnHover_ = false;
+
+
+/** @override */
+goog.ui.PopupColorPicker.prototype.createDom = function() {
+  goog.ui.PopupColorPicker.superClass_.createDom.call(this);
+  this.popup_ = new goog.ui.Popup(this.getElement());
+  this.popup_.setPinnedCorner(this.pinnedCorner_);
+  goog.dom.classlist.set(
+      goog.asserts.assert(this.getElement()),
+      goog.getCssName('goog-popupcolorpicker'));
+  this.getElement().unselectable = 'on';
+};
+
+
+/** @override */
+goog.ui.PopupColorPicker.prototype.disposeInternal = function() {
+  goog.ui.PopupColorPicker.superClass_.disposeInternal.call(this);
+  this.colorPicker_ = null;
+  this.lastTarget_ = null;
+  this.initialized_ = false;
+  if (this.popup_) {
+    this.popup_.dispose();
+    this.popup_ = null;
+  }
+};
+
+
+/**
+ * ColorPickers cannot be used to decorate pre-existing html, since the
+ * structure they build is fairly complicated.
+ * @param {Element} element Element to decorate.
+ * @return {boolean} Returns always false.
+ * @override
+ */
+goog.ui.PopupColorPicker.prototype.canDecorate = function(element) {
+  return false;
+};
+
+
+/**
+ * @return {goog.ui.ColorPicker} The color picker instance.
+ */
+goog.ui.PopupColorPicker.prototype.getColorPicker = function() {
+  return this.colorPicker_;
+};
+
+
+/**
+ * Returns whether the Popup dismisses itself when the user clicks outside of
+ * it.
+ * @return {boolean} Whether the Popup autohides on an external click.
+ */
+goog.ui.PopupColorPicker.prototype.getAutoHide = function() {
+  return !!this.popup_ && this.popup_.getAutoHide();
+};
+
+
+/**
+ * Sets whether the Popup dismisses itself when the user clicks outside of it -
+ * must be called after the Popup has been created (in createDom()),
+ * otherwise it does nothing.
+ *
+ * @param {boolean} autoHide Whether to autohide on an external click.
+ */
+goog.ui.PopupColorPicker.prototype.setAutoHide = function(autoHide) {
+  if (this.popup_) {
+    this.popup_.setAutoHide(autoHide);
+  }
+};
+
+
+/**
+ * Returns the region inside which the Popup dismisses itself when the user
+ * clicks, or null if it was not set. Null indicates the entire document is
+ * the autohide region.
+ * @return {Element} The DOM element for autohide, or null if it hasn't been
+ *     set.
+ */
+goog.ui.PopupColorPicker.prototype.getAutoHideRegion = function() {
+  return this.popup_ && this.popup_.getAutoHideRegion();
+};
+
+
+/**
+ * Sets the region inside which the Popup dismisses itself when the user
+ * clicks - must be called after the Popup has been created (in createDom()),
+ * otherwise it does nothing.
+ *
+ * @param {Element} element The DOM element for autohide.
+ */
+goog.ui.PopupColorPicker.prototype.setAutoHideRegion = function(element) {
+  if (this.popup_) {
+    this.popup_.setAutoHideRegion(element);
+  }
+};
+
+
+/**
+ * Returns the {@link goog.ui.PopupBase} from this picker. Returns null if the
+ * popup has not yet been created.
+ *
+ * NOTE: This should *ONLY* be called from tests. If called before createDom(),
+ * this should return null.
+ *
+ * @return {goog.ui.PopupBase?} The popup or null if it hasn't been created.
+ */
+goog.ui.PopupColorPicker.prototype.getPopup = function() {
+  return this.popup_;
+};
+
+
+/**
+ * @return {Element} The last element that triggered the popup.
+ */
+goog.ui.PopupColorPicker.prototype.getLastTarget = function() {
+  return this.lastTarget_;
+};
+
+
+/**
+ * Attaches the popup color picker to an element.
+ * @param {Element} element The element to attach to.
+ */
+goog.ui.PopupColorPicker.prototype.attach = function(element) {
+  if (this.showOnHover_) {
+    this.getHandler().listen(
+        element, goog.events.EventType.MOUSEOVER, this.show_);
+  } else {
+    this.getHandler().listen(
+        element, goog.events.EventType.MOUSEDOWN, this.show_);
+  }
+};
+
+
+/**
+ * Detatches the popup color picker from an element.
+ * @param {Element} element The element to detach from.
+ */
+goog.ui.PopupColorPicker.prototype.detach = function(element) {
+  if (this.showOnHover_) {
+    this.getHandler().unlisten(
+        element, goog.events.EventType.MOUSEOVER, this.show_);
+  } else {
+    this.getHandler().unlisten(
+        element, goog.events.EventType.MOUSEOVER, this.show_);
+  }
+};
+
+
+/**
+ * Gets the color that is currently selected in this color picker.
+ * @return {?string} The hex string of the color selected, or null if no
+ *     color is selected.
+ */
+goog.ui.PopupColorPicker.prototype.getSelectedColor = function() {
+  return this.colorPicker_.getSelectedColor();
+};
+
+
+/**
+ * Sets whether the color picker can accept focus.
+ * @param {boolean} focusable True iff the color picker can accept focus.
+ */
+goog.ui.PopupColorPicker.prototype.setFocusable = function(focusable) {
+  this.focusable_ = focusable;
+  if (this.colorPicker_) {
+    // TODO(user): In next revision sort the behavior of passing state to
+    // children correctly
+    this.colorPicker_.setFocusable(focusable);
+  }
+};
+
+
+/**
+ * Sets whether the color picker can automatically move focus to its key event
+ * target when it is set to visible.
+ * @param {boolean} allow Whether to allow auto focus.
+ */
+goog.ui.PopupColorPicker.prototype.setAllowAutoFocus = function(allow) {
+  this.allowAutoFocus_ = allow;
+};
+
+
+/**
+ * @return {boolean} Whether the color picker can automatically move focus to
+ *     its key event target when it is set to visible.
+ */
+goog.ui.PopupColorPicker.prototype.getAllowAutoFocus = function() {
+  return this.allowAutoFocus_;
+};
+
+
+/**
+ * Sets whether the color picker should toggle off if it is already open.
+ * @param {boolean} toggle The new toggle mode.
+ */
+goog.ui.PopupColorPicker.prototype.setToggleMode = function(toggle) {
+  this.toggleMode_ = toggle;
+};
+
+
+/**
+ * Gets whether the colorpicker is in toggle mode
+ * @return {boolean} toggle.
+ */
+goog.ui.PopupColorPicker.prototype.getToggleMode = function() {
+  return this.toggleMode_;
+};
+
+
+/**
+ * Sets whether the picker remembers the last selected color between popups.
+ *
+ * @param {boolean} remember Whether to remember the selection.
+ */
+goog.ui.PopupColorPicker.prototype.setRememberSelection = function(remember) {
+  this.rememberSelection_ = remember;
+};
+
+
+/**
+ * @return {boolean} Whether the picker remembers the last selected color
+ *     between popups.
+ */
+goog.ui.PopupColorPicker.prototype.getRememberSelection = function() {
+  return this.rememberSelection_;
+};
+
+
+/**
+ * Add an array of colors to the colors displayed by the color picker.
+ * Does not add duplicated colors.
+ * @param {Array<string>} colors The array of colors to be added.
+ */
+goog.ui.PopupColorPicker.prototype.addColors = function(colors) {
+
+};
+
+
+/**
+ * Clear the colors displayed by the color picker.
+ */
+goog.ui.PopupColorPicker.prototype.clearColors = function() {
+
+};
+
+
+/**
+ * Set the pinned corner of the popup.
+ * @param {goog.positioning.Corner} corner The corner of the popup which is
+ *     pinned to the attaching element.
+ */
+goog.ui.PopupColorPicker.prototype.setPinnedCorner = function(corner) {
+  this.pinnedCorner_ = corner;
+  if (this.popup_) {
+    this.popup_.setPinnedCorner(this.pinnedCorner_);
+  }
+};
+
+
+/**
+ * Sets which corner of the attaching element this popup shows up.
+ * @param {goog.positioning.Corner} corner The corner of the attaching element
+ *     where to show the popup.
+ */
+goog.ui.PopupColorPicker.prototype.setPopupCorner = function(corner) {
+  this.popupCorner_ = corner;
+};
+
+
+/**
+ * Sets whether the popup shows up on hover. By default, appears on click.
+ * @param {boolean} showOnHover True if popup should appear on hover.
+ */
+goog.ui.PopupColorPicker.prototype.setShowOnHover = function(showOnHover) {
+  this.showOnHover_ = showOnHover;
+};
+
+
+/**
+ * Handles click events on the targets and shows the color picker.
+ * @param {goog.events.BrowserEvent} e The browser event.
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.show_ = function(e) {
+  if (!this.initialized_) {
+    this.colorPicker_ = this.colorPicker_ ||
+        goog.ui.ColorPicker.createSimpleColorGrid(this.getDomHelper());
+    this.colorPicker_.setFocusable(this.focusable_);
+    this.addChild(this.colorPicker_, true);
+    this.getHandler().listen(
+        this.colorPicker_, goog.ui.ColorPicker.EventType.CHANGE,
+        this.onColorPicked_);
+    this.initialized_ = true;
+  }
+
+  if (this.popup_.isOrWasRecentlyVisible() && this.toggleMode_ &&
+      this.lastTarget_ == e.currentTarget) {
+    this.popup_.setVisible(false);
+    return;
+  }
+
+  this.lastTarget_ = /** @type {Element} */ (e.currentTarget);
+  this.popup_.setPosition(
+      new goog.positioning.AnchoredPosition(
+          this.lastTarget_, this.popupCorner_));
+  if (!this.rememberSelection_) {
+    this.colorPicker_.setSelectedIndex(-1);
+  }
+  this.popup_.setVisible(true);
+  if (this.allowAutoFocus_) {
+    this.colorPicker_.focus();
+  }
+};
+
+
+/**
+ * Handles the color change event.
+ * @param {goog.events.Event} e The event.
+ * @private
+ */
+goog.ui.PopupColorPicker.prototype.onColorPicked_ = function(e) {
+  // When we show the color picker we reset the color, which triggers an event.
+  // Here we block that event so that it doesn't dismiss the popup
+  // TODO(user): Update the colorpicker to allow selection to be cleared
+  if (this.colorPicker_.getSelectedIndex() == -1) {
+    e.stopPropagation();
+    return;
+  }
+  this.popup_.setVisible(false);
+  if (this.allowAutoFocus_) {
+    this.lastTarget_.focus();
+  }
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
+    "download.title": "Scratch 2.0 Offline Editor",
+    "download.intro": "You can install the Scratch 2.0 editor to work on projects without an internet connection. This version will work on Windows and MacOS.",
+    "download.installation": "Installation",
+    "download.airTitle": "Adobe AIR",
+    "download.airBody": "If you don't already have it, download and install the latest <a href=\"https://airsdk.harman.com/runtime\">Adobe AIR</a>",
+    "download.airBodyHTML": "If you don't already have it, download and install the latest <a>Adobe AIR</a>",
+    "download.macOSX": "Mac OS X",
+    "download.macOlder": "Mac OS 10.5 & Older",
+    "download.windows": "Windows",
+    "download.download": "Download",
+    "download.offlineEditorTitle": "Scratch Offline Editor",
+    "download.offlineEditorBody": "Next download and install the Scratch 2.0 Offline Editor",
+    "download.supportMaterialsTitle": "Support Materials",
+    "download.supportMaterialsBody": "Need some help getting started? Here are some helpful resources.",
+    "download.starterProjects": "Starter Projects",
+    "download.gettingStarted": "Getting Started Guide",
+    "download.scratchCards": "Scratch Cards",
+    "download.updatesTitle": "Updates",
+    "download.updatesBody": "The Offline Editor can update itself (with user permission). It will check for updates at startup or you can use the \"Check for updates\" command in the file menu.",
+    "download.currentVersion": "The current version is {version}.",
+    "download.otherVersionsTitle": "Other Versions of Scratch",
+    "download.otherVersionsOlder": "If you have an older computer, or cannot install the Scratch 2.0 offline editor, you can try installing <a href=\"http://scratch.mit.edu/scratch_1.4/\">Scratch 1.4</a>.",
+    "download.otherVersionsOlderHTML": "If you have an older computer, or cannot install the Scratch 2.0 offline editor, you can try installing <a>Scratch 1.4</a>.",
+    "download.otherVersionsAdmin": "If you are a network administrator: a Scratch 2.0 MSI has been created and maintained by a member of the community and hosted for public download <a href=\"http://llk.github.io/scratch-msi/\">here</a>.",
+    "download.otherVersionsAdminHTML": "If you are a network administrator: a Scratch 2.0 MSI has been created and maintained by a member of the community and hosted for public download <a>here</a>.",
+    "download.knownIssuesTitle": "Known issues",
+    "download.knownIssuesOne": "If your offline editor is crashing directly after Scratch is opened, install the Scratch 2 offline editor again (see step 2 above). This issue is due to a bug introduced in Adobe AIR version 14 (released April 2014).",
+    "download.knownIssuesTwo": "Graphic effects blocks (in \"Looks\") may slow down projects due to a known Flash bug.",
+    "download.knownIssuesThree": "The <b>backpack</b> is not yet available.",
+    "download.knownIssuesFour": "On Mac OS you may see a prompt indicating that \"Scratch 2 is trying to install a new helper tool\" and asking for your user name and password. We are currently investigating a solution to this problem.",
+    "download.reportBugs": "Report Bugs and Glitches",
+    "download.notAvailable": "Hmm, editor downloads are not available right now - please refresh the page to try again."
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               // Copyright 2007 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Popup Date Picker implementation.  Pairs a goog.ui.DatePicker
+ * with a goog.ui.Popup allowing the DatePicker to be attached to elements.
+ *
+ * @see ../demos/popupdatepicker.html
+ */
+
+goog.provide('goog.ui.PopupDatePicker');
+
+goog.require('goog.events.EventType');
+goog.require('goog.positioning.AnchoredPosition');
+goog.require('goog.positioning.Corner');
+goog.require('goog.positioning.Overflow');
+goog.require('goog.style');
+goog.require('goog.ui.Component');
+goog.require('goog.ui.DatePicker');
+goog.require('goog.ui.Popup');
+goog.require('goog.ui.PopupBase');
+
+
+
+/**
+ * Popup date picker widget. Fires goog.ui.PopupBase.EventType.SHOW or HIDE
+ * events when its visibility changes.
+ *
+ * @param {goog.ui.DatePicker=} opt_datePicker Optional DatePicker.  This
+ *     enables the use of a custom date-picker instance.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
+ * @extends {goog.ui.Component}
+ * @constructor
+ */
+goog.ui.PopupDatePicker = function(opt_datePicker, opt_domHelper) {
+  goog.ui.Component.call(this, opt_domHelper);
+
+  this.datePicker_ = opt_datePicker || new goog.ui.DatePicker();
+
+  /**
+   * Whether to reposition the popup when the date picker size changes (due to
+   * going to a different month with more weeks) so that all weeks are visible
+   * in the viewport.
+   * @private {boolean}
+   */
+  this.keepAllWeeksInViewport_ = false;
+};
+goog.inherits(goog.ui.PopupDatePicker, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.PopupDatePicker);
+
+
+/**
+ * Instance of a date picker control.
+ * @type {goog.ui.DatePicker?}
+ * @private
+ */
+goog.ui.PopupDatePicker.prototype.datePicker_ = null;
+
+
+/**
+ * Instance of goog.ui.Popup used to manage the behavior of the date picker.
+ * @type {goog.ui.Popup?}
+ * @private
+ */
+goog.ui.PopupDatePicker.prototype.popup_ = null;
+
+
+/**
+ * Reference to the element that triggered the last popup.
+ * @type {?Element}
+ * @private
+ */
+goog.ui.PopupDatePicker.prototype.lastTarget_ = null;
+
+
+/**
+ * Whether the date picker can move the focus to its key event target when it
+ * is shown.  The default is true.  Setting to false can break keyboard
+ * navigation, but this is needed for certain scenarios, for example the
+ * toolbar menu in trogedit which can't have the selection changed.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.PopupDatePicker.prototype.allowAutoFocus_ = true;
+
+
+/** @override */
+goog.ui.PopupDatePicker.prototype.createDom = function() {
+  goog.ui.PopupDatePicker.superClass_.createDom.call(this);
+  this.getElement().className = goog.getCssName('goog-popupdatepicker');
+  this.popup_ = new goog.ui.Popup(this.getElement());
+  this.popup_.setParentEventTarget(this);
+};
+
+
+/**
+ * @return {boolean} Whether the date picker is visible.
+ */
+goog.ui.PopupDatePicker.prototype.isVisible = function() {
+  return this.popup_ ? this.popup_.isVisible() : false;
+};
+
+
+/** @override */
+goog.ui.PopupDatePicker.prototype.enterDocument = function() {
+  goog.ui.PopupDatePicker.superClass_.enterDocument.call(this);
+  // Create the DatePicker, if it isn't already.
+  // Done here as DatePicker assumes that the element passed to it is attached
+  // to a document.
+  if (!this.datePicker_.isInDocument()) {
+    var el = this.getElement();
+    // Make it initially invisible
+    el.style.visibility = 'hidden';
+    goog.style.setElementShown(el, false);
+    this.datePicker_.decorate(el);
+  }
+  this.getHandler()
+      .listen(
+          this.datePicker_, goog.ui.DatePicker.Events.CHANGE,
+          this.onDateChanged_)
+      .listen(
+          this.datePicker_, goog.ui.DatePicker.Events.SELECT,
+          this.onDateSelected_);
+};
+
+
+/** @override */
+goog.ui.PopupDatePicker.prototype.disposeInternal = function() {
+  goog.ui.PopupDatePicker.superClass_.disposeInternal.call(this);
+  if (this.popup_) {
+    this.popup_.dispose();
+    this.popup_ = null;
+  }
+  this.datePicker_.dispose();
+  this.datePicker_ = null;
+  this.lastTarget_ = null;
+};
+
+
+/**
+ * DatePicker cannot be used to decorate pre-existing html, since they're
+ * not based on Components.
+ * @param {Element} element Element to decorate.
+ * @return {boolean} Returns always false.
+ * @override
+ */
+goog.ui.PopupDatePicker.prototype.canDecorate = function(element) {
+  return false;
+};
+
+
+/**
+ * @return {goog.ui.DatePicker} The date picker instance.
+ */
+goog.ui.PopupDatePicker.prototype.getDatePicker = function() {
+  return this.datePicker_;
+};
+
+
+/**
+ * @return {goog.date.Date?} The selected date, if any.  See
+ *     goog.ui.DatePicker.getDate().
+ */
+goog.ui.PopupDatePicker.prototype.getDate = function() {
+  return this.datePicker_.getDate();
+};
+
+
+/**
+ * Sets the selected date.  See goog.ui.DatePicker.setDate().
+ * @param {goog.date.Date?} date The date to select.
+ */
+goog.ui.PopupDatePicker.prototype.setDate = function(date) {
+  this.datePicker_.setDate(date);
+};
+
+
+/**
+ * @return {Element} The last element that triggered the popup.
+ */
+goog.ui.PopupDatePicker.prototype.getLastTarget = function() {
+  return this.lastTarget_;
+};
+
+
+/**
+ * Attaches the popup date picker to an element.
+ * @param {Element} element The element to attach to.
+ */
+goog.ui.PopupDatePicker.prototype.attach = function(element) {
+  this.getHandler().listen(
+      element, goog.events.EventType.MOUSEDOWN, this.showPopup_);
+};
+
+
+/**
+ * Detatches the popup date picker from an element.
+ * @param {Element} element The element to detach from.
+ */
+goog.ui.PopupDatePicker.prototype.detach = function(element) {
+  this.getHandler().unlisten(
+      element, goog.events.EventType.MOUSEDOWN, this.showPopup_);
+};
+
+
+/**
+ * Sets whether the date picker can automatically move focus to its key event
+ * target when it is set to visible.
+ * @param {boolean} allow Whether to allow auto focus.
+ */
+goog.ui.PopupDatePicker.prototype.setAllowAutoFocus = function(allow) {
+  this.allowAutoFocus_ = allow;
+};
+
+
+/**
+ * @return {boolean} Whether the date picker can automatically move focus to
+ * its key event target when it is set to visible.
+ */
+goog.ui.PopupDatePicker.prototype.getAllowAutoFocus = function() {
+  return this.allowAutoFocus_;
+};
+
+
+/**
+ * Sets whether to reposition the popup when the date picker size changes so
+ * that all weeks are visible in the viewport.
+ * @param {boolean} keepAllWeeksInViewport
+ */
+goog.ui.PopupDatePicker.prototype.setKeepAllWeeksInViewport = function(
+    keepAllWeeksInViewport) {
+  this.keepAllWeeksInViewport_ = keepAllWeeksInViewport;
+};
+
+
+/**
+ * @return {boolean} Whether to reposition the popup when the date picker size
+ *     changes so that all weeks are visible in the viewport.
+ */
+goog.ui.PopupDatePicker.prototype.getKeepAllWeeksInViewport = function() {
+  return this.keepAllWeeksInViewport_;
+};
+
+
+/**
+ * Show the popup at the bottom-left corner of the specified element.
+ * @param {Element} element Reference element for displaying the popup -- popup
+ *     will appear at the bottom-left corner of this element.
+ * @param {boolean=} opt_keepDate Whether to keep the date picker's current
+ *     date. If false, the date is set to null. Defaults to false.
+ */
+goog.ui.PopupDatePicker.prototype.showPopup = function(element, opt_keepDate) {
+  this.lastTarget_ = element;
+  this.popup_.setPosition(
+      new goog.positioning.AnchoredPosition(
+          element, goog.positioning.Corner.BOTTOM_START,
+          (goog.positioning.Overflow.ADJUST_X_EXCEPT_OFFSCREEN |
+           goog.positioning.Overflow.ADJUST_Y_EXCEPT_OFFSCREEN)));
+
+  // Don't listen to date changes while we're setting up the popup so we don't
+  // have to worry about change events when we call setDate(). Don't listen to
+  // grid size changes since the popup will position itself when we call
+  // setVisible().
+  this.getHandler()
+      .unlisten(
+          this.datePicker_, goog.ui.DatePicker.Events.CHANGE,
+          this.onDateChanged_)
+      .unlisten(
+          this.datePicker_, goog.ui.DatePicker.Events.SELECT,
+          this.onDateSelected_)
+      .unlisten(
+          this.datePicker_, goog.ui.DatePicker.Events.GRID_SIZE_INCREASE,
+          this.onGridSizeIncrease_);
+
+  var keepDate = !!opt_keepDate;
+  if (!keepDate) {
+    this.datePicker_.setDate(null);
+  }
+
+  // Forward the change event onto our listeners.  Done before we start
+  // listening to date changes again, so that listeners can change the date
+  // without firing more events.
+  this.dispatchEvent(goog.ui.PopupBase.EventType.SHOW);
+
+  this.popup_.setVisible(true);
+  if (this.allowAutoFocus_) {
+    this.getElement().focus();  // Our element contains the date picker.
+  }
+
+  this.getHandler()
+      .listen(
+          this.datePicker_, goog.ui.DatePicker.Events.CHANGE,
+          this.onDateChanged_)
+      .listen(
+          this.datePicker_, goog.ui.DatePicker.Events.SELECT,
+          this.onDateSelected_);
+
+  if (this.keepAllWeeksInViewport_) {
+    this.getHandler().listen(
+        this.datePicker_, goog.ui.DatePicker.Events.GRID_SIZE_INCREASE,
+        this.onGridSizeIncrease_);
+  }
+};
+
+
+/**
+ * Handles click events on the targets and shows the date picker.
+ * @param {goog.events.Event} event The click event.
+ * @private
+ */
+goog.ui.PopupDatePicker.prototype.showPopup_ = function(event) {
+  this.showPopup(/** @type {Element} */ (event.currentTarget));
+};
+
+
+/**
+ * Hides this popup.
+ */
+goog.ui.PopupDatePicker.prototype.hidePopup = function() {
+  this.popup_.setVisible(false);
+  if (this.allowAutoFocus_ && this.lastTarget_) {
+    this.lastTarget_.focus();
+  }
+};
+
+
+/**
+ * Called when date selection is made.
+ *
+ * @param {!goog.events.Event} event The date change event.
+ * @private
+ */
+goog.ui.PopupDatePicker.prototype.onDateSelected_ = f

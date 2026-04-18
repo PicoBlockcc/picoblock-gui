@@ -1,0 +1,536 @@
+ult)("ExportNamedDeclaration", ...arguments);
+}
+
+function exportSpecifier(local, exported) {
+  return (0, _builder.default)("ExportSpecifier", ...arguments);
+}
+
+function forOfStatement(left, right, body, _await) {
+  return (0, _builder.default)("ForOfStatement", ...arguments);
+}
+
+function importDeclaration(specifiers, source) {
+  return (0, _builder.default)("ImportDeclaration", ...arguments);
+}
+
+function importDefaultSpecifier(local) {
+  return (0, _builder.default)("ImportDefaultSpecifier", ...arguments);
+}
+
+function importNamespaceSpecifier(local) {
+  return (0, _builder.default)("ImportNamespaceSpecifier", ...arguments);
+}
+
+function importSpecifier(local, imported) {
+  return (0, _builder.default)("ImportSpecifier", ...arguments);
+}
+
+function metaProperty(meta, property) {
+  return (0, _builder.default)("MetaProperty", ...arguments);
+}
+
+function classMethod(kind, key, params, body, computed, _static, generator, async) {
+  return (0, _builder.default)("ClassMethod", ...arguments);
+}
+
+function objectPattern(properties) {
+  return (0, _builder.default)("ObjectPattern", ...arguments);
+}
+
+function spreadElement(argument) {
+  return (0, _builder.default)("SpreadElement", ...arguments);
+}
+
+function _super() {
+  return (0, _builder.default)("Super", ...arguments);
+}
+
+function taggedTemplateExpression(tag, quasi) {
+  return (0, _builder.default)("TaggedTemplateExpression", ...arguments);
+}
+
+function templateElement(value, tail) {
+  return (0, _builder.default)("TemplateElement", ...arguments);
+}
+
+function templateLiteral(quasis, expressions) {
+  return (0, _builder.default)("TemplateLiteral", ...arguments);
+}
+
+function yieldExpression(argument, delegate) {
+  return (0, _builder.default)("YieldExpression", ...arguments);
+}
+
+function awaitExpression(argument) {
+  return (0, _builder.default)("AwaitExpression", ...arguments);
+}
+
+function _import() {
+  return (0, _builder.default)("Import", ...arguments);
+}
+
+function bigIntLiteral(value) {
+  return (0, _builder.default)("BigIntLiteral", ...arguments);
+}
+
+function exportNamespaceSpecifier(exported) {
+  return (0, _builder.default)("ExportNamespaceSpecifier", ...arguments);
+}
+
+function optionalMemberExpression(object, property, computed, optional) {
+  return (0, _builder.default)("OptionalMemberExpression", ...arguments);
+}
+
+function optionalCallExpression(callee, _arguments, optional) {
+  return (0, _builder.default)("OptionalCallExpression", ...arguments);
+}
+
+function anyTypeAnnotation() {
+  return (0, _builder.default)("AnyTypeAnnotation", ...arguments);
+}
+
+function arrayTypeAnnotation(elementType) {
+  return (0, _builder.default)("ArrayTypeAnnotation", ...arguments);
+}
+
+function booleanTypeAnnotation() {
+  return (0, _builder.default)("BooleanTypeAnnotation", ...arguments);
+}
+
+function booleanLiteralTypeAnnotation(value) {
+  return (0, _builder.default)("BooleanLiteralTypeAnnotation", ...arguments);
+}
+
+function nullLiteralTypeAnnotation() {
+  return (0, _builder.default)("NullLiteralTypeAnnotation", ...arguments);
+}
+
+function classImplements(id, typeParameters) {
+  return (0, _builder.default)("ClassImplements", ...arguments);
+}
+
+function declareClass(id, typeParameters, _extends, body) {
+  return (0, _builder.default)("DeclareClass", ...arguments);
+}
+
+function declareFunction(id) {
+  return (0, _builder.default)("DeclareFunction", ...arguments);
+}
+
+function declareInterface(id, typeParameters, _extends, body) {
+  return (0, _builder.default)("DeclareInterface", ...arguments);
+}
+
+function declareModule(id, body, kind) {
+  return (0, _builder.default)("DeclareModule", ...arguments);
+}
+
+function declareModuleExports(typeAnnotation) {
+  return (0, _builder.default)("DeclareModuleExports", ...arguments);
+}
+
+function declareTypeAlias(id, typeParameters, right) {
+  return (0, _builder.default)("DeclareTypeAlias", ...arguments);
+}
+
+function declareOpaqueType(id, typeParameters, supertype) {
+  return (0, _builder.default)("DeclareOpaqueType", ...arguments);
+}
+
+function declareVariable(id) {
+  return (0, _builder.default)("DeclareVariable", ...arguments);
+}
+
+function declareExportDeclaration(declaration, specifiers, source) {
+  return (0, _builder.default)("DeclareExportDeclaration", ...arguments);
+}
+
+function declareExportAllDeclaration(source) {
+  return (0, _builder.default)("DeclareExportAllDeclaration", ...arguments);
+}
+
+function declaredPredicate(value) {
+  return (0, _builder.default)("DeclaredPredicate", ...arguments);
+}
+
+function existsTypeAnnotation() {
+  return (0, _builder.default)("ExistsTypeAnnotation", ...arguments);
+}
+
+function functionTypeAnnotation(typeParameters, params, rest, returnType) {
+  return (0, _builder.default)("FunctionTypeAnnotation", ...arguments);
+}
+
+function functionTypeParam(name, typeAnnotation) {
+  return (0, _builder.default)("FunctionTypeParam", ...arguments);
+}
+
+function genericTypeAnnotation(id, typeParameters) {
+  return (0, _builder.default)("GenericTypeAnnotation", ...arguments);
+}
+
+function inferredPredicate() {
+  return (0, _builder.default)("InferredPredicate", ...arguments);
+}
+
+function interfaceExtends(id, typeParameters) {
+  return (0, _builder.default)("InterfaceExtends", ...arguments);
+}
+
+function interfaceDeclaration(id, typeParameters, _extends, body) {
+  return (0, _builder.default)("InterfaceDeclaration", ...arguments);
+}
+
+function interfaceTypeAnnotation(_extends, body) {
+  return (0, _builder.default)("InterfaceTypeAnnotation", ...arguments);
+}
+
+function intersectionTypeAnnotation(types) {
+  return (0, _builder.default)("IntersectionTypeAnnotation", ...arguments);
+}
+
+function mixedTypeAnnotation() {
+  return (0, _builder.default)("MixedTypeAnnotation", ...arguments);
+}
+
+function emptyTypeAnnotation() {
+  return (0, _builder.default)("EmptyTypeAnnotation", ...arguments);
+}
+
+function nullableTypeAnnotation(typeAnnotation) {
+  return (0, _builder.default)("NullableTypeAnnotation", ...arguments);
+}
+
+function numberLiteralTypeAnnotation(value) {
+  return (0, _builder.default)("NumberLiteralTypeAnnotation", ...arguments);
+}
+
+function numberTypeAnnotation() {
+  return (0, _builder.default)("NumberTypeAnnotation", ...arguments);
+}
+
+function objectTypeAnnotation(properties, indexers, callProperties, internalSlots, exact) {
+  return (0, _builder.default)("ObjectTypeAnnotation", ...arguments);
+}
+
+function objectTypeInternalSlot(id, value, optional, _static, method) {
+  return (0, _builder.default)("ObjectTypeInternalSlot", ...arguments);
+}
+
+function objectTypeCallProperty(value) {
+  return (0, _builder.default)("ObjectTypeCallProperty", ...arguments);
+}
+
+function objectTypeIndexer(id, key, value, variance) {
+  return (0, _builder.default)("ObjectTypeIndexer", ...arguments);
+}
+
+function objectTypeProperty(key, value, variance) {
+  return (0, _builder.default)("ObjectTypeProperty", ...arguments);
+}
+
+function objectTypeSpreadProperty(argument) {
+  return (0, _builder.default)("ObjectTypeSpreadProperty", ...arguments);
+}
+
+function opaqueType(id, typeParameters, supertype, impltype) {
+  return (0, _builder.default)("OpaqueType", ...arguments);
+}
+
+function qualifiedTypeIdentifier(id, qualification) {
+  return (0, _builder.default)("QualifiedTypeIdentifier", ...arguments);
+}
+
+function stringLiteralTypeAnnotation(value) {
+  return (0, _builder.default)("StringLiteralTypeAnnotation", ...arguments);
+}
+
+function stringTypeAnnotation() {
+  return (0, _builder.default)("StringTypeAnnotation", ...arguments);
+}
+
+function symbolTypeAnnotation() {
+  return (0, _builder.default)("SymbolTypeAnnotation", ...arguments);
+}
+
+function thisTypeAnnotation() {
+  return (0, _builder.default)("ThisTypeAnnotation", ...arguments);
+}
+
+function tupleTypeAnnotation(types) {
+  return (0, _builder.default)("TupleTypeAnnotation", ...arguments);
+}
+
+function typeofTypeAnnotation(argument) {
+  return (0, _builder.default)("TypeofTypeAnnotation", ...arguments);
+}
+
+function typeAlias(id, typeParameters, right) {
+  return (0, _builder.default)("TypeAlias", ...arguments);
+}
+
+function typeAnnotation(typeAnnotation) {
+  return (0, _builder.default)("TypeAnnotation", ...arguments);
+}
+
+function typeCastExpression(expression, typeAnnotation) {
+  return (0, _builder.default)("TypeCastExpression", ...argum// Use JS implemented TextDecoder and TextEncoder if it is not provided by the
+// browser.
+let _TextDecoder;
+let _TextEncoder;
+if (typeof TextDecoder === 'undefined' || typeof TextEncoder === 'undefined') {
+    // Wait to require text-encoding until we _know_ its needed. This will save
+    // evaluating ~500kb of encoding indices that we do not need to evaluate if
+    // the browser provides TextDecoder and TextEncoder.
+    // eslint-disable-next-line global-require
+    const encoding = require('text-encoding');
+    _TextDecoder = encoding.TextDecoder;
+    _TextEncoder = encoding.TextEncoder;
+} else {
+    /* global TextDecoder TextEncoder */
+    _TextDecoder = TextDecoder;
+    _TextEncoder = TextEncoder;
+}
+
+const md5 = require('js-md5');
+
+const memoizedToString = (function () {
+    /**
+     * The maximum length of a chunk before encoding it into base64.
+     *
+     * 32766 is a multiple of 3 so btoa does not need to use padding characters
+     * except for the final chunk where that is fine. 32766 is also close to
+     * 32768 so it is close to a size an memory allocator would prefer.
+     * @const {number}
+     */
+    const BTOA_CHUNK_MAX_LENGTH = 32766;
+
+    /**
+     * An array cache of bytes to characters.
+     * @const {?Array.<string>}
+     */
+    let fromCharCode = null;
+
+    const strings = {};
+    return (assetId, data) => {
+        if (!strings.hasOwnProperty(assetId)) {
+            if (typeof btoa === 'undefined') {
+                // Use a library that does not need btoa to run.
+                /* eslint-disable-next-line global-require */
+                const base64js = require('base64-js');
+                strings[assetId] = base64js.fromByteArray(data);
+            } else {
+                // Native btoa is faster than javascript translation. Use js to
+                // create a "binary" string and btoa to encode it.
+                if (fromCharCode === null) {
+                    // Cache the first 256 characters for input byte values.
+                    fromCharCode = new Array(256);
+                    for (let i = 0; i < 256; i++) {
+                        fromCharCode[i] = String.fromCharCode(i);
+                    }
+                }
+
+                const {length} = data;
+                let s = '';
+                // Iterate over chunks of the binary data.
+                for (let i = 0, e = 0; i < length; i = e) {
+                    // Create small chunks to cause more small allocations and
+                    // less large allocations.
+                    e = Math.min(e + BTOA_CHUNK_MAX_LENGTH, length);
+                    let s_ = '';
+                    for (let j = i; j < e; j += 1) {
+                        s_ += fromCharCode[data[j]];
+                    }
+                    // Encode the latest chunk so the we create one big output
+                    // string instead of creating a big input string and then
+                    // one big output string.
+                    /* global btoa */
+                    s += btoa(s_);
+                }
+                strings[assetId] = s;
+            }
+        }
+        return strings[assetId];
+    };
+}());
+
+class Asset {
+    /**
+     * Construct an Asset.
+     * @param {AssetType} assetType - The type of this asset (sound, image, etc.)
+     * @param {string} assetId - The ID of this asset.
+     * @param {DataFormat} [dataFormat] - The format of the data (WAV, PNG, etc.); required iff `data` is present.
+     * @param {Buffer} [data] - The in-memory data for this asset; optional.
+     * @param {bool} [generateId] - Whether to create id from an md5 hash of data
+     */
+    constructor (assetType, assetId, dataFormat, data, generateId) {
+        /** @type {AssetType} */
+        this.assetType = assetType;
+
+        /** @type {string} */
+        this.assetId = assetId;
+
+        this.setData(data, dataFormat || assetType.runtimeFormat, generateId);
+
+        /** @type {Asset[]} */
+        this.dependencies = [];
+    }
+
+    setData (data, dataFormat, generateId) {
+        if (data && !dataFormat) {
+            throw new Error('Data provided without spe'use strict';
+
+var flags = require('../');
+var test = require('tape');
+var has = require('has');
+
+var getRegexLiteral = function (stringRegex) {
+	try {
+		/* jshint evil: true */
+		/* eslint-disable no-new-func */
+		return Function('return ' + stringRegex + ';')();
+		/* eslint-enable no-new-func */
+		/* jshint evil: false */
+	} catch (e) { /**/ }
+	return null;
+};
+
+flags.shim();
+var descriptor = Object.getOwnPropertyDescriptor(RegExp.prototype, 'flags');
+var testGenericFlags = function (object) {
+	return descriptor.get.call(object);
+};
+
+test('works as a function', function (t) {
+	t.equal(flags(/a/g), 'g', 'flags(/a/g) !== "g"');
+	t.equal(flags(/a/gmi), 'gim', 'flags(/a/gmi) !== "gim"');
+	t.equal(flags(new RegExp('a', 'gmi')), 'gim', 'flags(new RegExp("a", "gmi")) !== "gim"');
+	t.equal(flags(/a/), '', 'flags(/a/) !== ""');
+	t.equal(flags(new RegExp('a')), '', 'flags(new RegExp("a")) !== ""');
+
+	t.test('sticky flag', { skip: !has(RegExp.prototype, 'sticky') }, function (st) {
+		st.equal(flags(getRegexLiteral('/a/y')), 'y', 'flags(/a/y) !== "y"');
+		st.equal(flags(new RegExp('a', 'y')), 'y', 'flags(new RegExp("a", "y")) !== "y"');
+		st.end();
+	});
+
+	t.test('unicode flag', { skip: !has(RegExp.prototype, 'unicode') }, function (st) {
+		st.equal(flags(getRegexLiteral('/a/u')), 'u', 'flags(/a/u) !== "u"');
+		st.equal(flags(new RegExp('a', 'u')), 'u', 'flags(new RegExp("a", "u")) !== "u"');
+		st.end();
+	});
+
+	t.test('dotAll flag', { skip: !has(RegExp.prototype, 'dotAll') }, function (st) {
+		st.equal(flags(getRegexLiteral('/a/s')), 's', 'flags(/a/s) !== "s"');
+		st.equal(flags(new RegExp('a', 's')), 's', 'flags(new RegExp("a", "s")) !== "s"');
+		st.end();
+	});
+
+	t.test('sorting', function (st) {
+		st.equal(flags(/a/gim), 'gim', 'flags(/a/gim) !== "gim"');
+		st.equal(flags(/a/mig), 'gim', 'flags(/a/mig) !== "gim"');
+		st.equal(flags(/a/mgi), 'gim', 'flags(/a/mgi) !== "gim"');
+		if (has(RegExp.prototype, 'sticky')) {
+			st.equal(flags(getRegexLiteral('/a/gyim')), 'gimy', 'flags(/a/gyim) !== "gimy"');
+		}
+		if (has(RegExp.prototype, 'unicode')) {
+			st.equal(flags(getRegexLiteral('/a/ugmi')), 'gimu', 'flags(/a/ugmi) !== "gimu"');
+		}
+		if (has(RegExp.prototype, 'dotAll')) {
+			st.equal(flags(getRegexLiteral('/a/sgmi')), 'gims', 'flags(/a/sgmi) !== "gims"');
+		}
+		st.end();
+	});
+
+	t.test('throws properly', function (st) {
+		var nonObjects = ['', false, true, 42, NaN, null, undefined];
+		st.plan(nonObjects.length);
+		var throwsOnNonObject = function (nonObject) {
+			st['throws'](Function.call.bind(nonObject), TypeError);
+		};
+		nonObjects.forEach(throwsOnNonObject);
+	});
+	t.end();
+});
+
+test('shims properly', function (t) {
+	t.test('basic examples', function (st) {
+		st.equal((/a/g).flags, 'g', '(/a/g).flags !== "g"');
+		st.equal((/a/gmi).flags, 'gim', '(/a/gmi).flags !== "gim"');
+		st.equal(new RegExp('a', 'gmi').flags, 'gim', 'new RegExp("a", "gmi").flags !== "gim"');
+		st.equal((/a/).flags, '', '(/a/).flags !== ""');
+		st.equal(new RegExp('a').flags, '', 'new RegExp("a").flags !== ""');
+		st.end();
+	});
+
+	t.test('sticky flag', { skip: !has(RegExp.prototype, 'sticky') }, function (st) {
+		st.equal(getRegexLiteral('/a/y').flags, 'y', '(/a/y).flags !== "y"');
+		st.equal(new RegExp('a', 'y').flags, 'y', 'new RegExp("a", "y").flags !== "y"');
+		st.end();
+	});
+
+	t.test('unicode flag', { skip: !has(RegExp.prototype, 'unicode') }, function (st) {
+		st.equal(getRegexLiteral('/a/u').flags, 'u', '(/a/u).flags !== "u"');
+		st.equal(new RegExp('a', 'u').flags, 'u', 'new RegExp("a", "u").flags !== "u"');
+		st.end();
+	});
+
+	t.test('dotAll flag', { skip: !has(RegExp.prototype, 'dotAll') }, function (st) {
+		st.equal(getRegexLiteral('/a/s').flags, 's', '(/a/s).flags !== "s"');
+		st.equal(new RegExp('a', 's').flags, 's', 'new RegExp("a", "s").flags !== "s"');
+		st.end();
+	});
+
+	t.test('sorting', function (st) {
+		st.equal((/a/gim).flags, 'gim', '(/a/gim).flags !== "gim"');
+		st.equal((/a/mig).flags, 'gim', '(/a/mig).flags !== "gim"');
+		st.equal((/a/mgi).flags, 'gim', '(/a/mgi).flags !== "gim"');
+		if (has(RegExp.prototype, 'sticky')) {
+			st.equal(ge/*
+Copyright (c) 2011 Andrei Mackenzie
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+// levenshtein distance algorithm, pulled from Andrei Mackenzie's MIT licensed.
+// gist, which can be found here: https://gist.github.com/andrei-m/982927
+'use strict'
+// Compute the edit distance between the two given strings
+module.exports = function levenshtein (a, b) {
+  if (a.length === 0) return b.length
+  if (b.length === 0) return a.length
+
+  const matrix = []
+
+  // increment along the first column of each row
+  let i
+  for (i = 0; i <= b.length; i++) {
+    matrix[i] = [i]
+  }
+
+  // increment each column in the first row
+  let j
+  for (j = 0; j <= a.length; j++) {
+    matrix[0][j] = j
+  }
+
+  // Fill in the rest of the matrix
+  for (i = 1; i <= b.length; i++) {
+    for (j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1]
+      } else {
+        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, // substitution
+          Math.min(matrix[i][j - 1] + 1, // insertion
+            matrix[i - 1][j] + 1)) // deletion
+      }
+    }
+  }
+
+  return matrix[b.length][a.length]
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            

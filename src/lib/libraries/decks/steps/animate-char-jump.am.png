@@ -1,0 +1,988 @@
+ are currently
+    // adding statements to.
+
+    var cur;
+    for (var sawDefault = false; this.type !== types.braceR;) {
+      if (this.type === types._case || this.type === types._default) {
+        var isCase = this.type === types._case;
+        if (cur) { this.finishNode(cur, "SwitchCase"); }
+        node.cases.push(cur = this.startNode());
+        cur.consequent = [];
+        this.next();
+        if (isCase) {
+          cur.test = this.parseExpression();
+        } else {
+          if (sawDefault) { this.raiseRecoverable(this.lastTokStart, "Multiple default clauses"); }
+          sawDefault = true;
+          cur.test = null;
+        }
+        this.expect(types.colon);
+      } else {
+        if (!cur) { this.unexpected(); }
+        cur.consequent.push(this.parseStatement(null));
+      }
+    }
+    this.exitScope();
+    if (cur) { this.finishNode(cur, "SwitchCase"); }
+    this.next(); // Closing brace
+    this.labels.pop();
+    return this.finishNode(node, "SwitchStatement")
+  };
+
+  pp$1.parseThrowStatement = function(node) {
+    this.next();
+    if (lineBreak.test(this.input.slice(this.lastTokEnd, this.start)))
+      { this.raise(this.lastTokEnd, "Illegal newline after throw"); }
+    node.argument = this.parseExpression();
+    this.semicolon();
+    return this.finishNode(node, "ThrowStatement")
+  };
+
+  // Reused empty array added for node fields that are always empty.
+
+  var empty = [];
+
+  pp$1.parseTryStatement = function(node) {
+    this.next();
+    node.block = this.parseBlock();
+    node.handler = null;
+    if (this.type === types._catch) {
+      var clause = this.startNode();
+      this.next();
+      if (this.eat(types.parenL)) {
+        clause.param = this.parseBindingAtom();
+        var simple = clause.param.type === "Identifier";
+        this.enterScope(simple ? SCOPE_SIMPLE_CATCH : 0);
+        this.checkLVal(clause.param, simple ? BIND_SIMPLE_CATCH : BIND_LEXICAL);
+        this.expect(types.parenR);
+      } else {
+        if (this.options.ecmaVersion < 10) { this.unexpected(); }
+        clause.param = null;
+        this.enterScope(0);
+      }
+      clause.body = this.parseBlock(false);
+      this.exitScope();
+      node.handler = this.finishNode(clause, "CatchClause");
+    }
+    node.finalizer = this.eat(types._finally) ? this.parseBlock() : null;
+    if (!node.handler && !node.finalizer)
+      { this.raise(node.start, "Missing catch or finally clause"); }
+    return this.finishNode(node, "TryStatement")
+  };
+
+  pp$1.parseVarStatement = function(node, kind) {
+    this.next();
+    this.parseVar(node, false, kind);
+    this.semicolon();
+    return this.finishNode(node, "VariableDeclaration")
+  };
+
+  pp$1.parseWhileStatement = function(node) {
+    this.next();
+    node.test = this.parseParenExpression();
+    this.labels.push(loopLabel);
+    node.body = this.parseStatement("while");
+    this.labels.pop();
+    return this.finishNode(node, "WhileStatement")
+  };
+
+  pp$1.parseWithStatement = function(node) {
+    if (this.strict) { this.raise(this.start, "'with' in strict mode"); }
+    this.next();
+    node.object = this.parseParenExpression();
+    node.body = this.parseStatement("with");
+    return this.finishNode(node, "WithStatement")
+  };
+
+  pp$1.parseEmptyStatement = function(node) {
+    this.next();
+    return this.finishNode(node, "EmptyStatement")
+  };
+
+  pp$1.parseLabeledStatement = function(node, maybeName, expr, context) {
+    for (var i$1 = 0, list = this.labels; i$1 < list.length; i$1 += 1)
+      {
+      var label = list[i$1];
+
+      if (label.name === maybeName)
+        { this.raise(expr.start, "Label '" + maybeName + "' is already declared");
+    } }
+    var kind = this.type.isLoop ? "loop" : this.type === types._switch ? "switch" : null;
+    for (var i = this.labels.length - 1; i >= 0; i--) {
+      var label$1 = this.labels[i];
+      if (label$1.statementStart === node.start) {
+        // Update information about previous labels on this node
+        label$1.statementStart = this.start;
+        label$1.kind = kind;
+      } else { break }
+    }
+    this.labels.push({name: maybeName, kind: kind, statementStart: this.start});
+    node.body = this.parseStatement(context ? context.indexOf("label") === -1 ? context + "label" : context : "label");
+    this.labels.pop();
+    node.label = expr;
+    return this.finishNode(node, "LabeledStatement")
+  };
+
+  pp$1.parseExpressionStatement = function(node, expr) {
+    node.expression = expr;
+    this.semicolon();
+    return this.finishNode(node, "ExpressionStatement")
+  };
+
+  // Parse a semicolon-enclosed block of statements, handling `"use
+  // strict"` declarations when `allowStrict` is true (used for
+  // function bodies).
+
+  pp$1.parseBlock = function(createNewLexicalScope, node, exitStrict) {
+    if ( createNewLexicalScope === void 0 ) createNewLexicalScope = true;
+    if ( node === void 0 ) node = this.startNode();
+
+    node.body = [];
+    this.expect(types.braceL);
+    if (createNewLexicalScope) { this.enterScope(0); }
+    while (this.type !== types.braceR) {
+      var stmt = this.parseStatement(null);
+      node.body.push(stmt);
+    }
+    if (exitStrict) { this.strict = false; }
+    this.next();
+    if (createNewLexicalScope) { this.exitScope(); }
+    return this.finishNode(node, "BlockStatement")
+  };
+
+  // Parse a regular `for` loop. The disambiguation code in
+  // `parseStatement` will already have parsed the init statement or
+  // expression.
+
+  pp$1.parseFor = function(node, init) {
+    node.init = init;
+    this.expect(types.semi);
+    node.test = this.type === types.semi ? null : this.parseExpression();
+    this.expect(types.semi);
+    node.update = this.type === types.parenR ? null : this.parseExpression();
+    this.expect(types.parenR);
+    node.body = this.parseStatement("for");
+    this.exitScope();
+    this.labels.pop();
+    return this.finishNode(node, "ForStatement")
+  };
+
+  // Parse a `for`/`in` and `for`/`of` loop, which are almost
+  // same from parser's perspective.
+
+  pp$1.parseForIn = function(node, init) {
+    var isForIn = this.type === types._in;
+    this.next();
+
+    if (
+      init.type === "VariableDeclaration" &&
+      init.declarations[0].init != null &&
+      (
+        !isForIn ||
+        this.options.ecmaVersion < 8 ||
+        this.strict ||
+        init.kind !== "var" ||
+        init.declarations[0].id.type !== "Identifier"
+      )
+    ) {
+      this.raise(
+        init.start,
+        ((isForIn ? "for-in" : "for-of") + " loop variable declaration may not have an initializer")
+      );
+    } else if (init.type === "AssignmentPattern") {
+      this.raise(init.start, "Invalid left-hand side in for-loop");
+    }
+    node.left = init;
+    node.right = isForIn ? this.parseExpression() : this.parseMaybeAssign();
+    this.expect(types.parenR);
+    node.body = this.parseStatement("for");
+    this.exitScope();
+    this.labels.pop();
+    return this.finishNode(node, isForIn ? "ForInStatement" : "ForOfStatement")
+  };
+
+  // Parse a list of variable declarations.
+
+  pp$1.parseVar = function(node, isFor, kind) {
+    node.declarations = [];
+    node.kind = kind;
+    for (;;) {
+      var decl = this.startNode();
+      this.parseVarId(decl, kind);
+      if (this.eat(types.eq)) {
+        decl.init = this.parseMaybeAssign(isFor);
+      } else if (kind === "const" && !(this.type === types._in || (this.options.ecmaVersion >= 6 && this.isContextual("of")))) {
+        this.unexpected();
+      } else if (decl.id.type !== "Identifier" && !(isFor && (this.type === types._in || this.isContextual("of")))) {
+        this.raise(this.lastTokEnd, "Complex binding patterns require an initialization value");
+      } else {
+        decl.init = null;
+      }
+      node.declarations.push(this.finishNode(decl, "VariableDeclarator"));
+      if (!this.eat(types.comma)) { break }
+    }
+    return node
+  };
+
+  pp$1.parseVarId = function(decl, kind) {
+    decl.id = this.parseBindingAtom();
+    this.checkLVal(decl.id, kind === "var" ? BIND_VAR : BIND_LEXICAL, false);
+  };
+
+  var FUNC_STATEMENT = 1, FUNC_HANGING_STATEMENT = 2, FUNC_NULLABLE_ID = 4;
+
+  // Parse a function declaration or literal (depending on the
+  // `statement & FUNC_STATEMENT`).
+
+  // Remove `allowExpressionBody` for 7.0.0, as it is only called with false
+  pp$1.parseFunction = function(node, statement, allowExpressionBody, isAsync) {
+    this.initFunction(node);
+    if (this.options.ecmaVersion >= 9 || this.options.ecmaVersion >= 6 && !isAsync) {
+      if (this.type === types.star && (statement & FUNC_HANGING_STATEMENT))
+        { this.unexpected(); }
+      node.generator = this.eat(types.star);
+    }
+    if (this.options.ecmaVersion >= 8)
+      { node.async = !!isAsync; }
+
+    if (statement & FUNC_STATEMENT) {
+      node.id = (statement & FUNC_NULLABLE_ID) && this.type !== types.name ? null : this.parseIdent();
+      if (node.id && !(statement & FUNC_HANGING_STATEMENT))
+        // If it is a regular function declaration in sloppy mode, then it is
+        // subject to Annex B semantics (BIND_FUNCTION). Otherwise, the binding
+        // mode depends on properties of the current scope (see
+        // treatFunctionsAsVar).
+        { this.checkLVal(node.id, (this.strict || node.generator || node.async) ? this.treatFunctionsAsVar ? BIND_VAR : BIND_LEXICAL : BIND_FUNCTION); }
+    }
+
+    var oldYieldPos = this.yieldPos, oldAwaitPos = this.awaitPos, oldAwaitIdentPos = this.awaitIdentPos;
+    this.yieldPos = 0;
+    this.awaitPos = 0;
+    this.awaitIdentPos = 0;
+    this.enterScope(functionFlags(node.async, node.generator));
+
+    if (!(statement & FUNC_STATEMENT))
+      { node.id = this.type === types.name ? this.parseIdent() : null; }
+
+    this.parseFunctionParams(node);
+    this.parseFunctionBody(node, allowExpressionBody, false);
+
+    this.yieldPos = oldYieldPos;
+    this.awaitPos = oldAwaitPos;
+    this.awaitIdentPos = oldAwaitIdentPos;
+    return this.finishNode(node, (statement & FUNC_STATEMENT) ? "FunctionDeclaration" : "FunctionExpression")
+  };
+
+  pp$1.parseFunctionParams = function(node) {
+    this.expect(types.parenL);
+    node.params = this.parseBindingList(types.parenR, false, this.options.ecmaVersion >= 8);
+    this.checkYieldAwaitInDefaultParams();
+  };
+
+  // Parse a class declaration or literal (depending on the
+  // `isStatement` parameter).
+
+  pp$1.parseClass = function(node, isStatement) {
+    this.next();
+
+    // ecma-262 14.6 Class Definitions
+    // A class definition is always strict mode code.
+    var oldStrict = this.strict;
+    this.strict = true;
+
+    this.parseClassId(node, isStatement);
+    this.parseClassSuper(node);
+    var classBody = this.startNode();
+    var hadConstructor = false;
+    classBody.body = [];
+    this.expect(types.braceL);
+    while (this.type !== types.braceR) {
+      var element = this.parseClassElement(node.superClass !== null);
+      if (element) {
+        classBody.body.push(element);
+        if (element.type === "MethodDefinition" && element.kind === "constructor") {
+          if (hadConstructor) { this.raise(element.start, "Duplicate constructor in the same class"); }
+          hadConstructor = true;
+        }
+      }
+    }
+    this.strict = oldStrict;
+    this.next();
+    node.body = this.finishNode(classBody, "ClassBody");
+    return this.finishNode(node, isStatement ? "ClassDeclaration" : "ClassExpression")
+  };
+
+  pp$1.parseClassElement = function(constructorAllowsSuper) {
+    var this$1 = this;
+
+    if (this.eat(types.semi)) { return null }
+
+    var method = this.startNode();
+    var tryContextual = function (k, noLineBreak) {
+      if ( noLineBreak === void 0 ) noLineBreak = false;
+
+      var start = this$1.start, startLoc = this$1.startLoc;
+      if (!this$1.eatContextual(k)) { return false }
+      if (this$1.type !== types.parenL && (!noLineBreak || !this$1.canInsertSemicolon())) { return true }
+      if (method.key) { this$1.unexpected(); }
+      method.computed = false;
+      method.key = this$1.startNodeAt(start, startLoc);
+      method.key.name = k;
+      this$1.finishNode(method.key, "Identifier");
+      return false
+    };
+
+    method.kind = "method";
+    method.static = tryContextual("static");
+    var isGenerator = this.eat(types.star);
+    var isAsync = false;
+    if (!isGenerator) {
+      if (this.options.ecmaVersion >= 8 && tryContextual("async", true)) {
+        isAsync = true;
+        isGenerator = this.options.ecmaVersion >= 9 && this.eat(types.star);
+      } else if (tryContextual("get")) {
+        method.kind = "get";
+      } else if (tryContextual("set")) {
+        method.kind = "set";
+      }
+    }
+    if (!method.key) { this.parsePropertyName(method); }
+    var key = method.key;
+    var allowsDirectSuper = false;
+    if (!method.computed && !method.static && (key.type === "Identifier" && key.name === "constructor" ||
+        key.type === "Literal" && key.value === "constructor")) {
+      if (method.kind !== "method") { this.raise(key.start, "Constructor can't have get/set modifier"); }
+      if (isGenerator) { this.raise(key.start, "Constructor can't be a generator"); }
+      if (isAsync) { this.raise(key.start, "Constructor can't be an async method"); }
+      method.kind = "constructor";
+      allowsDirectSuper = constructorAllowsSuper;
+    } else if (method.static && key.type === "Identifier" && key.name === "prototype") {
+      this.raise(key.start, "Classes may not have a static property named prototype");
+    }
+    this.parseClassMethod(method, isGenerator, isAsync, allowsDirectSuper);
+    if (method.kind === "get" && method.value.params.length !== 0)
+      { this.raiseRecoverable(method.value.start, "getter should have no params"); }
+    if (method.kind === "set" && method.value.params.length !== 1)
+      { this.raiseRecoverable(method.value.start, "setter should have exactly one param"); }
+    if (method.kind === "set" && method.value.params[0].type === "RestElement")
+      { this.raiseRecoverable(method.value.params[0].start, "Setter cannot use rest params"); }
+    return method
+  };
+
+  pp$1.parseClassMethod = function(method, isGenerator, isAsync, allowsDirectSuper) {
+    method.value = this.parseMethod(isGenerator, isAsync, allowsDirectSuper);
+    return this.finishNode(method, "MethodDefinition")
+  };
+
+  pp$1.parseClassId = function(node, isStatement) {
+    if (this.type === types.name) {
+      node.id = this.parseIdent();
+      if (isStatement)
+        { this.checkLVal(node.id, BIND_LEXICAL, false); }
+    } else {
+      if (isStatement === true)
+        { this.unexpected(); }
+      node.id = null;
+    }
+  };
+
+  pp$1.parseClassSuper = function(node) {
+    node.superClass = this.eat(types._extends) ? this.parseExprSubscripts() : null;
+  };
+
+  // Parses module export declaration.
+
+  pp$1.parseExport = function(node, exports) {
+    this.next();
+    // export * from '...'
+    if (this.eat(types.star)) {
+      if (this.options.ecmaVersion >= 11) {
+        if (this.eatContextual("as")) {
+          node.exported = this.parseIdent(true);
+          this.checkExport(exports, node.exported.name, this.lastTokStart);
+        } else {
+          node.exported = null;
+        }
+      }
+      this.expectContextual("from");
+      if (this.type !== types.string) { this.unexpected(); }
+      node.source = this.parseExprAtom();
+      this.semicolon();
+      return this.finishNode(node, "ExportAllDeclaration")
+    }
+    if (this.eat(types._default)) { // export default ...
+      this.checkExport(exports, "default", this.lastTokStart);
+      var isAsync;
+      if (this.type === types._function || (isAsync = this.isAsyncFunction())) {
+        var fNode = this.startNode();
+        this.next();
+        if (isAsync) { this.next(); }
+        node.declaration = this.parseFunction(fNode, FUNC_STATEMENT | FUNC_NULLABLE_ID, false, isAsync);
+      } else if (this.type === types._class) {
+        var cNode = this.startNode();
+        node.declaration = this.parseClass(cNode, "nullableID");
+      } else {
+        node.declaration = this.parseMaybeAssign();
+        this.semicolon();
+      }
+      return this.finishNode(node, "ExportDefaultDeclaration")
+    }
+    // export var|const|let|function|class ...
+    if (this.shouldParseExportStatement()) {
+      node.declaration = this.parseStatement(null);
+      if (node.declaration.type === "VariableDeclaration")
+        { this.checkVariableExport(exports, node.declaration.declarations); }
+      else
+        { this.checkExport(exports, node.declaration.id.name,{"version":3,"file":"index.js","sources":["../src/util.ts","../src/index.ts"],"sourcesContent":["import type { NodePath } from \"@babel/traverse\";\n\n/**\n * Test if a NodePath will be cast to boolean when evaluated.\n *\n * @example\n * // returns true\n * const nodePathAQDotB = NodePath(\"if (a?.#b) {}\").get(\"test\"); // a?.#b\n * willPathCastToBoolean(nodePathAQDotB)\n * @example\n * // returns false\n * willPathCastToBoolean(NodePath(\"a?.#b\"))\n * @todo Respect transparent expression wrappers\n * @see {@link packages/babel-plugin-proposal-optional-chaining/src/util.js}\n * @param {NodePath} path\n * @returns {boolean}\n */\nexport function willPathCastToBoolean(path: NodePath): boolean {\n  const maybeWrapped = path;\n  const { node, parentPath } = maybeWrapped;\n  if (parentPath.isLogicalExpression()) {\n    const { operator, right } = parentPath.node;\n    if (\n      operator === \"&&\" ||\n      operator === \"||\" ||\n      (operator === \"??\" && node === right)\n    ) {\n      return willPathCastToBoolean(parentPath);\n    }\n  }\n  if (parentPath.isSequenceExpression()) {\n    const { expressions } = parentPath.node;\n    if (expressions[expressions.length - 1] === node) {\n      return willPathCastToBoolean(parentPath);\n    } else {\n      // if it is in the middle of a sequence expression, we don't\n      // care the return value so just cast to boolean for smaller\n      // output\n      return true;\n    }\n  }\n  return (\n    parentPath.isConditional({ test: node }) ||\n    parentPath.isUnaryExpression({ operator: \"!\" }) ||\n    parentPath.isLoop({ test: node })\n  );\n}\n","import * as t from \"@babel/types\";\nimport { willPathCastToBoolean } from \"./util\";\n\nclass AssignmentMemoiser {\n  private _map: WeakMap<object, any>;\n  constructor() {\n    this._map = new WeakMap();\n  }\n\n  has(key) {\n    return this._map.has(key);\n  }\n\n  get(key) {\n    if (!this.has(key)) return;\n\n    const record = this._map.get(key);\n    const { value } = record;\n\n    record.count--;\n    if (record.count === 0) {\n      // The `count` access is the outermost function call (hopefully), so it\n      // does the assignment.\n      return t.assignmentExpression(\"=\", value, key);\n    }\n    return value;\n  }\n\n  set(key, value, count) {\n    return this._map.set(key, { count, value });\n  }\n}\n\nfunction toNonOptional(path, base) {\n  const { node } = path;\n  if (path.isOptionalMemberExpression()) {\n    return t.memberExpression(base, node.property, node.computed);\n  }\n\n  if (path.isOptionalCallExpression()) {\n    const callee = path.get(\"callee\");\n    if (path.node.optional && callee.isOptionalMemberExpression()) {\n      const { object } = callee.node;\n      const context = path.scope.maybeGenerateMemoised(object) || object;\n      callee\n        .get(\"object\")\n        .replaceWith(t.assignmentExpression(\"=\", context, object));\n\n      return t.callExpression(t.memberExpression(base, t.identifier(\"call\")), [\n        context,\n        ...node.arguments,\n      ]);\n    }\n\n    return t.callExpression(base, node.arguments);\n  }\n\n  return path.node;\n}\n\n// Determines if the current path is in a detached tree. This can happen when\n// we are iterating on a path, and replace an ancestor with a new node. Babel\n// doesn't always stop traversing the old node tree, and that can cause\n// inconsistencies.\nfunction isInDetachedTree(path) {\n  while (path) {\n    if (path.isProgram()) break;\n\n    const { parentPath, container, listKey } = path;\n    const parentNode = parentPath.node;\n    if (listKey) {\n      if (container !== parentNode[listKey]) return true;\n    } else {\n      if (container !== parentNode) return true;\n    }\n\n    path = parentPath;\n  }\n\n  return false;\n}\n\nconst handle = {\n  memoise() {\n    // noop.\n  },\n\n  // todo(flow->ts) member:NodePath<t.Expression>, refactor function body to avoid too many typecasts\n  handle(member: any, noDocumentAll: boolean) {\n    const { node, parent, parentPath, scope } = member;\n\n    if (member.isOptionalMemberExpression()) {\n      // Transforming optional chaining requires we replace ancestors.\n      if (isInDetachedTree(member)) return;\n\n      // We're looking for the end of _this_ optional chain, which is actually\n      // the \"rightmost\" property access of the chain. This is because\n      // everything up to that property access is \"optional\".\n      //\n      // Let's take the case of `FOO?.BAR.baz?.qux`, with `FOO?.BAR` being our\n      // member. The \"end\" to most users would be `qux` property access.\n      // Everything up to it could be skipped if it `FOO` were nullish. But\n      // actually, we can consider the `baz` access to be the end. So we're\n      // looking for the nearest optional chain that is `optional: true`.\n      const endPath = member.find(({ node, parent, parentPath }) => {\n        if (parentPath.isOptionalMemberExpression()) {\n          // We need to check `parent.object` since we could be inside the\n          // computed expression of a `bad?.[FOO?.BAR]`. In this case, the\n          // endPath is the `FOO?.BAR` member itself.\n          return parent.optional || parent.object !== node;\n        }\n        if (parentPath.isOptionalCallExpression()) {\n          // Checking `parent.callee` since we could be in the arguments, eg\n          // `bad?.(FOO?.BAR)`.\n          // Also skip `FOO?.BAR` in `FOO?.BAR?.()` since we need to transform the optional call to ensure proper this\n          return (\n            // In FOO?.#BAR?.(), endPath points the optional call expression so we skip FOO?.#BAR\n            (node !== member.node && parent.optional) || parent.callee !== node\n          );\n        }\n        return true;\n      });\n\n      // Replace `function (a, x = a.b?.#c) {}` to `function (a, x = (() => a.b?.#c)() ){}`\n      // so the temporary variable can be injected in correct scope\n      // This can be further optimized to avoid unecessary IIFE\n      if (scope.path.isPattern()) {\n        endPath.replaceWith(\n          // The injected member will be queued and eventually transformed when visited\n          t.callExpression(t.arrowFunctionExpression([], endPath.node), []),\n        );\n        return;\n      }\n\n      const willEndPathCastToBoolean = willPathCastToBoolean(endPath);\n\n      const rootParentPath = endPath.parentPath;\n      if (\n        rootParentPath.isUpdateExpression({ argument: node }) ||\n        rootParentPath.isAssignmentExpression({ left: node })\n      ) {\n        throw member.buildCodeFrameError(`can't handle assignment`);\n      }\n      const isDeleteOperation = rootParentPath.isUnaryExpression({\n        operator: \"delete\",\n      });\n      if (\n        isDeleteOperation &&\n        endPath.isOptionalMemberExpression() &&\n        endPath.get(\"property\").isPrivateName()\n      ) {\n        // @babel/parser will throw error on `delete obj?.#x`.\n        // This error serves as fallback when `delete obj?.#x` is constructed from babel types\n        throw member.buildCodeFrameError(\n          `can't delete a private class element`,\n        );\n      }\n\n      // Now, we're looking for the start of this optional chain, which is\n      // optional to the left of this member.\n      //\n      // Let's take the case of `foo?.bar?.baz.QUX?.BAM`, with `QUX?.BAM` being\n      // our member. The \"start\" to most users would be `foo` object access.\n      // But actually, we can consider the `bar` access to be the start. So\n      // we're looking for the nearest optional chain that is `optional: true`,\n      // which is guaranteed to be somewhere in the object/callee tree.\n      let startingOptional = member;\n      for (;;) {\n        if (startingOptional.isOptionalMemberExpression()) {\n          if (startingOptional.node.optional) break;\n          startingOptional = startingOptional.get(\"object\");\n          continue;\n        } else if (startingOptional.isOptionalCallExpression()) {\n          if (startingOptional.node.optional) break;\n          startingOptional = startingOptional.get(\"callee\");\n          continue;\n        }\n        // prevent infinite loop: unreachable if the AST is well-formed\n        throw new Error(\n          `Internal error: unexpected ${startingOptional.node.type}`,\n        );\n      }\n\n      const startingProp = startingOptional.isOptionalMemberExpression()\n        ? \"object\"\n        : \"callee\";\n      const startingNode = startingOptional.node[startingProp];\n      const baseNeedsMemoised = scope.maybeGenerateMemoised(startingNode);\n      const baseRef = baseNeedsMemoised ?? startingNode;\n\n      // Compute parentIsOptionalCall before `startingOptional` is replaced\n      // as `node` may refer to `startingOptional.node` before replaced.\n      const parentIsOptionalCall = parentPath.isOptionalCallExpression({\n        callee: node,\n      });\n      // if parentIsCall is true, it implies that node.extra.parenthesized is always true\n      const parentIsCall = parentPath.isCallExpression({ callee: node });\n      startingOptional.replaceWith(toNonOptional(startingOptional, baseRef));\n      if (parentIsOptionalCall) {\n        if (parent.optional) {\n          parentPath.replaceWith(this.optionalCall(member, parent.arguments));\n        } else {\n          parentPath.replaceWith(this.call(member, parent.arguments));\n        }\n      } else if (parentIsCall) {\n        // `(a?.#b)()` to `(a == null ? void 0 : a.#b.bind(a))()`\n        member.replaceWith(this.boundGet(member));\n      } else {\n        member.replaceWith(this.get(member));\n      }\n\n      let regular = member.node;\n      for (let current = member; current !== endPath; ) {\n        const { parentPath } = current;\n        // skip transforming `Foo.#BAR?.call(FOO)`\n        if (parentPath === endPath && parentIsOptionalCall && parent.optional) {\n          regular = parentPath.node;\n          break;\n        }\n        regular = toNonOptional(parentPath, regular);\n        current = parentPath;\n      }\n\n      let context;\n      const endParentPath = endPath.parentPath;\n      if (\n        t.isMemberExpression(regular) &&\n        endParentPath.isOptionalCallExpression({\n          callee: endPath.node,\n          optional: true,\n        })\n      ) {\n        const { object } = regular;\n        context = member.scope.maybeGenerateMemoised(object);\n        if (context) {\n          regular.object = t.assignmentExpression(\"=\", context, object);\n        }\n      }\n\n      let replacementPath = endPath;\n      if (isDeleteOperation) {\n        replacementPath = endParentPath;\n        regular = endParentPath.node;\n      }\n\n      const baseMemoised = baseNeedsMemoised\n        ? t.assignmentExpression(\n            \"=\",\n            t.cloneNode(baseRef),\n            t.cloneNode(startingNode),\n          )\n        : t.cloneNode(baseRef);\n\n      if (willEndPathCastToBoolean) {\n        let nonNullishCheck;\n        if (noDocumentAll) {\n          nonNullishCheck = t.binaryExpression(\n            \"!=\",\n            baseMemoised,\n            t.nullLiteral(),\n          );\n        } else {\n          nonNullishCheck = t.logicalExpression(\n            \"&&\",\n            t.binaryExpression(\"!==\", baseMemoised, t.nullLiteral()),\n            t.binaryExpression(\n              \"!==\",\n              t.cloneNode(baseRef),\n              scope.buildUndefinedNode(),\n            ),\n          );\n        }\n        replacementPath.replaceWith(\n          t.logicalExpression(\"&&\", nonNullishCheck, regular),\n        );\n      } else {\n        let nullishCheck;\n        if (noDocumentAll) {\n          nullishCheck = t.binaryExpression(\n            \"==\",\n            baseMemoised,\n            t.nullLiteral(),\n          );\n        } else {\n          nullishCheck = t.logicalExpression(\n            \"||\",\n            t.binaryExpression(\"===\", baseMemoised, t.nullLiteral()),\n            t.binaryExpression(\n              \"===\",\n              t.cloneNode(baseRef),\n              scope.buildUndefinedNode(),\n            ),\n          );\n        }\n\n        replacementPath.replaceWith(\n          t.conditionalExpression(\n            nullishCheck,\n            isDeleteOperation\n              ? t.booleanLiteral(true)\n              : scope.buildUndefinedNode(),\n            regular,\n          ),\n        );\n      }\n\n      // context and isDeleteOperation can not be both truthy\n      if (context) {\n        const endParent = endParentPath.node;\n        endParentPath.replaceWith(\n          t.optionalCallExpression(\n            t.optionalMemberExpression(\n              endParent.callee,\n              t.identifier(\"call\"),\n              false,\n              true,\n            ),\n            [t.cloneNode(context), ...endParent.arguments],\n            false,\n          ),\n        );\n      }\n\n      return;\n    }\n\n    // MEMBER++   ->   _set(MEMBER, (_ref = (+_get(MEMBER))) + 1), _ref\n    // ++MEMBER   ->   _set(MEMBER, (+_get(MEMBER)) + 1)\n    if (parentPath.isUpdateExpression({ argument: node })) {\n      if (this.simpleSet) {\n        member.replaceWith(this.simpleSet(member));\n        return;\n      }\n\n      const { operator, prefix } = parent;\n\n      // Give the state handler a chance to memoise the member, since we'll\n      // reference it twice. The second access (the set) should do the memo\n      // assignment.\n      this.memoise(member, 2);\n\n      const value = t.binaryExpression(\n        operator[0],\n        t.unaryExpression(\"+\", this.get(member)),\n        t.numericLiteral(1),\n      );\n\n      if (prefix) {\n        parentPath.replaceWith(this.set(member, value));\n      } else {\n        const { scope } = member;\n        const ref = scope.generateUidIdentifierBasedOnNode(node);\n        scope.push({ id: ref });\n\n        value.left = t.assignmentExpression(\n          \"=\",\n          t.cloneNode(ref),\n          // @ts-expect-error todo(flow->ts) value.left is possibly PrivateName, which is not usable here\n          value.left,\n        );\n\n        parentPath.replaceWith(\n          t.sequenceExpression([this.set(member, value), t.cloneNode(ref)]),\n        );\n      }\n      return;\n    }\n\n    // MEMBER = VALUE   ->   _set(MEMBER, VALUE)\n    // MEMBER += VALUE   ->   _set(MEMBER, _get(MEMBER) + VALUE)\n    // MEMBER ??= VALUE   ->   _get(MEMBER) ?? _set(MEMBER, VALUE)\n    if (parentPath.isAssignmentExpression({ left: node })) {\n      if (this.simpleSet) {\n        member.replaceWith(this.simpleSet(member));\n        return;\n      }\n\n      const { operator, right: value } = parent;\n\n      if (operator === \"=\") {\n        parentPath.replaceWith(this.set(member, value));\n      } else {\n        const operatorTrunc = operator.slice(0, -1);\n        if (t.LOGICAL_OPERATORS.includes(operatorTrunc)) {\n          // Give the state handler a chance to memoise the member, since we'll\n          // reference it twice. The first access (the get) should do the memo\n          // assignment.\n          this.memoise(member, 1);\n          parentPath.replaceWith(\n            t.logicalExpression(\n              operatorTrunc,\n              this.get(member),\n              this.set(member, value),\n            ),\n          );\n        } else {\n          // Here, the second access (the set) is evaluated first.\n          this.memoise(member, 2);\n          parentPath.replaceWith(\n            this.set(\n              member,\n              t.binaryExpression(operatorTrunc, this.get(member), value),\n            ),\n          );\n        }\n      }\n      return;\n    }\n\n    // MEMBER(ARGS) -> _call(MEMBER, ARGS)\n    if (parentPath.isCallExpression({ callee: node })) {\n      parentPath.replaceWith(this.call(member, parent.arguments));\n      return;\n    }\n\n    // MEMBER?.(ARGS) -> _optionalCall(MEMBER, ARGS)\n    if (parentPath.isOptionalCallExpression({ callee: node })) {\n      // Replace `function (a, x = a.b.#c?.()) {}` to `function (a, x = (() => a.b.#c?.())() ){}`\n      // so the temporary variable can be injected in correct scope\n      // This can be further optimized to avoid unecessary IIFE\n      if (scope.path.isPattern()) {\n        parentPath.replaceWith({
+  "name": "@babel/highlight",
+  "version": "7.14.5",
+  "description": "Syntax highlight JavaScript strings for output in terminals.",
+  "author": "The Babel Team (https://babel.dev/team)",
+  "homepage": "https://babel.dev/docs/en/next/babel-highlight",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-highlight"
+  },
+  "main": "./lib/index.js",
+  "dependencies": {
+    "@babel/helper-validator-identifier": "^7.14.5",
+    "chalk": "^2.0.0",
+    "js-tokens": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.0.0",
+    "strip-ansi": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.program = exports.expression = exports.statement = exports.statements = exports.smart = void 0;
+
+var t = require("@babel/types");
+
+function makeStatementFormatter(fn) {
+  return {
+    code: str => `/* @babel/template */;\n${str}`,
+    validate: () => {},
+    unwrap: ast => {
+      return fn(ast.program.body.slice(1));
+    }
+  };
+}
+
+const smart = makeStatementFormatter(body => {
+  if (body.length > 1) {
+    return body;
+  } else {
+    return body[0];
+  }
+});
+exports.smart = smart;
+const statements = makeStatementFormatter(body => body);
+exports.statements = statements;
+const statement = makeStatementFormatter(body => {
+  if (body.length === 0) {
+    throw new Error("Found nothing to return.");
+  }
+
+  if (body.length > 1) {
+    throw new Error("Found multiple statements but wanted one");
+  }
+
+  return body[0];
+});
+exports.statement = statement;
+const expression = {
+  code: str => `(\n${str}\n)`,
+  validate: ast => {
+    if (ast.program.body.length > 1) {
+      throw new Error("Found multiple statements but wanted one");
+    }
+
+    if (expression.unwrap(ast).start === 0) {
+      throw new Error("Parse result included parens.");
+    }
+  },
+  unwrap: ({
+    program
+  }) => {
+    const [stmt] = program.body;
+    t.assertExpressionStatement(stmt);
+    return stmt.expression;
+  }
+};
+exports.expression = expression;
+const program = {
+  code: str => str,
+  validate: () => {},
+  unwrap: ast => ast.program
+};
+exports.program = program;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "isIdentifierName", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierName;
+  }
+});
+Object.defineProperty(exports, "isIdentifierChar", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierChar;
+  }
+});
+Object.defineProperty(exports, "isIdentifierStart", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierStart;
+  }
+});
+Object.defineProperty(exports, "isReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictBindOnlyReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictBindOnlyReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictBindReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictBindReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictReservedWord;
+  }
+});
+Object.defineProperty(exports, "isKeyword", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isKeyword;
+  }
+});
+
+var _identifier = require("./identifier");
+
+var _keyword = require("./keyword");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
+  "name": "@babel/highlight",
+  "version": "7.14.5",
+  "description": "Syntax highlight JavaScript strings for output in terminals.",
+  "author": "The Babel Team (https://babel.dev/team)",
+  "homepage": "https://babel.dev/docs/en/next/babel-highlight",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-highlight"
+  },
+  "main": "./lib/index.js",
+  "dependencies": {
+    "@babel/helper-validator-identifier": "^7.14.5",
+    "chalk": "^2.0.0",
+    "js-tokens": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.0.0",
+    "strip-ansi": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           {
+  "name": "@babel/helper-optimise-call-expression",
+  "version": "7.14.5",
+  "description": "Helper function to optimise call expression",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-helper-optimise-call-expression"
+  },
+  "homepage": "https://babel.dev/docs/en/next/babel-helper-optimise-call-expression",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./lib/index.js",
+  "dependencies": {
+    "@babel/types": "^7.14.5"
+  },
+  "devDependencies": {
+    "@babel/generator": "7.14.5",
+    "@babel/parser": "7.14.5"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  },
+  "author": "The Babel Team (https://babel.dev/team)"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.rewriteModuleStatementsAndPrepareHeader = rewriteModuleStatementsAndPrepareHeader;
+exports.ensureStatementsHoisted = ensureStatementsHoisted;
+exports.wrapInterop = wrapInterop;
+exports.buildNamespaceInitStatements = buildNamespaceInitStatements;
+Object.defineProperty(exports, "isModule", {
+  enumerable: true,
+  get: function () {
+    return _helperModuleImports.isModule;
+  }
+});
+Object.defineProperty(exports, "rewriteThis", {
+  enumerable: true,
+  get: function () {
+    return _rewriteThis.default;
+  }
+});
+Object.defineProperty(exports, "hasExports", {
+  enumerable: true,
+  get: function () {
+    return _normalizeAndLoadMetadata.hasExports;
+  }
+});
+Object.defineProperty(exports, "isSideEffectImport", {
+  enumerable: true,
+  get: function () {
+    return _normalizeAndLoadMetadata.isSideEffectImport;
+  }
+});
+Object.defineProperty(exports, "getModuleName", {
+  enumerable: true,
+  get: function () {
+    return _getModuleName.default;
+  }
+});
+
+var _assert = require("assert");
+
+var t = require("@babel/types");
+
+var _template = require("@babel/template");
+
+var _helperModuleImports = require("@babel/helper-module-imports");
+
+var _rewriteThis = require("./rewrite-this");
+
+var _rewriteLiveReferences = require("./rewrite-live-references");
+
+var _normalizeAndLoadMetadata = require("./normalize-and-load-metadata");
+
+var _getModuleName = require("./get-module-name");
+
+function rewriteModuleStatementsAndPrepareHeader(path, {
+  loose,
+  exportName,
+  strict,
+  allowTopLevelThis,
+  strictMode,
+  noInterop,
+  importInterop = noInterop ? "none" : "babel",
+  lazy,
+  esNamespaceOnly,
+  constantReexports = loose,
+  enumerableModuleMeta = loose
+}) {
+  (0, _normalizeAndLoadMetadata.validateImportInteropOption)(importInterop);
+
+  _assert((0, _helperModuleImports.isModule)(path), "Cannot process module statements in a script");
+
+  path.node.sourceType = "script";
+  const meta = (0, _normalizeAndLoadMetadata.default)(path, exportName, {
+    importInterop,
+    initializeReexports: constantReexports,
+    lazy,
+    esNamespaceOnly
+  });
+
+  if (!allowTopLevelThis) {
+    (0, _rewriteThis.default)(path);
+  }
+
+  (0, _rewriteLiveReferences.default)(path, meta);
+
+  if (strictMode !== false) {
+    const hasStrict = path.node.directives.some(directive => {
+      return directive.value.value === "use strict";
+    });
+
+    if (!hasStrict) {
+      path.unshiftContainer("directives", t.directive(t.directiveLiteral("use strict")));
+    }
+  }
+
+  const headers = [];
+
+  if ((0, _normalizeAndLoadMetadata.hasExports)(meta) && !strict) {
+    headers.push(buildESModuleHeader(meta, enumerableModuleMeta));
+  }
+
+  const nameList = buildExportNameListDeclaration(path, meta);
+
+  if (nameList) {
+    meta.exportNameListName = nameList.name;
+    headers.push(nameList.statement);
+  }
+
+  headers.push(...buildExportInitializationStatements(path, meta, constantReexports));
+  return {
+    meta,
+    headers
+  };
+}
+
+function ensureStatementsHoisted(statements) {
+  statements.forEach(header => {
+    header._blockHoist = 3;
+  });
+}
+
+function wrapInterop(programPath, expr, type) {
+  if (type === "none") {
+    return null;
+  }
+
+  if (type === "node-namespace") {
+    return t.callExpression(programPath.hub.addHelper("interopRequireWildcard"), [expr, t.booleanLiteral(true)]);
+  } else if (type === "node-default") {
+    return null;
+  }
+
+  let helper;
+
+  if (type === "default") {
+    helper = "interopRequireDefault";
+  } else if (type === "namespace") {
+    helper = "interopRequireWildcard";
+  } else {
+    throw new Error(`Unknown interop: ${type}`);
+  }
+
+  return t.callExpression(programPath.hub.addHelper(helper), [expr]);
+}
+
+function buildNamespaceInitStatements(metadata, sourceMetadata, constantReexports = false) {
+  const statements = [];
+  let srcNamespace = t.identifier(sourceMetadata.name);
+  if (sourceMetadata.lazy) srcNamespace = t.callExpression(srcNamespace, []);
+
+  for (const localName of sourceMetadata.importsNamespace) {
+    if (localName === sourceMetadata.name) continue;
+    statements.push(_template.default.statement`var NAME = SOURCE;`({
+      NAME: localName,
+      SOURCE: t.cloneNode(srcNamespace)
+    }));
+  }
+
+  if (constantReexports) {
+    statements.push(...buildReexportsFromMeta(metadata, sourceMetadata, true));
+  }
+
+  for (const exportName of sourceMetadata.reexportNamespace) {
+    statements.push((sourceMetadata.lazy ? _template.default.statement`
+            Object.defineProperty(EXPORTS, "NAME", {
+              enumerable: true,
+              get: function() {
+                return NAMESPACE;
+              }
+            });
+          ` : _template.default.statement`EXPORTS.NAME = NAMESPACE;`)({
+      EXPORTS: metadata.exportName,
+      NAME: exportName,
+      NAMESPACE: t.cloneNode(srcNamespace)
+    }));
+  }
+
+  if (sourceMetadata.reexportAll) {
+    const statement = buildNamespaceReexport(metadata, t.cloneNode(srcNamespace), constantReexports);
+    statement.loc = sourceMetadata.reexportAll.loc;
+    statements.push(statement);
+  }
+
+  return statements;
+}
+
+const ReexportTemplate = {
+  constant: _template.default.statement`EXPORTS.EXPORT_NAME = NAMESPACE_IMPORT;`,
+  constantComputed: _template.default.statement`EXPORTS["EXPORT_NAME"] = NAMESPACE_IMPORT;`,
+  spec: (0, _template.default)`
+    Object.defineProperty(EXPORTS, "EXPORT_NAME", {
+      enumerable: true,
+      get: function() {
+        return NAMESPACE_IMPORT;
+      },
+    });
+    `
+};
+
+const buildReexportsFromMeta = (meta, metadata, constantReexports) => {
+  const namespace = metadata.lazy ? t.callExpression(t.identifier(metadata.name), []) : t.identifier(metadata.name);
+  const {
+    stringSpecifiers
+  } = meta;
+  return Array.from(metadata.reexports, ([exportName, importName]) => {
+    let NAMESPACE_IMPORT = t.cloneNode(namespace);
+
+    if (importName === "default" && metadata.interop === "node-default") {} else if (stringSpecifiers.has(importName)) {
+      NAMESPACE_IMPORT = t.memberExpression(NAMESPACE_IMPORT, t.stringLiteral(importName), true);
+    } else {
+      NAMESPACE_IMPORT = t.memberExpression(NAMESPACE_IMPORT, t.identifier(importName));
+    }
+
+    const astNodes = {
+      EXPORTS: meta.exportName,
+      EXPORT_NAME: exportName,
+      NAMESPACE_IMPORT
+    };
+
+    if (constantReexports || t.isIdentifier(NAMESPACE_IMPORT)) {
+      if (stringSpecifiers.has(exportName)) {
+        return ReexportTemplate.constantComputed(astNodes);
+      } else {
+        return ReexportTemplate.constant(astNodes);
+      }
+    } else {
+      return ReexportTemplate.spec(astNodes);
+    }
+  });
+};
+
+function buildESModuleHeader(metadata, enumerableModuleMeta = false) {
+  return (enumerableModuleMeta ? _template.default.statement`
+        EXPORTS.__esModule = true;
+      ` : _template.default.statement`
+        Object.defineProperty(EXPORTS, "__esModule", {
+          value: true,
+        });
+      `)({
+    EXPORTS: metadata.exportName
+  });
+}
+
+function buildNamespaceReexport(metadata, namespace, constantReexports) {
+  return (constantReexports ? _template.default.statement`
+        Object.keys(NAMESPACE).forEach(function(key) {
+          if (key === "default" || key === "__esModule") return;
+          VERIFY_NAME_LIST;
+          if (key in EXPORTS && EXPORTS[key] === NAMESPACE[key]) return;
+
+          EXPORTS[key] = NAMESPACE[key];
+        });
+      ` : _template.default.statement`
+        Object.keys(NAMESPACE).forEach(function(key) {
+          if (key === "default" || key === "__esModule") return;
+          VERIFY_NAME_LIST;
+          if (key in EXPORTS && EXPORTS[key] === NAMESPACE[key]) return;
+
+          Object.defineProperty(EXPORTS, key, {
+            enumerable: true,
+            get: function() {
+              return NAMESPACE[key];
+            },
+          });
+        });
+    `)({
+    NAMESPACE: namespace,
+    EXPORTS: metadata.exportName,
+    VERIFY_NAME_LIST: metadata.exportNameListName ? (0, _template.default)`
+            if (Object.prototype.hasOwnProperty.call(EXPORTS_LIST, key)) return;
+          `({
+      EXPORTS_LIST: metadata.exportNameListName
+    }) : null
+  });
+}
+
+function buildExportNameListDeclaration(programPath, metadata) {
+  const exportedVars = Object.create(null);
+
+  for (const data of metadata.local.values()) {
+    for (const name of data.names) {
+      exportedVars[name] = true;
+    }
+  }
+
+  let hasReexport = false;
+
+  for (const data of metadata.source.values()) {
+    for (const exportName of data.reexports.keys()) {
+      exportedVars[exportName] = true;
+    }
+
+    for (const exportName of data.reexportNamespace) {
+      exportedVars[exportName] = true;
+    }
+
+    hasReexport = hasReexport || !!data.reexportAll;
+  }
+
+  if (!hasReexport || Object.keys(exportedVars).length === 0) return null;
+  const name = programPath.scope.generateUidIdentifier("exportNames");
+  delete exportedVars.default;
+  return {
+    name: name.name,
+    statement: t.variableDeclaration("var", [t.variableDeclarator(name, t.valueToNode(exportedVars))])
+  };
+}
+
+function buildExportInitializationStatements(programPath, metadata, constantReexports = false) {
+  const initStatements = [];
+  const exportNames = [];
+
+  for (const [localName, data] of metadata.local) {
+    if (data.kind === "import") {} else if (data.kind === "hoisted") {
+      initStatements.push(buildInitStatement(metadata, data.names, t.identifier(localName)));
+    } else {
+      exportNames.push(...data.names);
+    }
+  }
+
+  for (const data of metadata.source.values()) {
+    if (!constantReexports) {
+      initStatements.push(...buildReexportsFromMeta(metadata, data, false));
+    }
+
+    for (const exportName of data.reexportNamespace) {
+      exportNames.push(exportName);
+    }
+  }
+
+  initStatements.push(...chunk(exportNames, 100).map(members => {
+    return buildInitStatement(metadata, members, programPath.scope.buildUndefinedNode());
+  }));
+  return initStatements;
+}
+
+const InitTemplate = {
+  computed: _template.default.expression`EXPORTS["NAME"] = VALUE`,
+  default: _template.default.expression`EXPORTS.NAME = VALUE`
+};
+
+function buildInitStatement(metadata, exportNames, initExpr) {
+  const {
+    stringSpecifiers,
+    exportName: EXPORTS
+  } = metadata;
+  return t.expressionStatement(exportNames.reduce((acc, exportN

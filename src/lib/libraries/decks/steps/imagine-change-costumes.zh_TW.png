@@ -1,0 +1,272 @@
+rue\n                        return false\n                    }\n                    if (cp < 0x964) return true\n                    if (cp < 0x966) return false\n                    if (cp < 0x970) return true\n                    if (cp === 0x981) return true\n                    if (cp < 0x982) return false\n                    if (cp < 0x984) return true\n                    if (cp === 0x9bc) return true\n                    if (cp < 0x9be) return false\n                    if (cp < 0x9c1) return true\n                    if (cp < 0x9c1) return false\n                    if (cp < 0x9c5) return true\n                    if (cp < 0x9c7) return false\n                    if (cp < 0x9c9) return true\n                    return false\n                }\n                if (cp < 0xa3e) {\n                    if (cp < 0x9cb) return false\n                    if (cp < 0x9cd) return true\n                    if (cp === 0x9cd) return true\n                    if (cp === 0x9d7) return true\n                    if (cp < 0x9e2) return false\n                    if (cp < 0x9e4) return true\n                    if (cp < 0x9e6) return false\n                    if (cp < 0x9f0) return true\n                    if (cp < 0xa01) return false\n                    if (cp < 0xa03) return true\n                    if (cp === 0xa03) return true\n                    if (cp === 0xa3c) return true\n                    return false\n                }\n                if (cp < 0xa41) return true\n                if (cp < 0xa41) return false\n                if (cp < 0xa43) return true\n                if (cp < 0xa47) return false\n                if (cp < 0xa49) return true\n                if (cp < 0xa4b) return false\n                if (cp < 0xa4e) return true\n                if (cp === 0xa51) return true\n                if (cp < 0xa66) return false\n                if (cp < 0xa70) return true\n                if (cp < 0xa70) return false\n                if (cp < 0xa72) return true\n                if (cp === 0xa75) return true\n                if (cp < 0xa81) return false\n                if (cp < 0xa83) return true\n                return false\n            }\n            if (cp < 0xbd7) {\n                if (cp < 0xb40) {\n                    if (cp < 0xae2) {\n                        if (cp === 0xa83) return true\n                        if (cp === 0xabc) return true\n                        if (cp < 0xabe) return false\n                        if (cp < 0xac1) return true\n                        if (cp < 0xac1) return false\n                        if (cp < 0xac6) return true\n                        if (cp < 0xac7) return false\n                        if (cp < 0xac9) return true\n                        if (cp === 0xac9) return true\n                        if (cp < 0xacb) return false\n                        if (cp < 0xacd) return true\n                        if (cp === 0xacd) return true\n                        return false\n                    }\n                    if (cp < 0xae4) return true\n                    if (cp < 0xae6) return false\n                    if (cp < 0xaf0) return true\n                    if (cp < 0xafa) return false\n                    if (cp < 0xb00) return true\n                    if (cp === 0xb01) return true\n                    if (cp < 0xb02) return false\n                    if (cp < 0xb04) return true\n                    if (cp === 0xb3c) return true\n                    if (cp === 0xb3e) return true\n                    if (cp === 0xb3f) return true\n                    return false\n                }\n                if (cp < 0xb66) {\n                    if (cp === 0xb40) return true\n                    if (cp < 0xb41) return false\n                    if (cp < 0xb45) return true\n                    if (cp < 0xb47) return false\n                    if (cp < 0xb49) return true\n                    if (cp < 0xb4b) return false\n                    if (cp < 0xb4d) return true\n                    if (cp === 0xb4d) return true\n                    if (cp === 0xb56) return true\n                    if (cp === 0xb57) return true\n                    if (cp < 0xb62) return false\n                    if (cp < 0xb64) return true\n                    return false\n                }\n                if (cp < 0xb70) return true\n                if (cp === 0xb82) return true\n                if (cp < 0xbbe) return false\n                if (cp < 0xbc0) return true\n                if (cp === 0xbc0) return true\n                if (cp < 0xbc1) return false\n                if (cp < 0xbc3) return true\n                if (cp < 0xbc6) return false\n                if (cp < 0xbc9) return true\n                if (cp < 0xbca) return false\n                if (cp < 0xbcd) return true\n                if (cp === 0xbcd) return true\n                return false\n            }\n            if (cp < 0xcc0) {\n                if (cp < 0xc55) {\n                    if (cp === 0xbd7) return true\n                    if (cp < 0xbe6) return false\n                    if (cp < 0xbf0) return true\n                    if (cp === 0xc00) return true\n                    if (cp < 0xc01) return false\n                    if (cp < 0xc04) return true\n                    if (cp < 0xc3e) return false\n                    if (cp < 0xc41) return true\n                    if (cp < 0xc41) return false\n                    if (cp < 0xc45) return true\n                    if (cp < 0xc46) return false\n                    if (cp < 0xc49) return true\n                    if (cp < 0xc4a) return false\n                    if (cp < 0xc4e) return true\n                    return false\n                }\n                if (cp < 0xc57) return true\n                if (cp < 0xc62) return false\n                if (cp < 0xc64) return true\n                if (cp < 0xc66) return false\n                if (cp < 0xc70) return true\n                if (cp === 0xc81) return true\n                if (cp < 0xc82) return false\n                if (cp < 0xc84) return true\n                if (cp === 0xcbc) return true\n                if (cp === 0xcbe) return true\n                if (cp === 0xcbf) return true\n                return false\n            }\n            if (cp < 0xd00) {\n                if (cp < 0xcc0) return false\n                if (cp < 0xcc5) return true\n                if (cp === 0xcc6) return true\n                if (cp < 0xcc7) return false\n                if (cp < 0xcc9) return true\n                if (cp < 0xcca) return false\n                if (cp < 0xccc) return true\n                if (cp < 0xccc) return false\n                if (cp < 0xcce) return true\n                if (cp < 0xcd5) return false\n                if (cp < 0xcd7) return true\n                if (cp < 0xce2) return false\n                if (cp < 0xce4) return true\n                if (cp < 0xce6) return false\n                if (cp < 0xcf0) return true\n                return false\n            }\n            if (cp < 0xd02) return true\n            if (cp < 0xd02) return false\n            if (cp < 0xd04) return true\n            if (cp < 0xd3b) return false\n            if (cp < 0xd3d) return true\n            if (cp < 0xd3e) return false\n            if (cp < 0xd41) return true\n            if (cp < 0xd41) return false\n            if (cp < 0xd45) return true\n            if (cp < 0xd46) return false\n            if (cp < 0xd49) return true\n            if (cp < 0xd4a) return false\n            if (cp < 0xd4d) return true\n            if (cp === 0xd4d) return true\n            if (cp === 0xd57) return true\n            return false\n        }\n        if (cp < 0x17be) {\n            if (cp < 0x102b) {\n                if (cp < 0xebb) {\n                    if (cp < 0xde6) {\n                        if (cp < 0xd62) return false\n                        if (cp < 0xd64) return true\n                        if (cp < 0xd66) return false\n                        if (cp < 0xd70) return true\n                        if (cp < 0xd82) return false\n                        if (cp < 0xd84) return true\n                        if (cp === 0xdca) return true\n                        if (cp < 0xdcf) return false\n                        if (cp < 0xdd2) return true\n                        if (cp < 0xdd2) return false\n                        if (cp < 0xdd5) return true\n                        if (cp === 0xdd6) return true\n                        if (cp < 0xdd8) return false\n                        if (cp < 0xde0) return true\n                        return false\n                    }\n                    if (cp < 0xdf0) return true\n                    if (cp < 0xdf2) return false\n                    if (cp < 0xdf4) return true\n                    if (cp === 0xe31) return true\n                    if (cp < 0xe34) return false\n                    if (cp < 0xe3b) return true\n                    if (cp < 0xe47) return false\n                    if (cp < 0xe4f) return true\n                    if (cp < 0xe50) return false\n                    if (cp < 0xe5a) return true\n                    if (cp === 0xeb1) return true\n                    if (cp < 0xeb4) return false\n                    if (cp < 0xeba) return true\n                    return false\n                }\n                if (cp < 0xf3e) {\n                    if (cp < 0xebb) return false\n                    if (cp < 0xebd) return true\n                    if (cp < 0xec8) return false\n                    if (cp < 0xece) return true\n                    if (cp < 0xed0) return false\n                    if (cp < 0xeda) return true\n                    if (cp < 0xf18) return false\n                    if (cp < 0xf1a) return true\n                    if (cp < 0xf20) return false\n                    if (cp < 0xf2a) return true\n                    if (cp === 0xf35) return true\n                    if (cp === 0xf37) return true\n                    if (cp === 0xf39) return true\n                    return false\n                }\n                if (cp < 0xf40) return true\n                if (cp < 0xf71) return false\n                if (cp < 0xf7f) return true\n                if (cp === 0xf7f) return true\n                if (cp < 0xf80) return false\n                if (cp < 0xf85) return true\n                if (cp < 0xf86) return false\n                if (cp < 0xf88) return true\n                if (cp < 0xf8d) return false\n                if (cp < 0xf98) return true\n                if (cp < 0xf99) return false\n                if (cp < 0xfbd) return true\n                if (cp === 0xfc6) return true\n                return false\n            }\n            if (cp < 0x1083) {\n                if (cp < 0x1040) {\n                    if (cp < 0x102b) return false\n                    if (cp < 0x102d) return true\n                    if (cp < 0x102d) return false\n                    if (cp < 0x1031) return true\n                    if (cp === 0x1031) return true\n                    if (cp < 0x1032) return false\n                    if (cp < 0x1038) return true\n                    if (cp === 0x1038) return true\n                    if (cp < 0x1039) return false\n                    if (cp < 0x103b) return true\n                    if (cp < 0x103b) return false\n                    if (cp < 0x103d) return true\n                    if (cp < 0x103d) return false\n                    if (cp < 0x103f) return true\n                    return false\n                }\n                if (cp < 0x104a) return true\n                if (cp < 0x1056) return false\n                if (cp < 0x1058) return true\n                if (cp < 0x1058) return false\n                if (cp < 0x105a) return true\n                if (cp < 0x105e) return false\n                if (cp < 0x1061) return true\n                if (cp < 0x1062) return false\n                if (cp < 0x1065) return true\n                if (cp < 0x1067) return false\n                if (cp < 0x106e) return true\n                if (cp < 0x1071) return false\n                if (cp < 0x1075) return true\n                if (cp === 0x1082) return true\n                return false\n            }\n            if (cp < 0x135d) {\n                if (cp < 0x1083) ret{
+  "$id": "postData.json#",
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "optional": true,
+  "required": [
+    "mimeType"
+  ],
+  "properties": {
+    "mimeType": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "params": {
+      "type": "array",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      }
+    },
+    "comment": {
+      "type": "string"
+    }
+  }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'use strict';
+
+const inherits = require('inherits');
+
+function Reporter(options) {
+  this._reporterState = {
+    obj: null,
+    path: [],
+    options: options || {},
+    errors: []
+  };
+}
+exports.Reporter = Reporter;
+
+Reporter.prototype.isError = function isError(obj) {
+  return obj instanceof ReporterError;
+};
+
+Reporter.prototype.save = function save() {
+  const state = this._reporterState;
+
+  return { obj: state.obj, pathLen: state.path.length };
+};
+
+Reporter.prototype.restore = function restore(data) {
+  const state = this._reporterState;
+
+  state.obj = data.obj;
+  state.path = state.path.slice(0, data.pathLen);
+};
+
+Reporter.prototype.enterKey = function enterKey(key) {
+  return this._reporterState.path.push(key);
+};
+
+Reporter.prototype.exitKey = function exitKey(index) {
+  const state = this._reporterState;
+
+  state.path = state.path.slice(0, index - 1);
+};
+
+Reporter.prototype.leaveKey = function leaveKey(index, key, value) {
+  const state = this._reporterState;
+
+  this.exitKey(index);
+  if (state.obj !== null)
+    state.obj[key] = value;
+};
+
+Reporter.prototype.path = function path() {
+  return this._reporterState.path.join('/');
+};
+
+Reporter.prototype.enterObject = function enterObject() {
+  const state = this._reporterState;
+
+  const prev = state.obj;
+  state.obj = {};
+  return prev;
+};
+
+Reporter.prototype.leaveObject = function leaveObject(prev) {
+  const state = this._reporterState;
+
+  const now = state.obj;
+  state.obj = prev;
+  return now;
+};
+
+Reporter.prototype.error = function error(msg) {
+  let err;
+  const state = this._reporterState;
+
+  const inherited = msg instanceof ReporterError;
+  if (inherited) {
+    err = msg;
+  } else {
+    err = new ReporterError(state.path.map(function(elem) {
+      return '[' + JSON.stringify(elem) + ']';
+    }).join(''), msg.message || msg, msg.stack);
+  }
+
+  if (!state.options.partial)
+    throw err;
+
+  if (!inherited)
+    state.errors.push(err);
+
+  return err;
+};
+
+Reporter.prototype.wrapResult = function wrapResult(result) {
+  const state = this._reporterState;
+  if (!state.options.partial)
+    return result;
+
+  return {
+    result: this.isError(result) ? null : result,
+    errors: state.errors
+  };
+};
+
+function ReporterError(path, msg) {
+  this.path = path;
+  this.rethrow(msg);
+}
+inherits(ReporterError, Error);
+
+ReporterError.prototype.rethrow = function rethrow(msg) {
+  this.message = msg + ' at: ' + (this.path || '(shallow)');
+  if (Error.captureStackTrace)
+    Error.captureStackTrace(this, ReporterError);
+
+  if (!this.stack) {
+    try {
+      // IE only adds stack when thrown
+      throw new Error(this.message);
+    } catch (e) {
+      this.stack = e.stack;
+    }
+  }
+  return this;
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      /*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+"use strict";
+
+module.exports = function forEachBail(array, iterator, callback) {
+	if (array.length === 0) return callback();
+	let currentPos = array.length;
+	let currentResult;
+	let done = [];
+	for (let i = 0; i < array.length; i++) {
+		const itCb = createIteratorCallback(i);
+		iterator(array[i], itCb);
+		if (currentPos === 0) break;
+	}
+
+	function createIteratorCallback(i) {
+		return (...args) => {
+			if (i >= currentPos) return; // ignore
+			done.push(i);
+			if (args.length > 0) {
+				currentPos = i + 1;
+				done = done.filter(item => {
+					return item <= i;
+				});
+				currentResult = args;
+			}
+			if (done.length === currentPos) {
+				callback.apply(null, currentResult);
+				currentPos = 0;
+			}
+		};
+	}
+};
+
+module.exports.withIndex = function forEachBailWithIndex(
+	array,
+	iterator,
+	callback
+) {
+	if (array.length === 0) return callback();
+	let currentPos = array.length;
+	let currentResult;
+	let done = [];
+	for (let i = 0; i < array.length; i++) {
+		const itCb = createIteratorCallback(i);
+		iterator(array[i], i, itCb);
+		if (currentPos === 0) break;
+	}
+
+	function createIteratorCallback(i) {
+		return (...args) => {
+			if (i >= currentPos) return; // ignore
+			done.push(i);
+			if (args.length > 0) {
+				currentPos = i + 1;
+				done = done.filter(item => {
+					return item <= i;
+				});
+				currentResult = args;
+			}
+			if (done.length === currentPos) {
+				callback.apply(null, currentResult);
+				currentPos = 0;
+			}
+		};
+	}
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             'use strict';
+
+var BN = require('bn.js');
+var utils = require('../utils');
+var assert = utils.assert;
+var cachedProperty = utils.cachedProperty;
+var parseBytes = utils.parseBytes;
+
+/**
+* @param {EDDSA} eddsa - eddsa instance
+* @param {Array<Bytes>|Object} sig -
+* @param {Array<Bytes>|Point} [sig.R] - R point as Point or bytes
+* @param {Array<Bytes>|bn} [sig.S] - S scalar as bn or bytes
+* @param {Array<Bytes>} [sig.Rencoded] - R point encoded
+* @param {Array<Bytes>} [sig.Sencoded] - S scalar encoded
+*/
+function Signature(eddsa, sig) {
+  this.eddsa = eddsa;
+
+  if (typeof sig !== 'object')
+    sig = parseBytes(sig);
+
+  if (Array.isArray(sig)) {
+    sig = {
+      R: sig.slice(0, eddsa.encodingLength),
+      S: sig.slice(eddsa.encodingLength),
+    };
+  }
+
+  assert(sig.R && sig.S, 'Signature without R or S');
+
+  if (eddsa.isPoint(sig.R))
+    this._R = sig.R;
+  if (sig.S instanceof BN)
+    this._S = sig.S;
+
+  this._Rencoded 

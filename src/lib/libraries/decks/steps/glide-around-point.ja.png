@@ -1,0 +1,911 @@
+"[");var t=e();return w("]"),t},add_mapping:O?function(e,t){h=e,g=t}:a,option:function(t){return e[t]},printed_comments:_,prepend_comments:t?a:function(t){var i=t.start;if(!i)return;var r=this.printed_comments;const o=t instanceof ze&&t.value;if(i.comments_before&&r.has(i.comments_before)){if(!o)return;i.comments_before=[]}var a=i.comments_before;if(a||(a=i.comments_before=[]),r.add(a),o){var s=new On((function(e){var t=s.parent();if(!(t instanceof ze||t instanceof yt&&t.left===e||"Call"==t.TYPE&&t.expression===e||t instanceof bt&&t.condition===e||t instanceof Dt&&t.expression===e||t instanceof Et&&t.expressions[0]===e||t instanceof St&&t.expression===e||t instanceof Tt))return!0;if(e.start){var n=e.start.comments_before;n&&!r.has(n)&&(r.add(n),a=a.concat(n))}}));s.push(t),t.value.walk(s)}if(0==f){a.length>0&&e.shebang&&"comment5"===a[0].type&&!r.has(a[0])&&(w("#!"+a.shift().value+"\n"),N());var u=e.preamble;u&&w(u.replace(/\r\n?|[\n\u2028\u2029]|\s*$/g,"\n"))}if(0!=(a=a.filter(n,t).filter(e=>!r.has(e))).length){var c=K();a.forEach((function(e,t){if(r.add(e),c||(e.nlb?(w("\n"),N(),c=!0):t>0&&x()),/comment[134]/.test(e.type))(n=U(e.value))&&(w("//"+n+"\n"),N()),c=!0;else if("comment2"==e.type){var n;(n=U(e.value))&&w("/*"+n+"*/"),c=!1}})),c||(i.nlb?(w("\n"),N()):x())}},append_comments:t||n===s?a:function(e,t){var i=e.end;if(i){var r=this.printed_comments,o=i[t?"comments_before":"comments_after"];if(o&&!r.has(o)&&(e instanceof _e||o.every(e=>!/comment[134]/.test(e.type)))){r.add(o);var a=p.length;o.filter(n,e).forEach((function(e,n){if(!r.has(e))if(r.add(e),y=!1,T?(w("\n"),N(),T=!1):e.nlb&&(n>0||!K())?(w("\n"),N()):(n>0||!t)&&x(),/comment[134]/.test(e.type)){const t=U(e.value);t&&w("//"+t),T=!0}else if("comment2"==e.type){const t=U(e.value);t&&w("/*"+t+"*/"),y=!0}})),p.length>a&&(b=a)}}},line:function(){return l},col:function(){return c},pos:function(){return f},push_node:function(e){G.push(e)},pop_node:function(){return G.pop()},parent:function(e){return G[G.length-2-(e||0)]}}}!function(){function e(e,t){e.DEFMETHOD("_codegen",t)}function t(e,n){Array.isArray(e)?e.forEach((function(e){t(e,n)})):e.DEFMETHOD("needs_parens",n)}function n(e,t,n,i){var r=e.length-1;n.in_directive=i,e.forEach((function(e,i){!0!==n.in_directive||e instanceof me||e instanceof ve||e instanceof he&&e.body instanceof fn||(n.in_directive=!1),e instanceof ve||(n.indent(),e.print(n),i==r&&t||(n.newline(),t&&n.newline())),!0===n.in_directive&&e instanceof he&&e.body instanceof fn&&(n.in_directive=!1)})),n.in_directive=!1}function i(e,t){t.print("{"),t.with_indent(t.next_indent(),(function(){t.append_comments(e,!0)})),t.print("}")}function r(e,t,r){e.body.length>0?t.with_block((function(){n(e.body,!1,t,r)})):i(e,t)}function o(e,t,n){var i=!1;n&&(i=yn(e,e=>e instanceof xe||(e instanceof yt&&"in"==e.operator?Cn:void 0))),e.print(t,i)}function u(e,t,n){return n.option("quote_keys")?n.print_string(e):""+ +e==e&&e>=0?n.option("keep_numbers")?n.print(e):n.print(p(e)):(O.has(e)?n.option("ie8"):n.option("ecma")<2015?!j(e):!Z(e,!0))||t&&n.option("keep_quoted_props")?n.print_string(e,t):n.print_name(e)}pe.DEFMETHOD("print",(function(e,t){var n=this,i=n._codegen;function r(){e.prepend_comments(n),n.add_source_map(e),i(n,e),e.append_comments(n)}n instanceof xe?e.active_scope=n:!e.use_asm&&n instanceof me&&"use asm"==n.value&&(e.use_asm=e.active_scope),e.push_node(n),t||n.needs_parens(e)?e.with_parens(r):r(),e.pop_node(),n===e.use_asm&&(e.use_asm=null)})),pe.DEFMETHOD("_print",pe.prototype.print),pe.DEFMETHOD("print_to_string",(function(e){var t=Bn(e);return this.print(t),t.get()})),t(pe,s),t(Pe,(function(e){if(!e.has_parens()&&In(e))return!0;var t;if(e.option("webkit")&&((t=e.parent())instanceof gt&&t.expression===this))return!0;if(e.option("wrap_iife")&&((t=e.parent())instanceof mt&&t.expression===this))return!0;if(e.option("wrap_func_args")&&((t=e.parent())instanceof mt&&t.args.includes(this)))return!0;return!1})),t(Ve,(function(e){var t=e.parent();return t instanceof gt&&t.expression===this})),t(Mt,(function(e){return!e.has_parens()&&In(e)})),t(Vt,In),t(vt,(function(e){var t=e.parent();return t instanceof gt&&t.expression===this||t instanceof mt&&t.expression===this||t instanceof yt&&"**"===t.operator&&this instanceof At&&t.left===this&&"++"!==this.operator&&"--"!==this.operator})),t(Ze,(function(e){var t=e.parent();return t instanceof gt&&t.expression===this||t instanceof mt&&t.expression===this||e.option("safari10")&&t instanceof At})),t(Et,(function(e){var t=e.parent();return t instanceof mt||t instanceof vt||t instanceof yt||t instanceof ft||t instanceof gt||t instanceof Ft||t instanceof Rt||t instanceof bt||t instanceof Ve||t instanceof Ot||t instanceof ke||t instanceof Re&&this===t.object||t instanceof Je||t instanceof dt})),t(yt,(function(e){var t=e.parent();if(t instanceof mt&&t.expression===this)return!0;if(t instanceof vt)return!0;if(t instanceof gt&&t.expression===this)return!0;if(t instanceof yt){const e=t.operator,n=this.operator;if("??"===n&&("||"===e||"&&"===e))return!0;const i=se[e],r=se[n];if(i>r||i==r&&(this===t.right||"**"==e))return!0}})),t(Je,(function(e){var t=e.parent();return t instanceof yt&&"="!==t.operator||(t instanceof mt&&t.expression===this||(t instanceof bt&&t.condition===this||(t instanceof vt||(t instanceof gt&&t.expression===this||void 0))))})),t(gt,(function(e){var t=e.parent();if(t instanceof ht&&t.expression===this)return yn(this,e=>e instanceof xe||(e instanceof mt?Cn:void 0))})),t(mt,(function(e){var t,n=e.parent();return!!(n instanceof ht&&n.expression===this||n instanceof dt&&n.is_default&&this.expression instanceof Pe)||this.expression instanceof Pe&&n instanceof gt&&n.expression===this&&(t=e.parent(1))instanceof Ct&&t.left===n})),t(ht,(function(e){var t=e.parent();if(0===this.args.length&&(t instanceof gt||t instanceof mt&&t.expression===this))return!0})),t(pn,(function(e){var t=e.parent();if(t instanceof gt&&t.expression===this){var n=this.getValue();if(n<0||/^0/.test(p(n)))return!0}})),t(_n,(function(e){var t=e.parent();if(t instanceof gt&&t.expression===this&&this.getValue().startsWith("-"))return!0})),t([Ct,bt],(function(e){var t=e.parent();return t instanceof vt||(t instanceof yt&&!(t instanceof Ct)||(t instanceof mt&&t.expression===this||(t instanceof bt&&t.condition===this||(t instanceof gt&&t.expression===this||(this instanceof Ct&&this.left instanceof Ke&&!1===this.left.is_array||void 0)))))})),e(me,(function(e,t){t.print_string(e.value,e.quote),t.semicolon()})),e(ke,(function(e,t){t.print("..."),e.expression.print(t)})),e(Ke,(function(e,t){t.print(e.is_array?"[":"{");var n=e.names.length;e.names.forEach((function(e,i){i>0&&t.comma(),e.print(t),i==n-1&&e instanceof Dn&&t.comma()})),t.print(e.is_array?"]":"}")})),e(de,(function(e,t){t.print("debugger"),t.semicolon()})),Ae.DEFMETHOD("_do_print_body",(function(e){f(this.body,e)})),e(_e,(function(e,t){e.body.print(t),t.semicolon()})),e(Ne,(function(e,t){n(e.body,!0,t,!0),t.print("")})),e(Te,(function(e,t){e.label.print(t),t.colon(),e.body.print(t)})),e(he,(function(e,t){e.body.print(t),t.semicolon()})),e(Se,(function(e,t){r(e,t)})),e(ve,(function(e,t){t.semicolon()})),e(Ce,(function(e,t){t.print("do"),t.space(),_(e.body,t),t.space(),t.print("while"),t.space(),t.with_parens((function(){e.condition.print(t)})),t.semicolon()})),e(Oe,(function(e,t){t.print("while"),t.space(),t.with_parens((function(){e.condition.print(t)})),t.space(),e._do_print_body(t)})),e(Fe,(function(e,t){t.print("for"),t.space(),t.with_parens((function(){e.init?(e.init instanceof st?e.init.print(t):o(e.init,t,!0),t.print(";"),t.space()):t.print(";"),e.condition?(e.condition.print(t),t.print(";"),t.space()):t.print(";"),e.step&&e.step.print(t)})),t.space(),e._do_print_body(t)})),e(Me,(function(e,t){t.print("for"),e.await&&(t.space(),t.print("await")),t.space(),t.with_parens((function(){e.init.print(t),t.space(),t.print(e instanceof Re?"of":"in"),t.space(),e.object.print(t)})),t.space(),e._do_print_body(t)})),e(we,(function(e,t){t.print("with"),t.space(),t.with_parens((function(){e.expression.print(t)})),t.space(),e._do_print_body(t)})),Ie.DEFMETHOD("_do_print",(function(e,t){var n=this;t||(n.async&&(e.print("async"),e.space()),e.print("function"),n.is_generator&&e.star(),n.name&&e.space()),n.name instanceof Bt?n.name.print(e):t&&n.name instanceof pe&&e.with_square((function(){n.name.print(e)})),e.with_parens((function(){n.argnames.forEach((function(t,n){n&&e.comma(),t.print(e)}))})),e.space(),r(n,e,!0)})),e(Ie,(function(e,t){e._do_print(t)})),e(Ue,(function(e,t){var n=e.prefix,i=n instanceof Ie||n instanceof yt||n instanceof bt||n instanceof Et||n instanceof vt||n instanceof Dt&&n.expression instanceof Mt;i&&t.print("("),e.prefix.print(t),i&&t.print(")"),e.template_string.print(t)})),e(Ge,(function(e,t){var n=t.parent()instanceof Ue;t.print("`");for(var i=0;i<e.segments.length;i++)e.segments[i]instanceof He?n?t.print(e.segments[i].raw):t.print_template_string_chars(e.segments[i].value):(t.print("${"),e.segments[i].print(t),t.print("}"));t.print("`")})),Ve.DEFMETHOD("_do_print",(function(e){var t=this,n=e.parent(),i=n instanceof yt&&!(n instanceof Ct)||n instanceof vt||n instanceof mt&&t===n.expression;i&&e.print("("),t.async&&(e.print("async"),e.space()),1===t.argnames.length&&t.argnames[0]instanceof Bt?t.argnames[0].print(e):e.with_parens((function(){t.argnames.forEach((function(t,n){n&&e.comma(),t.print(e)}))})),e.space(),e.print("=>"),e.space();const o=t.body[0];if(1===t.body.length&&o instanceof We){const t=o.value;t?!function e(t){return t instanceof Mt||(t instanceof Et?e(t.expressions[0]):"Call"===t.TYPE?e(t.expression):t instanceof Ue?e(t.prefix):t instanceof Dt||t instanceof St?e(t.expression):t instanceof bt?e(t.condition):t instanceof yt?e(t.left):t instanceof Tt&&e(t.expression))}(t)?t.print(e):(e.print("("),t.print(e),e.print(")")):e.print("{}")}else r(t,e);i&&e.print(")")})),ze.DEFMETHOD("_do_print",(function(e,t){if(e.print(t),this.value){e.space();const t=this.value.start.comments_before;t&&t.length&&!e.printed_comments.has(t)?(e.print("("),this.value.print(e),e.print(")")):this.value.print(e)}e.semicolon()})),e(We,(function(e,t){e._do_print(t,"return")})),e(Ye,(function(e,t){e._do_print(t,"throw")})),e(Je,(function(e,t){var n=e.is_star?"*":"";t.print("yield"+n),e.expression&&(t.space(),e.expression.print(t))})),e(Ze,(function(e,t){t.print("await"),t.space();var n=e.expression,i=!(n instanceof mt||n instanceof rn||n instanceof gt||n instanceof vt||n instanceof ln);i&&t.print("("),e.expression.print(t),i&&t.print(")")})),qe.DEFMETHOD("_do_print",(function(e,t){e.print(t),this.label&&(e.space(),this.label.print(e)),e.semicolon()})),e($e,(function(e,t){e._do_print(t,"break")})),e(je,(function(e,t){e._do_print(t,"continue")})),e(Qe,(function(e,t){t.print("if"),t.space(),t.with_parens((function(){e.condition.print(t)})),t.space(),e.alternative?(!function(e,t){var n=e.body;if(t.option("braces")||t.option("ie8")&&n instanceof Ce)return _(n,t);if(!n)return t.force_semicolon();for(;;)if(n instanceof Qe){if(!n.alternative)return void _(e.body,t);n=n.alternative}else{if(!(n instanceof Ae))break;n=n.body}f(e.body,t)}(e,t),t.space(),t.print("else"),t.space(),e.alternative instanceof Qe?e.alternative.print(t):f(e.alternative,t)):e._do_print_body(t)})),e(et,(function(e,t){t.print("switch"),t.space(),t.with_parens((function(){e.expression.print(t)})),t.space();var n=e.body.length-1;n<0?i(e,t):t.with_block((function(){e.body.forEach((function(e,i){t.indent(!0),e.print(t),i<n&&e.body.length>0&&t.newline()}))}))})),tt.DEFMETHOD("_do_print_body",(function(e){e.newline(),this.body.forEach((function(t){e.indent(),t.print(e),e.newline()}))})),e(nt,(function(e,t){t.print("default:"),e._do_print_body(t)})),e(it,(function(e,t){t.print("case"),t.space(),e.expression.print(t),t.print(":"),e._do_print_body(t)})),e(rt,(function(e,t){t.print("try"),t.space(),r(e,t),e.bcatch&&(t.space(),e.bcatch.print(t)),e.bfinally&&(t.space(),e.bfinally.print(t))})),e(ot,(function(e,t){t.print("catch"),e.argname&&(t.space(),t.with_parens((function(){e.argname.print(t)}))),t.space(),r(e,t)})),e(at,(function(e,t){t.print("finally"),t.space(),r(e,t)})),st.DEFMETHOD("_do_print",(function(e,t){e.print(t),e.space(),this.definitions.forEach((function(t,n){n&&e.comma(),t.print(e)}));var n=e.parent();(!(n instanceof Fe||n instanceof Me)||n&&n.init!==this)&&e.semicolon()})),e(ct,(function(e,t){e._do_print(t,"let")})),e(ut,(function(e,t){e._do_print(t,"var")})),e(lt,(function(e,t){e._do_print(t,"const")})),e(_t,(function(e,t){t.print("import"),t.space(),e.imported_name&&e.imported_name.print(t),e.imported_name&&e.imported_names&&(t.print(","),t.space()),e.imported_names&&(1===e.imported_names.length&&"*"===e.imported_names[0].foreign_name.name?e.imported_names[0].print(t):(t.print("{"),e.imported_names.forEach((function(n,i){t.space(),n.print(t),i<e.imported_names.length-1&&t.print(",")})),t.space(),t.print("}"))),(e.imported_name||e.imported_names)&&(t.space(),t.print("from"),t.space()),e.module_name.print(t),t.semicolon()})),e(pt,(function(e,t){var n=t.parent()instanceof _t,i=e.name.definition();(i&&i.mangled_name||e.name.name)!==e.foreign_name.name?(n?t.print(e.foreign_name.name):e.name.print(t),t.space(),t.print("as"),t.space(),n?e.name.print(t):t.print(e.foreign_name.name)):e.name.print(t)})),e(dt,(function(e,t){if(t.print("export"),t.space(),e.is_default&&(t.print("default"),t.space()),e.exported_names)1===e.exported_names.length&&"*"===e.exported_names[0].name.name?e.exported_names[0].print(t):(t.print("{"),e.exported_names.forEach((function(n,i){t.space(),n.print(t),i<e.exported_names.length-1&&t.print(",")})),t.space(),t.print("}"));else if(e.exported_value)e.exported_value.print(t);else if(e.exported_definition&&(e.exported_definition.print(t),e.exported_definition instanceof st))return;e.module_name&&(t.space(),t.print("from"),t.space(),e.module_name.print(t)),(e.exported_value&&!(e.exported_value instanceof Be||e.exported_value instanceof Pe||e.exported_value instanceof It)||e.module_name||e.exported_names)&&t.semicolon()})),e(ft,(function(e,t){if(e.name.print(t),e.value){t.space(),t.print("="),t.space();var n=t.parent(1),i=n instanceof Fe||n instanceof Me;o(e.value,t,i)}})),e(mt,(function(e,t){e.expression.print(t),e instanceof ht&&0===e.args.length||((e.expression instanceof mt||e.expression instanceof Ie)&&t.add_mapping(e.start),t.with_parens((function(){e.args.forEach((function(e,n){n&&t.comma(),e.print(t)}))})))})),e(ht,(function(e,t){t.print("new"),t.space(),mt.prototype._codegen(e,t)})),Et.DEFMETHOD("_do_print",(function(e){this.expressions.forEach((function(t,n){n>0&&(e.comma(),e.should_break()&&(e.newline(),e.indent())),t.print(e)}))})),e(Et,(function(e,t){e._do_print(t)})),e(Dt,(function(e,t){var n=e.expression;n.print(t);var i=e.property;(O.has(i)?t.option("ie8"):!Z(i,t.option("ecma")>=2015))?(t.print("["),t.add_mapping(e.end),t.print_string(i),t.print("]")):(n instanceof pn&&n.getValue()>=0&&(/[xa-f.)]/i.test(t.last())||t.print(".")),t.print("."),t.add_mapping(e.end),t.print_name(i))})),e(St,(function(e,t){e.expression.print(t),t.print("["),e.property.print(t),t.print("]")})),e(At,(function(e,t){var n=e.operator;t.print(n),(/^[a-z]/i.test(n)||/[+-]$/.test(n)&&e.expression instanceof At&&/^[+-]/.test(e.expression.operator))&&t.space(),e.expression.print(t)})),e(Tt,(function(e,t){e.expression.print(t),t.print(e.operator)})),e(yt,(function(e,t){var n=e.operator;e.left.print(t),">"==n[0]&&e.left instanceof Tt&&"--"==e.left.operator?t.print(" "):t.space(),t.print(n),("<"==n||"<<"==n)&&e.right instanceof At&&"!"==e.right.operator&&e.right.expression instanceof At&&"--"==e.right.expression.operator?t.print(" "):t.space(),e.right.print(t)})),e(bt,(function(e,t){e.condition.print(t),t.space(),t.print("?"),t.space(),e.consequent.print(t),t.space(),t.colon(),e.alternative.print(t)})),e(Ft,(function(e,t){t.with_square((function(){var n=e.elements,i=n.length;i>0&&t.space(),n.forEach((function(e,n){n&&t.comma(),e.print(t),n===i-1&&e instanceof Dn&&t.comma()})),i>0&&t.space()}))})),e(Mt,(function(e,t){e.properties.length>0?t.with_block((function(){e.properties.forEach((function(e,n){n&&(t.print(","),t.newline()),t.indent(),e.print(t)})),t.newline()})):i(e,t)})),e(It,(function(e,t){if(t.print("class"),t.space(),e.name&&(e.name.print(t),t.space()),e.extends){var n=!(e.extends ins{
+  "name": "acorn",
+  "description": "ECMAScript parser",
+  "homepage": "https://github.com/acornjs/acorn",
+  "main": "dist/acorn.js",
+  "module": "dist/acorn.mjs",
+  "version": "6.4.2",
+  "engines": {"node": ">=0.4.0"},
+  "maintainers": [
+    {
+      "name": "Marijn Haverbeke",
+      "email": "marijnh@gmail.com",
+      "web": "https://marijnhaverbeke.nl"
+    },
+    {
+      "name": "Ingvar Stepanyan",
+      "email": "me@rreverser.com",
+      "web": "https://rreverser.com/"
+    },
+    {
+      "name": "Adrian Heine",
+      "web": "http://adrianheine.de"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acornjs/acorn.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "prepare": "cd ..; npm run build:main && npm run build:bin"
+  },
+  "bin": {"acorn": "./bin/acorn"}
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              # get Makefile directory name: http://stackoverflow.com/a/5982798/376773
+THIS_MAKEFILE_PATH:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+THIS_DIR:=$(shell cd $(dir $(THIS_MAKEFILE_PATH));pwd)
+
+# BIN directory
+BIN := $(THIS_DIR)/node_modules/.bin
+
+# Path
+PATH := node_modules/.bin:$(PATH)
+SHELL := /bin/bash
+
+# applications
+NODE ?= $(shell which node)
+YARN ?= $(shell which yarn)
+PKG ?= $(if $(YARN),$(YARN),$(NODE) $(shell which npm))
+BROWSERIFY ?= $(NODE) $(BIN)/browserify
+
+.FORCE:
+
+install: node_modules
+
+node_modules: package.json
+	@NODE_ENV= $(PKG) install
+	@touch node_modules
+
+lint: .FORCE
+	eslint browser.js debug.js index.js node.js
+
+test-node: .FORCE
+	istanbul cover node_modules/mocha/bin/_mocha -- test/**.js
+
+test-browser: .FORCE
+	mkdir -p dist
+
+	@$(BROWSERIFY) \
+		--standalone debug \
+		. > dist/debug.js
+
+	karma start --single-run
+	rimraf dist
+
+test: .FORCE
+	concurrently \
+		"make test-node" \
+		"make test-browser"
+
+coveralls:
+	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+.PHONY: all install clean distclean
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             # get Makefile directory name: http://stackoverflow.com/a/5982798/376773
+THIS_MAKEFILE_PATH:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+THIS_DIR:=$(shell cd $(dir $(THIS_MAKEFILE_PATH));pwd)
+
+# BIN directory
+BIN := $(THIS_DIR)/node_modules/.bin
+
+# Path
+PATH := node_modules/.bin:$(PATH)
+SHELL := /bin/bash
+
+# applications
+NODE ?= $(shell which node)
+YARN ?= $(shell which yarn)
+PKG ?= $(if $(YARN),$(YARN),$(NODE) $(shell which npm))
+BROWSERIFY ?= $(NODE) $(BIN)/browserify
+
+.FORCE:
+
+install: node_modules
+
+node_modules: package.json
+	@NODE_ENV= $(PKG) install
+	@touch node_modules
+
+lint: .FORCE
+	eslint browser.js debug.js index.js node.js
+
+test-node: .FORCE
+	istanbul cover node_modules/mocha/bin/_mocha -- test/**.js
+
+test-browser: .FORCE
+	mkdir -p dist
+
+	@$(BROWSERIFY) \
+		--standalone debug \
+		. > dist/debug.js
+
+	karma start --single-run
+	rimraf dist
+
+test: .FORCE
+	concurrently \
+		"make test-node" \
+		"make test-browser"
+
+coveralls:
+	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+.PHONY: all install clean distclean
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             gically equivalent,
+  even if they're not the exact same string.  You already know how to
+  compare strings.
+* `neq(v1, v2)`: `v1 != v2` The opposite of `eq`.
+* `cmp(v1, comparator, v2)`: Pass in a comparison string, and it'll call
+  the corresponding function above.  `"==="` and `"!=="` do simple
+  string comparison, but are included for completeness.  Throws if an
+  invalid comparison string is provided.
+* `compare(v1, v2)`: Return `0` if `v1 == v2`, or `1` if `v1` is greater, or `-1` if
+  `v2` is greater.  Sorts in ascending order if passed to `Array.sort()`.
+* `rcompare(v1, v2)`: The reverse of compare.  Sorts an array of versions
+  in descending order when passed to `Array.sort()`.
+* `compareBuild(v1, v2)`: The same as `compare` but considers `build` when two versions
+  are equal.  Sorts in ascending order if passed to `Array.sort()`.
+  `v2` is greater.  Sorts in ascending order if passed to `Array.sort()`.
+* `diff(v1, v2)`: Returns difference between two versions by the release type
+  (`major`, `premajor`, `minor`, `preminor`, `patch`, `prepatch`, or `prerelease`),
+  or null if the versions are the same.
+
+### Comparators
+
+* `intersects(comparator)`: Return true if the comparators intersect
+
+### Ranges
+
+* `validRange(range)`: Return the valid range or null if it's not valid
+* `satisfies(version, range)`: Return true if the version satisfies the
+  range.
+* `maxSatisfying(versions, range)`: Return the highest version in the list
+  that satisfies the range, or `null` if none of them do.
+* `minSatisfying(versions, range)`: Return the lowest version in the list
+  that satisfies the range, or `null` if none of them do.
+* `minVersion(range)`: Return the lowest version that can possibly match
+  the given range.
+* `gtr(version, range)`: Return `true` if version is greater than all the
+  versions possible in the range.
+* `ltr(version, range)`: Return `true` if version is less than all the
+  versions possible in the range.
+* `outside(version, range, hilo)`: Return true if the version is outside
+  the bounds of the range in either the high or low direction.  The
+  `hilo` argument must be either the string `'>'` or `'<'`.  (This is
+  the function called by `gtr` and `ltr`.)
+* `intersects(range)`: Return true if any of the ranges comparators intersect
+
+Note that, since ranges may be non-contiguous, a version might not be
+greater than a range, less than a range, *or* satisfy a range!  For
+example, the range `1.2 <1.2.9 || >2.0.0` would have a hole from `1.2.9`
+until `2.0.0`, so the version `1.2.10` would not be greater than the
+range (because `2.0.1` satisfies, which is higher), nor less than the
+range (since `1.2.8` satisfies, which is lower), and it also does not
+satisfy the range.
+
+If you want to know if a version satisfies or does not satisfy a
+range, use the `satisfies(version, range)` function.
+
+### Coercion
+
+* `coerce(version, options)`: Coerces a string to semver if possible
+
+This aims to provide a very forgiving translation of a non-semver string to
+semver. It looks for the first digit in a string, and consumes all
+remaining characters which satisfy at least a partial semver (e.g., `1`,
+`1.2`, `1.2.3`) up to the max permitted length (256 characters).  Longer
+versions are simply truncated (`4.6.3.9.2-alpha2` becomes `4.6.3`).  All
+surrounding text is simply ignored (`v3.4 replaces v3.3.1` becomes
+`3.4.0`).  Only text which lacks digits will fail coercion (`version one`
+is not valid).  The maximum  length for any semver component considered for
+coercion is 16 characters; longer components will be ignored
+(`10000000000000000.4.7.4` becomes `4.7.4`).  The maximum value for any
+semver component is `Integer.MAX_SAFE_INTEGER || (2**53 - 1)`; higher value
+components are invalid (`9999999999999999.4.7.4` is likely invalid).
+
+If the `options.rtl` flag is set, then `coerce` will return the right-most
+coercible tuple that does not share an ending index with a longer coercible
+tuple.  For example, `1.2.3.4` will return `2.3.4` in rtl mode, not
+`4.0.0`.  `1.2.3/4` will return `4.0.0`, because the `4` is not a part of
+any other overlapping SemVer tuple.
+
+### Clean
+
+* `clean(version)`: Clean a string to be a valid semver if possible
+
+This will return a cleaned and trimmed semver version. If the provided version is not valid a null will be returned. This does not work for ranges. 
+
+ex.
+* `s.clean(' = v 2.1.5foo')`: `null`
+* `s.clean(' = v 2.1.5foo', { loose: true })`: `'2.1.5-foo'`
+* `s.clean(' = v 2.1.5-foo')`: `null`
+* `s.clean(' = v 2.1.5-foo', { loose: true })`: `'2.1.5-foo'`
+* `s.clean('=v2.1.5')`: `'2.1.5'`
+* `s.clean('  =v2.1.5')`: `2.1.5`
+* `s.clean('      2.1.5   ')`: `'2.1.5'`
+* `s.clean('~1.0.0')`: `null`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     return node;
+	
+	    function addMappingWithCode(mapping, code) {
+	      if (mapping === null || mapping.source === undefined) {
+	        node.add(code);
+	      } else {
+	        var source = aRelativePath
+	          ? util.join(aRelativePath, mapping.source)
+	          : mapping.source;
+	        node.add(new SourceNode(mapping.originalLine,
+	                                mapping.originalColumn,
+	                                source,
+	                                code,
+	                                mapping.name));
+	      }
+	    }
+	  };
+	
+	/**
+	 * Add a chunk of generated JS to this source node.
+	 *
+	 * @param aChunk A string snippet of generated JS code, another instance of
+	 *        SourceNode, or an array where each member is one of those things.
+	 */
+	SourceNode.prototype.add = function SourceNode_add(aChunk) {
+	  if (Array.isArray(aChunk)) {
+	    aChunk.forEach(function (chunk) {
+	      this.add(chunk);
+	    }, this);
+	  }
+	  else if (aChunk[isSourceNode] || typeof aChunk === "string") {
+	    if (aChunk) {
+	      this.children.push(aChunk);
+	    }
+	  }
+	  else {
+	    throw new TypeError(
+	      "Expected a SourceNode, string, or an array of SourceNodes and strings. Got " + aChunk
+	    );
+	  }
+	  return this;
+	};
+	
+	/**
+	 * Add a chunk of generated JS to the beginning of this source node.
+	 *
+	 * @param aChunk A string snippet of generated JS code, another instance of
+	 *        SourceNode, or an array where each member is one of those things.
+	 */
+	SourceNode.prototype.prepend = function SourceNode_prepend(aChunk) {
+	  if (Array.isArray(aChunk)) {
+	    for (var i = aChunk.length-1; i >= 0; i--) {
+	      this.prepend(aChunk[i]);
+	    }
+	  }
+	  else if (aChunk[isSourceNode] || typeof aChunk === "string") {
+	    this.children.unshift(aChunk);
+	  }
+	  else {
+	    throw new TypeError(
+	      "Expected a SourceNode, string, or an array of SourceNodes and strings. Got " + aChunk
+	    );
+	  }
+	  return this;
+	};
+	
+	/**
+	 * Walk over the tree of JS snippets in this node and its children. The
+	 * walking function is called once for each snippet of JS and is passed that
+	 * snippet and the its original associated source's line/column location.
+	 *
+	 * @param aFn The traversal function.
+	 */
+	SourceNode.prototype.walk = function SourceNode_walk(aFn) {
+	  var chunk;
+	  for (var i = 0, len = this.children.length; i < len; i++) {
+	    chunk = this.children[i];
+	    if (chunk[isSourceNode]) {
+	      chunk.walk(aFn);
+	    }
+	    else {
+	      if (chunk !== '') {
+	        aFn(chunk, { source: this.source,
+	                     line: this.line,
+	                     column: this.column,
+	                     name: this.name });
+	      }
+	    }
+	  }
+	};
+	
+	/**
+	 * Like `String.prototype.join` except for SourceNodes. Inserts `aStr` between
+	 * each of `this.children`.
+	 *
+	 * @param aSep The separator.
+	 */
+	SourceNode.prototype.join = function SourceNode_join(aSep) {
+	  var newChildren;
+	  var i;
+	  var len = this.children.length;
+	  if (len > 0) {
+	    newChildren = [];
+	    for (i = 0; i < len-1; i++) {
+	      newChildren.push(this.children[i]);
+	      newChildren.push(aSep);
+	    }
+	    newChildren.push(this.children[i]);
+	    this.children = newChildren;
+	  }
+	  return this;
+	};
+	
+	/**
+	 * Call String.prototype.replace on the very right-most source snippet. Useful
+	 * for trimming whitespace from the end of a source node, etc.
+	 *
+	 * @param aPattern The pattern to replace.
+	 * @param aReplacement The thing to replace the pattern with.
+	 */
+	SourceNode.prototype.replaceRight = function SourceNode_replaceRight(aPattern, aReplacement) {
+	  var lastChild = this.children[this.children.length - 1];
+	  if (lastChild[isSourceNode]) {
+	    lastChild.replaceRight(aPattern, aReplacement);
+	  }
+	  else if (typeof lastChild === 'string') {
+	    this.children[this.children.length - 1] = lastChild.replace(aPattern, aReplacement);
+	  }
+	  else {
+	    this.children.push(''.replace(aPattern, aReplacement));
+	  }
+	  return this;
+	};
+	
+	/**
+	 * Set the source content for a source file. This will be added to the SourceMapGenerator
+	 * in the sourcesContent field.
+	 *
+	 * @param aSourceFile The filename of the source file
+	 * @param aSourceContent The content of the source file
+	 */
+	SourceNode.prototype.setSourceContent =
+	  function SourceNode_setSourceContent(aSourceFile, aSourceContent) {
+	    this.sourceContents[util.toSetString(aSourceFile)] = aSourceContent;
+	  };
+	
+	/**
+	 * Walk over the tree of SourceNodes. The walking function is called for each
+	 * source file content and is passed the filename and source content.
+	 *
+	 * @param aFn The traversal function.
+	 */
+	SourceNode.prototype.walkSourceContents =
+	  function SourceNode_walkSourceContents(aFn) {
+	    for (var i = 0, len = this.children.length; i < len; i++) {
+	      if (this.children[i][isSourceNode]) {
+	        this.children[i].walkSourceContents(aFn);
+	      }
+	    }
+	
+	    var sources = Object.keys(this.sourceContents);
+	    for (var i = 0, len = sources.length; i < len; i++) {
+	      aFn(util.fromSetString(sources[i]), this.sourceContents[sources[i]]);
+	    }
+	  };
+	
+	/**
+	 * Return the string representation of this source node. Walks over the tree
+	 * and concatenates all the various snippets together to one string.
+	 */
+	SourceNode.prototype.toString = function SourceNode_toString() {
+	  var str = "";
+	  this.walk(function (chunk) {
+	    str += chunk;
+	  });
+	  return str;
+	};
+	
+	/**
+	 * Returns the string representation of this source node along with a source
+	 * map.
+	 */
+	SourceNode.prototype.toStringWithSourceMap = function SourceNode_toStringWithSourceMap(aArgs) {
+	  var generated = {
+	    code: "",
+	    line: 1,
+	    column: 0
+	  };
+	  var map = new SourceMapGenerator(aArgs);
+	  var sourceMappingActive = false;
+	  var lastOriginalSource = null;
+	  var lastOriginalLine = null;
+	  var lastOriginalColumn = null;
+	  var lastOriginalName = null;
+	  this.walk(function (chunk, original) {
+	    generated.code += chunk;
+	    if (original.source !== null
+	        && original.line !== null
+	        && original.column !== null) {
+	      if(lastOriginalSource !== original.source
+	         || lastOriginalLine !== original.line
+	         || lastOriginalColumn !== original.column
+	         || lastOriginalName !== original.name) {
+	        map.addMapping({
+	          source: original.source,
+	          original: {
+	            line: original.line,
+	            column: original.column
+	          },
+	          generated: {
+	            line: generated.line,
+	            column: generated.column
+	          },
+	          name: original.name
+	        });
+	      }
+	      lastOriginalSource = original.source;
+	      lastOriginalLine = original.line;
+	      lastOriginalColumn = original.column;
+	      lastOriginalName = original.name;
+	      sourceMappingActive = true;
+	    } else if (sourceMappingActive) {
+	      map.addMapping({
+	        generated: {
+	          line: generated.line,
+	          column: generated.column
+	        }
+	      });
+	      lastOriginalSource = null;
+	      sourceMappingActive = false;
+	    }
+	    for (var idx = 0, length = chunk.length; idx < length; idx++) {
+	      if (chunk.charCodeAt(idx) === NEWLINE_CODE) {
+	        generated.line++;
+	        generated.column = 0;
+	        // Mappings end at eol
+	        if (idx + 1 === length) {
+	          lastOriginalSource = null;
+	          sourceMappingActive = false;
+	        } else if (sourceMappingActive) {
+	          map.addMapping({
+	            source: original.source,
+	            original: {
+	              line: original.line,
+	              column: original.column
+	            },
+	            generated: {
+	              line: generated.line,
+	              column: generated.column
+	            },
+	            name: original.name
+	          });
+	        }
+	      } else {
+	        generated.column++;
+	      }
+	    }
+	  });
+	  this.walkSourceContents(function (sourceFile, sourceContent) {
+	    map.setSourceContent(sourceFile, sourceContent);
+	  });
+	
+	  return { code: generated.code, map: map };
+	};
+	
+	exports.SourceNode = SourceNode;
+
+
+/***/ })
+/******/ ])
+});
+;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vd2VicGFjay91bml2ZXJzYWxNb2R1bGVEZWZpbml0aW9uIiwid2VicGFjazovLy93ZWJwYWNrL2Jvb3RzdHJhcCBlNDczOGZjNzJhN2IyMzAzOTg4OSIsIndlYnBhY2s6Ly8vLi9zb3VyY2UtbWFwLmpzIiwid2VicGFjazovLy8uL2xpYi9zb3VyY2UtbWFwLWdlbmVyYXRvci5qcyIsIndlYnBhY2s6Ly8vLi9saWIvYmFzZTY0LXZscS5qcyIsIndlYnBhY2s6Ly8vLi9saWIvYmFzZTY0LmpzIiwid2VicGFjazovLy8uL2xpYi91dGlsLmpzIiwid2VicGFjazovLy8uL2xpYi9hcnJheS1zZXQuanMiLCJ3ZWJwYWNrOi8vLy4vbGliL21hcHBpbmctbGlzdC5qcyIsIndlYnBhY2s6Ly8vLi9saWIvc291cmNlLW1hcC1jb25zdW1lci5qcyIsIndlYnBhY2s6Ly8vLi9saWIvYmluYXJ5LXNlYXJjaC5qcyIsIndlYnBhY2s6Ly8vLi9saWIvcXVpY2stc29ydC5qcyIsIndlYnBhY2s6Ly8vLi9saWIvc291cmNlLW5vZGUuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsQ0FBQztBQUNELE87QUNWQTtBQUNBOztBQUVBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQSx1QkFBZTtBQUNmO0FBQ0E7QUFDQTs7QUFFQTtBQUNBOztBQUVBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBOzs7QUFHQTtBQUNBOztBQUVBO0FBQ0E7O0FBRUE7QUFDQTs7QUFFQTtBQUNBOzs7Ozs7O0FDdENBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7Ozs7Ozs7QUNQQSxpQkFBZ0Isb0JBQW9CO0FBQ3BDO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsTUFBSztBQUNMO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQSxNQUFLO0FBQ0w7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBLE1BQUs7QUFDTDtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsTUFBSztBQUNMOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBLE1BQUs7QUFDTDtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSxVQUFTO0FBQ1Q7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUEsTUFBSztBQUNMO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsTUFBSztBQUNMOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSxRQUFPO0FBQ1A7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0EsMkNBQTBDLFNBQVM7QUFDbkQ7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQSxxQkFBb0I7QUFDcEI7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBOztBQUVBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSxNQUFLO0FBQ0w7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBOzs7Ozs7O0FDL1pBLGlCQUFnQixvQkFBb0I7QUFDcEM7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBLDREQUEyRDtBQUMzRCxxQkFBb0I7QUFDcEI7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTs7QUFFQTtBQUNBOztBQUVBO0FBQ0E7O0FBRUE7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSxJQUFHOztBQUVIO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsSUFBRzs7QUFFSDtBQUNBO0FBQ0E7Ozs7Ozs7QUMzSUEsaUJBQWdCLG9CQUFvQjtBQUNwQztBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsaUJBQWdCO0FBQ2hCLGlCQUFnQjs7QUFFaEIsb0JBQW1CO0FBQ25CLHFCQUFvQjs7QUFFcEIsaUJBQWdCO0FBQ2hCLGlCQUFnQjs7QUFFaEIsaUJBQWdCO0FBQ2hCLGtCQUFpQjs7QUFFakI7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7Ozs7Ozs7QUNsRUEsaUJBQWdCLG9CQUFvQjtBQUNwQztBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsSUFBRztBQUNIO0FBQ0EsSUFBRztBQUNIO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0EsK0NBQThDLFFBQVE7QUFDdEQ7QUFDQTtBQUNBO0FBQ0EsTUFBSztBQUNMO0FBQ0EsTUFBSztBQUNMO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBLFFBQU87QUFDUDtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQSxFQUFDOztBQUVEO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBOztBQUVBOztBQUVBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBLDRCQUEyQixRQUFRO0FBQ25DO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7Ozs7Ozs7QUNoYUEsaUJBQWdCLG9CQUFvQjtBQUNwQztBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EsdUNBQXNDLFNBQVM7QUFDL0M7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBLE1BQUs7QUFDTDtBQUNBO0FBQ0E7QUFDQTs7QUFFQTtBQU!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e=e||self).esquery=t()}(this,(function(){"use strict";function e(t){return(e="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(t)}function t(e,t){return function(e){if(Array.isArray(e))return e}(e)||function(e,t){if("undefined"==typeof Symbol||!(Symbol.iterator in Object(e)))return;var r=[],n=!0,o=!1,a=void 0;try{for(var s,i=e[Symbol.iterator]();!(n=(s=i.next()).done)&&(r.push(s.value),!t||r.length!==t);n=!0);}catch(e){o=!0,a=e}finally{try{n||null==i.return||i.return()}finally{if(o)throw a}}return r}(e,t)||n(e,t)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function r(e){return function(e){if(Array.isArray(e))return o(e)}(e)||function(e){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e))return Array.from(e)}(e)||n(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function n(e,t){if(e){if("string"==typeof e)return o(e,t);var r=Object.prototype.toString.call(e).slice(8,-1);return"Object"===r&&e.constructor&&(r=e.constructor.name),"Map"===r||"Set"===r?Array.from(r):"Arguments"===r||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)?o(e,t):void 0}}function o(e,t){(null==t||t>e.length)&&(t=e.length);for(var r=0,n=new Array(t);r<t;r++)n[r]=e[r];return n}"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self&&self;function a(e,t){return e(t={exports:{}},t.exports),t.exports}var s=a((function(e,t){!function e(t){var r,n,o,a,s,i;function l(e){var t,r,n={};for(t in e)e.hasOwnProperty(t)&&(r=e[t],n[t]="object"==typeof r&&null!==r?l(r):r);return n}function u(e,t){this.parent=e,this.key=t}function c(e,t,r,n){this.node=e,this.path=t,this.wrap=r,this.ref=n}function f(){}function p(e){return null!=e&&("object"==typeof e&&"string"==typeof e.type)}function h(e,t){return(e===r.ObjectExpression||e===r.ObjectPattern)&&"properties"===t}function d(e,t){for(var r=e.length-1;r>=0;--r)if(e[r].node===t)return!0;return!1}function y(e,t){return(new f).traverse(e,t)}function m(e,t){var r;return r=function(e,t){var r,n,o,a;for(n=e.length,o=0;n;)t(e[a=o+(r=n>>>1)])?n=r:(o=a+1,n-=r+1);return o}(t,(function(t){return t.range[0]>e.range[0]})),e.extendedRange=[e.range[0],e.range[1]],r!==t.length&&(e.extendedRange[1]=t[r].range[0]),(r-=1)>=0&&(e.extendedRange[0]=t[r].range[1]),e}return r={AssignmentExpression:"AssignmentExpression",AssignmentPattern:"AssignmentPattern",ArrayExpression:"ArrayExpression",ArrayPattern:"ArrayPattern",ArrowFunctionExpression:"ArrowFunctionExpression",AwaitExpression:"AwaitExpression",BlockStatement:"BlockStatement",BinaryExpression:"BinaryExpression",BreakStatement:"BreakStatement",CallExpression:"CallExpression",CatchClause:"CatchClause",ClassBody:"ClassBody",ClassDeclaration:"ClassDeclaration",ClassExpression:"ClassExpression",ComprehensionBlock:"ComprehensionBlock",ComprehensionExpression:"ComprehensionExpression",ConditionalExpression:"ConditionalExpression",ContinueStatement:"ContinueStatement",DebuggerStatement:"DebuggerStatement",DirectiveStatement:"DirectiveStatement",DoWhileStatement:"DoWhileStatement",EmptyStatement:"EmptyStatement",ExportAllDeclaration:"ExportAllDeclaration",ExportDefaultDeclaration:"ExportDefaultDeclaration",ExportNamedDeclaration:"ExportNamedDeclaration",ExportSpecifier:"ExportSpecifier",ExpressionStatement:"ExpressionStatement",ForStatement:"ForStatement",ForInStatement:"ForInStatement",ForOfStatement:"ForOfStatement",FunctionDeclaration:"FunctionDeclaration",FunctionExpression:"FunctionExpression",GeneratorExpression:"GeneratorExpression",Identifier:"Identifier",IfStatement:"'use strict';
+
+const kDone = Symbol('kDone');
+const kRun = Symbol('kRun');
+
+/**
+ * A very simple job queue with adjustable concurrency. Adapted from
+ * https://github.com/STRML/async-limiter
+ */
+class Limiter {
+  /**
+   * Creates a new `Limiter`.
+   *
+   * @param {Number} [concurrency=Infinity] The maximum number of jobs allowed
+   *     to run concurrently
+   */
+  constructor(concurrency) {
+    this[kDone] = () => {
+      this.pending--;
+      this[kRun]();
+    };
+    this.concurrency = concurrency || Infinity;
+    this.jobs = [];
+    this.pending = 0;
+  }
+
+  /**
+   * Adds a job to the queue.
+   *
+   * @param {Function} job The job to run
+   * @public
+   */
+  add(job) {
+    this.jobs.push(job);
+    this[kRun]();
+  }
+
+  /**
+   * Removes a job from the queue and runs it if possible.
+   *
+   * @private
+   */
+  [kRun]() {
+    if (this.pending === this.concurrency) return;
+
+    if (this.jobs.length) {
+      const job = this.jobs.shift();
+
+      this.pending++;
+      job(this[kDone]);
+    }
+  }
+}
+
+module.exports = Limiter;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ## 3.3.0 (2016-07-25)
+
+### Bug fixes
+
+Fix bug in tokenizing of regexp operator after a function declaration.
+
+Fix parser crash when parsing an array pattern with a hole.
+
+### New features
+
+Implement check against complex argument lists in functions that
+enable strict mode in ES7.
+
+## 3.2.0 (2016-06-07)
+
+### Bug fixes
+
+Improve handling of lack of unicode regexp support in host
+environment.
+
+Properly reject shorthand properties whose name is a keyword.
+
+Don't crash when the loose parser is called without options object.
+
+### New features
+
+Visitors created with `visit.make` now have their base as _prototype_,
+rather than copying properties into a fresh object.
+
+Make it possible to use `visit.ancestor` with a walk state.
+
+## 3.1.0 (2016-04-18)
+
+### Bug fixes
+
+Fix issue where the loose parser created invalid TemplateElement nodes
+for unclosed template literals.
+
+Properly tokenize the division operator directly after a function
+expression.
+
+Allow trailing comma in destructuring arrays.
+
+### New features
+
+The walker now allows defining handlers for `CatchClause` nodes.
+
+## 3.0.4 (2016-02-25)
+
+### Fixes
+
+Allow update expressions as left-hand-side of the ES7 exponential
+operator.
+
+## 3.0.2 (2016-02-10)
+
+### Fixes
+
+Fix bug that accidentally made `undefined` a reserved word when
+parsing ES7.
+
+## 3.0.0 (2016-02-10)
+
+### Breaking changes
+
+The default value of the `ecmaVersion` option is now 6 (used to be 5).
+
+Support for comprehension syntax (which was dropped from the draft
+spec) has been removed.
+
+### Fixes
+
+`let` and `yield` are now ‚Äúcontextual keywords‚Äù, meaning you can
+mostly use them as identifiers in ES5 non-strict code.
+
+A parenthesized class or function expression after `export default` is
+now parsed correctly.
+
+### New features
+
+When `ecmaVersion` is set to 7, Acorn will parse the exponentiation
+operator (`**`).
+
+The identifier character ranges are now based on Unicode 8.0.0.
+
+Plugins can now override the `raiseRecoverable` method to override the
+way non-critical errors are handled.
+
+## 2.7.0 (2016-01-04)
+
+### Fixes
+
+Stop allowing rest parameters in setters.
+
+Make sure the loose parser always attaches a `local` property to
+`ImportNamespaceSpecifier` nodes.
+
+Disallow `y` rexexp flag in ES5.
+
+Disallow `\00` and `\000` escapes in strict mode.
+
+Raise an error when an import name is a reserved word.
+
+## 2.6.4 (2015-11-12)
+
+### Fixes
+
+Fix crash in loose parser when parsing invalid object pattern.
+
+### New features
+
+Support plugins in the loose parser.
+
+## 2.6.2 (2015-11-10)
+
+### Fixes
+
+Don't crash when no options object is passed.
+
+## 2.6.0 (2015-11-09)
+
+### Fixes
+
+Add `await` as a reserved word in module sources.
+
+Disallow `yield` in a parameter default value for a generator.
+
+Forbid using a comma after a rest pattern in an array destructuring.
+
+### New features
+
+Support parsing stdin in command-line tool.
+
+## 2.5.2 (2015-10-27)
+
+### Fixes
+
+Fix bug where the walker walked an exported `let` statement as an
+expression.
+
+## 2.5.0 (2015-10-27)
+
+### Fixes
+
+Fix tokenizer support in the command-line tool.
+
+In the loose parser, don't allow non-string-literals as import
+sources.
+
+Stop allowing `new.target` outside of functions.
+
+Remove legacy `guard` and `guardedHandler` properties from try nodes.
+
+Stop allowing multiple `__proto__` properties on an object literal in
+strict mode.
+
+Don't allow rest parameters to be non-identifier patterns.
+
+Check for duplicate paramter names in arrow functions.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            INDX( 	 4Œ-„           (   »  Ë                             ™QG    x h     S
+G   
+ W¿“πâŒ‹≠F÷πâŒ‹≠F÷πâŒ‹â’ U~œ‹       8               C o p y r i g h t N o t i c e . t x t -RG    h X     S
+G   
+ dRÁπâŒ‹m1ÓπâŒ‹m1ÓπâŒ‹Ûÿ"U~œ‹ê      è               L I C E N S E . t x t :CG    ` P     S
+G   
+ ìœ,∏âŒ‹ÊÙπâŒ‹ÊÙπâŒ‹z÷,U~œ‹                        m o d u l e s ‘NG    p Z     S
+G   
+ ˚◊4πâŒ‹∂f9πâŒ‹∂f9πâŒ‹$Ãé|œ‹       ì               p a c k a g e . j s o n ^     tPG    h T    S
+G   
+ ÖHìπâŒ‹ÄÜõπâŒ‹ÄÜõπâŒ‹r3,U~œ‹       w              	 R E A D M E . m d    iFG    ` J     S
+G   
+ Æˆl∏âŒ‹Ωî∏âŒ‹Ωî∏âŒ‹™ãBU~œ‹                        t e s t b . e QG    h V     S
+G   
+ Ôx≥πâŒ‹˚-æπâŒ‹˚-æπâŒ‹P¬PU~œ‹       ö
+              
+ t s l i b . d . t s h x=G    p ^     S
+G   
+ öô∑âŒ‹“Ωœ∑âŒ‹“Ωœ∑âŒ‹=nSU~œ‹(       $                t s l i b . e s 6 . h t m l   ˛JG    p Z     S
+G   
+ ¢aÿ∏âŒ‹‚Ì„∏âŒ‹‚Ì„∏âŒ‹geU~œ‹ 0      "(               t s l i b . e s 6 . j s      ã@G    h V     S
+G   
+ »ö ∏âŒ‹÷€∏âŒ‹÷€∏âŒ‹÷_mU~œ‹                        
+ t s l i b . h t m l   ÄLG    h R     S
+G   
+ #T˚∏âŒ‹ÌπâŒ‹ÌπâŒ‹0ÅwU~œ‹ @      î3               t s l i b . j s                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               var it = require('it-is').style('colour')
+  , split = require('..')
+
+exports ['maximum buffer limit'] = function (test) {
+  var s = split(JSON.parse, null, {
+    maxLength: 2
+  })
+    , caughtError = false
+    , rows = []
+
+  s.on('error', function (err) {
+    caughtError = true
+  })
+
+  s.on('data', function (row) { rows.push(row) })
+
+  s.write('{"a":1}\n{"')
+  s.write('{    "')
+  it(caughtError).equal(true)
+
+  s.end()
+  test.done()
+}
+
+exports ['ignore trailing buffers'] = function (test) {
+  var s = split(JSON.parse, null, {
+    trailing: false
+  })
+    , caughtError = false
+    , rows = []
+
+  s.on('error', function (err) {
+    caughtError = true
+  })
+
+  s.on('data', function (row) { rows.push(row) })
+
+  s.write('{"a":1}\n{"')
+  s.write('{    "')
+  s.end()
+
+  it(caughtError).equal(false)
+  it(rows).deepEqual([ { a: 1 } ])
+
+  test.done()
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             () {
+      var has = sourceMappingURL.existsIn
+      expect(has("/*# sourceMappingURL=foo */"))
+        .to.equal(true)
+    })
+
+  })
+
+
+  describe(".removeFrom", function() {
+
+    forEachComment(function(comment, description) {
+
+      it("removes the comment for " + description, function() {
+        expect(sourceMappingURL.removeFrom("code\n" + comment))
+          .to.equal("code\n")
+
+        expect(sourceMappingURL.removeFrom("code" + comment))
+          .to.equal("code")
+
+        expect(sourceMappingURL.removeFrom(comment))
+          .to.equal("")
+      })
+
+    })
+
+    forEachNonTrailingComment(function(comment, description) {
+
+      it("removes the comment for " + description, function() {
+        expect(sourceMappingURL.removeFrom("code\n" + comment.contents))
+          .to.equal("code\n" + comment.solution)
+
+        expect(sourceMappingURL.removeFrom("code" + comment.contents))
+          .to.equal("code" + comment.solution)
+
+        expect(sourceMappingURL.removeFrom(comment.contents))
+          .to.equal(comment.solution)
+      })
+
+    })
+
+
+    it("does nothing if no comment", function() {
+      expect(sourceMappingURL.removeFrom("code\n"))
+        .to.equal("code\n")
+    })
+
+
+    it("is detachable", function() {
+      var remove = sourceMappingURL.removeFrom
+      expect(remove("/*# sourceMappingURL=foo */"))
+        .to.equal("")
+    })
+
+  })
+
+
+  describe(".insertBefore", function() {
+
+    forEachComment(function(comment, description) {
+
+      it("inserts a string before the comment for " + description, function() {
+        expect(sourceMappingURL.insertBefore("code\n" + comment, "more code\n"))
+          .to.equal("code\nmore code\n" + comment)
+
+        expect(sourceMappingURL.insertBefore("code" + comment, "\nmore code"))
+          .to.equal("code\nmore code" + comment)
+
+        expect(sourceMappingURL.insertBefore(comment, "some code"))
+          .to.equal("some code" + comment)
+      })
+
+    })
+
+
+    it("inserts a string before an embedded comment", function() {
+      expect(sourceMappingURL.insertBefore("/*! Library Name v1.0.0\n" +
+        "//# sourceMappingURL=foo.js.map\n*/\n(function(){})", "code\n"))
+        .to.equal("/*! Library Name v1.0.0\ncode\n" +
+          "//# sourceMappingURL=foo.js.map\n*/\n(function(){})")
+    })
+
+
+    it("inserts a string before a leading comment", function() {
+      expect(sourceMappingURL.insertBefore("//# sourceMappingURL=foo.js.map\n" +
+        "(function(){})", "code\n"))
+        .to.equal("code\n//# sourceMappingURL=foo.js.map\n" +
+          "(function(){})")
+    })
+
+
+    it("appends if no comment", function() {
+      expect(sourceMappingURL.insertBefore("code", "\nmore code"))
+        .to.equal("code\nmore code")
+    })
+
+
+    it("is detachable", function() {
+      var insertBefore = sourceMappingURL.insertBefore
+      expect(insertBefore("/*# sourceMappingURL=foo */", "bar"))
+        .to.equal("bar/*# sourceMappingURL=foo */")
+    })
+
+  })
+
+
+  describe(".regex", function() {
+
+    it("includes ._innerRegex", function() {
+      expect(sourceMappingURL.regex.source)
+        .to.contain(sourceMappingURL._innerRegex.source)
+    })
+
+
+    var match = function(code) {
+      expect(code)
+        .to.match(sourceMappingURL.regex)
+    }
+
+    var noMatch = function(code) {
+      expect(code)
+        .not.to.match(sourceMappingURL.regex)
+    }
+
+
+    forEachComment(function(comment, description) {
+

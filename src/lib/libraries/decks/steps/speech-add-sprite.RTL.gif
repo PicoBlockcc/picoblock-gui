@@ -1,0 +1,2374 @@
+    break
+  }
+
+  var remain = pattern.slice(n)
+
+  // get the list of entries.
+  var read
+  if (prefix === null)
+    read = '.'
+  else if (isAbsolute(prefix) || isAbsolute(pattern.join('/'))) {
+    if (!prefix || !isAbsolute(prefix))
+      prefix = '/' + prefix
+    read = prefix
+  } else
+    read = prefix
+
+  var abs = this._makeAbs(read)
+
+  //if ignored, skip _processing
+  if (childrenIgnored(this, read))
+    return cb()
+
+  var isGlobStar = remain[0] === minimatch.GLOBSTAR
+  if (isGlobStar)
+    this._processGlobStar(prefix, read, abs, remain, index, inGlobStar, cb)
+  else
+    this._processReaddir(prefix, read, abs, remain, index, inGlobStar, cb)
+}
+
+Glob.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+  var self = this
+  this._readdir(abs, inGlobStar, function (er, entries) {
+    return self._processReaddir2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
+  })
+}
+
+Glob.prototype._processReaddir2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+
+  // if the abs isn't a dir, then nothing can match!
+  if (!entries)
+    return cb()
+
+  // It will only match dot entries if it starts with a dot, or if
+  // dot is set.  Stuff like @(.foo|.bar) isn't allowed.
+  var pn = remain[0]
+  var negate = !!this.minimatch.negate
+  var rawGlob = pn._glob
+  var dotOk = this.dot || rawGlob.charAt(0) === '.'
+
+  var matchedEntries = []
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i]
+    if (e.charAt(0) !== '.' || dotOk) {
+      var m
+      if (negate && !prefix) {
+        m = !e.match(pn)
+      } else {
+        m = e.match(pn)
+      }
+      if (m)
+        matchedEntries.push(e)
+    }
+  }
+
+  //console.error('prd2', prefix, entries, remain[0]._glob, matchedEntries)
+
+  var len = matchedEntries.length
+  // If there are no matched entries, then nothing matches.
+  if (len === 0)
+    return cb()
+
+  // if this is the last remaining pattern bit, then no need for
+  // an additional stat *unless* the user has specified mark or
+  // stat explicitly.  We know they exist, since readdir returned
+  // them.
+
+  if (remain.length === 1 && !this.mark && !this.stat) {
+    if (!this.matches[index])
+      this.matches[index] = Object.create(null)
+
+    for (var i = 0; i < len; i ++) {
+      var e = matchedEntries[i]
+      if (prefix) {
+        if (prefix !== '/')
+          e = prefix + '/' + e
+        else
+          e = prefix + e
+      }
+
+      if (e.charAt(0) === '/' && !this.nomount) {
+        e = path.join(this.root, e)
+      }
+      this._emitMatch(index, e)
+    }
+    // This was the last one, and no stats were needed
+    return cb()
+  }
+
+  // now test all matched entries as stand-ins for that part
+  // of the pattern.
+  remain.shift()
+  for (var i = 0; i < len; i ++) {
+    var e = matchedEntries[i]
+    var newPattern
+    if (prefix) {
+      if (prefix !== '/')
+        e = prefix + '/' + e
+      else
+        e = prefix + e
+    }
+    this._process([e].concat(remain), index, inGlobStar, cb)
+  }
+  cb()
+}
+
+Glob.prototype._emitMatch = function (index, e) {
+  if (this.aborted)
+    return
+
+  if (isIgnored(this, e))
+    return
+
+  if (this.paused) {
+    this._emitQueue.push([index, e])
+    return
+  }
+
+  var abs = isAbsolute(e) ? e : this._makeAbs(e)
+
+  if (this.mark)
+    e = this._mark(e)
+
+  if (this.absolute)
+    e = abs
+
+  if (this.matches[index][e])
+    return
+
+  if (this.nodir) {
+    var c = this.cache[abs]
+    if (c === 'DIR' || Array.isArray(c))
+      return
+  }
+
+  this.matches[index][e] = true
+
+  var st = this.statCache[abs]
+  if (st)
+    this.emit('stat', e, st)
+
+  this.emit('match', e)
+}
+
+Glob.prototype._readdirInGlobStar = function (abs, cb) {
+  if (this.aborted)
+    return
+
+  // follow all symlinked directories forever
+  // just proceed as if this is a non-globstar situation
+  if (this.follow)
+    return this._readdir(abs, false, cb)
+
+  var lstatkey = 'lstat\0' + abs
+  var self = this
+  var lstatcb = inflight(lstatkey, lstatcb_)
+
+  if (lstatcb)
+    fs.lstat(abs, lstatcb)
+
+  function lstatcb_ (er, lstat) {
+    if (er && er.code === 'ENOENT')
+      return cb()
+
+    var isSym = lstat && lstat.isSymbolicLink()
+    self.symlinks[abs] = isSym
+
+    // If it's not a symlink or a dir, then it's definitely a regular file.
+    // don't bother doing a readdir in that case.
+    if (!isSym && lstat && !lstat.isDirectory()) {
+      self.cache[abs] = 'FILE'
+      cb()
+    } else
+      self._readdir(abs, false, cb)
+  }
+}
+
+Glob.prototype._readdir = function (abs, inGlobStar, cb) {
+  if (this.aborted)
+    return
+
+  cb = inflight('readdir\0'+abs+'\0'+inGlobStar, cb)
+  if (!cb)
+    return
+
+  //console.error('RD %j %j', +inGlobStar, abs)
+  if (inGlobStar && !ownProp(this.symlinks, abs))
+    return this._readdirInGlobStar(abs, cb)
+
+  if (ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+    if (!c || c === 'FILE')
+      return cb()
+
+    if (Array.isArray(c))
+      return cb(null, c)
+  }
+
+  var self = this
+  fs.readdir(abs, readdirCb(this, abs, cb))
+}
+
+function readdirCb (self, abs, cb) {
+  return function (er, entries) {
+    if (er)
+      self._readdirError(abs, er, cb)
+    else
+      self._readdirEntries(abs, entries, cb)
+  }
+}
+
+Glob.prototype._readdirEntries = function (abs, entries, cb) {
+  if (this.aborted)
+    return
+
+  // if we haven't asked to stat everything, then just
+  // assume that everything in there exists, so we can avoid
+  // having to stat it a second time.
+  if (!this.mark && !this.stat) {
+    for (var i = 0; i < entries.length; i ++) {
+      var e = entries[i]
+      if (abs === '/')
+        e = abs + e
+      else
+        e = abs + '/' + e
+      this.cache[e] = true
+    }
+  }
+
+  this.cache[abs] = entries
+  return cb(null, entries)
+}
+
+Glob.prototype._readdirError = function (f, er, cb) {
+  if (this.aborted)
+    return
+
+  // handle errors, and cache the information
+  switch (er.code) {
+    case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
+    case 'ENOTDIR': // totally normal. means it *does* exist.
+      var abs = this._makeAbs(f)
+      this.cache[abs] = 'FILE'
+      if (abs === this.cwdAbs) {
+        var error = new Error(er.code + ' invalid cwd ' + this.cwd)
+        error.path = this.cwd
+        error.code = er.code
+        this.emit('error', error)
+        this.abort()
+      }
+      break
+
+    case 'ENOENT': // not terribly unusual
+    case 'ELOOP':
+    case 'ENAMETOOLONG':
+    case 'UNKNOWN':
+      this.cache[this._makeAbs(f)] = false
+      break
+
+    default: // some unusual error.  Treat as failure.
+      this.cache[this._makeAbs(f)] = false
+      if (this.strict) {
+        this.emit('error', er)
+        // If the error is handled, then we abort
+        // if not, we threw out of here
+        this.abort()
+      }
+      if (!this.silent)
+        console.error('glob error', er)
+      break
+  }
+
+  return cb()
+}
+
+Glob.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+  var self = this
+  this._readdir(abs, inGlobStar, function (er, entries) {
+    self._processGlobStar2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
+  })
+}
+
+
+Glob.prototype._processGlobStar2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+  //console.error('pgs2', prefix, remain[0], entries)
+
+  // no entries means not a dir, so it can never have matches
+  // foo.txt/** doesn't match foo.txt
+  if (!entries)
+    return cb()
+
+  // test without the globstar, and with every child both below
+  // and replacing the globstar.
+  var remainWithoutGlobStar = remain.slice(1)
+  var gspref = prefix ? [ prefix ] : []
+  var noGlobStar = gspref.concat(remainWithoutGlobStar)
+
+  // the noGlobStar pattern exits the inGlobStar state
+  this._process(noGlobStar, index, false, cb)
+
+  var isSym = this.symlinks[abs]
+  var len = entries.length
+
+  // If it's a symlink, and we're in a globstar, then stop
+  if (isSym && inGlobStar)
+    return cb()
+
+  for (var i = 0; i < len; i++) {
+    var e = entries[i]
+    if (e.charAt(0) === '.' && !this.dot)
+      continue
+
+    // these two cases enter the inGlobStar state
+    var instead = gspref.concat(entries[i], remainWithoutGlobStar)
+    this._process(instead, index, true, cb)
+
+    var below = gspref.concat(entries[i], remain)
+    this._process(below, index, true, cb)
+  }
+
+  cb()
+}
+
+Glob.prototype._processSimple = function (prefix, index, cb) {
+  // XXX review this.  Shouldn't it be doing the mounting etc
+  // before doing stat?  kinda weird?
+  var self = this
+  this._stat(prefix, function (er, exists) {
+    self._processSimple2(prefix, index, er, exists, cb)
+  })
+}
+Glob.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
+
+  //console.error('ps2', prefix, exists)
+
+  if (!this.matches[index])
+    this.matches[index] = Object.create(null)
+
+  // If it doesn't exist, then just mark the lack of results
+  if (!exists)
+    return cb()
+
+  if (prefix && isAbsolute(prefix) && !this.nomount) {
+    var trail = /[\/\\]$/.test(prefix)
+    if (prefix.charAt(0) === '/') {
+      prefix = path.join(this.root, prefix)
+    } else {
+      prefix = path.resolve(this.root, prefix)
+      if (trail)
+        prefix += '/'
+    }
+  }
+
+  if (process.platform === 'win32')
+    prefix = prefix.replace(/\\/g, '/')
+
+  // Mark this as a match
+  this._emitMatch(index, prefix)
+  cb()
+}
+
+// Returns either 'DIR', 'FILE', or false
+Glob.prototype._stat = function (f, cb) {
+  var abs = this._makeAbs(f)
+  var needDir = f.slice(-1) === '/'
+
+  if (f.length > this.maxLength)
+    return cb()
+
+  if (!this.stat && ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+
+    if (Array.isArray(c))
+      c = 'DIR'
+
+    // It exists, but maybe not how we need it
+    if (!needDir || c === 'DIR')
+      return cb(null, c)
+
+    if (needDir && c === 'FILE')
+      return cb()
+
+    // otherwise we have to stat, because maybe c=true
+    // if we know it exists, but not what it is.
+  }
+
+  var exists
+  var stat = this.statCache[abs]
+  if (stat !== undefined) {
+    if (stat === false)
+      return cb(null, stat)
+    else {
+      var type = stat.isDirectory() ? 'DIR' : 'FILE'
+      if (needDir && type === 'FILE')
+        return cb()
+      else
+        return cb(null, type, stat)
+    }
+  }
+
+  var self = this
+  var statcb = inflight('stat\0' + abs, lstatcb_)
+  if (statcb)
+    fs.lstat(abs, statcb)
+
+  function lstatcb_ (er, lstat) {
+    if (lstat && lstat.isSymbolicLink()) {
+      // If it's a symlink, then treat it as the target, unless
+      // the target does not exist, then treat it as a file.
+      return fs.stat(abs, function (er, stat) {
+        if (er)
+          self._stat2(f, abs, null, lstat, cb)
+        else
+          self._stat2(f, abs, er, stat, cb)
+      })
+    } else {
+      self._stat2(f, abs, er, lstat, cb)
+    }
+  }
+}
+
+Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
+  if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
+    this.statCache[abs] = false
+    return cb()
+  }
+
+  var needDir = f.slice(-1) === '/'
+  this.statCache[abs] = stat
+
+  if (abs.slice(-1) === '/' && stat && !stat.isDirectory())
+    return cb(null, false, stat)
+
+  var c = true
+  if (stat)
+    c = stat.isDirectory() ? 'DIR' : 'FILE'
+  this.cache[abs] = this.cache[abs] || c
+
+  if (needDir && c === 'FILE')
+    return cb()
+
+  return cb(null, c, stat)
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'use strict';
+
+// do not edit .js files directly - edit src/index.jst
+
+
+
+module.exports = function equal(a, b) {
+  if (a === b) return true;
+
+  if (a && b && typeof a == 'object' && typeof b == 'object') {
+    if (a.constructor !== b.constructor) return false;
+
+    var length, i, keys;
+    if (Array.isArray(a)) {
+      length = a.length;
+      if (length != b.length) return false;
+      for (i = length; i-- !== 0;)
+        if (!equal(a[i], b[i])) return false;
+      return true;
+    }
+
+
+
+    if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+    if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+    if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
+
+    keys = Object.keys(a);
+    length = keys.length;
+    if (length !== Object.keys(b).length) return false;
+
+    for (i = length; i-- !== 0;)
+      if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+
+    for (i = length; i-- !== 0;) {
+      var key = keys[i];
+
+      if (!equal(a[key], b[key])) return false;
+    }
+
+    return true;
+  }
+
+  // true if both NaN, false otherwise
+  return a!==a && b!==b;
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ */
+
+function setup(env) {
+	createDebug.debug = createDebug;
+	createDebug.default = createDebug;
+	createDebug.coerce = coerce;
+	createDebug.disable = disable;
+	createDebug.enable = enable;
+	createDebug.enabled = enabled;
+	createDebug.humanize = require('ms');
+	createDebug.destroy = destroy;
+
+	Object.keys(env).forEach(key => {
+		createDebug[key] = env[key];
+	});
+
+	/**
+	* The currently active debug mode names, and names to skip.
+	*/
+
+	createDebug.names = [];
+	createDebug.skips = [];
+
+	/**
+	* Map of special "%n" handling functions, for the debug "format" argument.
+	*
+	* Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+	*/
+	createDebug.formatters = {};
+
+	/**
+	* Selects a color for a debug namespace
+	* @param {String} namespace The namespace string for the for the debug instance to be colored
+	* @return {Number|String} An ANSI color code for the given namespace
+	* @api private
+	*/
+	function selectColor(namespace) {
+		let hash = 0;
+
+		for (let i = 0; i < namespace.length; i++) {
+			hash = ((hash << 5) - hash) + namespace.charCodeAt(i);
+			hash |= 0; // Convert to 32bit integer
+		}
+
+		return createDebug.colors[Math.abs(hash) % createDebug.colors.length];
+	}
+	createDebug.selectColor = selectColor;
+
+	/**
+	* Create a debugger with the given `namespace`.
+	*
+	* @param {String} namespace
+	* @return {Function}
+	* @api public
+	*/
+	function createDebug(namespace) {
+		let prevTime;
+		let enableOverride = null;
+
+		function debug(...args) {
+			// Disabled?
+			if (!debug.enabled) {
+				return;
+			}
+
+			const self = debug;
+
+			// Set `diff` timestamp
+			const curr = Number(new Date());
+			const ms = curr - (prevTime || curr);
+			self.diff = ms;
+			self.prev = prevTime;
+			self.curr = curr;
+			prevTime = curr;
+
+			args[0] = createDebug.coerce(args[0]);
+
+			if (typeof args[0] !== 'string') {
+				// Anything else let's inspect with %O
+				args.unshift('%O');
+			}
+
+			// Apply any `formatters` transformations
+			let index = 0;
+			args[0] = args[0].replace(/%([a-zA-Z%])/g, (match, format) => {
+				// If we encounter an escaped % then don't increase the array index
+				if (match === '%%') {
+					return '%';
+				}
+				index++;
+				const formatter = createDebug.formatters[format];
+				if (typeof formatter === 'function') {
+					const val = args[index];
+					match = formatter.call(self, val);
+
+					// Now we need to remove `args[index]` since it's inlined in the `format`
+					args.splice(index, 1);
+					index--;
+				}
+				return match;
+			});
+
+			// Apply env-specific formatting (colors, etc.)
+			createDebug.formatArgs.call(self, args);
+
+			const logFn = self.log || createDebug.log;
+			logFn.apply(self, args);
+		}
+
+		debug.namespace = namespace;
+		debug.useColors = createDebug.useColors();
+		debug.color = createDebug.selectColor(namespace);
+		debug.extend = extend;
+		debug.destroy = createDebug.destroy; // XXX Temporary. Will be removed in the next major release.
+
+		Object.defineProperty(debug, 'enabled', {
+			enumerable: true,
+			configurable: false,
+			get: () => enableOverride === null ? createDebug.enabled(namespace) : enableOverride,
+			set: v => {
+				enableOverride = v;
+			}
+		});
+
+		// Env-specific initialization logic for debug instances
+		if (typeof createDebug.init === 'function') {
+			createDebug.init(debug);
+		}
+
+		return debug;
+	}
+
+	function extend(namespace, delimiter) {
+		const newDebug = createDebug(this.namespace + (typeof delimiter === 'undefined' ? ':' : delimiter) + namespace);
+		newDebug.log = this.log;
+		return newDebug;
+	}
+
+	/**
+	* Enables a debug mode by namespaces. This can include modes
+	* separated by a colon and wildcards.
+	*
+	* @param {String} namespaces
+	* @api public
+	*/
+	function enable(namespaces) {
+		createDebug.save(namespaces);
+
+		createDebug.names = [];
+		createDebug.skips = [];
+
+		let i;
+		const split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
+		const len = split.length;
+
+		for (i = 0; i < len; i++) {
+			if (!split[i]) {
+				// ignore empty strings
+				continue;
+			}
+
+			namespaces = split[i].replace(/\*/g, '.*?');
+
+			if (namespaces[0] === '-') {
+				createDebug.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+			} else {
+				createDebug.names.push(new RegExp('^' + namespaces + '$'));
+			}
+		}
+	}
+
+	/**
+	* Disable debug output.
+	*
+	* @return {String} namespaces
+	* @api public
+	*/
+	function disable() {
+		const namespaces = [
+			...createDebug.names.map(toNamespace),
+			...createDebug.skips.map(toNamespace).map(namespace => '-' + namespace)
+		].join(',');
+		createDebug.enable('');
+		return namespaces;
+	}
+
+	/**
+	* Returns true if the given mode name is enabled, false otherwise.
+	*
+	* @param {String} name
+	* @return {Boolean}
+	* @api public
+	*/
+	function enabled(name) {
+		if (name[name.length - 1] === '*') {
+			return true;
+		}
+
+		let i;
+		let len;
+
+		for (i = 0, len = createDebug.skips.length; i < len; i++) {
+			if (createDebug.skips[i].test(name)) {
+				return false;
+			}
+		}
+
+		for (i = 0, len = createDebug.names.length; i < len; i++) {
+			if (createDebug.names[i].test(name)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	* Convert regexp to namespace
+	*
+	* @param {RegExp} regxep
+	* @return {String} namespace
+	* @api private
+	*/
+	function toNamespace(regexp) {
+		return regexp.toString()
+			.substring(2, regexp.toString().length - 2)
+			.replace(/\.\*\?$/, '*');
+	}
+
+	/**
+	* Coerce `val`.
+	*
+	* @param {Mixed} val
+	* @return {Mixed}
+	* @api private
+	*/
+	function coerce(val) {
+		if (val instanceof Error) {
+			return val.stack || val.message;
+		}
+		return val;
+	}
+
+	/**
+	* XXX DO NOT USE. This is a temporary stub function.
+	* XXX It WILL be removed in the next major release.
+	*/
+	function destroy() {
+		console.warn('Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.');
+	}
+
+	createDebug.enable(createDebug.load());
+
+	return createDebug;
+}
+
+module.exports = setup;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   /tmp
+ *     program.chdir
+ *     // => "/tmp"
+ *
+ *     // optional argument
+ *     program.option('-c, --cheese [type]', 'add cheese [marble]');
+ *
+ * @param {String} flags
+ * @param {String} description
+ * @param {Function|*} [fn] or default
+ * @param {*} [defaultValue]
+ * @return {Command} for chaining
+ * @api public
+ */
+
+Command.prototype.option = function(flags, description, fn, defaultValue) {
+  var self = this
+    , option = new Option(flags, description)
+    , oname = option.name()
+    , name = option.attributeName();
+
+  // default as 3rd arg
+  if (typeof fn != 'function') {
+    if (fn instanceof RegExp) {
+      var regex = fn;
+      fn = function(val, def) {
+        var m = regex.exec(val);
+        return m ? m[0] : def;
+      }
+    }
+    else {
+      defaultValue = fn;
+      fn = null;
+    }
+  }
+
+  // preassign default value only for --no-*, [optional], or <required>
+  if (false == option.bool || option.optional || option.required) {
+    // when --no-* we make sure default is true
+    if (false == option.bool) defaultValue = true;
+    // preassign only if we have a default
+    if (undefined !== defaultValue) {
+      self[name] = defaultValue;
+      option.defaultValue = defaultValue;
+    }
+  }
+
+  // register the option
+  this.options.push(option);
+
+  // when it's passed assign the value
+  // and conditionally invoke the callback
+  this.on('option:' + oname, function(val) {
+    // coercion
+    if (null !== val && fn) val = fn(val, undefined === self[name]
+      ? defaultValue
+      : self[name]);
+
+    // unassigned or bool
+    if ('boolean' == typeof self[name] || 'undefined' == typeof self[name]) {
+      // if no value, bool true, and we have a default, then use it!
+      if (null == val) {
+        self[name] = option.bool
+          ? defaultValue || true
+          : false;
+      } else {
+        self[name] = val;
+      }
+    } else if (null !== val) {
+      // reassign
+      self[name] = val;
+    }
+  });
+
+  return this;
+};
+
+/**
+ * Allow unknown options on the command line.
+ *
+ * @param {Boolean} arg if `true` or omitted, no error will be thrown
+ * for unknown options.
+ * @api public
+ */
+Command.prototype.allowUnknownOption = function(arg) {
+    this._allowUnknownOption = arguments.length === 0 || arg;
+    return this;
+};
+
+/**
+ * Parse `argv`, settings options and invoking commands when defined.
+ *
+ * @param {Array} argv
+ * @return {Command} for chaining
+ * @api public
+ */
+
+Command.prototype.parse = function(argv) {
+  // implicit help
+  if (this.executables) this.addImplicitHelpCommand();
+
+  // store raw args
+  this.rawArgs = argv;
+
+  // guess name
+  this._name = this._name || basename(argv[1], '.js');
+
+  // github-style sub-commands with no sub-command
+  if (this.executables && argv.length < 3 && !this.defaultExecutable) {
+    // this user needs help
+    argv.push('--help');
+  }
+
+  // process argv
+  var parsed = this.parseOptions(this.normalize(argv.slice(2)));
+  var args = this.args = parsed.args;
+
+  var result = this.parseArgs(this.args, parsed.unknown);
+
+  // executable sub-commands
+  var name = result.args[0];
+
+  var aliasCommand = null;
+  // check alias of sub commands
+  if (name) {
+    aliasCommand = this.commands.filter(function(command) {
+      return command.alias() === name;
+    })[0];
+  }
+
+  if (this._execs[name] && typeof this._execs[name] != "function") {
+    return this.executeSubCommand(argv, args, parsed.unknown);
+  } else if (aliasCommand) {
+    // is alias of a subCommand
+    args[0] = aliasCommand._name;
+    return this.executeSubCommand(argv, args, parsed.unknown);
+  } else if (this.defaultExecutable) {
+    // use the default subcommand
+    args.unshift(this.defaultExecutable);
+    return this.executeSubCommand(argv, args, parsed.unknown);
+  }
+
+  return result;
+};
+
+/**
+ * Execute a sub-command executable.
+ *
+ * @param {Array} argv
+ * @param {Array} args
+ * @param {Array} unknown
+ * @api private
+ */
+
+Command.prototype.executeSubCommand = function(argv, args, unknown) {
+  args = args.concat(unknown);
+
+  if (!args.length) this.help();
+  if ('help' == args[0] && 1 == args.length) this.help();
+
+  // <cmd> --help
+  if ('help' == args[0]) {
+    args[0] = args[1];
+    args[1] = '--help';
+  }
+
+  // executable
+  var f = argv[1];
+  // name of the subcommand, link `pm-install`
+  var bin = basename(f, '.js') + '-' + args[0];
+
+
+  // In case of globally installed, get the base dir where executable
+  //  subcommand file should be located at
+  var baseDir
+    , link = fs.lstatSync(f).isSymbolicLink() ? fs.readlinkSync(f) : f;
+
+  // when symbolink is relative path
+  if (link !== f && link.charAt(0) !== '/') {
+    link = path.join(dirname(f), link)
+  }
+  baseDir = dirname(link);
+
+  // prefer local `./<bin>` to bin in the $PATH
+  var localBin = path.join(baseDir, bin);
+
+  // whether bin file is a js script with explicit `.js` extension
+  var isExplicitJS = false;
+  if (exists(localBin + '.js')) {
+    bin = localBin + '.js';
+    isExplicitJS = true;
+  } else if (exists(localBin)) {
+    bin = localBin;
+  }
+
+  args = args.slice(1);
+
+  var proc;
+  if (process.platform !== 'win32') {
+    if (isExplicitJS) {
+      args.unshift(bin);
+      // add executable arguments to spawn
+      args = (process.execArgv || []).concat(args);
+
+      proc = spawn(process.argv[0], args, { stdio: 'inherit', customFds: [0, 1, 2] });
+    } else {
+      proc = spawn(bin, args, { stdio: 'inherit', customFds: [0, 1, 2] });
+    }
+  } else {
+    args.unshift(bin);
+    proc = spawn(process.execPath, args, { stdio: 'inherit'});
+  }
+
+  var signals = ['SIGUSR1', 'SIGUSR2', 'SIGTERM', 'SIGINT', 'SIGHUP'];
+  signals.forEach(function(signal) {
+    process.on(signal, function(){
+      if ((proc.killed === false) && (proc.exitCode === null)){
+        proc.kill(signal);
+      }
+    });
+  });
+  proc.on('close', process.exit.bind(process));
+  proc.on('error', function(err) {
+    if (err.code == "ENOENT") {
+      console.error('\n  %s(1) does not exist, try --help\n', bin);
+    } else if (err.code == "EACCES") {
+      console.error('\n  %s(1) not executable. try chmod or run with root\n', bin);
+    }
+    process.exit(1);
+  });
+
+  // Store the reference to the child process
+  this.runningCommand = proc;
+};
+
+/**
+ * Normalize `args`, splitting joined short flags. For example
+ * the arg "-abc" is equivalent to "-a -b -c".
+ * This also normalizes equal sign and splits "--abc=def" into "--abc def".
+ *
+ * @param {Array} args
+ * @return {Array}
+ * @api private
+ */
+
+Command.prototype.normalize = function(args) {
+  var ret = []
+    , arg
+    , lastOpt
+    , index;
+
+  for (var i = 0, len = args.length; i < len; ++i) {
+    arg = args[i];
+    if (i > 0) {
+      lastOpt = this.optionFor(args[i-1]);
+    }
+
+    if (arg === '--') {
+      // Honor option terminator
+      ret = ret.concat(args.slice(i));
+      break;
+    } else if (lastOpt && lastOpt.required) {
+      ret.push(arg);
+    } else if (arg.length > 1 && '-' == arg[0] && '-' != arg[1]) {
+      arg.slice(1).split('').forEach(function(c) {
+        ret.push('-' + c);
+      });
+    } else if (/^--/.test(arg) && ~(index = arg.indexOf('='))) {
+      ret.push(arg.slice(0, index), arg.slice(index + 1));
+    } else {
+      ret.push(arg);
+    }
+  }
+
+  return ret;
+};
+
+/**
+ * Parse command `args`.
+ *
+ * When listener(s) are available those
+ * callbacks are invoked, otherwise the "*"
+ * event is emitted and those actions are invoked.
+ *
+ * @param {Array} args
+ * @return {Command} for chaining
+ * @api private
+ */
+
+Command.prototype.parseArgs = function(args, unknown) {
+  var name;
+
+  if (args.length) {
+    name = args[0];
+    if (this.listeners('command:' + name).length) {
+      this.emit('command:' + args.shift(), args, unknown);
+    } else {
+      this.emit('command:*', args);
+    }
+  } else {
+    outputHelpIfNecessary(this, unknown);
+
+    // If there were no args and we have unknown options,
+    // then they are extraneous and we need to error.
+    if (unknown.length > 0) {
+      this.unknownOption(unknown[0]);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return an option matching `arg` if any.
+ *
+ * @param {String} arg
+ * @return {Option}
+ * @api private
+ */
+
+Command.prototype.optionFor = function(arg) {
+  for (var i = 0, len = this.options.length; i < len; ++i) {
+    if (this.options[i].is(arg)) {
+      return this.options[i];
+    }
+  }
+};
+
+/**
+ * Parse options from `argv` returning `argv`
+ * void of these options.
+ *
+ * @param {Array} argv
+ * @return {Array}
+ * @api public
+ */
+
+Command.prototype.parseOptions = function(argv) {
+  var args = []
+    , len = argv.length
+    , literal
+    , option
+    , arg;
+
+  var unknownOptions = [];
+
+  // parse options
+  for (var i = 0; i < len; ++i) {
+    arg = argv[i];
+
+    // literal args after --
+    if (literal) {
+      args.push(arg);
+      continue;
+    }
+
+    if ('--' == arg) {
+      literal = true;
+      continue;
+    }
+
+    // find matching Option
+    option = this.optionFor(arg);
+
+    // option is defined
+    if (option) {
+      // requires arg
+      if (option.required) {
+        arg = argv[++i];
+        if (null == arg) return this.optionMissingArgument(option);
+        this.emit('option:' + option.name(), arg);
+      // optional arg
+      } else if (option.optional) {
+        arg = argv[i+1];
+        if (null == arg || ('-' == arg[0] && '-' != arg)) {
+          arg = null;
+        } else {
+          ++i;
+        }
+        this.emit('option:' + option.name(), arg);
+      // bool
+      } else {
+        this.emit('option:' + option.name());
+      }
+      continue;
+    }
+
+    // looks like an option
+    if (arg.length > 1 && '-' == arg[0]) {
+      unknownOptions.push(arg);
+
+      // If the next argument looks like it might be
+      // an argument for this option, we pass it on.
+      // If it isn't, then it'll simply be ignored
+      if (argv[i+1] && '-' != argv[i+1][0]) {
+        unknownOptions.push(argv[++i]);
+      }
+      continue;
+    }
+
+    // arg
+    args.push(arg);
+  }
+
+  return { args: args, unknown: unknownOptions };
+};
+
+/**
+ * Return an object containing options as key-value pairs
+ *
+ * @return {Object}
+ * @api public
+ */
+Command.prototype.opts = function() {
+  var result = {}
+    , len = this.options.length;
+
+  for (var i = 0 ; i < len; i++) {
+    var key = this.options[i].attributeName();
+    result[key] = key === 'version' ? this._version : this[key];
+  }
+  return result;
+};
+
+/**
+ * Argument `name` is missing.
+ *
+ * @param {String} name
+ * @api private
+ */
+
+Command.prototype.missingArgument = function(name) {
+  console.error();
+  console.error("  error: missing required argument `%s'", name);
+  console.error();
+  process.exit(1);
+};
+
+/**
+ * `Option` is missing an argument, but received `flag` or nothing.
+ *
+ * @param {String} option
+ * @param {String} flag
+ * @api private
+ */
+
+Command.prototype.optionMissingArgument = function(option, flag) {
+  console.error();
+  if (flag) {
+    console.error("  error: option `%s' argument missing, got `%s'", option.flags, flag);
+  } else {
+    console.error("  error: option `%s' argument missing", option.flags);
+  }
+  console.error();
+  process.exit(1);
+};
+
+/**
+ * Unknown option `flag`.
+ *
+ * @param {String} flag
+ * @api private
+ */
+
+Command.prototype.unknownOption = function(flag) {
+  if (this._allowUnknownOption) return;
+  console.error();
+  console.error("  error: unknown option `%s'", flag);
+  console.error();
+  process.exit(1);
+};
+
+/**
+ * Variadic argument with `name` is not the last argument as required.
+ *
+ * @param {String} name
+ * @api private
+ */
+
+Command.prototype.variadicArgNotLast = function(name) {
+  console.error();
+  console.error("  error: variadic arguments must be last `%s'", name);
+  console.error();
+  process.exit(1);
+};
+
+/**
+ * Set the program version to `str`.
+ *
+ * This method auto-registers the "-V, --version" flag
+ * which will print the version number when passed.
+ *
+ * @param {String} str
+ * @param {String} [flags]
+ * @return {Command} for chaining
+ * @api public
+ */
+
+Command.prototype.version = function(str, flags) {
+  if (0 == arguments.length) return this._version;
+  this._version = str;
+  flags = flags || '-V, --version';
+  this.option(flags, 'output the version number');
+  this.on('option:version', function() {
+    process.stdout.write(str + '\n');
+    process.exit(0);
+  });
+  return this;
+};
+
+/**
+ * Set the description to `str`.
+ *
+ * @param {String} str
+ * @return {String|Command}
+ * @api public
+ */
+
+Command.prototype.description = function(str) {
+  if (0 === arguments.length) return this._description;
+  this._description = str;
+  return this;
+};
+
+/**
+ * Set an alias for the command
+ *
+ * @param {String} alias
+ * @return {String|Command}
+ * @api public
+ */
+
+Command.prototype.alias = function(alias) {
+  var command = this;
+  if(this.commands.length !== 0) {
+    command = this.commands[this.commands.length - 1]
+  }
+
+  if (arguments.length === 0) return command._alias;
+
+  if (alias === command._name) throw new Error('Command alias can\'t be the same as its name');
+
+  command._alias = alias;
+  return this;
+};
+
+/**
+ * Set / get the command usage `str`.
+ *
+ * @param {String} str
+ * @return {String|Command}
+ * @api public
+ */
+
+Command.prototype.usage = function(str) {
+  var args = this._args.map(function(arg) {
+    return humanReadableArgName(arg);
+  });
+
+  var usage = '[options]'
+    + (this.commands.length ? ' [command]' : '')
+    + (this._args.length ? ' ' + args.join(' ') : '');
+
+  if (0 == arguments.length) return this._usage || usage;
+  this._usage = str;
+
+  return this;
+};
+
+/**
+ * Get or set the name of the command
+ *
+ * @param {String} str
+ * @return {String|Command}
+ * @api public
+ */
+
+Command.prototype.name = function(str) {
+  if (0 === arguments.length) return this._name;
+  this._name = str;
+  return this;
+};
+
+/**
+ * Return the largest option length.
+ *
+ * @return {Number}
+ * @api private
+ */
+
+Command.prototype.largestOptionLength = function() {
+  return this.options.reduce(function(max, option) {
+    return Math.max(max, option.flags.length);
+  }, 0);
+};
+
+/**
+ * Return help for options.
+ *
+ * @return {String}
+ * @api private
+ */
+
+Command.prototype.optionHelp = function() {
+  var width = this.largestOptionLength();
+
+  // Append the help information
+  return this.options.map(function(option) {
+      return pad(option.flags, width) + '  ' + option.description
+        + ((option.bool != false && option.defaultValue !== undefined) ? ' (default: ' + option.defaultValue + ')' : '');
+  }).concat([pad('-h, --help', width) + '  ' + 'output usage information'])
+    .join('\n');
+};
+
+/**
+ * Return command help documentation.
+ *
+ * @return {String}
+ * @api private
+ */
+
+Command.prototype.commandHelp = function() {
+  if (!this.commands.length) return '';
+
+  var commands = this.commands.filter(function(cmd) {
+    return !cmd._noHelp;
+  }).map(function(cmd) {
+    var args = cmd._args.map(function(arg) {
+      return humanReadableArgName(arg);
+    }).join(' ');
+
+    return [
+      cmd._name
+        + (cmd._alias ? '|' + cmd._alias : '')
+        + (cmd.options.length ? ' [options]' : '')
+        + (args ? ' ' + args : '')
+      , cmd._description
+    ];
+  });
+
+  var width = commands.reduce(function(max, command) {
+    return Math.max(max, command[0].length);
+  }, 0);
+
+  return [
+    ''
+    , '  Commands:'
+    , ''
+    , commands.map(function(cmd) {
+      var desc = cmd[1] ? '  ' + cmd[1] : '';
+      return (desc ? pad(cmd[0], width) : cmd[0]) + desc;
+    }).join('\n').replace(/^/gm, '    ')
+    , ''
+  ].join('\n');
+};
+
+/**
+ * Return program help documentation.
+ *
+ * @return {String}
+ * @api private
+ */
+
+Command.prototype.helpInformation = function() {
+  var desc = [];
+  if (this._description) {
+    desc = [
+      '  ' + this._description
+      , ''
+    ];
+  }
+
+  var cmdName = this._name;
+  if (this._alias) {
+    cmdName = cmdName + '|' + this._alias;
+  }
+  var usage = [
+    ''
+    ,'  Usage: ' + cmdName + ' ' + this.usage()
+    , ''
+  ];
+
+  var cmds = [];
+  var commandHelp = this.commandHelp();
+  if (commandHelp) cmds = [commandHelp];
+
+  var options = [
+    ''
+    , '  Options:'
+    , ''
+    , '' + this.optionHelp().replace(/^/gm, '    ')
+    , ''
+  ];
+
+  return usage
+    .concat(desc)
+    .concat(options)
+    .concat(cmds)
+    .join('\n');
+};
+
+/**
+ * Output help information for this command
+ *
+ * @api public
+ */
+
+Command.prototype.outputHelp = function(cb) {
+  if (!cb) {
+    cb = function(passthru) {
+      return passthru;
+    }
+  }
+  process.stdout.write(cb(this.heessible": true
+  },
+  "application/mbms-associated-procedure-description+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-deregister+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-envelope+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-msk+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-msk-response+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-protection-description+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-reception-report+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-register+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-register-response+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-schedule+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-user-service-description+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbox": {
+    "source": "iana",
+    "extensions": ["mbox"]
+  },
+  "application/media-policy-dataset+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/media_control+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mediaservercontrol+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["mscml"]
+  },
+  "application/merge-patch+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/metalink+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["metalink"]
+  },
+  "application/metalink4+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["meta4"]
+  },
+  "application/mets+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["mets"]
+  },
+  "application/mf4": {
+    "source": "iana"
+  },
+  "application/mikey": {
+    "source": "iana"
+  },
+  "application/mipc": {
+    "source": "iana"
+  },
+  "application/mmt-aei+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["maei"]
+  },
+  "application/mmt-usd+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["musd"]
+  },
+  "application/mods+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["mods"]
+  },
+  "application/moss-keys": {
+    "source": "iana"
+  },
+  "application/moss-signature": {
+    "source": "iana"
+  },
+  "application/mosskey-data": {
+    "source": "iana"
+  },
+  "application/mosskey-request": {
+    "source": "iana"
+  },
+  "application/mp21": {
+    "source": "iana",
+    "extensions": ["m21","mp21"]
+  },
+  "application/mp4": {
+    "source": "iana",
+    "extensions": ["mp4s","m4p"]
+  },
+  "application/mpeg4-generic": {
+    "source": "iana"
+  },
+  "application/mpeg4-iod": {
+    "source": "iana"
+  },
+  "application/mpeg4-iod-xmt": {
+    "source": "iana"
+  },
+  "application/mrb-consumer+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xdf"]
+  },
+  "application/mrb-publish+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xdf"]
+  },
+  "application/msc-ivr+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/msc-mixer+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/msword": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["doc","dot"]
+  },
+  "application/mud+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/multipart-core": {
+    "source": "iana"
+  },
+  "application/mxf": {
+    "source": "iana",
+    "extensions": ["mxf"]
+  },
+  "application/n-quads": {
+    "source": "iana",
+    "extensions": ["nq"]
+  },
+  "application/n-triples": {
+    "source": "iana",
+    "extensions": ["nt"]
+  },
+  "application/nasdata": {
+    "source": "iana"
+  },
+  "application/news-checkgroups": {
+    "source": "iana",
+    "charset": "US-ASCII"
+  },
+  "application/news-groupinfo": {
+    "source": "iana",
+    "charset": "US-ASCII"
+  },
+  "application/news-transmission": {
+    "source": "iana"
+  },
+  "application/nlsml+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/node": {
+    "source": "iana",
+    "extensions": ["cjs"]
+  },
+  "application/nss": {
+    "source": "iana"
+  },
+  "application/ocsp-request": {
+    "source": "iana"
+  },
+  "application/ocsp-response": {
+    "source": "iana"
+  },
+  "application/octet-stream": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]
+  },
+  "application/oda": {
+    "source": "iana",
+    "extensions": ["oda"]
+  },
+  "application/odm+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/odx": {
+    "source": "iana"
+  },
+  "application/oebps-package+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["opf"]
+  },
+  "application/ogg": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["ogx"]
+  },
+  "application/omdoc+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["omdoc"]
+  },
+  "application/onenote": {
+    "source": "apache",
+    "extensions": ["onetoc","onetoc2","onetmp","onepkg"]
+  },
+  "application/opc-nodeset+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/oscore": {
+    "source": "iana"
+  },
+  "application/oxps": {
+    "source": "iana",
+    "extensions": ["oxps"]
+  },
+  "application/p2p-overlay+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["relo"]
+  },
+  "application/parityfec": {
+    "source": "iana"
+  },
+  "application/passport": {
+    "source": "iana"
+  },
+  "application/patch-ops-error+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xer"]
+  },
+  "application/pdf": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["pdf"]
+  },
+  "application/pdx": {
+    "source": "iana"
+  },
+  "application/pem-certificate-chain": {
+    "source": "iana"
+  },
+  "application/pgp-encrypted": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["pgp"]
+  },
+  "application/pgp-keys": {
+    "source": "iana"
+  },
+  "application/pgp-signature": {
+    "source": "iana",
+    "extensions": ["asc","sig"]
+  },
+  "application/pics-rules": {
+    "source": "apache",
+    "extensions": ["prf"]
+  },
+  "application/pidf+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/pidf-diff+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/pkcs10": {
+    "source": "iana",
+    "extensions": ["p10"]
+  },
+  "application/pkcs12": {
+    "source": "iana"
+  },
+  "application/pkcs7-mime": {
+    "source": "iana",
+    "extensions": ["p7m","p7c"]
+  },
+  "application/pkcs7-signature": {
+    "source": "iana",
+    "extensions": ["p7s"]
+  },
+  "application/pkcs8": {
+    "source": "iana",
+    "extensions": ["p8"]
+  },
+  "application/pkcs8-encrypted": {
+    "source": "iana"
+  },
+  "application/pkix-attr-cert": {
+    "source": "iana",
+    "extensions": ["ac"]
+  },
+  "application/pkix-cert": {
+    "source": "iana",
+    "extensions": ["cer"]
+  },
+  "application/pkix-crl": {
+    "source": "iana",
+    "extensions": ["crl"]
+  },
+  "application/pkix-pkipath": {
+    "source": "iana",
+    "extensions": ["pkipath"]
+  },
+  "application/pkixcmp": {
+    "source": "iana",
+    "extensions": ["pki"]
+  },
+  "application/pls+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["pls"]
+  },
+  "application/poc-settings+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/postscript": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["ai","eps","ps"]
+  },
+  "application/ppsp-tracker+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/problem+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/problem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/provenance+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["provx"]
+  },
+  "application/prs.alvestrand.titrax-sheet": {
+    "source": "iana"
+  },
+  "application/prs.cww": {
+    "source": "iana",
+    "extensions": ["cww"]
+  },
+  "application/prs.hpub+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/prs.nprend": {
+    "source": "iana"
+  },
+  "application/prs.plucker": {
+    "source": "iana"
+  },
+  "application/prs.rdf-xml-crypt": {
+    "source": "iana"
+  },
+  "application/prs.xsf+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/pskc+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["pskcxml"]
+  },
+  "application/pvd+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/qsig": {
+    "source": "iana"
+  },
+  "application/raml+yaml": {
+    "compressible": true,
+    "extensions": ["raml"]
+  },
+  "application/raptorfec": {
+    "source": "iana"
+  },
+  "application/rdap+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/rdf+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rdf","owl"]
+  },
+  "application/reginfo+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rif"]
+  },
+  "application/relax-ng-compact-syntax": {
+    "source": "iana",
+    "extensions": ["rnc"]
+  },
+  "application/remote-printing": {
+    "source": "iana"
+  },
+  "application/reputon+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/resource-lists+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rl"]
+  },
+  "application/resource-lists-diff+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rld"]
+  },
+  "application/rfc+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/riscos": {
+    "source": "iana"
+  },
+  "application/rlmi+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/rls-services+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rs"]
+  },
+  "application/route-apd+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rapd"]
+  },
+  "application/route-s-tsid+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["sls"]
+  },
+  "application/route-usd+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rusd"]
+  },
+  "application/rpki-ghostbusters": {
+    "source": "iana",
+    "extensions": ["gbr"]
+  },
+  "application/rpki-manifest": {
+    "source": "iana",
+    "extensions": ["mft"]
+  },
+  "application/rpki-publication": {
+    "source": "iana"
+  },
+  "application/rpki-roa": {
+    "source": "iana",
+    "extensions": ["roa"]
+  },
+  "application/rpki-updown": {
+    "source": "iana"
+  },
+  "application/rsd+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["rsd"]
+  },
+  "application/rss+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["rss"]
+  },
+  "application/rtf": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rtf"]
+  },
+  "application/rtploopback": {
+    "source": "iana"
+  },
+  "application/rtx": {
+    "source": "iana"
+  },
+  "application/samlassertion+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/samlmetadata+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sarif+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sbe": {
+    "source": "iana"
+  },
+  "application/sbml+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["sbml"]
+  },
+  "application/scaip+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/scim+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/scvp-cv-request": {
+    "source": "iana",
+    "extensions": ["scq"]
+  },
+  "application/scvp-cv-response": {
+    "source": "iana",
+    "extensions": ["scs"]
+  },
+  "application/scvp-vp-request": {
+    "source": "iana",
+    "extensions": ["spq"]
+  },
+  "application/scvp-vp-response": {
+    "source": "iana",
+    "extensions": ["spp"]
+  },
+  "application/sdp": {
+    "source": "iana",
+    "extensions": ["sdp"]
+  },
+  "application/secevent+jwt": {
+    "source": "iana"
+  },
+  "application/senml+cbor": {
+    "source": "iana"
+  },
+  "application/senml+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/senml+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["senmlx"]
+  },
+  "application/senml-etch+cbor": {
+    "source": "iana"
+  },
+  "application/senml-etch+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/senml-exi": {
+    "source": "iana"
+  },
+  "application/sensml+cbor": {
+    "source": "iana"
+  },
+  "application/sensml+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sensml+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["sensmlx"]
+  },
+  "application/sensml-exi": {
+    "source": "iana"
+  },
+  "application/sep+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sep-exi": {
+    "source": "iana"
+  },
+  "application/session-info": {
+    "source": "iana"
+  },
+  "application/set-payment": {
+    "source": "iana"
+  },
+  "application/set-payment-initiation": {
+    "source": "iana",
+    "extensions": ["setpay"]
+  },
+  "application/set-registration": {
+    "source": "iana"
+  },
+  "application/set-registration-initiation": {
+    "source": "iana",
+    "extensions": ["setreg"]
+  },
+  "application/sgml": {
+    "source": "iana"
+  },
+  "application/sgml-open-catalog": {
+    "source": "iana"
+  },
+  "application/shf+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["shf"]
+  },
+  "application/sieve": {
+    "source": "iana",
+    "extensions": ["siv","sieve"]
+  },
+  "application/simple-filter+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/simple-message-summary": {
+    "source": "iana"
+  },
+  "application/simplesymbolcontainer": {
+    "source": "iana"
+  },
+  "application/sipc": {
+    "source": "iana"
+  },
+  "application/slate": {
+    "source": "iana"
+  },
+  "application/smil": {
+    "source": "iana"
+  },
+  "application/smil+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["smi","smil"]
+  },
+  "application/smpte336m": {
+    "source": "iana"
+  },
+  "application/soap+fastinfoset": {
+    "source": "iana"
+  },
+  "application/soap+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sparql-query": {
+    "source": "iana",
+    "extensions": ["rq"]
+  },
+  "application/sparql-results+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["srx"]
+  },
+  "application/spirits-event+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sql": {
+    "source": "iana"
+  },
+  "application/srgs": {
+    "source": "iana",
+    "extensions": ["gram"]
+  },
+  "application/srgs+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["grxml"]
+  },
+  "application/sru+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["sru"]
+  },
+  "application/ssdl+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["ssdl"]
+  },
+  "application/ssml+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["ssml"]
+  },
+  "application/stix+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/swid+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["swidtag"]
+  },
+  "application/tamp-apex-update": {
+    "source": "iana"
+  },
+  "application/tamp-apex-update-confirm": {
+    "source": "iana"
+  },
+  "application/tamp-community-update": {
+    "source": "iana"
+  },
+  "application/tamp-community-update-confirm": {
+    "source": "iana"
+  },
+  "application/tamp-error": {
+    "source": "iana"
+  },
+  "application/tamp-sequence-adjust": {
+    "source": "iana"
+  },
+  "application/tamp-sequence-adjust-confirm": {
+    "source": "iana"
+  },
+  "application/tamp-status-query": {
+    "source": "iana"
+  },
+  "application/tamp-status-response": {
+    "source": "iana"
+  
+Copyright (c) 2009-2011, Mozilla Foundation and contributors
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the names of the Mozilla Foundation nor the names of project
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          // Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// a passthrough stream.
+// basically just the most minimal sort of Transform stream.
+// Every written chunk gets output as-is.
+
+'use strict';
+
+module.exports = PassThrough;
+
+var Transform = require('./_stream_transform');
+
+/*<replacement>*/
+var util = Object.create(require('core-util-is'));
+util.inherits = require('inherits');
+/*</replacement>*/
+
+util.inherits(PassThrough, Transform);
+
+function PassThrough(options) {
+  if (!(this instanceof PassThrough)) return new PassThrough(options);
+
+  Transform.call(this, options);
+}
+
+PassThrough.prototype._transform = function (chunk, encoding, cb) {
+  cb(null, chunk);
+};                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       https://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode
+	 * @type Object
+	 */
+	'ucs2': {
+		'decode': ucs2decode,
+		'encode': ucs2encode
+	},
+	'decode': decode,
+	'encode': encode,
+	'toASCII': toASCII,
+	'toUnicode': toUnicode
+};
+
+export { ucs2decode, ucs2encode, decode, encode, toASCII, toUnicode };
+export default punycode;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          define('vs/language/html/workerManager',["require", "exports"], function (require, exports) {
+    /*---------------------------------------------------------------------------------------------
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
+    'use strict';
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
+    var WorkerManager = /** @class */ (function () {
+        function WorkerManager(defaults) {
+            var _this = this;
+            this._defaults = defaults;
+            this._worker = null;
+            this._idleCheckInterval = setInterval(function () { return _this._checkIfIdle(); }, 30 * 1000);
+            this._lastUsedTime = 0;
+            this._configChangeListener = this._defaults.onDidChange(function () { return _this._stopWorker(); });
+        }
+        WorkerManager.prototype._stopWorker = function () {
+            if (this._worker) {
+                this._worker.dispose();
+                this._worker = null;
+            }
+            this._client = null;
+        };
+        WorkerManager.prototype.dispose = function () {
+            clearInterval(this._idleCheckInterval);
+            this._configChangeListener.dispose();
+            this._stopWorker();
+        };
+        WorkerManager.prototype._checkIfIdle = function () {
+            if (!this._worker) {
+                return;
+            }
+            var timePassedSinceLastUsed = Date.now() - this._lastUsedTime;
+            if (timePassedSinceLastUsed > STOP_WHEN_IDLE_FOR) {
+                this._stopWorker();
+            }
+        };
+        WorkerManager.prototype._getClient = function () {
+            this._lastUsedTime = Date.now();
+            if (!this._client) {
+                this._worker = monaco.editor.createWebWorker({
+                    // module that exports the create() method and returns a `HTMLWorker` instance
+                    moduleId: 'vs/language/html/htmlWorker',
+       
