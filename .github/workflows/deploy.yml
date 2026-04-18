@@ -14,11 +14,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout picoblock-vm
+        uses: actions/checkout@v4
+        with:
+          repository: PicoBlockcc/picoblock-vm
+          path: ../picoblock-vm
+
+      - name: Checkout picoblock-blocks
+        uses: actions/checkout@v4
+        with:
+          repository: PicoBlockcc/picoblock-blocks
+          path: ../picoblock-blocks
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 16
-          cache: npm
 
       - name: Install dependencies
         run: npm install
