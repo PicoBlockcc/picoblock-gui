@@ -38,6 +38,14 @@ jobs:
         with:
           node-version: 16
 
+      - name: Install picoblock-blocks dependencies
+        working-directory: picoblock-blocks
+        run: npm install
+
+      - name: Install picoblock-vm dependencies
+        working-directory: picoblock-vm
+        run: npm install
+
       - name: Install dependencies
         run: npm install
 
