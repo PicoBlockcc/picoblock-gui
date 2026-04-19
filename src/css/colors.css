@@ -42,4 +42,3 @@ $extensions-transparent: hsla(163, 85%, 40%, 0.35); /* 35% transparent version o
 $extensions-light: hsla(163, 57%, 85%, 1); /* opaque version of extensions-transparent, on white bg */
 
 $drop-highlight: hsla(171, 75%, 65%, 1); /* lighter than motion-primary */
-
