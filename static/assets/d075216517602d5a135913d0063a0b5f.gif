@@ -1,0 +1,2161 @@
+6,"뤡",26,"뤾뤿륁륂륃륅",6,"륍륎륐륒",5],
+["9041","륚륛륝륞륟륡",6,"륪륬륮",5,"륶륷륹륺륻륽"],
+["9061","륾",5,"릆릈릋릌릏",15],
+["9081","릟",12,"릮릯릱릲릳릵",6,"릾맀맂",5,"맊맋맍맓",4,"맚맜맟맠맢맦맧맩맪맫맭",6,"맶맻",4,"먂",5,"먉",11,"먖",33,"먺먻먽먾먿멁멃멄멅멆"],
+["9141","멇멊멌멏멐멑멒멖멗멙멚멛멝",6,"멦멪",5],
+["9161","멲멳멵멶멷멹",9,"몆몈몉몊몋몍",5],
+["9181","몓",20,"몪몭몮몯몱몳",4,"몺몼몾",5,"뫅뫆뫇뫉",14,"뫚",33,"뫽뫾뫿묁묂묃묅",7,"묎묐묒",5,"묙묚묛묝묞묟묡",6],
+["9241","묨묪묬",7,"묷묹묺묿",4,"뭆뭈뭊뭋뭌뭎뭑뭒"],
+["9261","뭓뭕뭖뭗뭙",7,"뭢뭤",7,"뭭",4],
+["9281","뭲",21,"뮉뮊뮋뮍뮎뮏뮑",18,"뮥뮦뮧뮩뮪뮫뮭",6,"뮵뮶뮸",7,"믁믂믃믅믆믇믉",6,"믑믒믔",35,"믺믻믽믾밁"],
+["9341","밃",4,"밊밎밐밒밓밙밚밠밡밢밣밦밨밪밫밬밮밯밲밳밵"],
+["9361","밶밷밹",6,"뱂뱆뱇뱈뱊뱋뱎뱏뱑",8],
+["9381","뱚뱛뱜뱞",37,"벆벇벉벊벍벏",4,"벖벘벛",4,"벢벣벥벦벩",6,"벲벶",5,"벾벿볁볂볃볅",7,"볎볒볓볔볖볗볙볚볛볝",22,"볷볹볺볻볽"],
+["9441","볾",5,"봆봈봊",5,"봑봒봓봕",8],
+["9461","봞",5,"봥",6,"봭",12],
+["9481","봺",5,"뵁",6,"뵊뵋뵍뵎뵏뵑",6,"뵚",9,"뵥뵦뵧뵩",22,"붂붃붅붆붋",4,"붒붔붖붗붘붛붝",6,"붥",10,"붱",6,"붹",24],
+["9541","뷒뷓뷖뷗뷙뷚뷛뷝",11,"뷪",5,"뷱"],
+["9561","뷲뷳뷵뷶뷷뷹",6,"븁븂븄븆",5,"븎븏븑븒븓"],
+["9581","븕",6,"븞븠",35,"빆빇빉빊빋빍빏",4,"빖빘빜빝빞빟빢빣빥빦빧빩빫",4,"빲빶",4,"빾빿뺁뺂뺃뺅",6,"뺎뺒",5,"뺚",13,"뺩",14],
+["9641","뺸",23,"뻒뻓"],
+["9661","뻕뻖뻙",6,"뻡뻢뻦",5,"뻭",8],
+["9681","뻶",10,"뼂",5,"뼊",13,"뼚뼞",33,"뽂뽃뽅뽆뽇뽉",6,"뽒뽓뽔뽖",44],
+["9741","뾃",16,"뾕",8],
+["9761","뾞",17,"뾱",7],
+["9781","뾹",11,"뿆",5,"뿎뿏뿑뿒뿓뿕",6,"뿝뿞뿠뿢",89,"쀽쀾쀿"],
+["9841","쁀",16,"쁒",5,"쁙쁚쁛"],
+["9861","쁝쁞쁟쁡",6,"쁪",15],
+["9881","쁺",21,"삒삓삕삖삗삙",6,"삢삤삦",5,"삮삱삲삷",4,"삾샂샃샄샆샇샊샋샍샎샏샑",6,"샚샞",5,"샦샧샩샪샫샭",6,"샶샸샺",5,"섁섂섃섅섆섇섉",6,"섑섒섓섔섖",5,"섡섢섥섨섩섪섫섮"],
+["9941","섲섳섴섵섷섺섻섽섾섿셁",6,"셊셎",5,"셖셗"],
+["9961","셙셚셛셝",6,"셦셪",5,"셱셲셳셵셶셷셹셺셻"],
+["9981","셼",8,"솆",5,"솏솑솒솓솕솗",4,"솞솠솢솣솤솦솧솪솫솭솮솯솱",11,"솾",5,"쇅쇆쇇쇉쇊쇋쇍",6,"쇕쇖쇙",6,"쇡쇢쇣쇥쇦쇧쇩",6,"쇲쇴",7,"쇾쇿숁숂숃숅",6,"숎숐숒",5,"숚숛숝숞숡숢숣"],
+["9a41","숤숥숦숧숪숬숮숰숳숵",16],
+["9a61","쉆쉇쉉",6,"쉒쉓쉕쉖쉗쉙",6,"쉡쉢쉣쉤쉦"],
+["9a81","쉧",4,"쉮쉯쉱쉲쉳쉵",6,"쉾슀슂",5,"슊",5,"슑",6,"슙슚슜슞",5,"슦슧슩슪슫슮",5,"슶슸슺",33,"싞싟싡싢싥",5,"싮싰싲싳싴싵싷싺싽싾싿쌁",6,"쌊쌋쌎쌏"],
+["9b41","쌐쌑쌒쌖쌗쌙쌚쌛쌝",6,"쌦쌧쌪",8],
+["9b61","쌳",17,"썆",7],
+["9b81","썎",25,"썪썫썭썮썯썱썳",4,"썺썻썾",5,"쎅쎆쎇쎉쎊쎋쎍",50,"쏁",22,"쏚"],
+["9c41","쏛쏝쏞쏡쏣",4,"쏪쏫쏬쏮",5,"쏶쏷쏹",5],
+["9c61","쏿",8,"쐉",6,"쐑",9],
+["9c81","쐛",8,"쐥",6,"쐭쐮쐯쐱쐲쐳쐵",6,"쐾",9,"쑉",26,"쑦쑧쑩쑪쑫쑭",6,"쑶쑷쑸쑺",5,"쒁",18,"쒕",6,"쒝",12],
+["9d41","쒪",13,"쒹쒺쒻쒽",8],
+["9d61","쓆",25],
+["9d81","쓠",8,"쓪",5,"쓲쓳쓵쓶쓷쓹쓻쓼쓽쓾씂",9,"씍씎씏씑씒씓씕",6,"씝",10,"씪씫씭씮씯씱",6,"씺씼씾",5,"앆앇앋앏앐앑앒앖앚앛앜앟앢앣앥앦앧앩",6,"앲앶",5,"앾앿얁얂얃얅얆얈얉얊얋얎얐얒얓얔"],
+["9e41","얖얙얚얛얝얞얟얡",7,"얪",9,"얶"],
+["9e61","얷얺얿",4,"엋엍엏엒엓엕엖엗엙",6,"엢엤엦엧"],
+["9e81","엨엩엪엫엯엱엲엳엵엸엹엺엻옂옃옄옉옊옋옍옎옏옑",6,"옚옝",6,"옦옧옩옪옫옯옱옲옶옸옺옼옽옾옿왂왃왅왆왇왉",6,"왒왖",5,"왞왟왡",10,"왭왮왰왲",5,"왺왻왽왾왿욁",6,"욊욌욎",5,"욖욗욙욚욛욝",6,"욦"],
+["9f41","욨욪",5,"욲욳욵욶욷욻",4,"웂웄웆",5,"웎"],
+["9f61","웏웑웒웓웕",6,"웞웟웢",5,"웪웫웭웮웯웱웲"],
+["9f81","웳",4,"웺웻웼웾",5,"윆윇윉윊윋윍",6,"윖윘윚",5,"윢윣윥윦윧윩",6,"윲윴윶윸윹윺윻윾윿읁읂읃읅",4,"읋읎읐읙읚읛읝읞읟읡",6,"읩읪읬",7,"읶읷읹읺읻읿잀잁잂잆잋잌잍잏잒잓잕잙잛",4,"잢잧",4,"잮잯잱잲잳잵잶잷"],
+["a041","잸잹잺잻잾쟂",5,"쟊쟋쟍쟏쟑",6,"쟙쟚쟛쟜"],
+["a061","쟞",5,"쟥쟦쟧쟩쟪쟫쟭",13],
+["a081","쟻",4,"젂젃젅젆젇젉젋",4,"젒젔젗",4,"젞젟젡젢젣젥",6,"젮젰젲",5,"젹젺젻젽젾젿졁",6,"졊졋졎",5,"졕",26,"졲졳졵졶졷졹졻",4,"좂좄좈좉좊좎",5,"좕",7,"좞좠좢좣좤"],
+["a141","좥좦좧좩",18,"좾좿죀죁"],
+["a161","죂죃죅죆죇죉죊죋죍",6,"죖죘죚",5,"죢죣죥"],
+["a181","죦",14,"죶",5,"죾죿줁줂줃줇",4,"줎　、。·‥…¨〃­―∥＼∼‘’“”〔〕〈",9,"±×÷≠≤≥∞∴°′″℃Å￠￡￥♂♀∠⊥⌒∂∇≡≒§※☆★○●◎◇◆□■△▲▽▼→←↑↓↔〓≪≫√∽∝∵∫∬∈∋⊆⊇⊂⊃∪∩∧∨￢"],
+["a241","줐줒",5,"줙",18],
+["a261","줭",6,"줵",18],
+["a281","쥈",7,"쥒쥓쥕쥖쥗쥙",6,"쥢쥤",7,"쥭쥮쥯⇒⇔∀∃´～ˇ˘˝˚˙¸˛¡¿ː∮∑∏¤℉‰◁◀▷▶♤♠♡♥♧♣⊙◈▣◐◑▒▤▥▨▧▦▩♨☏☎☜☞¶†‡↕↗↙↖↘♭♩♪♬㉿㈜№㏇™㏂㏘℡€®"],
+["a341","쥱쥲쥳쥵",6,"쥽",10,"즊즋즍즎즏"],
+["a361","즑",6,"즚즜즞",16],
+["a381","즯",16,"짂짃짅짆짉짋",4,"짒짔짗짘짛！",58,"￦］",32,"￣"],
+["a441","짞짟짡짣짥짦짨짩짪짫짮짲",5,"짺짻짽짾짿쨁쨂쨃쨄"],
+["a461","쨅쨆쨇쨊쨎",5,"쨕쨖쨗쨙",12],
+["a481","쨦쨧쨨쨪",28,"ㄱ",93],
+["a541","쩇",4,"쩎쩏쩑쩒쩓쩕",6,"쩞쩢",5,"쩩쩪"],
+["a561","쩫",17,"쩾",5,"쪅쪆"],
+["a581","쪇",16,"쪙",14,"ⅰ",9],
+["a5b0","Ⅰ",9],
+["a5c1","Α",16,"Σ",6],
+["a5e1","α",16,"σ",6],
+["a641","쪨",19,"쪾쪿쫁쫂쫃쫅"],
+["a661","쫆",5,"쫎쫐쫒쫔쫕쫖쫗쫚",5,"쫡",6],
+["a681","쫨쫩쫪쫫쫭",6,"쫵",18,"쬉쬊─│┌┐┘└├┬┤┴┼━┃┏┓┛┗┣┳┫┻╋┠┯┨┷┿┝┰┥┸╂┒┑┚┙┖┕┎┍┞┟┡┢┦┧┩┪┭┮┱┲┵┶┹┺┽┾╀╁╃",7],
+["a741","쬋",4,"쬑쬒쬓쬕쬖쬗쬙",6,"쬢",7],
+["a761","쬪",22,"쭂쭃쭄"],
+["a781","쭅쭆쭇쭊쭋쭍쭎쭏쭑",6,"쭚쭛쭜쭞",5,"쭥",7,"㎕㎖㎗ℓ㎘㏄㎣㎤㎥㎦㎙",9,"㏊㎍㎎㎏㏏㎈㎉㏈㎧㎨㎰",9,"㎀",4,"㎺",5,"㎐",4,"Ω㏀㏁㎊㎋㎌㏖㏅㎭㎮㎯㏛㎩㎪㎫㎬㏝㏐㏓㏃㏉㏜㏆"],
+["a841","쭭",10,"쭺",14],
+["a861","쮉",18,"쮝",6],
+["a881","쮤",19,"쮹",11,"ÆÐªĦ"],
+["a8a6","Ĳ"],
+["a8a8","ĿŁØŒºÞŦŊ"],
+["a8b1","㉠",27,"ⓐ",25,"①",14,"½⅓⅔¼¾⅛⅜⅝⅞"],
+["a941","쯅",14,"쯕",10],
+["a961","쯠쯡쯢쯣쯥쯦쯨쯪",18],
+["a981","쯽",14,"찎찏찑찒찓찕",6,"찞찟찠찣찤æđðħıĳĸŀłøœßþŧŋŉ㈀",27,"⒜",25,"⑴",14,"¹²³⁴ⁿ₁₂₃₄"],
+["aa41","찥찦찪찫찭찯찱",6,"찺찿",4,"챆챇챉챊챋챍챎"],
+["aa61","챏",4,"챖챚",5,"챡챢챣챥챧챩",6,"챱챲"],
+["aa81","챳챴챶",29,"ぁ",82],
+["ab41","첔첕첖첗첚첛첝첞첟첡",6,"첪첮",5,"첶첷첹"],
+["ab61","첺첻첽",6,"쳆쳈쳊",5,"쳑쳒쳓쳕",5],
+["ab81","쳛",8,"쳥",6,"쳭쳮쳯쳱",12,"ァ",85],
+["ac41","쳾쳿촀촂",5,"촊촋촍촎촏촑",6,"촚촜촞촟촠"],
+["ac61","촡촢촣촥촦촧촩촪촫촭",11,"촺",4],
+["ac81","촿",28,"쵝쵞쵟А",5,"ЁЖ",25],
+["acd1","а",5,"ёж",25],
+["ad41","쵡쵢쵣쵥",6,"쵮쵰쵲",5,"쵹",7],
+["ad61","춁",6,"춉",10,"춖춗춙춚춛춝춞춟"],
+["ad81","춠춡춢춣춦춨춪",5,"춱",18,"췅"],
+["ae41","췆",5,"췍췎췏췑",16],
+["ae61","췢",5,"췩췪췫췭췮췯췱",6,"췺췼췾",4],
+["ae81","츃츅츆츇츉츊츋츍",6,"츕츖츗츘츚",5,"츢츣츥츦츧츩츪츫"],
+["af41","츬츭츮츯츲츴츶",19],
+["af61","칊",13,"칚칛칝칞칢",5,"칪칬"],
+["af81","칮",5,"칶칷칹칺칻칽",6,"캆캈캊",5,"캒캓캕캖캗캙"],
+["b041","캚",5,"캢캦",5,"캮",12],
+["b061","캻",5,"컂",19],
+["b081","컖",13,"컦컧컩컪컭",6,"컶컺",5,"가각간갇갈갉갊감",7,"같",4,"갠갤갬갭갯갰갱갸갹갼걀걋걍걔걘걜거걱건걷걸걺검겁것겄겅겆겉겊겋게겐겔겜겝겟겠겡겨격겪견겯결겸겹겻겼경곁계곈곌곕곗고곡곤곧골곪곬곯곰곱곳공곶과곽관괄괆"],
+["b141","켂켃켅켆켇켉",6,"켒켔켖",5,"켝켞켟켡켢켣"],
+["b161","켥",6,"켮켲",5,"켹",11],
+["b181","콅",14,"콖콗콙콚콛콝",6,"콦콨콪콫콬괌괍괏광괘괜괠괩괬괭괴괵괸괼굄굅굇굉교굔굘굡굣구국군굳굴굵굶굻굼굽굿궁궂궈궉권궐궜궝궤궷귀귁귄귈귐귑귓규균귤그극근귿글긁금급긋긍긔기긱긴긷길긺김깁깃깅깆깊까깍깎깐깔깖깜깝깟깠깡깥깨깩깬깰깸"],
+["b241","콭콮콯콲콳콵콶콷콹",6,"쾁쾂쾃쾄쾆",5,"쾍"],
+["b261","쾎",18,"쾢",5,"쾩"],
+["b281","쾪",5,"쾱",18,"쿅",6,"깹깻깼깽꺄꺅꺌꺼꺽꺾껀껄껌껍껏껐껑께껙껜껨껫껭껴껸껼꼇꼈꼍꼐꼬꼭꼰꼲꼴꼼꼽꼿꽁꽂꽃꽈꽉꽐꽜꽝꽤꽥꽹꾀꾄꾈꾐꾑꾕꾜꾸꾹꾼꿀꿇꿈꿉꿋꿍꿎꿔꿜꿨꿩꿰꿱꿴꿸뀀뀁뀄뀌뀐뀔뀜뀝뀨끄끅끈끊끌끎끓끔끕끗끙"],
+["b341","쿌",19,"쿢쿣쿥쿦쿧쿩"],
+["b361","쿪",5,"쿲쿴쿶",5,"쿽쿾쿿퀁퀂퀃퀅",5],
+["b381","퀋",5,"퀒",5,"퀙",19,"끝끼끽낀낄낌낍낏낑나낙낚난낟날낡낢남납낫",4,"낱낳내낵낸낼냄냅냇냈냉냐냑냔냘냠냥너넉넋넌널넒넓넘넙넛넜넝넣네넥넨넬넴넵넷넸넹녀녁년녈념녑녔녕녘녜녠노녹논놀놂놈놉놋농높놓놔놘놜놨뇌뇐뇔뇜뇝"],
+["b441","퀮",5,"퀶퀷퀹퀺퀻퀽",6,"큆큈큊",5],
+["b461","큑큒큓큕큖큗큙",6,"큡",10,"큮큯"],
+["b481","큱큲큳큵",6,"큾큿킀킂",18,"뇟뇨뇩뇬뇰뇹뇻뇽누눅눈눋눌눔눕눗눙눠눴눼뉘뉜뉠뉨뉩뉴뉵뉼늄늅늉느늑는늘늙늚늠늡늣능늦늪늬늰늴니닉닌닐닒님닙닛닝닢다닥닦단닫",4,"닳담답닷",4,"닿대댁댄댈댐댑댓댔댕댜더덕덖던덛덜덞덟덤덥"],
+["b541","킕",14,"킦킧킩킪킫킭",5],
+["b561","킳킶킸킺",5,"탂탃탅탆탇탊",5,"탒탖",4],
+["b581","탛탞탟탡탢탣탥",6,"탮탲",5,"탹",11,"덧덩덫덮데덱덴델뎀뎁뎃뎄뎅뎌뎐뎔뎠뎡뎨뎬도독돈돋돌돎돐돔돕돗동돛돝돠돤돨돼됐되된될됨됩됫됴두둑둔둘둠둡둣둥둬뒀뒈뒝뒤뒨뒬뒵뒷뒹듀듄듈듐듕드득든듣들듦듬듭듯등듸디딕딘딛딜딤딥딧딨딩딪따딱딴딸"],
+["b641","턅",7,"턎",17],
+["b661","턠",15,"턲턳턵턶턷턹턻턼턽턾"],
+["b681","턿텂텆",5,"텎텏텑텒텓텕",6,"텞텠텢",5,"텩텪텫텭땀땁땃땄땅땋때땍땐땔땜땝땟땠땡떠떡떤떨떪떫떰떱떳떴떵떻떼떽뗀뗄뗌뗍뗏뗐뗑뗘뗬또똑똔똘똥똬똴뙈뙤뙨뚜뚝뚠뚤뚫뚬뚱뛔뛰뛴뛸뜀뜁뜅뜨뜩뜬뜯뜰뜸뜹뜻띄띈띌띔띕띠띤띨띰띱띳띵라락란랄람랍랏랐랑랒랖랗"],
+["b741","텮",13,"텽",6,"톅톆톇톉톊"],
+["b761","톋",20,"톢톣톥톦톧"],
+["b781","톩",6,"톲톴톶톷톸톹톻톽톾톿퇁",14,"래랙랜랠램랩랫랬랭랴략랸럇량러럭런럴럼럽럿렀렁렇레렉렌렐렘렙렛렝려력련렬렴렵렷렸령례롄롑롓로록론롤롬롭롯롱롸롼뢍뢨뢰뢴뢸룀룁룃룅료룐룔룝룟룡루룩룬룰룸룹룻룽뤄뤘뤠뤼뤽륀륄륌륏륑류륙륜률륨륩"],
+["b841","퇐",7,"퇙",17],
+["b861","퇫",8,"퇵퇶퇷퇹",13],
+["b881","툈툊",5,"툑",24,"륫륭르륵른를름릅릇릉릊릍릎리릭린릴림립릿링마막만많",4,"맘맙맛망맞맡맣매맥맨맬맴맵맷맸맹맺먀먁먈먕머먹먼멀멂멈멉멋멍멎멓메멕멘멜멤멥멧멨멩며멱면멸몃몄명몇몌모목몫몬몰몲몸몹못몽뫄뫈뫘뫙뫼"],
+["b941","툪툫툮툯툱툲툳툵",6,"툾퉀퉂",5,"퉉퉊퉋퉌"],
+["b961","퉍",14,"퉝",6,"퉥퉦퉧퉨"],
+["b981","퉩",22,"튂튃튅튆튇튉튊튋튌묀묄묍묏묑묘묜묠묩묫무묵묶문묻물묽묾뭄뭅뭇뭉뭍뭏뭐뭔뭘뭡뭣뭬뮈뮌뮐뮤뮨뮬뮴뮷므믄믈믐믓미믹민믿밀밂밈밉밋밌밍및밑바",4,"받",4,"밤밥밧방밭배백밴밸뱀뱁뱃뱄뱅뱉뱌뱍뱐뱝버벅번벋벌벎범법벗"],
+["ba41","튍튎튏튒튓튔튖",5,"튝튞튟튡튢튣튥",6,"튭"],
+["ba61","튮튯튰튲",5,"튺튻튽튾틁틃",4,"틊틌",5],
+["ba81","틒틓틕틖틗틙틚틛틝",6,"틦",9,"틲틳틵틶틷틹틺벙벚베벡벤벧벨벰벱벳벴벵벼벽변별볍볏볐병볕볘볜보복볶본볼봄봅봇봉봐봔봤봬뵀뵈뵉뵌뵐뵘뵙뵤뵨부북분붇불붉붊붐붑붓붕붙붚붜붤붰붸뷔뷕뷘뷜뷩뷰뷴뷸븀븃븅브븍븐블븜븝븟비빅빈빌빎빔빕빗빙빚빛빠빡빤"],
+["bb41","틻",4,"팂팄팆",5,"팏팑팒팓팕팗",4,"팞팢팣"],
+["bb61","팤팦팧팪팫팭팮팯팱",6,"팺팾",5,"퍆퍇퍈퍉"],
+["bb81","퍊",31,"빨빪빰빱빳빴빵빻빼빽뺀뺄뺌뺍뺏뺐뺑뺘뺙뺨뻐뻑뻔뻗뻘뻠뻣뻤뻥뻬뼁뼈뼉뼘뼙뼛뼜뼝뽀뽁뽄뽈뽐뽑뽕뾔뾰뿅뿌뿍뿐뿔뿜뿟뿡쀼쁑쁘쁜쁠쁨쁩삐삑삔삘삠삡삣삥사삭삯산삳살삵삶삼삽삿샀상샅새색샌샐샘샙샛샜생샤"],
+["bc41","퍪",17,"퍾퍿펁펂펃펅펆펇"],
+["bc61","펈펉펊펋펎펒",5,"펚펛펝펞펟펡",6,"펪펬펮"],
+["bc81","펯",4,"펵펶펷펹펺펻펽",6,"폆폇폊",5,"폑",5,"샥샨샬샴샵샷샹섀섄섈섐섕서",4,"섣설섦섧섬섭섯섰성섶세섹센셀셈셉셋셌셍셔셕션셜셤셥셧셨셩셰셴셸솅소속솎손솔솖솜솝솟송솥솨솩솬솰솽쇄쇈쇌쇔쇗쇘쇠쇤쇨쇰쇱쇳쇼쇽숀숄숌숍숏숑수숙순숟술숨숩숫숭"],
+["bd41","폗폙",7,"폢폤",7,"폮폯폱폲폳폵폶폷"],
+["bd61","폸폹폺폻폾퐀퐂",5,"퐉",13],
+["bd81","퐗",5,"퐞",25,"숯숱숲숴쉈쉐쉑쉔쉘쉠쉥쉬쉭쉰쉴쉼쉽쉿슁슈슉슐슘슛슝스슥슨슬슭슴습슷승시식신싣실싫심십싯싱싶싸싹싻싼쌀쌈쌉쌌쌍쌓쌔쌕쌘쌜쌤쌥쌨쌩썅써썩썬썰썲썸썹썼썽쎄쎈쎌쏀쏘쏙쏜쏟쏠쏢쏨쏩쏭쏴쏵쏸쐈쐐쐤쐬쐰"],
+["be41","퐸",7,"푁푂푃푅",14],
+["be61","푔",7,"푝푞푟푡푢푣푥",7,"푮푰푱푲"],
+["be81","푳",4,"푺푻푽푾풁풃",4,"풊풌풎",5,"풕",8,"쐴쐼쐽쑈쑤쑥쑨쑬쑴쑵쑹쒀쒔쒜쒸쒼쓩쓰쓱쓴쓸쓺쓿씀씁씌씐씔씜씨씩씬씰씸씹씻씽아악안앉않알앍앎앓암압앗았앙앝앞애액앤앨앰앱앳앴앵야약얀얄얇얌얍얏양얕얗얘얜얠얩어억언얹얻얼얽얾엄",6,"엌엎"],
+["bf41","풞",10,"풪",14],
+["bf61","풹",18,"퓍퓎퓏퓑퓒퓓퓕"],
+["bf81","퓖",5,"퓝퓞퓠",7,"퓩퓪퓫퓭퓮퓯퓱",6,"퓹퓺퓼에엑엔엘엠엡엣엥여역엮연열엶엷염",5,"옅옆옇예옌옐옘옙옛옜오옥온올옭옮옰옳옴옵옷옹옻와왁완왈왐왑왓왔왕왜왝왠왬왯왱외왹왼욀욈욉욋욍요욕욘욜욤욥욧용우욱운울욹욺움웁웃웅워웍원월웜웝웠웡웨"],
+["c041","퓾",5,"픅픆픇픉픊픋픍",6,"픖픘",5],
+["c061","픞",25],
+["c081","픸픹픺픻픾픿핁핂핃핅",6,"핎핐핒",5,"핚핛핝핞핟핡핢핣웩웬웰웸웹웽위윅윈윌윔윕윗윙유육윤율윰윱윳융윷으윽은을읊음읍읏응",7,"읜읠읨읫이익인일읽읾잃임입잇있잉잊잎자작잔잖잗잘잚잠잡잣잤장잦재잭잰잴잼잽잿쟀쟁쟈쟉쟌쟎쟐쟘쟝쟤쟨쟬저적전절젊"],
+["c141","핤핦핧핪핬핮",5,"핶핷핹핺핻핽",6,"햆햊햋"],
+["c161","햌햍햎햏햑",19,"햦햧"],
+["c181","햨",31,"점접젓정젖제젝젠젤젬젭젯젱져젼졀졈졉졌졍졔조족존졸졺좀좁좃종좆좇좋좌좍좔좝좟좡좨좼좽죄죈죌죔죕죗죙죠죡죤죵주죽준줄줅줆줌줍줏중줘줬줴쥐쥑쥔쥘쥠쥡쥣쥬쥰쥴쥼즈즉즌즐즘즙즛증지직진짇질짊짐집짓"],
+["c241","헊헋헍헎헏헑헓",4,"헚헜헞",5,"헦헧헩헪헫헭헮"],
+["c261","헯",4,"헶헸헺",5,"혂혃혅혆혇혉",6,"혒"],
+["c281","혖",5,"혝혞혟혡혢혣혥",7,"혮",9,"혺혻징짖짙짚짜짝짠짢짤짧짬짭짯짰짱째짹짼쨀쨈쨉쨋쨌쨍쨔쨘쨩쩌쩍쩐쩔쩜쩝쩟쩠쩡쩨쩽쪄쪘쪼쪽쫀쫄쫌쫍쫏쫑쫓쫘쫙쫠쫬쫴쬈쬐쬔쬘쬠쬡쭁쭈쭉쭌쭐쭘쭙쭝쭤쭸쭹쮜쮸쯔쯤쯧쯩찌찍찐찔찜찝찡찢찧차착찬찮찰참찹찻"],var test = require('tape');
+var hasSymbols = require('has-symbols/shams')();
+var utilInspect = require('../util.inspect');
+var repeat = require('string.prototype.repeat');
+
+var inspect = require('..');
+
+test('inspect', function (t) {
+    t.plan(5);
+
+    var obj = [{ inspect: function xyzInspect() { return '!XYZ¡'; } }, []];
+    var stringResult = '[ !XYZ¡, [] ]';
+    var falseResult = '[ { inspect: [Function: xyzInspect] }, [] ]';
+
+    t.equal(inspect(obj), stringResult);
+    t.equal(inspect(obj, { customInspect: true }), stringResult);
+    t.equal(inspect(obj, { customInspect: 'symbol' }), falseResult);
+    t.equal(inspect(obj, { customInspect: false }), falseResult);
+    t['throws'](
+        function () { inspect(obj, { customInspect: 'not a boolean or "symbol"' }); },
+        TypeError,
+        '`customInspect` must be a boolean or the string "symbol"'
+    );
+});
+
+test('inspect custom symbol', { skip: !hasSymbols || !utilInspect || !utilInspect.custom }, function (t) {
+    t.plan(4);
+
+    var obj = { inspect: function stringInspect() { return 'string'; } };
+    obj[utilInspect.custom] = function custom() { return 'symbol'; };
+
+    var symbolResult = '[ symbol, [] ]';
+    var stringResult = '[ string, [] ]';
+    var falseResult = '[ { inspect: [Function: stringInspect]' + (utilInspect.custom ? ', [' + inspect(utilInspect.custom) + ']: [Function: custom]' : '') + ' }, [] ]';
+
+    var symbolStringFallback = utilInspect.custom ? symbolResult : stringResult;
+    var symbolFalseFallback = utilInspect.custom ? symbolResult : falseResult;
+
+    t.equal(inspect([obj, []]), symbolStringFallback);
+    t.equal(inspect([obj, []], { customInspect: true }), symbolStringFallback);
+    t.equal(inspect([obj, []], { customInspect: 'symbol' }), symbolFalseFallback);
+    t.equal(inspect([obj, []], { customInspect: false }), falseResult);
+});
+
+test('symbols', { skip: !hasSymbols }, function (t) {
+    t.plan(2);
+
+    var obj = { a: 1 };
+    obj[Symbol('test')] = 2;
+    obj[Symbol.iterator] = 3;
+    Object.defineProperty(obj, Symbol('non-enum'), {
+        enumerable: false,
+        value: 4
+    });
+
+    if (typeof Symbol.iterator === 'symbol') {
+        t.equal(inspect(obj), '{ a: 1, [Symbol(test)]: 2, [Symbol(Symbol.iterator)]: 3 }', 'object with symbols');
+        t.equal(inspect([obj, []]), '[ { a: 1, [Symbol(test)]: 2, [Symbol(Symbol.iterator)]: 3 }, [] ]', 'object with symbols in array');
+    } else {
+        // symbol sham key ordering is unreliable
+        t.match(
+            inspect(obj),
+            /^(?:{ a: 1, \[Symbol\(test\)\]: 2, \[Symbol\(Symbol.iterator\)\]: 3 }|{ a: 1, \[Symbol\(Symbol.iterator\)\]: 3, \[Symbol\(test\)\]: 2 })$/,
+            'object with symbols (nondeterministic symbol sham key ordering)'
+        );
+        t.match(
+            inspect([obj, []]),
+            /^\[ (?:{ a: 1, \[Symbol\(test\)\]: 2, \[Symbol\(Symbol.iterator\)\]: 3 }|{ a: 1, \[Symbol\(Symbol.iterator\)\]: 3, \[Symbol\(test\)\]: 2 }), \[\] \]$/,
+            'object with symbols in array (nondeterministic symbol sham key ordering)'
+        );
+    }
+});
+
+test('maxStringLength', function (t) {
+    t['throws'](
+        function () { inspect('', { maxStringLength: -1 }); },
+        TypeError,
+        'maxStringLength must be >= 0, or Infinity, not negative'
+    );
+
+    var str = repeat('a', 1e8);
+
+    t.equal(
+        inspect([str], { maxStringLength: 10 }),
+        '[ \'aaaaaaaaaa\'... 99999990 more characters ]',
+        'maxStringLength option limits output'
+    );
+
+    t.equal(
+        inspect(['f'], { maxStringLength: null }),
+        '[ \'\'... 1 more character ]',
+        'maxStringLength option accepts `null`'
+    );
+
+    t.equal(
+        inspect([str], { maxStringLength: Infinity }),
+        '[ \'' + str + '\' ]',
+        'maxStringLength option accepts ∞'
+    );
+
+    t.end();
+});
+
+test('inspect options', { skip: !utilInspect.custom }, function (t) {
+    var obj = {};
+    obj[utilInspect.custom] = function () {
+        return JSON.stringify(arguments);
+    };
+    t.equal(
+        inspect(obj),
+        utilInspect(obj, { depth: 5 }),
+        'custom symbols will use node\'s inspect'
+    );
+    t.equal(
+        inspect(obj, { depth: 2 }),
+        utilInspect(obj, { depth: 2 }),
+        'a reduced depth will be passed to node\'s inspect'
+    );
+    t.equal(
+        inspect({ d1: obj }, { depth: 3 }),
+        '{ d1: ' + utilInspect(obj, { depth: 2 }) + ' }',
+        'deep objects will receive a reduced depth'
+    );
+    t.equal(
+        inspect({ d1: obj }, { depth: 1 }),
+        '{ d1: [Object] }',
+        'unlike nodejs inspect, customInspect will not be used once the depth is exceeded.'
+    );
+    t.end();
+});
+
+test('inspect URL', { skip: typeof URL === 'undefined' }, function (t) {
+    t.match(
+        inspect(new URL('https://nodejs.org')),
+        /nodejs\.org/, // Different environments stringify it differently
+        'url can be inspected'
+    );
+    t.end();
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              os;\n            if (input.charCodeAt(peg$currPos) === 46) {\n              s5 = peg$c42;\n              peg$currPos++;\n            } else {\n              s5 = peg$FAILED;\n              if (peg$silentFails === 0) { peg$fail(peg$c43); }\n            }\n            if (s5 !== peg$FAILED) {\n              s6 = peg$parseidentifierName();\n              if (s6 !== peg$FAILED) {\n                s5 = [s5, s6];\n                s4 = s5;\n              } else {\n                peg$currPos = s4;\n                s4 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s4;\n              s4 = peg$FAILED;\n            }\n          }\n          if (s3 !== peg$FAILED) {\n            peg$savedPos = s0;\n            s1 = peg$c78(s2, s3);\n            s0 = s1;\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsenegation() {\n      var s0, s1, s2, s3, s4, s5;\n\n      var key    = peg$currPos * 30 + 22,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.substr(peg$currPos, 5) === peg$c79) {\n        s1 = peg$c79;\n        peg$currPos += 5;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c80); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = peg$parse_();\n        if (s2 !== peg$FAILED) {\n          s3 = peg$parseselectors();\n          if (s3 !== peg$FAILED) {\n            s4 = peg$parse_();\n            if (s4 !== peg$FAILED) {\n              if (input.charCodeAt(peg$currPos) === 41) {\n                s5 = peg$c68;\n                peg$currPos++;\n              } else {\n                s5 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c69); }\n              }\n              if (s5 !== peg$FAILED) {\n                peg$savedPos = s0;\n                s1 = peg$c81(s3);\n                s0 = s1;\n              } else {\n                peg$currPos = s0;\n                s0 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s0;\n              s0 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsematches() {\n      var s0, s1, s2, s3, s4, s5;\n\n      var key    = peg$currPos * 30 + 23,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.substr(peg$currPos, 9) === peg$c82) {\n        s1 = peg$c82;\n        peg$currPos += 9;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c83); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = peg$parse_();\n        if (s2 !== peg$FAILED) {\n          s3 = peg$parseselectors();\n          if (s3 !== peg$FAILED) {\n            s4 = peg$parse_();\n            if (s4 !== peg$FAILED) {\n              if (input.charCodeAt(peg$currPos) === 41) {\n                s5 = peg$c68;\n                peg$currPos++;\n              } else {\n                s5 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c69); }\n              }\n              if (s5 !== peg$FAILED) {\n                peg$savedPos = s0;\n                s1 = peg$c84(s3);\n                s0 = s1;\n              } else {\n                peg$currPos = s0;\n                s0 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s0;\n              s0 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsehas() {\n      var s0, s1, s2, s3, s4, s5;\n\n      var key    = peg$currPos * 30 + 24,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.substr(peg$currPos, 5) === peg$c85) {\n        s1 = peg$c85;\n        peg$currPos += 5;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c86); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = peg$parse_();\n        if (s2 !== peg$FAILED) {\n          s3 = peg$parseselectors();\n          if (s3 !== peg$FAILED) {\n            s4 = peg$parse_();\n            if (s4 !== peg$FAILED) {\n              if (input.charCodeAt(peg$currPos) === 41) {\n                s5 = peg$c68;\n                peg$currPos++;\n              } else {\n                s5 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c69); }\n              }\n              if (s5 !== peg$FAILED) {\n                peg$savedPos = s0;\n                s1 = peg$c87(s3);\n                s0 = s1;\n              } else {\n                peg$currPos = s0;\n                s0 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s0;\n              s0 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsefirstChild() {\n      var s0, s1;\n\n      var key    = peg$currPos * 30 + 25,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.substr(peg$currPos, 12) === peg$c88) {\n        s1 = peg$c88;\n        peg$currPos += 12;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c89); }\n      }\n      if (s1 !== peg$FAILED) {\n        peg$savedPos = s0;\n        s1 = peg$c90();\n      }\n      s0 = s1;\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parselastChild() {\n      var s0, s1;\n\n      var key    = peg$currPos * 30 + 26,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.substr(peg$currPos, 11) === peg$c91) {\n        s1 = peg$c91;\n        peg$currPos += 11;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c92); }\n      }\n      if (s1 !== peg$FAILED) {\n        peg$savedPos = s0;\n        s1 = peg$c93();\n      }\n      s0 = s1;\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsenthChild() {\n      var s0, s1, s2, s3, s4, s5;\n\n      var key    = peg$currPos * 30 + 27,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.substr(peg$currPos, 11) === peg$c94) {\n        s1 = peg$c94;\n        peg$currPos += 11;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c95); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = peg$parse_();\n        if (s2 !== peg$FAILED) {\n          s3 = [];\n          if (peg$c60.test(input.charAt(peg$currPos))) {\n            s4 = input.charAt(peg$currPos);\n            peg$currPos++;\n          } else {\n            s4 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c61); }\n          }\n          if (s4 !== peg$FAILED) {\n            while (s4 !== peg$FAILED) {\n              s3.push(s4);\n              if (peg$c60.test(input.charAt(peg$currPos))) {\n                s4 = input.charAt(peg$currPos);\n                peg$currPos++;\n              } else {\n                s4 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c61); }\n              }\n            }\n          } else {\n            s3 = peg$FAILED;\n          }\n          if (s3 !== peg$FAILED) {\n            s4 = peg$parse_();\n            if (s4 !== peg$FAILED) {\n              if (input.charCodeAt(peg$currPos) === 41) {\n                s5 = peg$c68;\n                peg$currPos++;\n              } else {\n                s5 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c69); }\n              }\n              if (s5 !== peg$FAILED) {\n                peg$savedPos = s0;\n                s1 = peg$c96(s3);\n                s0 = s1;\n              } else {\n                peg$currPos = s0;\n                s0 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s0;\n              s0 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsenthLastChild() {\n      var s0, s1, s2, s3, s4, s5;\n\n      var key    = peg$currPos * 30 + 28,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.substr(peg$currPos, 16) === peg$c97) {\n        s1 = peg$c97;\n        peg$currPos += 16;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c98); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = peg$parse_();\n        if (s2 !== peg$FAILED) {\n          s3 = [];\n          if (peg$c60.test(input.charAt(peg$currPos))) {\n            s4 = input.charAt(peg$currPos);\n            peg$currPos++;\n          } else {\n            s4 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c61); }\n          }\n          if (s4 !== peg$FAILED) {\n            while (s4 !== peg$FAILED) {\n              s3.push(s4);\n              if (peg$c60.test(input.charAt(peg$currPos))) {\n                s4 = input.charAt(peg$currPos);\n                peg$currPos++;\n              } else {\n                s4 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c61); }\n              }\n            }\n          } else {\n            s3 = peg$FAILED;\n          }\n          if (s3 !== peg$FAILED) {\n            s4 = peg$parse_();\n            if (s4 !== peg$FAILED) {\n              if (input.charCodeAt(peg$currPos) === 41) {\n                s5 = peg$c68;\n                peg$currPos++;\n              } else {\n                s5 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c69); }\n              }\n              if (s5 !== peg$FAILED) {\n                peg$savedPos = s0;\n                s1 = peg$c99(s3);\n                s0 = s1;\n              } else {\n                peg$currPos = s0;\n                s0 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s0;\n              s0 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parseclass() {\n      var s0, s1, s2;\n\n      var key    = peg$currPos * 30 + 29,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.charCodeAt(peg$currPos) === 58) {\n        s1 = peg$c100;\n        peg$currPos++;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c101); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = peg$parseidentifierName();\n        if (s2 !== peg$FAILED) {\n          peg$savedPos = s0;\n          s1 = peg$c102(s2);\n          s0 = s1;\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n\n      function nth(n) { return { type: 'nth-child', index: { type: 'literal', value: n } }; }\n      function nthLast(n) { return { type: 'nth-last-child', index: { type: 'literal', value: n } }; }\n      function strUnescape(s) {\n        return s.replace(/\\\\(.)/g, function(match, ch) {\n          switch(ch) {\n            case 'b': return '\\b';\n            case 'f': return '\\f';\n            case 'n': return '\\n';\n            case 'r': return '\\r';\n            case 't': return '\\t';\n            case 'v': return '\\v';\n            default: return ch;\n          }\n        });\n      }\n\n\n    peg$result = peg$startRuleFunction();\n\n    if (peg$result !== peg$FAILED && peg$currPos === input.length) {\n      return peg$result;\n    } else {\n      if (peg$result !== peg$FAILED && peg$currPos < input.length) {\n        peg$fail(peg$endExpectation());\n      }\n\n      throw peg$buildStructuredError(\n        peg$maxFailExpected,\n        peg$maxFailPos < input.length ? input.charAt(peg$maxFailPos) : null,\n        peg$maxFailPos < input.length\n          ? peg$computeLocation(peg$maxFailPos, peg$maxFailPos + 1)\n          : peg$computeLocation(peg$maxFailPos, peg$maxFailPos)\n      );\n    }\n  }\n\n  return {\n    SyntaxError: peg$SyntaxError,\n    parse:       peg$parse\n  };\n});\n","/* vim: set sw=4 sts=4 : */\nimport estraverse from 'estraverse';\nimport parser from './parser.js';\n\n/**\n* @typedef {\"LEFT_SIDE\"|\"RIGHT_SIDE\"} Side\n*/\n\nconst LEFT_SIDE = 'LEFT_SIDE';\nconst RIGHT_SIDE = 'RIGHT_SIDE';\n\n/**\n * @external AST\n * @see https://esprima.readthedocs.io/en/latest/syntax-tree-format.html\n */\n\n/**\n * One of the rules of `grammar.pegjs`\n * @typedef {PlainObject} SelectorAST\n * @see grammar.pegjs\n*/\n\n/**\n * The `sequence` production of `grammar.pegjs`\n * @typedef {PlainObject} SelectorSequenceAST\n*/\n\n/**\n * Get the value of a property which may be multiple levels down\n * in the object.\n * @param {?PlainObject} obj\n * @param {string[]} keys\n * @returns {undefined|boolean|string|number|external:AST}\n */\nfunction getPath(obj, keys) {\n    for (let i = 0; i < keys.length; ++i) {\n        if (obj == null) { return obj; }\n        obj = obj[keys[i]];\n    }\n    return obj;\n}\n\n/**\n * Determine whether `node` can be reached by following `path`,\n * starting at `ancestor`.\n * @param {?external:AST} node\n * @param {?external:AST} ancestor\n * @param {string[]} path\n * @param {Integer} fromPathIndex\n * @returns {boolean}\n */\nfunction inPath(node, ancestor, path, fromPathIndex) {\n    let current = ancestor;\n    for (let i = fromPathIndex; i < path.length; ++i) {\n        if (current == null) {\n            return false;\n        }\n        const field = current[path[i]];\n        if (Array.isArray(field)) {\n            for (let k = 0; k < field.length; ++k) {\n                if (inPath(node, field[k], pat/**
+ * @fileoverview Main CLI object.
+ * @author Nicholas C. Zakas
+ */
+
+"use strict";
+
+/*
+ * The CLI object should *not* call process.exit() directly. It should only return
+ * exit codes. This allows other programs to use the CLI object and still control
+ * when the program exits.
+ */
+
+//------------------------------------------------------------------------------
+// Requirements
+//------------------------------------------------------------------------------
+
+const fs = require("fs"),
+    path = require("path"),
+    defaultOptions = require("../conf/default-cli-options"),
+    Linter = require("./linter"),
+    lodash = require("lodash"),
+    IgnoredPaths = require("./util/ignored-paths"),
+    Config = require("./config"),
+    ConfigOps = require("./config/config-ops"),
+    LintResultCache = require("./util/lint-result-cache"),
+    globUtils = require("./util/glob-utils"),
+    validator = require("./config/config-validator"),
+    hash = require("./util/hash"),
+    ModuleResolver = require("./util/module-resolver"),
+    naming = require("./util/naming"),
+    pkg = require("../package.json"),
+    loadRules = require("./load-rules");
+
+const debug = require("debug")("eslint:cli-engine");
+const resolver = new ModuleResolver();
+const validFixTypes = new Set(["problem", "suggestion", "layout"]);
+
+//------------------------------------------------------------------------------
+// Typedefs
+//------------------------------------------------------------------------------
+
+/**
+ * The options to configure a CLI engine with.
+ * @typedef {Object} CLIEngineOptions
+ * @property {boolean} allowInlineConfig Enable or disable inline configuration comments.
+ * @property {Object} baseConfig Base config object, extended by all configs used with this CLIEngine instance
+ * @property {boolean} cache Enable result caching.
+ * @property {string} cacheLocation The cache file to use instead of .eslintcache.
+ * @property {string} configFile The configuration file to use.
+ * @property {string} cwd The value to use for the current working directory.
+ * @property {string[]} envs An array of environments to load.
+ * @property {string[]} extensions An array of file extensions to check.
+ * @property {boolean|Function} fix Execute in autofix mode. If a function, should return a boolean.
+ * @property {string[]} fixTypes Array of rule types to apply fixes for.
+ * @property {string[]} globals An array of global variables to declare.
+ * @property {boolean} ignore False disables use of .eslintignore.
+ * @property {string} ignorePath The ignore file to use instead of .eslintignore.
+ * @property {string} ignorePattern A glob pattern of files to ignore.
+ * @property {boolean} useEslintrc False disables looking for .eslintrc
+ * @property {string} parser The name of the parser to use.
+ * @property {Object} parserOptions An object of parserOption settings to use.
+ * @property {string[]} plugins An array of plugins to load.
+ * @property {Object<string,*>} rules An object of rules to use.
+ * @property {string[]} rulePaths An array of directories to load custom rules from.
+ * @property {boolean} reportUnusedDisableDirectives `true` adds reports for unused eslint-disable directives
+ */
+
+/**
+ * A linting warning or error.
+ * @typedef {Object} LintMessage
+ * @property {string} message The message to display to the user.
+ */
+
+/**
+ * A linting result.
+ * @typedef {Object} LintResult
+ * @property {string} filePath The path to the file that was linted.
+ * @property {LintMessage[]} messages All of the messages for the result.
+ * @property {number} errorCount Number of errors for the result.
+ * @property {number} warningCount Number of warnings for the result.
+ * @property {number} fixableErrorCount Number of fixable errors for the result.
+ * @property {number} fixableWarningCount Number of fixable warnings for the result.
+ * @property {string=} [source] The source code of the file that was linted.
+ * @property {string=} [output] The source code of the file that was linted, with as many fixes applied as possible.
+ */
+
+//------------------------------------------------------------------------------
+// Helpers
+//------------------------------------------------------------------------------
+
+/**
+ * Determines if each fix type in an array is supported by ESLint and throws
+ * an error if not.
+ * @param {string[]} fixTypes An array of fix types to check.
+ * @returns {void}
+ * @throws {Error} If an invalid fix type is found.
+ */
+function validateFixTypes(fixTypes) {
+    for (const fixType of fixTypes) {
+        if (!validFixTypes.has(fixType)) {
+            throw new Error(`Invalid fix type "${fixType}" found.`);
+        }
+    }
+}
+
+/**
+ * It will calculate the error and warning count for collection of messages per file
+ * @param {Object[]} messages - Collection of messages
+ * @returns {Object} Contains the stats
+ * @private
+ */
+function calculateStatsPerFile(messages) {
+    return messages.reduce((stat, message) => {
+        if (message.fatal || message.severity === 2) {
+            stat.errorCount++;
+            if (message.fix) {
+                stat.fixableErrorCount++;
+            }
+        } else {
+            stat.warningCount++;
+            if (message.fix) {
+                stat.fixableWarningCount++;
+            }
+        }
+        return stat;
+    }, {
+        errorCount: 0,
+        warningCount: 0,
+        fixableErrorCount: 0,
+        fixableWarningCount: 0
+    });
+}
+
+/**
+ * It will calculate the error and warning count for collection of results from all files
+ * @param {Object[]} results - Collection of messages from all the files
+ * @returns {Object} Contains the stats
+ * @private
+ */
+function calculateStatsPerRun(results) {
+    return results.reduce((stat, result) => {
+        stat.errorCount += result.errorCount;
+        stat.warningCount += result.warningCount;
+        stat.fixableErrorCount += result.fixableErrorCount;
+        stat.fixableWarningCount += result.fixableWarningCount;
+        return stat;
+    }, {
+        errorCount: 0,
+        warningCount: 0,
+        fixableErrorCount: 0,
+        fixableWarningCount: 0
+    });
+}
+
+/**
+ * Processes an source code using ESLint.
+ * @param {string} text The source code to check.
+ * @param {Object} configHelper The configuration options for ESLint.
+ * @param {string} filename An optional string representing the texts filename.
+ * @param {boolean|Function} fix Indicates if fixes should be processed.
+ * @param {boolean} allowInlineConfig Allow/ignore comments that change config.
+ * @param {boolean} reportUnusedDisableDirectives Allow/ignore comments that change config.
+ * @param {Linter} linter Linter context
+ * @returns {{rules: LintResult, config: Object}} The results for linting on this text and the fully-resolved config for it.
+ * @private
+ */
+function processText(text, configHelper, filename, fix, allowInlineConfig, reportUnusedDisableDirectives, linter) {
+    let filePath,
+        fileExtension,
+        processor;
+
+    if (filename) {
+        filePath = path.resolve(filename);
+        fileExtension = path.extname(filename);
+    }
+
+    const effectiveFilename = filename || "<text>";
+
+    debug(`Linting ${effectiveFilename}`);
+    const config = configHelper.getConfig(filePath);
+
+    if (config.plugins) {
+        configHelper.plugins.loadAll(config.plugins);
+    }
+
+    const loadedPlugins = configHelper.plugins.getAll();
+
+    for (const plugin in loadedPlugins) {
+        if (loadedPlugins[plugin].processors && Object.keys(loadedPlugins[plugin].processors).indexOf(fileExtension) >= 0) {
+            processor = loadedPlugins[plugin].processors[fileExtension];
+            break;
+        }
+    }
+
+    const autofixingEnabled = typeof fix !== "undefined" && (!processor || processor.supportsAutofix);
+    const fixedResult = linter.verifyAndFix(text, config, {
+        filename: effectiveFilename,
+        allowInlineConfig,
+        reportUnusedDisableDirectives,
+        fix: !!autofixingEnabled && fix,
+        preprocess: processor && (rawText => processor.preprocess(rawText, effectiveFilename)),
+        postprocess: processor && (problemLists => processor.postprocess(problemLists, effectiveFilename))
+    });
+    const stats = calculateStatsPerFile(# math-intrinsics <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
+
+[![npm badge][npm-badge-png]][package-url]
+
+ES Math-related intrinsics and helpers, robustly cached.
+
+ - `abs`
+ - `floor`
+ - `isFinite`
+ - `isInteger`
+ - `isNaN`
+ - `isNegativeZero`
+ - `max`
+ - `min`
+ - `mod`
+ - `pow`
+ - `round`
+ - `sign`
+ - `constants/maxArrayLength`
+ - `constants/maxSafeInteger`
+ - `constants/maxValue`
+
+
+## Tests
+Simply clone the repo, `npm install`, and run `npm test`
+
+## Security
+
+Please email [@ljharb](https://github.com/ljharb) or see https://tidelift.com/security if you have a potential security vulnerability to report.
+
+[package-url]: https://npmjs.org/package/math-intrinsics
+[npm-version-svg]: https://versionbadg.es/es-shims/math-intrinsics.svg
+[deps-svg]: https://david-dm.org/es-shims/math-intrinsics.svg
+[deps-url]: https://david-dm.org/es-shims/math-intrinsics
+[dev-deps-svg]: https://david-dm.org/es-shims/math-intrinsics/dev-status.svg
+[dev-deps-url]: https://david-dm.org/es-shims/math-intrinsics#info=devDependencies
+[npm-badge-png]: https://nodei.co/npm/math-intrinsics.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/math-intrinsics.svg
+[license-url]: LICENSE
+[downloads-image]: https://img.shields.io/npm/dm/es-object.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=math-intrinsics
+[codecov-image]: https://codecov.io/gh/es-shims/math-intrinsics/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/es-shims/math-intrinsics/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/es-shims/math-intrinsics
+[actions-url]: https://github.com/es-shims/math-intrinsics/actions
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     = options['predicate']    || null;
+  this.represent    = options['represent']    || null;
+  this.defaultStyle = options['defaultStyle'] || null;
+  this.styleAliases = compileStyleAliases(options['styleAliases'] || null);
+
+  if (YAML_NODE_KINDS.indexOf(this.kind) === -1) {
+    throw new YAMLException('Unknown kind "' + this.kind + '" is specified for "' + tag + '" YAML type.');
+  }
+}
+
+module.exports = Type;
+
+},{"./exception":4}],14:[function(require,module,exports){
+'use strict';
+
+/*eslint-disable no-bitwise*/
+
+var NodeBuffer;
+
+try {
+  // A trick for browserified version, to not include `Buffer` shim
+  var _require = require;
+  NodeBuffer = _require('buffer').Buffer;
+} catch (__) {}
+
+var Type       = require('../type');
+
+
+// [ 64, 65, 66 ] -> [ padding, CR, LF ]
+var BASE64_MAP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\n\r';
+
+
+function resolveYamlBinary(data) {
+  if (data === null) return false;
+
+  var code, idx, bitlen = 0, max = data.length, map = BASE64_MAP;
+
+  // Convert one by one.
+  for (idx = 0; idx < max; idx++) {
+    code = map.indexOf(data.charAt(idx));
+
+    // Skip CR/LF
+    if (code > 64) continue;
+
+    // Fail on illegal characters
+    if (code < 0) return false;
+
+    bitlen += 6;
+  }
+
+  // If there are any bits left, source was corrupted
+  return (bitlen % 8) === 0;
+}
+
+function constructYamlBinary(data) {
+  var idx, tailbits,
+      input = data.replace(/[\r\n=]/g, ''), // remove CR/LF & padding to simplify scan
+      max = input.length,
+      map = BASE64_MAP,
+      bits = 0,
+      result = [];
+
+  // Collect by 6*4 bits (3 bytes)
+
+  for (idx = 0; idx < max; idx++) {
+    if ((idx % 4 === 0) && idx) {
+      result.push((bits >> 16) & 0xFF);
+      result.push((bits >> 8) & 0xFF);
+      result.push(bits & 0xFF);
+    }
+
+    bits = (bits << 6) | map.indexOf(input.charAt(idx));
+  }
+
+  // Dump tail
+
+  tailbits = (max % 4) * 6;
+
+  if (tailbits === 0) {
+    result.push((bits >> 16) & 0xFF);
+    result.push((bits >> 8) & 0xFF);
+    result.push(bits & 0xFF);
+  } else if (tailbits === 18) {
+    result.push((bits >> 10) & 0xFF);
+    result.push((bits >> 2) & 0xFF);
+  } else if (tailbits === 12) {
+    result.push((bits >> 4) & 0xFF);
+  }
+
+  // Wrap into Buffer for NodeJS and leave Array for browser
+  if (NodeBuffer) {
+    // Support node 6.+ Buffer API when available
+    return NodeBuffer.from ? NodeBuffer.from(result) : new NodeBuffer(result);
+  }
+
+  return result;
+}
+
+function representYamlBinary(object /*, style*/) {
+  var result = '', bits = 0, idx, tail,
+      max = object.length,
+      map = BASE64_MAP;
+
+  // Convert every three bytes to 4 ASCII characters.
+
+  for (idx = 0; idx < max; idx++) {
+    if ((idx % 3 === 0) && idx) {
+      result += map[(bits >> 18) & 0x3F];
+      result += map[(bits >> 12) & 0x3F];
+      result += map[(bits >> 6) & 0x3F];
+      result += map[bits & 0x3F];
+    }
+
+    bits = (bits << 8) + object[idx];
+  }
+
+  // Dump tail
+
+  tail = max % 3;
+
+  if (tail === 0) {
+    result += map[(bits >> 18) & 0x3F];
+    result += map[(bits >> 12) & 0x3F];
+    result += map[(bits >> 6) & 0x3F];
+    result += map[bits & 0x3F];
+  } else if (tail === 2) {
+    result += map[(bits >> 10) & 0x3F];
+    result += map[(bits >> 4) & 0x3F];
+    result += map[(bits << 2) & 0x3F];
+    result += map[64];
+  } else if (tail === 1) {
+    result += map[(bits >> 2) & 0x3F];
+    result += map[(bits << 4) & 0x3F];
+    result += map[64];
+    result += map[64];
+  }
+
+  return result;
+}
+
+function isBinary(object) {
+  return NodeBuffer && NodeBuffer.isBuffer(object);
+}
+
+module.exports = new Type('tag:yaml.org,2002:binary', {
+  kind: 'scalar',
+  resolve: resolveYamlBinary,
+  construct: constructYamlBinary,
+  predicate: isBinary,
+  represent: representYamlBinary
+});
+
+},{"../type":13}],15:[function(require,module,exports){
+'use strict';
+
+var Type = require('../type');
+
+function resolveYamlBoolean(data) {
+  if (data === null) return false;
+
+  var max = data.length;
+
+  return (max === 4 && (data === 'true' || data === 'True' || data === 'TRUE')) ||
+         (max === 5 && (data === 'false' || data === 'False' || data === 'FALSE'));
+}
+
+function constructYamlBoolean(data) {
+  return data === 'true' ||
+         data === 'True' ||
+         data === 'TRUE';
+}
+
+function isBoolean(object) {
+  return Object.prototype.toString.call(object) === '[object Boolean]';
+}
+
+module.exports = new Type('tag:yaml.org,2002:bool', {
+  kind: 'scalar',
+  resolve: resolveYamlBoolean,
+  construct: constructYamlBoolean,
+  predicate: isBoolean,
+  represent: {
+    lowercase: function (object) { return object ? 'true' : 'false'; },
+    uppercase: function (object) { return object ? 'TRUE' : 'FALSE'; },
+    camelcase: function (object) { return object ? 'True' : 'False'; }
+  },
+  defaultStyle: 'lowercase'
+});
+
+},{"../type":13}],16:[function(require,module,exports){
+'use strict';
+
+var common = require('../common');
+var Type   = require('../type');
+
+var YAML_FLOAT_PATTERN = new RegExp(
+  // 2.5e4, 2.5 and integers
+  '^(?:[-+]?(?:0|[1-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
+  // .2e4, .2
+  // special case, seems not from spec
+  '|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?' +
+  // 20:59
+  '|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*' +
+  // .inf
+  '|[-+]?\\.(?:inf|Inf|INF)' +
+  // .nan
+  '|\\.(?:nan|NaN|NAN))$');
+
+function resolveYamlFloat(data) {
+  if (data === null) return false;
+
+  if (!YAML_FLOAT_PATTERN.test(data) ||
+      // Quick hack to not allow integers end with `_`
+      // Probably should update regexp & check speed
+      data[data.length - 1] === '_') {
+    return false;
+  }
+
+  return true;
+}
+
+function constructYamlFloat(data) {
+  var value, sign, base, digits;
+
+  value  = data.replace(/_/g, '').toLowerCase();
+  sign   = value[0] === '-' ? -1 : 1;
+  digits = [];
+
+  if ('+-'.indexOf(value[0]) >= 0) {
+    value = value.slice(1);
+  }
+
+  if (value === '.inf') {
+    return (sign === 1) ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
+
+  } else if (value === '.nan') {
+    return NaN;
+
+  } else if (value.indexOf(':') >= 0) {
+    value.split(':').forEach(function (v) {
+      digits.unshift(parseFloat(v, 10));
+    });
+
+    value = 0.0;
+    base = 1;
+
+    digits.forEach(function (d) {
+      value += d * base;
+      base *= 60;
+    });
+
+    return sign * value;
+
+  }
+  return sign * parseFloat(value, 10);
+}
+
+
+var SCIENTIFIC_WITHOUT_DOT = /^[-+]?[0-9]+e/;
+
+function representYamlFloat(object, style) {
+  var res;
+
+  if (isNaN(object)) {
+    switch (style) {
+      case 'lowercase': return '.nan';
+      case 'uppercase': return '.NAN';
+      case 'camelcase': return '.NaN';
+    }
+  } else if (Number.POSITIVE_INFINITY === object) {
+    switch (style) {
+      case 'lowercase': return '.inf';
+      case 'uppercase': return '.INF';
+      case 'camelcase': return '.Inf';
+    }
+  } else if (Number.NEGATIVE_INFINITY === object) {
+    switch (style) {
+      case 'lowercase': return '-.inf';
+      case 'uppercase': return '-.INF';
+      case 'camelcase': return '-.Inf';
+    }
+  } else if (common.isNegativeZero(object)) {
+    return '-0.0';
+  }
+
+  res = object.toString(10);
+
+  // JS stringifier can build scientific format without dots: 5e-100,
+  // while YAML requres dot: 5.e-100. Fix it with simple hack
+
+  return SCIENTIFIC_WITHOUT_DOT.test(res) ? res.replace('e', '.e') : res;
+}
+
+function isFloat(object) {
+  return (Object.prototype.toString.call(object) === '[object Number]') &&
+         (object % 1 !== 0 || common.isNegativeZero(object));
+}
+
+module.exports = new Type('tag:yaml.org,2002:float', {
+  kind: 'scalar',
+  resolve: resolveYamlFloat,
+  construct: constructYamlFloat,
+  predicate: isFloat,
+  represent: representYamlFloat,
+  defaultStyle: 'lowercase'
+});
+
+},{"../common":2,"../type":13}],17:[function(require,module,exports){
+'use strict';
+
+var common = require('../common');
+var Type   = require('../type');
+
+function isHexCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
+         ((0x41/* A */ <= c) && (c <= 0x46/* F */)) ||
+         ((0x61/* a */ <= c) && (c <= 0x66/* f */));
+}
+
+function isOctCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x37/* 7 */));
+}
+
+function isDecCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */));
+}
+
+function resolveYamlInteger(data) {
+  if (data === null) return false;
+
+  var max = data.length,
+      index = 0,
+      hasDigits = false,
+      ch;
+
+  if (!max) return false;
+
+  ch = data[index];
+
+  // sign
+  if (ch === '-' || ch === '+') {
+    ch = data[++index];
+  }
+
+  if (ch === '0') {
+    // 0
+    if (index + 1 === max) return true;
+    ch = data[++index];
+
+    // base 2, base 8, base 16
+
+    if (ch === 'b') {
+      // base 2
+      index++;
+
+      for (; index < max; index++) {
+        ch = data[index];
+        if (ch === '_') continue;
+        if (ch !== '0' && ch !== '1') return false;
+        hasDigits = true;
+      }
+      return hasDigits && ch !== '_';
+    }
+
+
+    if (ch === 'x') {
+      // base 16
+      index++;
+
+      for (; index < max; index++) {
+        ch = data[index];
+        if (ch === '_') continue;
+        if (!isHexCode(data.charCodeAt(index))) return false;
+        hasDigits = true;
+      }
+      return hasDigits && ch !== '_';
+    }
+
+    // base 8
+    for (; index < max; index++) {
+      ch = data[index];
+      if (ch === '_') continue;
+      if (!isOctCode(data.charCodeAt(index))) return false;
+      hasDigits = true;
+    }
+    return hasDigits && ch !== '_';
+  }
+
+  // base 10 (except 0) or base 60
+
+  // value should not start with `_`;
+  if (ch === '_') return false;
+
+  for (; index < max; index++) {
+    ch = data[index];
+    if (ch === '_') continue;
+    if (ch === ':') break;
+    if (!isDecCode(data.charCodeAt(index))) {
+      return false;
+    }
+    hasDigits = true;
+  }
+
+  // Should have digits and should not end with `_`
+  if (!hasDigits || ch === '_') return false;
+
+  // if !base60 - done;
+  if (ch !== ':') return true;
+
+  // base60 almost not used, no needs to optimize
+  return /^(:[0-5]?[0-9])+$/.test(data.slice(index));
+}
+
+function constructYamlInteger(data) {
+  var value = data, sign = 1, ch, base, digits = [];
+
+  if (value.indexOf('_') !== -1) {
+    value = value.replace(/_/g, '');
+  }
+
+  ch = value[0];
+
+  if (ch === '-' || ch === '+') {
+    if (ch === '-') sign = -1;
+    value = value.slice(1);
+    ch = value[0];
+  }
+
+  if (value === '0') return 0;
+
+  if (ch === '0') {
+    if (value[1] === 'b') return sign * parseInt(value.slice(2), 2);
+    if (value[1] === 'x') return sign * parseInt(value, 16);
+    return sign * parseInt(value, 8);
+  }
+
+  if (value.indexOf(':') !== -1) {
+    value.split(':').forEach(function (v) {
+      digits.unshift(parseInt(v, 10));
+    });
+
+    value = 0;
+    base = 1;
+
+    digits.forEach(function (d) {
+      value += (d * base);
+      base *= 60;
+    });
+
+    return sign * value;
+
+  }
+
+  return sign * parseInt(value, 10);
+}
+
+function isInteger(object) {
+  return (Object.prototype.toString.call(object)) === '[object Number]' &&
+         (object % 1 === 0 && !common.isNegativeZero(object));
+}
+
+module.exports = new Type('tag:yaml.org,2002:int', {
+  kind: 'scalar',
+  resolve: resolveYamlInteger,
+  construct: constructYamlInteger,
+  predicate: isInteger,
+  represent: {
+    binary:      function (obj) { return obj >= 0 ? '0b' + obj.toString(2) : '-0b' + obj.toString(2).slice(1); },
+    octal:       function (obj) { return obj >= 0 ? '0'  + obj.toString(8) : '-0'  + obj.toString(8).slice(1); },
+    decimal:     function (obj) { return obj.toString(10); },
+    /* eslint-disable max-len */
+    hexadecimal: function (obj) { return obj >= 0 ? '0x' + obj.toString(16).toUpperCase() :  '-0x' + obj.toString(16).toUpperCase().slice(1); }
+  },
+  defaultStyle: 'decimal',
+  styleAliases: {
+    binary:      [ 2,  'bin' ],
+    octal:       [ 8,  'oct' ],
+    decimal:     [ 10, 'dec' ],
+    hexadecimal: [ 16, 'hex' ]
+  }
+});
+
+},{"../common":2,"../type":13}],18:[function(require,module,exports){
+'use strict';
+
+var esprima;
+
+// Browserified version does not have esprima
+//
+// 1. For node.js just require module as deps
+// 2. For browser try to require mudule via external AMD system.
+//    If not found - try to fallback to window.esprima. If not
+//    found too - then fail to parse.
+//
+try {
+  // workaround to exclude package from browserify list.
+  var _require = require;
+  esprima = _require('esprima');
+} catch (_) {
+  /* eslint-disable no-redeclare */
+  /* global window */
+  if (typeof window !== 'undefined') esprima = window.esprima;
+}
+
+var Type = require('../../type');
+
+function resolveJavascriptFunction(data) {
+  if (data === null) return false;
+
+  try {
+    var source = '(' + data + ')',
+        ast    = esprima.parse(source, { range: true });
+
+    if (ast.type                    !== 'Program'             ||
+        ast.body.length             !== 1                     ||
+        ast.body[0].type            !== 'ExpressionStatement' ||
+        (ast.body[0].expression.type !== 'ArrowFunctionExpression' &&
+          ast.body[0].expression.type !== 'FunctionExpression')) {
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+function constructJavascriptFunction(data) {
+  /*jslint evil:true*/
+
+  var source = '(' + data + ')',
+      ast    = esprima.parse(source, { range: true }),
+      params = [],
+      body;
+
+  if (ast.type                    !== 'Program'             ||
+      ast.body.length             !== 1                     ||
+      ast.body[0].type            !== 'ExpressionStatement' ||
+      (ast.body[0].expression.type !== 'ArrowFunctionExpression' &&
+        ast.body[0].expression.type !== 'FunctionExpression')) {
+    throw new Error('Failed to resolve function');
+  }
+
+  ast.body[0].expression.params.forEach(function (param) {
+    params.push(param.name);
+  });
+
+  body = ast.body[0].expression.body.range;
+
+  // Esprima's ranges include the first '{' and the last '}' characters on
+  // function expressions. So cut them out.
+  if (ast.body[0].expression.body.type === 'BlockStatement') {
+    /*eslint-disable no-new-func*/
+    return new Function(params, source.slice(body[0] + 1, body[1] - 1));
+  }
+  // ES6 arrow functions can omit the BlockStatement. In that case, just return
+  // the body.
+  /*eslint-disable no-new-func*/
+  return new Function(params, 'return ' + source.slice(body[0], body[1]));
+}
+
+function representJavascriptFunction(object /*, style*/) {
+  return object.toString();
+}
+
+function isFunction(object) {
+  return Object.prototype.toString.call(object) === '[object Function]';
+}
+
+module.exports = new Type('tag:yaml.org,2002:js/function', {
+  kind: 'scalar',
+  resolve: resolveJavascriptFunction,
+  construct: constructJavascriptFunction,
+  predicate: isFunction,
+  represent: representJavascriptFunction
+});
+
+},{"../../type":13}],19:[function(require,module,exports){
+'use strict';
+
+var Type = require('../../type');
+
+function resolveJavascriptRegExp(data) {
+  if (data === null) return false;
+  if (data.length === 0) return false;
+
+  var regexp = data,
+      tail   = /\/([gim]*)$/.exec(data),
+      modifiers = '';
+
+  // if regexp starts with '/' it can have modifiers and must be properly closed
+  // `/foo/gim` - modifiers tail can be maximum 3 chars
+  if (regexp[0] === '/') {
+    if (tail) modifiers = tail[1];
+
+    if (modifiers.length > 3) return false;
+    // if expression starts with /, is should be properly terminated
+    if (regexp[regexp.length - modifiers.length - 1] !== '/') return false;
+  }
+
+  return true;
+}
+
+function constructJavascriptRegExp(data) {
+  var regexp = data,
+      tail   = /\/([gim]*)$/.exec(data),
+      modifiers = '';
+
+  // `/foo/gim` - tail can be maximum 4 chars
+  if (regexp[0] === '/') {
+    if (tail) modifiers = tail[1];
+    regexp = regexp.slice(1, regexp.length - modifiers.length - 1);
+  }
+
+  return new RegExp(regexp, modifiers);
+}
+
+function representJavascriptRegExp(object /*, style*/) {
+  var result = '/' + object.source + '/';
+
+  if (object.global) result += 'g';
+  if (object.multiline) result += 'm';
+  if (object.ignoreCase) result += 'i';
+
+  return result;
+}
+
+function isRegExp(object) {
+  return Object.prototype.toString.call(object) === '[object RegExp]';
+}
+
+module.exports = new Type('tag:yaml.org,2002:js/regexp', {
+  kind: 'scalar',
+  resolve: resolveJavascriptRegExp,
+  construct: constructJavascriptRegExp,
+  predicate: isRegExp,
+  represent: representJavascriptRegExp
+});
+
+},{"../../type":13}],20:[function(require,module,exporite">
+          <h1>with 4xx response</h1>
+          <dl>
+            <dt>should set res.error and res.clientError</dt>
+            <dd><pre><code>request
+.get('http://localhost:3004/notfound')
+.end(function(err, res){
+  assert(err);
+  assert(!res.ok, 'response should not be ok');
+  assert(res.error, 'response should be an error');
+  assert(res.clientError, 'response should be a client error');
+  assert(!res.serverError, 'response should not be a server error');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with 5xx response</h1>
+          <dl>
+            <dt>should set res.error and res.serverError</dt>
+            <dd><pre><code>request
+.get('http://localhost:3004/error')
+.end(function(err, res){
+  assert(err);
+  assert(!res.ok, 'response should not be ok');
+  assert(!res.notFound, 'response should not be notFound');
+  assert(res.error, 'response should be an error');
+  assert(!res.clientError, 'response should not be a client error');
+  assert(res.serverError, 'response should be a server error');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with 404 Not Found</h1>
+          <dl>
+            <dt>should res.notFound</dt>
+            <dd><pre><code>request
+.get('http://localhost:3004/notfound')
+.end(function(err, res){
+  assert(err);
+  assert(res.notFound, 'response should be .notFound');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with 400 Bad Request</h1>
+          <dl>
+            <dt>should set req.badRequest</dt>
+            <dd><pre><code>request
+.get('http://localhost:3004/bad-request')
+.end(function(err, res){
+  assert(err);
+  assert(res.badRequest, 'response should be .badRequest');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with 401 Bad Request</h1>
+          <dl>
+            <dt>should set res.unauthorized</dt>
+            <dd><pre><code>request
+.get('http://localhost:3004/unauthorized')
+.end(function(err, res){
+  assert(err);
+  assert(res.unauthorized, 'response should be .unauthorized');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with 406 Not Acceptable</h1>
+          <dl>
+            <dt>should set res.notAcceptable</dt>
+            <dd><pre><code>request
+.get('http://localhost:3004/not-acceptable')
+.end(function(err, res){
+  assert(err);
+  assert(res.notAcceptable, 'response should be .notAcceptable');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with 204 No Content</h1>
+          <dl>
+            <dt>should set res.noContent</dt>
+            <dd><pre><code>request
+.get('http://localhost:3004/no-content')
+.end(function(err, res){
+  assert(!err);
+  assert(res.noContent, 'response should be .noContent');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>req.send(Object) as &quot;form&quot;</h1>
+      <dl>
+        <section class="suite">
+          <h1>with req.type() set to form</h1>
+          <dl>
+            <dt>should send x-www-form-urlencoded data</dt>
+            <dd><pre><code>request
+.post('http://localhost:3002/echo')
+.type('form')
+.send({ name: 'tobi' })
+.end(function(err, res){
+  res.header['content-type'].should.equal('application/x-www-form-urlencoded');
+  res.text.should.equal('name=tobi');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>when called several times</h1>
+          <dl>
+            <dt>should merge the objects</dt>
+            <dd><pre><code>request
+.post('http://localhost:3002/echo')
+.type('form')
+.send({ name: { first: 'tobi', last: 'holowaychuk' } })
+.send({ age: '1' })
+.end(function(err, res){
+  res.header['content-type'].should.equal('application/x-www-form-urlencoded');
+  res.text.should.equal('name%5Bfirst%5D=tobi&amp;name%5Blast%5D=holowaychuk&amp;age=1');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>req.send(String)</h1>
+      <dl>
+        <dt>should default to &quot;form&quot;</dt>
+        <dd><pre><code>request
+.post('http://localhost:3002/echo')
+.send('user[name]=tj')
+.send('user[email]=tj@vision-media.ca')
+.end(function(err, res){
+  res.header['content-type'].should.equal('application/x-www-form-urlencoded');
+  res.body.should.eql({ user: { name: 'tj', email: 'tj@vision-media.ca' } });
+  done();
+})</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>res.body</h1>
+      <dl>
+        <section class="suite">
+          <h1>application/x-www-form-urlencoded</h1>
+          <dl>
+            <dt>should parse the body</dt>
+            <dd><pre><code>request
+.get('http://localhost:3002/form-data')
+.end(function(err, res){
+  res.text.should.equal('pet[name]=manny');
+  res.body.should.eql({ pet: { name: 'manny' }});
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>https</h1>
+      <dl>
+        <section class="suite">
+          <h1>request</h1>
+          <dl>
+            <dt>should give a good response</dt>
+            <dd><pre><code>request
+.get('https://localhost:8443/')
+.ca(cert)
+.end(function(err, res){
+  assert(res.ok);
+  assert.strictEqual('Safe and secure!', res.text);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.agent</h1>
+          <dl>
+            <dt>should be able to make multiple requests without redefining the certificate</dt>
+            <dd><pre><code>var agent = request.agent({ca: cert});
+agent
+.get('https://localhost:8443/')
+.end(function(err, res){
+  assert(res.ok);
+  assert.strictEqual('Safe and secure!', res.text);
+  agent
+  .get(url.parse('https://localhost:8443/'))
+  .end(function(err, res){
+    assert(res.ok);
+    assert.strictEqual('Safe and secure!', res.text);
+    done();
+  });
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>res.body</h1>
+      <dl>
+        <section class="suite">
+          <h1>image/png</h1>
+          <dl>
+            <dt>should parse the body</dt>
+            <dd><pre><code>request
+.get('http://localhost:3011/image')
+.end(function(err, res){
+  (res.body.length - img.length).should.equal(0);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>zlib</h1>
+      <dl>
+        <dt>should deflate the content</dt>
+        <dd><pre><code>request
+  .get('http://localhost:3080')
+  .end(function(err, res){
+    res.should.have.status(200);
+    res.text.should.equal(subject);
+    res.headers['content-length'].should.be.below(subject.length);
+    done();
+  });</code></pre></dd>
+        <dt>should handle corrupted responses</dt>
+        <dd><pre><code>request
+  .get('http://localhost:3080/corrupt')
+  .end(function(err, res){
+    assert(err, 'missing error');
+    assert(!res, 'response should not be defined');
+    done();
+  });</code></pre></dd>
+        <section class="suite">
+          <h1>without encoding set</h1>
+          <dl>
+            <dt>should emit buffers</dt>
+            <dd><pre><code>request
+  .get('http://localhost:3080/binary')
+  .end(function(err, res){
+    res.should.have.status(200);
+    res.headers['content-length'].should.be.below(subject.length);
+    res.on('data', function(chunk){
+      chunk.should.have.length(subject.length);
+    });
+    res.on('end', done);
+  });</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>req.send(Object) as &quot;json&quot;</h1>
+      <dl>
+        <dt>should default to json</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.send({ name: 'tobi' })
+.end(function(err, res){
+  res.should.be.json
+  res.text.should.equal('{&quot;name&quot;:&quot;tobi&quot;}');
+  done();
+});</code></pre></dd>
+        <dt>should work with arrays</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.send([1,2,3])
+.end(function(err, res){
+  res.should.be.json
+  res.text.should.equal('[1,2,3]');
+  done();
+});</code></pre></dd>
+        <dt>should work with value null</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.type('json')
+.send('null')
+.end(function(err, res){
+  res.should.be.json
+  assert.strictEqual(res.body, null);
+  done();
+});</code></pre></dd>
+        <dt>should work with value false</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.type('json')
+.send('false')
+.end(function(err, res){
+  res.should.be.json
+  res.body.should.equal(false);
+  done();
+});</code></pre></dd>
+        <dt>should work with value 0</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.type('json')
+.send('0')
+.end(function(err, res){
+  res.should.be.json
+  res.body.should.equal(0);
+  done();
+});</code></pre></dd>
+        <dt>should work with empty string value</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.type('json')
+.send('&quot;&quot;')
+.end(function(err, res){
+  res.should.be.json
+  res.body.should.equal(&quot;&quot;);
+  done();
+});</code></pre></dd>
+        <dt>should work with GET</dt>
+        <dd><pre><code>request
+.get('http://localhost:3005/echo')
+.send({ tobi: 'ferret' })
+.end(function(err, res){
+  res.should.be.json
+  res.text.should.equal('{&quot;tobi&quot;:&quot;ferret&quot;}');
+  done();
+});</code></pre></dd>
+        <dt>should work with vendor MIME type</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.set('Content-Type', 'application/vnd.example+json')
+.send({ name: 'vendor' })
+.end(function(err, res){
+  res.text.should.equal('{&quot;name&quot;:&quot;vendor&quot;}');
+  done();
+});</code></pre></dd>
+        <section class="suite">
+          <h1>when called several times</h1>
+          <dl>
+            <dt>should merge the objects</dt>
+            <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.send({ name: 'tobi' })
+.send({ age: 1 })
+.end(function(err, res){
+  res.should.be.json
+  res.text.should.equal('{&quot;name&quot;:&quot;tobi&quot;,&quot;age&quot;:1}');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>res.body</h1>
+      <dl>
+        <section class="suite">
+          <h1>application/json</h1>
+          <dl>
+            <dt>should parse the body</dt>
+            <dd><pre><code>request
+.get('http://localhost:3005/json')
+.end(function(err, res){
+  res.text.should.equal('{&quot;name&quot;:&quot;manny&quot;}');
+  res.body.should.eql({ name: 'manny' });
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>HEAD requests</h1>
+          <dl>
+            <dt>should not throw a parse error</dt>
+            <dd><pre><code>request
+.head('http://localhost:3005/json')
+.end(function(err, res){
+  assert.strictEqual(err, null);
+  assert.strictEqual(res.text, undefined)
+  assert.strictEqual(Object.keys(res.body).length, 0)
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Invalid JSON response</h1>
+          <dl>
+            <dt>should return the raw response</dt>
+            <dd><pre><code>request
+.get('http://localhost:3005/invalid-json')
+.end(function(err, res){
+  assert.deepEqual(err.rawResponse, &quot;)]}', {'header':{'code':200,'text':'OK','version':'1.0'},'data':'some data'}&quot;);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>No content</h1>
+          <dl>
+            <dt>should not throw a parse error</dt>
+            <dd><pre><code>request
+.get('http://localhost:3005/no-content')
+.end(function(err, res){
+  assert.strictEqual(err, null);
+  assert.strictEqual(res.text, '');
+  assert.strictEqual(Object.keys(res.body).length, 0);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>application/json+hal</h1>
+          <dl>
+            <dt>should parse the body</dt>
+            <dd><pre><code>request
+.get('http://localhost:3005/json-hal')
+.end(function(err, res){
+  if (err) return done(err);
+  res.text.should.equal('{&quot;name&quot;:&quot;hal 5000&quot;}');
+  res.body.should.eql({ name: 'hal 5000' });
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>vnd.collection+json</h1>
+          <dl>
+            <dt>should parse the body</dt>
+            <dd><pre><code>request
+.get('http://localhost:3005/collection-json')
+.end(function(err, res){
+  res.text.should.equal('{&quot;name&quot;:&quot;chewbacca&quot;}');
+  res.body.should.eql({ name: 'chewbacca' });
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Request</h1>
+      <dl>
+        <section class="suite">
+          <h1>#attach(name, path, filename)</h1>
+          <dl>
+            <dt>should use the custom filename</dt>
+            <dd><pre><code>request
+.post(':3005/echo')
+.attach('document', 'test/node/fixtures/user.html', 'doc.html')
+.end(function(err, res){
+  if (err) return done(err);
+  var html = res.files.document;
+  html.name.should.equal('doc.html');
+  html.type.should.equal('text/html');
+  read(html.path).should.equal('&lt;h1&gt;name&lt;/h1&gt;');
+  done();
+})</code></pre></dd>
+            <dt>should fire progress event</dt>
+            <dd><pre><code>var loaded = 0;
+var total = 0;
+request
+.post(':3005/echo')
+.attach('document', 'test/node/fixtures/user.html')
+.on('progress', function (event) {
+  total = event.total;
+  loaded = event.loaded;
+})
+.end(function(err, res){
+  if (err) return done(err);
+  var html = res.files.document;
+  html.name.should.equal('user.html');
+  html.type.should.equal('text/html');
+  read(html.path).should.equal('&lt;h1&gt;name&lt;/h1&gt;');
+  total.should.equal(221);
+  loaded.should.equal(221);
+  done();
+})</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>with network error</h1>
+      <dl>
+        <dt>should error</dt>
+        <dd><pre><code>request
+.get('http://localhost:' + this.port + '/')
+.end(function(err, res){
+  assert(err, 'expected an error');
+  done();
+});</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>request</h1>
+      <dl>
+        <section class="suite">
+          <h1>not modified</h1>
+          <dl>
+            <dt>should start with 200</dt>
+            <dd><pre><code>request
+.get('http://localhost:3008/')
+.end(function(err, res){
+  res.should.have.status(200)
+  res.text.should.match(/^\d+$/);
+  ts = +res.text;
+  done();
+});</code></pre></dd>
+            <dt>should then be 304</dt>
+            <dd><pre><code>request
+.get('http://localhost:3008/')
+.set('If-Modified-Since', new Date(ts).toUTCString())
+.end(function(err, res){
+  res.should.have.status(304)
+  // res.text.should.be.empty
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>req.parse(fn)</h1>
+      <dl>
+        <dt>should take precedence over default parsers</dt>
+        <dd><pre><code>request
+.get('http://localhost:3033/manny')
+.parse(request.parse['application/json'])
+.end(function(err, res){
+  assert(res.ok);
+  assert.equal('{&quot;name&quot;:&quot;manny&quot;}', res.text);
+  assert.equal('manny', res.body.name);
+  done();
+});</code></pre></dd>
+        <dt>should be the only parser</dt>
+        <dd><pre><code>request
+.get('http://localhost:3033/image')
+.parse(function(res, fn) {
+  res.on('data', function() {});
+})
+.end(function(err, res){
+  assert(res.ok);
+  assert.strictEqual(res.text, undefined);
+  res.body.should.eql({});
+  done();
+});</code></pre></dd>
+        <dt>should emit error if parser throws</dt>
+        <dd><pre><code>request
+.get('http://localhost:3033/manny')
+.parse(function() {
+  throw new Error('I am broken');
+})
+.on('error', function(err) {
+  err.message.should.equal2685d7030ae9e4ba34149c3af03fc8"
+  integrity sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==
+  dependencies:
+    safe-buffer "~5.1.0"
+
+strip-ansi@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-3.0.1.tgz#6a385fb8853d952d5ff05d0e8aaf94278dc63dcf"
+  integrity sha1-ajhfuIU9lS1f8F0Oiq+UJ43GPc8=
+  dependencies:
+    ansi-regex "^2.0.0"
+
+strip-ansi@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-4.0.0.tgz#a8479022eb1ac368a871389b635262c505ee368f"
+  integrity sha1-qEeQIusaw2iocTibY1JixQXuNo8=
+  dependencies:
+    ansi-regex "^3.0.0"
+
+strip-ansi@^5.0.0, strip-ansi@^5.1.0, strip-ansi@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-5.2.0.tgz#8c9a536feb6afc962bdfa5b104a5091c1ad9c0ae"
+  integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
+  dependencies:
+    ansi-regex "^4.1.0"
+
+strip-json-comments@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
+  integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+supports-color@7.2.0, supports-color@^7.1.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-7.2.0.tgz#1b7dcdcb32b8138801b3e478ba6a51caa89648da"
+  integrity sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
+  dependencies:
+    has-flag "^4.0.0"
+
+supports-color@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
+  integrity sha1-U10EXOa2Nj+kARcIRimZXp3zJMc=
+
+to-fast-properties@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/to-fast-properties/-/to-fast-properties-1.0.3.tgz#b83571fa4d8c25b82e231b06e3a3055de4ca1a47"
+  integrity sha1-uDVx+k2MJbguIxsG46MFXeTKGkc=
+
+to-object-path@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/to-object-path/-/to-object-path-0.3.0.tgz#297588b7b0e7e0ac08e04e672f85c1f4999e17af"
+  integrity sha1-KXWIt7Dn4KwI4E5nL4XB9JmeF68=
+  dependencies:
+    kind-of "^3.0.2"
+
+to-regex-range@^2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/to-regex-range/-/to-regex-range-2.1.1.tgz#7c80c17b9dfebe599e27367e0d4dd5590141db38"
+  integrity sha1-fIDBe53+vlmeJzZ+DU3VWQFB2zg=
+  dependencies:
+    is-number "^3.0.0"
+    repeat-string "^1.6.1"
+
+to-regex-range@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/to-regex-range/-/to-regex-range-5.0.1.tgz#1648c44aae7c8d988a326018ed72f5b4dd0392e4"
+  integrity sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==
+  dependencies:
+    is-number "^7.0.0"
+
+to-regex@^3.0.1, to-regex@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/to-regex/-/to-regex-3.0.2.tgz#13cfdd9b336552f30b51f33a8ae1b42a7a7599ce"
+  integrity sha512-FWtleNAtZ/Ki2qtqej2CXTOayOH9bHDQF+Q48VpWyDXjbYxA4Yz8iDB31zXOBUlOHHKidDbqGVrTUvQMPmBGBw==
+  dependencies:
+    define-property "^2.0.2"
+    extend-shallow "^3.0.2"
+    regex-not "^1.0.2"
+    safe-regex "^1.1.0"
+
+trim-right@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
+  integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
+
+typescript@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.8.1.tgz#6160e4f8f195d5ba81d4876f9c0cc1fbc0820624"
+
+uglify-js@^2.8.14:
+  version "2.8.29"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.29.tgz#29c5733148057bb4e1f75df35b7a9cb72e6a59dd"
+  dependencies:
+    source-map "~0.5.1"
+    yargs "~3.10.0"
+  optionalDependencies:
+    uglify-to-browserify "~1.0.0"
+
+uglify-to-browserify@~1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
+
+union-value@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/union-value/-/union-value-1.0.1.tgz#0b6fe7b835aecda61c6ea4d4f02c14221e109847"
+  integrity sha512-tJfXmxMeWYnczCVs7XAEvIV7ieppALdyepWMkHkwciRpZraG/xwT+s2JN8+pr1+8jCRf80FFzvr+MpQeeoF4Xg==
+  dependencies:
+    arr-union "^3.1.0"
+    get-value "^2.0.6"
+    is-extendable "^0.1.1"
+    set-value "^2.0.1"
+
+unset-value@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/unset-value/-/unset-value-1.0.0.tgz#8376873f7d2335179ffb1e6fc3a8ed0dfc8ab559"
+  integrity sha1-g3aHP30jNRef+x5vw6jtDfyKtVk=
+  dependencies:
+    has-value "^0.3.1"
+    isobject "^3.0.0"
+
+urix@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
+  integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
+
+use@^3.1.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
+  integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
+
+user-home@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/user-home/-/user-home-1.1.1.tgz#2b5be23a32b63a7c9deb8d0f28d485724a3df190"
+  integrity sha1-K1viOjK2Onyd640PKNSFcko98ZA=
+
+util-deprecate@~1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
+  integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
+
+v8flags@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/v8flags/-/v8flags-2.1.1.tgz#aab1a1fa30d45f88dd321148875ac02c0b55e5b4"
+  integrity sha1-qrGh+jDUX4jdMhFIh1rALAtV5bQ=
+  dependencies:
+    user-home "^1.1.1"
+
+which-module@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/which-module/-/which-module-2.0.0.tgz#d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a"
+  integrity sha1-2e8H3Od7mQK4o6j6SzHD4/fm6Ho=
+
+which@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/which/-/which-2.0.2.tgz#7c6a8dd0a636a0327e10b59c9286eee93f3f51b1"
+  integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
+  dependencies:
+    isexe "^2.0.0"
+
+wide-align@1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/wide-align/-/wide-align-1.1.3.tgz#ae074e6bdc0c14a431e804e624549c633b000457"
+  integrity sha512-QGkOQc8XL6Bt5PwnsExKBPuMKBxnGxWWW3fU55Xt4feHozMUhdUMaBCk290qpm/wG5u/RSKzwdAC4i51YigihA==
+  dependencies:
+    string-width "^1.0.2 || 2"
+
+window-size@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.1.0.tgz#5438cd2ea93b202efa3a19fe8887aee7c94f9c9d"
+
+wordwrap@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-0.0.2.tgz#b79669bb42ecb409f83d583cad52ca17eaa1643f"
+
+workerpool@6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/workerpool/-/workerpool-6.0.2.tgz#e241b43d8d033f1beb52c7851069456039d1d438"
+  integrity sha512-DSNyvOpFKrNusaaUwk+ej6cBj1bmhLcBfj80elGk+ZIo5JSkq+unB1dLKEOcNfJDZgjGICfhQ0Q5TbP0PvF4+Q==
+
+wrap-ansi@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-5.1.0.tgz#1fd1f67235d5b6d0fee781056001bfb694c03b09"
+  integrity sha512-QC1/iN/2/RPVJ5jYK8BGttj5z83LmSKmvbvrXPNCLZSEb32KKVDJDl/MOt2N01qU2H/FkzEa9PKto1BqDjtd7Q==
+  dependencies:
+    ansi-styles "^3.2.0"
+    string-width "^3.0.0"
+    strip-ansi "^5.0.0"
+
+wrappy@1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
+  integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
+
+y18n@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/y18n/-/y18n-4.0.1.tgz#8db2b83c31c5d75099bb890b23f3094891e247d4"
+  integrity sha512-wNcy4NvjMYL8gogWWYAO7ZFWFfHcbdbE57tZO8e4cbpj8tfUcwrwqSl3ad8HxpYWCdXcJUCeKKZS62Av1affwQ==
+
+yargs-parser@13.1.2, yargs-parser@^13.1.2:
+  version "13.1.2"
+  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-13.1.2.tgz#130f09702ebaeef2650d54ce6e3e5706f7a4fb38"
+  integrity sha512-3lbsNRf/j+A4QuSZfDRA7HRSfWrzO0YjqTJd5kjAq37Zep1CEgaYmrH9Q3GwPiB9cHyd1Y1UwggGhJGoxipbzg==
+  dependencies:
+    camelcase "^5.0.0"
+    decamelize "^1.2.0"
+
+yargs-unparser@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/yargs-unparser/-/yargs-unparser-2.0.0.tgz#f131f9226911ae5d9ad38c432fe809366c2325eb"
+  integrity sha512-7pRTIA9Qc1caZ0bZ6RYRGbHJthJWuakf+WmHK0rVeLkNrrGhfoabBNdue6kdINI6r4if7ocq9aD/n7xwKOdzOA==
+  dependencies:
+    camelcase "^6.0.0"
+    decamelize "^4.0.0"
+    flat "^5.0.2"
+    is-plain-obj "^2.1.0"
+
+yargs@13.3.2:
+  version "13.3.2"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-13.3.2.tgz#ad7ffefec1aa59565ac915f82dccb38a9c31a2dd"
+  integrity sha512-AX3Zw5iPruN5ie6xGRIDgqkT+ZhnRlZMLMHAs8tg7nRruy2Nb+i5o9bwghAogtM08q1dpr2LVoS8KSTMYpWXUw==
+  dependencies:
+    cliui "^5.0.0"
+    find-up "^3.0.0"
+    get-caller-file "^2.0.1"
+    require-directory "^2.1.1"
+    require-main-filename "^2.0.0"
+    set-blocking "^2.0.0"
+    string-width "^3.0.0"
+    which-module "^2.0.0"
+    y18n "^4.0.0"
+    yargs-parser "^13.1.2"
+
+yargs@~3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-3.10.0.tgz#f7ee7bd857dd7c1d2d38c0e74efbd681d1431fd1"
+  dependencies:
+    camelcase "^1.0.2"
+    cliui "^2.1.0"
+    decamelize "^1.0.0"
+    window-size "0.1.0"
+
+yocto-queue@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
+  integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            adFileSync('compiled.js.map', 'utf8')
+      };
+    }
+    return null;
+  }
+});
+```
+
+The module will by default assume a browser environment if XMLHttpRequest and window are defined. If either of these do not exist it will instead assume a node environment. 
+In some rare cases, e.g. when running a browser emulation and where both variables are also set, you can explictly specify the environment to be either 'browser' or 'node'. 
+
+```js
+require('source-map-support').install({
+  environment: 'node'
+});
+```
+
+To support files with inline source maps, the `hookRequire` options can be specified, which will monitor all source files for inline source maps.
+
+
+```js
+require('source-map-support').install({
+  hookRequire: true
+});
+```
+
+This monkey patches the `require` module loading chain, so is not enabled by default and is not recommended for any sort of production usage.
+
+## Demos
+
+#### Basic Demo
+
+original.js:
+
+```js
+throw new Error('test'); // This is the original code
+```
+
+compiled.js:
+
+```js
+require('source-map-support').install();
+
+throw new Error('test'); // This is the compiled code
+// The next line defines the sourceMapping.
+//# sourceMappingURL=compiled.js.map
+```
+
+compiled.js.map:
+
+```json
+{
+  "version": 3,
+  "file": "compiled.js",
+  "sources": ["original.js"],
+  "names": [],
+  "mappings": ";;AAAA,MAAM,IAAI"
+}
+```
+
+Run compiled.js using node (notice how the stack trace uses original.js instead of compiled.js):
+
+```
+$ node compiled.js
+
+original.js:1
+throw new Error('test'); // This is the original code
+      ^
+Error: test
+    at Object.<anonymous> (original.js:1:7)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+    at node.js:901:3
+```
+
+#### TypeScript Demo
+
+demo.ts:
+
+```typescript
+declare function require(name: string);
+require('source-map-support').install();
+class Foo {
+  constructor() { this.bar(); }
+  bar() { throw new Error('this is a demo'); }
+}
+new Foo();
+```
+
+Compile and run the file using the TypeScript compiler from the terminal:
+
+```
+$ npm install source-map-support typescript
+$ node_modules/typescript/bin/tsc -sourcemap demo.ts
+$ node demo.js
+
+demo.ts:5
+  bar() { throw new Error('this is a demo'); }
+                ^
+Error: this is a demo
+    at Foo.bar (demo.ts:5:17)
+    at new Foo (demo.ts:4:24)
+    at Object.<anonymous> (demo.ts:7:1)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+    at node.js:901:3
+```
+    
+#### CoffeeScript Demo
+
+demo.coffee:
+
+```coffee
+require('source-map-support').install()
+foo = ->
+  bar = -> throw new Error 'this is a demo'
+  bar()
+foo()
+```
+
+Compile and run the file using the CoffeeScript compiler from the terminal:
+
+```sh
+$ npm install source-map-support coffee-script
+$ node_modules/coffee-script/bin/coffee --map --compile demo.coffee
+$ node demo.js
+
+demo.coffee:3
+  bar = -> throw new Error 'this is a demo'
+                     ^
+Error: this is a demo
+    at bar (demo.coffee:3:22)
+    at foo (demo.coffee:4:3)
+    at Object.<anonymous> (demo.coffee:5:1)
+    at Object.<anonymous> (demo.coffee:1:1)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+    at startup (node.js:119:16)
+```
+
+## Tests
+
+This repo contains both automated tests for node and manual tests for the browser. The automated tests can be run using mocha (type `mocha` in the root directory). To run the manual tests:
+
+* Build the tests using `build.js`
+* Launch the HTTP server (`npm run serve-tests`) and visit
+  * http://127.0.0.1:1336/amd-test
+  * http://127.0.0.1:1336/browser-test
+  * http://127.0.0.1:1336/browserify-test - **Currently not working** due to a bug with browserify (see [pull request #66](https://github.com/evanw/node-source-map-support/pull/66) for details).
+* For `header-test`, run `server.js` inside that directory and visit http://127.0.0.1:1337/
+
+## License
+
+This code is available under the [MIT license](http://opensource.org/licenses/MIT).
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               

@@ -1,0 +1,1064 @@
+ontentInternal} by also updating the
+ * grid size and the selection model.  Considered protected.
+ * @param {goog.ui.ControlContent} content Array of DOM nodes to be displayed
+ *     as items in the palette grid (one item per cell).
+ * @protected
+ * @override
+ */
+goog.ui.Palette.prototype.setContentInternal = function(content) {
+  var items = /** @type {Array<Node>} */ (content);
+  goog.ui.Palette.superClass_.setContentInternal.call(this, items);
+
+  // Adjust the palette size.
+  this.adjustSize_();
+
+  // Add the items to the selection model, replacing previous items (if any).
+  if (this.selectionModel_) {
+    // We already have a selection model; just replace the items.
+    this.selectionModel_.clear();
+    this.selectionModel_.addItems(items);
+  } else {
+    // Create a selection model, initialize the items, and hook up handlers.
+    this.selectionModel_ = new goog.ui.SelectionModel(items);
+    this.selectionModel_.setSelectionHandler(goog.bind(this.selectItem_, this));
+    this.getHandler().listen(
+        this.selectionModel_, goog.events.EventType.SELECT,
+        this.handleSelectionChange);
+  }
+
+  // In all cases, clear the highlight.
+  this.highlightedIndex_ = -1;
+};
+
+
+/**
+ * Overrides {@link goog.ui.Control#getCaption} to return the empty string,
+ * since palettes don't have text captions.
+ * @return {string} The empty string.
+ * @override
+ */
+goog.ui.Palette.prototype.getCaption = function() {
+  return '';
+};
+
+
+/**
+ * Overrides {@link goog.ui.Control#setCaption} to be a no-op, since palettes
+ * don't have text captions.
+ * @param {string} caption Ignored.
+ * @override
+ */
+goog.ui.Palette.prototype.setCaption = function(caption) {
+  // Do nothing.
+};
+
+
+// Palette event handling.
+
+
+/**
+ * Handles mouseover events.  Overrides {@link goog.ui.Control#handleMouseOver}
+ * by determining which palette item (if any) was moused over, highlighting it,
+ * and un-highlighting any previously-highlighted item.
+ * @param {goog.events.BrowserEvent} e Mouse event to handle.
+ * @override
+ */
+goog.ui.Palette.prototype.handleMouseOver = function(e) {
+  goog.ui.Palette.superClass_.handleMouseOver.call(this, e);
+
+  var item = this.getRenderer().getContainingItem(this, e.target);
+  if (item && e.relatedTarget && goog.dom.contains(item, e.relatedTarget)) {
+    // Ignore internal mouse moves.
+    return;
+  }
+
+  if (item != this.getHighlightedItem()) {
+    this.setHighlightedItem(item);
+  }
+};
+
+
+/**
+ * Handles mousedown events.  Overrides {@link goog.ui.Control#handleMouseDown}
+ * by ensuring that the item on which the user moused down is highlighted.
+ * @param {goog.events.Event} e Mouse event to handle.
+ * @override
+ */
+goog.ui.Palette.prototype.handleMouseDown = function(e) {
+  goog.ui.Palette.superClass_.handleMouseDown.call(this, e);
+
+  if (this.isActive()) {
+    // Make sure we move the highlight to the cell on which the user moused
+    // down.
+    var item = this.getRenderer().getContainingItem(this, e.target);
+    if (item != this.getHighlightedItem()) {
+      this.setHighlightedItem(item);
+    }
+  }
+};
+
+
+/**
+ * Selects the currently highlighted palette item (triggered by mouseup or by
+ * keyboard action).  Overrides {@link goog.ui.Control#performActionInternal}
+ * by selecting the highlighted item and dispatching an ACTION event.
+ * @param {goog.events.Event} e Mouse or key event that triggered the action.
+ * @return {boolean} True if the action was allowed to proceed, false otherwise.
+ * @override
+ */
+goog.ui.Palette.prototype.performActionInternal = function(e) {
+  var highlightedItem = this.getHighlightedItem();
+  if (highlightedItem) {
+    if (e && this.shouldSelectHighlightedItem_(e)) {
+      this.setSelectedItem(highlightedItem);
+    }
+    return goog.ui.Palette.base(this, 'performActionInternal', e);
+  }
+  return false;
+};
+
+
+/**
+ * Determines whether to select the highlighted item while handling an internal
+ * action. The highlighted item should not be selected if the action is a mouse
+ * event occurring outside the palette or in an "empty" cell.
+ * @param {!goog.events.Event} e Mouseup or key event being handled.
+ * @return {boolean} True if the highlighted item should be selected.
+ * @private
+ */
+goog.ui.Palette.prototype.shouldSelectHighlightedItem_ = function(e) {
+  if (!this.getSelectedItem()) {
+    // It's always ok to select when nothing is selected yet.
+    return true;
+  } else if (e.type != 'mouseup') {
+    // Keyboard can only act on valid cells.
+    return true;
+  } else {
+    // Return whether or not the mouse action was in the palette.
+    return !!this.getRenderer().getContainingItem(this, e.target);
+  }
+};
+
+
+/**
+ * Handles keyboard events dispatched while the palette has focus.  Moves the
+ * highlight on arrow keys, and selects the highlighted item on Enter or Space.
+ * Returns true if the event was handled, false otherwise.  In particular, if
+ * the user attempts to navigate out of the grid, the highlight isn't changed,
+ * and this method returns false; it is then up to the parent component to
+ * handle the event (e.g. by wrapping the highlight around).  Overrides {@link
+ * goog.ui.Control#handleKeyEvent}.
+ * @param {goog.events.KeyEvent} e Key event to handle.
+ * @return {boolean} True iff the key event was handled by the component.
+ * @override
+ */
+goog.ui.Palette.prototype.handleKeyEvent = function(e) {
+  var items = this.getContent();
+  var numItems = items ? items.length : 0;
+  var numColumns = this.size_.width;
+
+  // If the component is disabled or the palette is empty, bail.
+  if (numItems == 0 || !this.isEnabled()) {
+    return false;
+  }
+
+  // User hit ENTER or SPACE; trigger action.
+  if (e.keyCode == goog.events.KeyCodes.ENTER ||
+      e.keyCode == goog.events.KeyCodes.SPACE) {
+    return this.performActionInternal(e);
+  }
+
+  // User hit HOME or END; move highlight.
+  if (e.keyCode == goog.events.KeyCodes.HOME) {
+    this.setHighlightedIndex(0);
+    return true;
+  } else if (e.keyCode == goog.events.KeyCodes.END) {
+    this.setHighlightedIndex(numItems - 1);
+    return true;
+  }
+
+  // If nothing is highlighted, start from the selected index.  If nothing is
+  // selected either, highlightedIndex is -1.
+  var highlightedIndex = this.highlightedIndex_ < 0 ? this.getSelectedIndex() :
+                                                      this.highlightedIndex_;
+
+  switch (e.keyCode) {
+    case goog.events.KeyCodes.LEFT:
+      // If the highlighted index is uninitialized, or is at the beginning, move
+      // it to the end.
+      if (highlightedIndex == -1 || highlightedIndex == 0) {
+        highlightedIndex = numItems;
+      }
+      this.setHighlightedIndex(highlightedIndex - 1);
+      e.preventDefault();
+      return true;
+      break;
+
+    case goog.events.KeyCodes.RIGHT:
+      // If the highlighted index at the end, move it to the beginning.
+      if (highlightedIndex == numItems - 1) {
+        highlightedIndex = -1;
+      }
+      this.setHighlightedIndex(highlightedIndex + 1);
+      e.preventDefault();
+      return true;
+      break;
+
+    case goog.events.KeyCodes.UP:
+      if (highlightedIndex == -1) {
+        highlightedIndex = numItems + numColumns - 1;
+      }
+      if (highlightedIndex >= numColumns) {
+        this.setHighlightedIndex(highlightedIndex - numColumns);
+        e.preventDefault();
+        return true;
+      }
+      break;
+
+    case goog.events.KeyCodes.DOWN:
+      if (highlightedIndex == -1) {
+        highlightedIndex = -numColumns;
+      }
+      if (highlightedIndex < numItems - numColumns) {
+        this.setHighlightedIndex(highlightedIndex + numColumns);
+        e.preventDefault();
+        return true;
+      }
+      break;
+  }
+
+  return false;
+};
+
+
+/**
+ * Handles selection change events dispatched by the selection model.
+ * @param {goog.events.Event} e Selection event to handle.
+ */
+goog.ui.Palette.prototype.handleSelectionChange = function(e) {
+  // No-op in the base class.
+};
+
+
+// Palette management.
+
+
+/**
+ * Returns the size of the palette grid.
+ * @return {goog.math.Size} Palette size (columns x rows).
+ */
+goog.ui.Palette.prototype.getSize = function() {
+  return this.size_;
+};
+
+
+/**
+ * Sets the size of the palette grid to the given size.  Callers can either
+ * pass a single {@link goog.math.Size} or a pair of numbers (first the number
+ * of columns, then the number of rows) to this method.  In both cases, the
+ * number of rows is optional and will be calculated automatically if needed.
+ * It is an error to attempt to change the size of the palette after it has
+ * been rendered.
+ * @param {goog.math.Size|number} size Either a size object or the number of
+ *     columns.
+ * @param {number=} opt_rows The number of rows (optional).
+ */
+goog.ui.Palette.prototype.setSize = function(size, opt_rows) {
+  if (this.getElement()) {
+    throw new Error(goog.ui.Component.Error.ALREADY_RENDERED);
+  }
+
+  this.size_ = goog.isNumber(size) ?
+      new goog.math.Size(size, /** @type {number} */ (opt_rows)) :
+      size;
+
+  // Adjust size, if needed.
+  this.adjustSize_();
+};
+
+
+/**
+ * Returns the 0-based index of the currently highlighted palette item, or -1
+ * if no item is highlighted.
+ * @return {number} Index of the highlighted item (-1 if none).
+ */
+goog.ui.Palette.prototype.getHighlightedIndex = function() {
+  return this.highlightedIndex_;
+};
+
+
+/**
+ * Returns the currently highlighted palette item, or null if no item is
+ * highlighted.
+ * @return {Node} The highlighted item (undefined if none).
+ */
+goog.ui.Palette.prototype.getHighlightedItem = function() {
+  var items = this.getContent();
+  return items && items[this.highlightedIndex_];
+};
+
+
+/**
+ * @return {Element} The highlighted cell.
+ * @private
+ */
+goog.ui.Palette.prototype.getHighlightedCellElement_ = function() {
+  return this.getRenderer().getCellForItem(this.getHighlightedItem());
+};
+
+
+/**
+ * Highlights the item at the given 0-based index, or removes the highlight
+ * if the argument is -1 or out of range.  Any previously-highlighted item
+ * will be un-highlighted.
+ * @param {number} index 0-based index of the item to highlight.
+ */
+goog.ui.Palette.prototype.setHighlightedIndex = function(index) {
+  if (index != this.highlightedIndex_) {
+    this.highlightIndex_(this.highlightedIndex_, false);
+    this.lastHighlightedIndex_ = this.highlightedIndex_;
+    this.highlightedIndex_ = index;
+    this.highlightIndex_(index, true);
+    this.dispatchEvent(goog.ui.Palette.EventType.AFTER_HIGHLIGHT);
+  }
+};
+
+
+/**
+ * Highlights the given item, or removes the highlight if the argument is null
+ * or invalid.  Any previously-highlighted item will be un-highlighted.
+ * @param {Node|undefined} item Item to highlight.
+ */
+goog.ui.Palette.prototype.setHighlightedItem = function(item) {
+  var items = /** @type {Array<Node>} */ (this.getContent());
+  this.setHighlightedIndex(
+      (items && item) ? goog.array.indexOf(items, item) : -1);
+};
+
+
+/**
+ * Returns the 0-based index of the currently selected palette item, or -1
+ * if no item is selected.
+ * @return {number} Index of the selected item (-1 if none).
+ */
+goog.ui.Palette.prototype.getSelectedIndex = function() {
+  return this.selectionModel_ ? this.selectionModel_.getSelectedIndex() : -1;
+};
+
+
+/**
+ * Returns the currently selected palette item, or null if no item is selected.
+ * @return {Node} The selected item (null if none).
+ */
+goog.ui.Palette.prototype.getSelectedItem = function() {
+  return this.selectionModel_ ?
+      /** @type {Node} */ (this.selectionModel_.getSelectedItem()) :
+                          null;
+};
+
+
+/**
+ * Selects the item at the given 0-based index, or clears the selection
+ * if the argument is -1 or out of range.  Any previously-selected item
+ * will be deselected.
+ * @param {number} index 0-based index of the item to select.
+ */
+goog.ui.Palette.prototype.setSelectedIndex = function(index) {
+  if (this.selectionModel_) {
+    this.selectionModel_.setSelectedIndex(index);
+  }
+};
+
+
+/**
+ * Selects the given item, or clears the selection if the argument is null or
+ * invalid.  Any previously-selected item will be deselected.
+ * @param {Node} item Item to select.
+ */
+goog.ui.Palette.prototype.setSelectedItem = function(item) {
+  if (this.selectionModel_) {
+    this.selectionModel_.setSelectedItem(item);
+  }
+};
+
+
+/**
+ * Private helper; highlights or un-highlights the item at the given index
+ * based on the value of the Boolean argument.  This implementation simply
+ * applies highlight styling to the cell containing the item to be highighted.
+ * Does nothing if the palette hasn't been rendered yet.
+ * @param {number} index 0-based index of item to highlight or un-highlight.
+ * @param {boolean} highlight If true, the item is highlighted; otherwise it
+ *     is un-highlighted.
+ * @private
+ */
+goog.ui.Palette.prototype.highlightIndex_ = function(index, highlight) {
+  if (this.getElement()) {
+    var items = this.getContent();
+    if (items && index >= 0 && index < items.length) {
+      var cellEl = this.getHighlightedCellElement_();
+      if (this.currentCellControl_.getElement() != cellEl) {
+        this.currentCellControl_.setElementInternal(cellEl);
+      }
+      if (this.currentCellControl_.tryHighlight(highlight)) {
+        this.getRenderer().highlightCell(this, items[index], highlight);
+      }
+    }
+  }
+};
+
+
+/** @override */
+goog.ui.Palette.prototype.setHighlighted = function(highlight) {
+  if (highlight && this.highlightedIndex_ == -1) {
+    // If there was a last highlighted index, use that. Otherwise, highlight the
+    // first cell.
+    this.setHighlightedIndex(
+        this.lastHighlightedIndex_ > -1 ? this.lastHighlightedIndex_ : 0);
+  } else if (!highlight) {
+    this.setHighlightedIndex(-1);
+  }
+  // The highlight event should be fired once the component has updated its own
+  // state.
+  goog.ui.Palette.base(this, 'setHighlighted', highlight);
+};
+
+
+/**
+ * Private helper; selects or deselects the given item based on the value of
+ * the Boolean argument.  This implementation simply applies selection styling
+ * to the cell containing the item to be selected.  Does nothing if the palette
+ * hasn't been rendered yet.
+ * @param {Node} item Item to select or deselect.
+ * @param {boolean} select If true, the item is selected; otherwise it is
+ *     deselected.
+ * @private
+ */
+goog.ui.Palette.prototype.selectItem_ = function(item, select) {
+  if (this.getElement()) {
+    this.getRenderer().selectCell(this, item, select);
+  }
+};
+
+
+/**
+ * Calculates and updates the size of the palette based on any preset values
+ * and the number of palette items.  If there is no preset size, sets the
+ * palette size to the smallest square big enough to contain all items.  If
+ * there is a preset number of columns, increases the number of rows to hold
+ * all items if needed.  (If there are too many rows, does nothing.)
+ * @private
+ */
+goog.ui.Palette.prototype.adjustSize_ = function() {
+  var items = this.getContent();
+  if (items) {
+    if (this.size_ && this.size_.width) {
+      // There is already a size set; honor the number of columns (if >0), but
+      // increase the number of rows if needed.
+      var minRows = Math.ceil(items.length / this.size_.width);
+      if (!goog.isNumber(this.size_.height) || this.size_.height < minRows) {
+        this.size_.height = minRows;
+      }
+    } else {
+      // No size has been set; size the grid to the smallest square big enough
+      // to hold all items (hey, why not?).
+      var length = Math.ceil(Math.sqrt(items.length));
+      this.size_ = new goog.math.Size(length, length);
+    }
+  } else {
+    // No items; set size to 0x0.
+    this.size_ = new goog.math.Size(0, 0);
+  }
+};
+
+
+
+/**
+ * A component to represent the currently highlighted cell.
+ * @constructor
+ * @extends {goog.ui.Control}
+ * @private
+ */
+goog.ui.Palette.CurrentCell_ = function() {
+  goog.ui.Palette.CurrentCell_.base(this, 'constructor', null);
+  this.setDispatchTransitionEvents(goog.ui.Component.State.HOVER, true);
+};
+goog.inherits(goog.ui.Palette.CurrentCell_, goog.ui.Control);
+
+
+/**
+ * @param {boolean} highlight Whether to highlight or unhighlight the component.
+ * @return {boolean} Whether it was successful.
+ */
+goog.ui.Palette.CurrentCell_.prototype.tryHighlight = function(highlight) {
+  this.setHighlighted(highlight);
+  return this.isHighlighted() == highlight;
+};
+                                                                                                                                                                  {
+    "conference-2018.title": "Scratch Conference 2018:",
+    "conference-2018.subtitle": "The Next Generation",
+    "conference-2018.dateDesc": "July 26-28, 2018 | Cambridge, MA, USA",
+    "conference-2018.dateDescMore": " (with opening reception the evening of July 25)",
+    "conference-2018.locationDetails": "MIT Media Lab, Cambridge, MA",
+    "conference-2018.seeBelow": "Learn more about conference dates and locations below.",
+    "conference-2018.date": "When:",
+    "conference-2018.location": "Where:",
+    "conference-2018.desc1": "Join us for the Scratch@MIT conference, a playful gathering of educators, researchers, developers, and other members of the worldwide Scratch community.",
+    "conference-2018.desc2": "We're planning a very participatory conference, with an entire day of hands-on workshops and lots of opportunities for peer-to-peer discussion and collaboration. The conference is intended primarily for adults who support young people learning Scratch.",
+    "conference-2018.registrationDate": "Registration opens March 1, 2018.",
+    "conference-2018.registerNow": "Register Now!",
+    "conference-2018.sessionDesc": "Interested in offering a session? We invite four types of proposals:",
+    "conference-2018.sessionItem1Title": "Poster/demonstration (90 minutes).",
+    "conference-2018.sessionItem1Desc": "Show off your project in an exhibition setting, alongside other presenters. You will be provided with display space for a poster and table space for a computer or handouts.",
+    "conference-2018.sessionItem2Title": "Hands-on workshop (90 minutes).",
+    "conference-2018.sessionItem2Desc": "Engage participants in hands-on activities, highlighting new ways of creating and collaborating with Scratch.",
+    "conference-2018.sessionItem3Title": "Interactive panel (60 minutes).",
+    "conference-2018.sessionItem3Desc": "Discuss a Scratch-related topic in a panel with three or more people. Your proposal should describe how you will engage the audience during the session.",
+    "conference-2018.sessionItem4Title": "Ignite talk (5 minutes).",
+    "conference-2018.sessionItem4Desc": "Share what you've been doing in a short, lively presentation.",
+    "conference-2018.deadline": "Deadline for proposals is February 5, 2018.",
+    "conference-2018.proposal": " Submit Your Proposal",
+    "conference-2018.proposalDeadline": "Deadline for proposals: February 5",
+    "conference-2018.proposalAccept": "Notification of acceptance: March 1",
+    "conference-2018.registrationTitle": "Registration:",
+    "conference-2018.registrationEarly": "Early Bird Registration (March 1-May 1): $200",
+    "conference-2018.registrationStandard": "Standard Registration (after May 1): $300",
+    "conference-2018.questions": "Questions? Contact the Scratch Team at {emailLink}",
+    "conference-2018.questionsTitle": "Questions:",
+    "conference-2018.submissionQ": "I missed the submission deadline. Can I still submit a proposal for the conference?",
+    "conference-2018.submissionAns": "We are no longer accepting proposal submissions.",
+    "conference-2018.regQ": "I can only attend one day of the conference. Do you offer single-day registration?",
+    "conference-2018.regAns": "Sorry, we are not offering single-day tickets.",
+    "conference-2018.accommodationsQ": "I want to plan my visit. Do you have suggestions for accommodations?",
+    "conference-2018.accommodationsAns1": "Yes, MIT partners with several hotels in the area who offer discounts to participants attending MIT events, including: {marriottLink} (0.4 miles from the MIT Media Lab), {holidayinnLink} (1.6 miles), {residenceinnLink} (0.3 miles), and {lemeridienLink} (0.9 miles). To reserve a room at one of these hotels, call the hotel and request the MIT discount. Advance booking is strongly recommended, as summer is a busy time in Boston. All MIT rates are subject to availability.",
+    "conference-2018.accommodationsAns2": "If you are looking for additional accommodation options, we also recommend the {acLink} (7.1 miles), {doubletreeLink} (3.3 miles), and {hotelbostonLink} with the code MITSC2018 (5.3 mile). You might also consider home-share options such as Airbnb. Find an extended list of accommodations {mitLink}.",
+    "conference-2018.here": "here",
+    "conference-2018.accommodationsAns3": "Limited lodging is available in {neuLink} dorms rooms at the following rates:",
+    "conference-2018.apartment": "Apartment",
+    "conference-2018.suite": "Suite",
+    "conference-2018.single": "Single",
+    "conference-2018.double": "Double",
+    "conference-2018.pp": "/person/night",
+    "conference-2018.accommodationsAns4": "To request a dorm room, please complete the {dormrequestLink}. Please note that Northeastern is located in Boston, two miles from the conference site at MIT. It is a half-hour commute via public transportation, accessible by subway via the Green Line (the Northeastern stop on the E line) or the Orange Line (Ruggles Station stop).",
+    "conference-2018.dormRequestText": "Dorm Room Request Form",
+    "conference-2018.letterQ": "Can I get a visa letter?",
+    "conference-2018.letterAns": "Yes. Contact us at {emailLink}, and we can email you a letter.",
+    "conference-2018.preConfQ": "In previous years, there was an event on Wednesday evening before the conference. Will you be hosting something similar this year?",
+    "conference-2018.preConfAns": "There will be an informal, optional reception the evening of Wednesday, July 25. Participants may register early at this time as well.",
+    "conference-2018.bringQ": "What should I bring?",
+    "conference-2018.bringAns": "Plan to bring your personal device (laptops are preferred) and power cord. Presenters should plan to bring all additional presentation materials (we will provide projectors and screens). Snacks and beverages will be available throughout the day.",
+    "conference-2018.moreQ": "Have additional questions?",
+    "conference-2018.moreAns": "Contact the Scratch Team at {emailLink}."
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       {
+    "contactUs.title": "Contact Us",
+    "contactUs.intro": "You can find answers to most questions about Scratch on our {faqLink} page.",
+    "contactUs.faqLinkText": "Frequently Asked Questions",
+    "contactUs.forumsInfo": "If you cannot find an answer in the FAQ, there are many experienced Scratchers in the Discussion Forums who are happy to help.",
+    "contactUs.forumsLinkText": "Discussion Forums",
+    "contactUs.questionsText": "{questionsLink}: Ask others in the community about anything related to Scratch.",
+    "contactUs.questionsForum": "You can ask general questions about how to do stuff in the {questionsLink} forum.",
+    "contactUs.questionsLinkText": "Questions About Scratch",
+    "contactUs.scriptsText": "{scriptsLink}: Get help with the blocks or code to make your project work.",
+    "contactUs.scriptsForum": "If you need help with a specific project, try posting in the {scriptsLink} forum.",
+    "contactUs.scriptsLinkText": "Help with Scripts",
+    "contactUs.bugsText": "{bugsLink}: Find out how to deal with technical issues you encounter on the Scratch website or in the project editor.",
+    "contactUs.bugsForum": "If you want to report a bug in Scratch, check the {bugsLink} forum. It's the best place to report bugs and see if others are experiencing similar difficulties.",
+    "contactUs.bugsLinkText": "Bugs and Glitches",
+    "contactUs.formIntro": "If you still need to contact us, please fill out the form below with as much detail as you can. If you have any screenshots, attachments or links that help to explain your problem, please include them. We get a lot of mail, so we may not be able to respond to your message.",
+    "contactUs.findHelp": "Where to find help:",
+    "contactUs.contactScratch": "Contact the Scratch Team",
+    "contactUs.qTitle": "Questions",
+    "contactUs.seeFaq": "See the FAQ",
+    "contactUs.faqInfo": "You can find a list of answers to many questions about Scratch on our {faqLink} page.",
+    "contactUs.askCommunity": "Ask the Community",
+    "contactUs.forumsIntro": "You can also look through and post questions in the Scratch Discussion forums.",
+    "contactUs.forumsHelp": "There are many friendly and experienced Scratch community members who can help with the following topics and more:",
+    "contactUs.needSupport": "Need Support?",
+    "contactUs.supportInfo": "Click {helpLink} to type in a question about anything related to Scratch or to contact us. The Scratch Team receives lots of messages each day and is not able to answer each one individually, so we encourage you to read our online support articles and participate in the Discussion forums."
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         // Copyright 2008 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Renderer for {@link goog.ui.Palette}s.
+ *
+ * @author attila@google.com (Attila Bodis)
+ */
+
+goog.provide('goog.ui.PaletteRenderer');
+
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.Role');
+goog.require('goog.a11y.aria.State');
+goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.NodeIterator');
+goog.require('goog.dom.NodeType');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
+goog.require('goog.dom.dataset');
+goog.require('goog.iter');
+goog.require('goog.style');
+goog.require('goog.ui.ControlRenderer');
+goog.require('goog.userAgent');
+
+goog.forwardDeclare('goog.ui.Palette');
+
+
+
+/**
+ * Default renderer for {@link goog.ui.Palette}s.  Renders the palette as an
+ * HTML table wrapped in a DIV, with one palette item per cell:
+ *
+ *    <div class="goog-palette">
+ *      <table class="goog-palette-table">
+ *        <tbody class="goog-palette-body">
+ *          <tr class="goog-palette-row">
+ *            <td class="goog-palette-cell">...Item 0...</td>
+ *            <td class="goog-palette-cell">...Item 1...</td>
+ *            ...
+ *          </tr>
+ *          <tr class="goog-palette-row">
+ *            ...
+ *          </tr>
+ *        </tbody>
+ *      </table>
+ *    </div>
+ *
+ * @constructor
+ * @extends {goog.ui.ControlRenderer}
+ */
+goog.ui.PaletteRenderer = function() {
+  goog.ui.ControlRenderer.call(this);
+};
+goog.inherits(goog.ui.PaletteRenderer, goog.ui.ControlRenderer);
+goog.addSingletonGetter(goog.ui.PaletteRenderer);
+
+
+/**
+ * Globally unique ID sequence for cells rendered by this renderer class.
+ * @type {number}
+ * @private
+ */
+goog.ui.PaletteRenderer.cellId_ = 0;
+
+
+/**
+ * Default CSS class to be applied to the root element of components rendered
+ * by this renderer.
+ * @type {string}
+ */
+goog.ui.PaletteRenderer.CSS_CLASS = goog.getCssName('goog-palette');
+
+
+/**
+ * Data attribute to store grid width from palette control.
+ * @const {string}
+ */
+goog.ui.PaletteRenderer.GRID_WIDTH_ATTRIBUTE = 'gridWidth';
+
+
+/**
+ * Returns the palette items arranged in a table wrapped in a DIV, with the
+ * renderer's own CSS class and additional state-specific classes applied to
+ * it.
+ * @param {goog.ui.Control} palette goog.ui.Palette to render.
+ * @return {!Element} Root element for the palette.
+ * @override
+ */
+goog.ui.PaletteRenderer.prototype.createDom = function(palette) {
+  var classNames = this.getClassNames(palette);
+  var element = palette.getDomHelper().createDom(
+      goog.dom.TagName.DIV, classNames,
+      this.createGrid(
+          /** @type {Array<Node>} */ (palette.getContent()), palette.getSize(),
+          palette.getDomHelper()));
+  goog.a11y.aria.setRole(element, goog.a11y.aria.Role.GRID);
+  // It's safe to store grid width here since `goog.ui.Palette#setSize` cannot
+  // be called after createDom.
+  goog.dom.dataset.set(
+      element, goog.ui.PaletteRenderer.GRID_WIDTH_ATTRIBUTE,
+      palette.getSize().width);
+  return element;
+};
+
+
+/**
+ * Returns the given items in a table with `size.width` columns and
+ * `size.height` rows.  If the table is too big, empty cells will be
+ * created as needed.  If the table is too small, the items that don't fit
+ * will not be rendered.
+ * @param {Array<Node>} items Palette items.
+ * @param {goog.math.Size} size Palette size (columns x rows); both dimensions
+ *     must be specified as numbers.
+ * @param {goog.dom.DomHelper} dom DOM helper for document interaction.
+ * @return {!Element} Palette table element.
+ */
+goog.ui.PaletteRenderer.prototype.createGrid = function(items, size, dom) {
+  var rows = [];
+  for (var row = 0, index = 0; row < size.height; row++) {
+    var cells = [];
+    for (var column = 0; column < size.width; column++) {
+      var item = items && items[index++];
+      cells.push(this.createCell(item, dom));
+    }
+    rows.push(this.createRow(cells, dom));
+  }
+
+  return this.createTable(rows, dom);
+};
+
+
+/**
+ * Returns a table element (or equivalent) that wraps the given rows.
+ * @param {Array<Element>} rows Array of row elements.
+ * @param {goog.dom.DomHelper} dom DOM helper for document interaction.
+ * @return {!Element} Palette table element.
+ */
+goog.ui.PaletteRenderer.prototype.createTable = function(rows, dom) {
+  var table = dom.createDom(
+      goog.dom.TagName.TABLE, goog.getCssName(this.getCssClass(), 'table'),
+      dom.createDom(
+          goog.dom.TagName.TBODY, goog.getCssName(this.getCssClass(), 'body'),
+          rows));
+  table.cellSpacing = '0';
+  table.cellPadding = '0';
+  return table;
+};
+
+
+/**
+ * Returns a table row element (or equivalent) that wraps the given cells.
+ * @param {Array<Element>} cells Array of cell elements.
+ * @param {goog.dom.DomHelper} dom DOM helper for document interaction.
+ * @return {!Element} Row element.
+ */
+goog.ui.PaletteRenderer.prototype.createRow = function(cells, dom) {
+  var row = dom.createDom(
+      goog.dom.TagName.TR, goog.getCssName(this.getCssClass(), 'row'), cells);
+  goog.a11y.aria.setRole(row, goog.a11y.aria.Role.ROW);
+  return row;
+};
+
+
+/**
+ * Returns a table cell element (or equivalent) that wraps the given palette
+ * item (which must be a DOM node).
+ * @param {Node|string} node Palette item.
+ * @param {goog.dom.DomHelper} dom DOM helper for document interaction.
+ * @return {!Element} Cell element.
+ */
+goog.ui.PaletteRenderer.prototype.createCell = function(node, dom) {
+  var cell = dom.createDom(
+      goog.dom.TagName.TD, {
+        'class': goog.getCssName(this.getCssClass(), 'cell'),
+        // Cells must have an ID, for accessibility, so we generate one here.
+        'id': goog.getCssName(this.getCssClass(), 'cell-') +
+            goog.ui.PaletteRenderer.cellId_++
+      },
+      node);
+  goog.a11y.aria.setRole(cell, goog.a11y.aria.Role.GRIDCELL);
+  // Initialize to an unselected state.
+  goog.a11y.aria.setState(cell, goog.a11y.aria.State.SELECTED, false);
+  this.maybeUpdateAriaLabel_(cell);
+
+  return cell;
+};
+
+
+/**
+ * Updates the aria label of the cell if it doesn't have one. Descends the DOM
+ * and tries to find an aria label for a grid cell from the first child with a
+ * label or title.
+ * @param {!Element} cell The cell.
+ * @private
+ */
+goog.ui.PaletteRenderer.prototype.maybeUpdateAriaLabel_ = function(cell) {
+  if (goog.dom.getTextContent(cell) || goog.a11y.aria.getLabel(cell)) {
+    return;
+  }
+  var iter = new goog.dom.NodeIterator(cell);
+  var label = '';
+  var node;
+  while (!label && (node = goog.iter.nextOrValue(iter, null))) {
+    if (node.nodeType == goog.dom.NodeType.ELEMENT) {
+      label =
+          goog.a11y.aria.getLabel(/** @type {!Element} */ (node)) || node.title;
+    }
+  }
+  if (label) {
+    goog.a11y.aria.setLabel(cell, label);
+  }
+
+  return;
+};
+
+
+/**
+ * Overrides {@link goog.ui.ControlRenderer#canDecorate} to always return false.
+ * @param {Element} element Ignored.
+ * @return {boolean} False, since palettes don't support the decorate flow (for
+ *     now).
+ * @override
+ */
+goog.ui.PaletteRenderer.prototype.canDecorate = function(element) {
+  return false;
+};
+
+
+/**
+ * Overrides {@link goog.ui.ControlRenderer#decorate} to be a no-op, since
+ * palettes don't support the decorate flow (for now).
+ * @param {goog.ui.Control} palette Ignored.
+ * @param {Element} element Ignored.
+ * @return {null} Always null.
+ * @override
+ */
+goog.ui.PaletteRenderer.prototype.decorate = function(palette, element) {
+  return null;
+};
+
+
+/**
+ * Overrides {@link goog.ui.ControlRenderer#setContent} for palettes.  Locates
+ * the HTML table representing the palette grid, and replaces the contents of
+ * each cell with a new element from the array of nodes passed as the second
+ * argument.  If the new content has too many items the table will have more
+ * rows added to fit, if there are less items than the table has cells, then the
+ * left over cells will be empty.
+ * @param {Element} element Root element of the palette control.
+ * @param {goog.ui.ControlContent} content Array of items to replace existing
+ *     palette items.
+ * @override
+ */
+goog.ui.PaletteRenderer.prototype.setContent = function(element, content) {
+  var items = /** @type {Array<Node>} */ (content);
+  if (element) {
+    var tbody = goog.dom.getElementsByTagNameAndClass(
+        goog.dom.TagName.TBODY, goog.getCssName(this.getCssClass(), 'body'),
+        element)[0];
+    if (tbody) {
+      var index = 0;
+      goog.array.forEach(tbody.rows, function(row) {
+        goog.array.forEach(row.cells, function(cell) {
+          goog.dom.removeChildren(cell);
+          goog.a11y.aria.removeState(cell, goog.a11y.aria.State.LABEL);
+          if (items) {
+            var item = items[index++];
+            if (item) {
+              goog.dom.appendChild(cell, item);
+              this.maybeUpdateAriaLabel_(cell);
+            }
+          }
+        }, this);
+      }, this);
+
+      // Make space for any additional items.
+      if (index < items.length) {
+        var cells = [];
+        var dom = goog.dom.getDomHelper(element);
+        var width = goog.dom.dataset.get(
+            element, goog.ui.PaletteRenderer.GRID_WIDTH_ATTRIBUTE);
+        while (index < items.length) {
+          var item = items[index++];
+          cells.push(this.createCell(item, dom));
+          if (cells.length == width) {
+            var row = this.createRow(cells, dom);
+            goog.dom.appendChild(tbody, row);
+            cells.length = 0;
+          }
+        }
+        if (cells.length > 0) {
+          while (cells.length < width) {
+            cells.push(this.createCell('', dom));
+          }
+          var row = this.createRow(cells, dom);
+          goog.dom.appendChild(tbody, row);
+        }
+      }
+    }
+    // Make sure the new contents are still unselectable.
+    goog.style.setUnselectable(element, true, goog.userAgent.GECKO);
+  }
+};
+
+
+/**
+ * Returns the item corresponding to the given node, or null if the node is
+ * neither a palette cell nor part of a palette item.
+ * @param {goog.ui.Palette} palette Palette in which to look for the item.
+ * @param {Node} node Node to look for.
+ * @return {Node} The corresponding palette item (null if not found).
+ */
+goog.ui.PaletteRenderer.prototype.getContainingItem = function(palette, node) {
+  var root = palette.getElement();
+  while (node && node.nodeType == goog.dom.NodeType.ELEMENT && node != root) {
+    if (node.tagName == goog.dom.TagName.TD &&
+        goog.dom.classlist.contains(
+            /** @type {!Element} */ (node),
+            goog.getCssName(this.getCssClass(), 'cell'))) {
+      return node.firstChild;
+    }
+    node = node.parentNode;
+  }
+
+  return null;
+};
+
+
+/**
+ * Updates the highlight styling of the palette cell containing the given node
+ * based on the value of the Boolean argument.
+ * @param {goog.ui.Palette} palette Palette containing the item.
+ * @param {Node} node Item whose cell is to be highlighted or un-highlighted.
+ * @param {boolean} highlight If true, the cell is highlighted; otherwise it is
+ *     un-highlighted.
+ */
+goog.ui.PaletteRenderer.prototype.highlightCell = function(
+    palette, node, highlight) {
+  if (node) {
+    var cell = this.getCellForItem(node);
+    goog.asserts.assert(cell);
+    goog.dom.classlist.enable(
+        cell, goog.getCssName(this.getCssClass(), 'cell-hover'), highlight);
+    // See https://www.w3.org/TR/wai-aria/#aria-activedescendant
+    // for an explanation of the activedescendant.
+    if (highlight) {
+      goog.a11y.aria.setState(
+          palette.getElementStrict(), goog.a11y.aria.State.ACTIVEDESCENDANT,
+          cell.id);
+    } else if (
+        cell.id ==
+        goog.a11y.aria.getState(
+            palette.getElementStrict(),
+            goog.a11y.aria.State.ACTIVEDESCENDANT))'use strict';
+var globalThis = require('../internals/global-this');
+var fails = require('../internals/fails');
+var V8 = require('../internals/environment-v8-version');
+var ENVIRONMENT = require('../internals/environment');
+
+var structuredClone = globalThis.structuredClone;
+
+module.exports = !!structuredClone && !fails(function () {
+  // prevent V8 ArrayBufferDetaching protector cell invalidation and performance degradation
+  // https://github.com/zloirock/core-js/issues/679
+  if ((ENVIRONMENT === 'DENO' && V8 > 92) || (ENVIRONMENT === 'NODE' && V8 > 94) || (ENVIRONMENT === 'BROWSER' && V8 > 97)) return false;
+  var buffer = new ArrayBuffer(8);
+  var clone = structuredClone(buffer, { transfer: [buffer] });
+  return buffer.byteLength !== 0 || clone.byteLength !== 8;
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
+      goog.a11y.aria.removeState(
+          palette.getElementStrict(), goog.a11y.aria.State.ACTIVEDESCENDANT);
+    }
+  }
+};
+
+
+/**
+ * @param {Node} node Item whose cell is to be returned.
+ * @return {Element} The grid cell for the palette item.
+ */
+goog.ui.PaletteRenderer.prototype.getCellForItem = function(node) {
+  return /** @type {Element} */ (node ? node.parentNode : null);
+};
+
+
+/**
+ * Updates the selection styling of the palette cell containing the given node
+ * based on the value of the Boolean argument.
+ * @param {goog.ui.Palette} palette Palette containing the item.
+ * @param {Node} node Item whose cell is to be selected or deselected.
+ * @param {boolean} select If true, the cell is selected; otherwise it is
+ *     deselected.
+ */
+goog.ui.PaletteRenderer.prototype.selectCell = function(palette, node, select) {
+  if (node) {
+    var cell = /** @type {!Element} */ (node.parentNode);
+    goog.dom.classlist.enable(
+        cell, goog.getCssName(this.getCssClass(), 'cell-selected'), select);
+    goog.a11y.aria.setState(cell, goog.a11y.aria.State.SELECTED, select);
+  }
+};
+
+
+/**
+ * Returns the CSS class to be applied to the root element of components
+ * rendered using this renderer.
+ * @return {string} Renderer-specific CSS class.
+ * @override
+ */
+goog.ui.PaletteRenderer.prototype.getCssClass = function() {
+  return goog.ui.PaletteRenderer.CSS_CLASS;
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           {
+    "credits.title": "Scratch Credits & Contributors",
+    "credits.developers": "Scratch is designed, developed, and moderated by the staff of the Scratch Foundation, a nonprofit organization.",
+    "credits.moderators": "The team of Scratch moderators manages, supports, and improves the Scratch online community:",
+    "credits.previousTitle": "Previous MIT Scratch Team Members",
+    "credits.previousBody": "Many important contributions have been made by previous Scratch Team members, including John Maloney (who led software development for the first decade of Scratch) and Andrés Monroy-Hernández (who led the development of the first Scratch community website). Other contributors include:",
+    "credits.partnersTitle": "Design and Development Partners",
+    "credits.researchersIntro": "Research on Scratch is being conducted by members of the MIT Scratch Team and researchers at other universities, including:",
+    "credits.partnersBody": "Paula Bontá and Brian Silverman, Playful Invention Company (who started contributing to the design of Scratch even before it was called Scratch).",
+    "credits.researchersTitle": "Scratch Researchers",
+    "credits.researchersBody": "{scratchResearchLink} is being conducted by members of the MIT Scratch Team and researchers at other universities, including:",
+    "credits.researchLinkText": "Research on Scratch",
+    "credits.researchersContributors": "Yasmin Kafai (who collaborated on the {nsfLink}) at the University of Pennsylvania Graduate School of Education, Karen Brennan (who leads the {scratchEdLink}) at the Harvard Graduate School of Education, Benjamin Mako Hill at the University of Washington, Andrés Monroy Hernández at Microsoft Research, Mimi Ito and Crystle Martin at the University of California, Irvine, Quinn Burke at College of Charleston, Deborah Fields at Utah State University, and Kylie Peppler at Indiana University.",
+    "credits.researchNSFLinkText": "initial NSF Scratch grant",
+    "credits.researchScratchEdLinkText": "ScratchEd project",
+    "credits.acknowledgementsTitle": "Acknowledgements",
+    "credits.acknowledgementsContributors": "The following people have also contributed to the development and support of Scratch over the years:",
+    "credits.acknowledgementsDonors": "The Scratch Foundation is a 501(c)(3) non-profit that relies on tax-deductible donations to support Scratch and keep it free for all. For a list of donors to the Scratch Foundation, please visit the {donorsLink}.",
+    "credits.acknowledgementsDonorsLinkText": "Supporters page",
+    "credits.acknowledgementsLifelongKindergarten": "The {lifelongKindergartenLink} at the MIT Media Lab initiated the Scratch project in 2002, and received a {nsfGrantLink} to support it a year later. The group publicly launched Scratch in 2007 and developed it through 2019, when the Scratch Team moved to the Scratch Foundation. The Lifelong Kindergarten group, led by Professor Mitchel Resnick, continues to collaborate with the Scratch Team to research and support creative learning with Scratch around the world.",
+    "credits.acknowledgementsLifelongKindergartenLinkText": "Lifelong Kindergarten research group",
+    "credits.acknowledgementsNSFGrantLinkText": "National Science Foundation Grant",
+    "credits.acknowledgementsTranslators": "With the help of {translatorsLink} around the world, Scratch is available in many languages.",
+    "credits.acknowledgementsLanguageOrganizers": "Many thanks to the following language organizers for helping to coordinate Scratch translators in their language:",
+    "credits.acknowledgementsTranslatorsLinkText": "Scratch Translators",
+    "credits.acknowledgementsCommunity": "We greatly appreciate all of the contributions by members of the worldwide Scratch community, who have shaped the direction of Scratch by sharing their projects, comments, and ideas.",
+    "credits.acknowledgementsInfluencers": "The ideas of Seymour Papert and Alan Kay have deeply inspired and influenced our work on Scratch.",
+    "credits.supportersTitle": "Supporting Organizations",
+    "credits.supportersFinancialHeader": "The following organizations have provided major financial support for Scratch:",
+    "credits.supportersServicesHeader": "The following organizations donate their services to help keep the Scratch project running:",
+    "credits.supportersOpenHeader": "Scratch would not be possible without free and open source software, including:",
+    "credits.currentSponsors": "Current Sponsors",
+    "credits.currentFinancialSupport": "The following organizations are providing major financial support for Scratch:",
+    "credits.donorsTitle": "Donors",
+    "credits.lifelongKindergartenTitle": "Lifelong Kindergarten Group",
+    "credits.translationsTitle": "Translators",
+    "credits.illustrationsTitle": "Illustrations",
+    "credits.acknowledgementsIllustrations": "Many thanks to the following artists for their contributions to the Scratch sprite library:",
+    "credits.soundsTitle": "Sounds",
+    "credits.pastContributors": "Past Scratch Team Members",
+    "credits.pastContributorsThanks": "Many important contributions have been made by previous Scratch Team members, including:",
+    "credits.acknowledgementsOtherContributors": "Past Contributors",
+    "credits.otherContributors": "Other contributors include:",
+    "credits.acknowledgementsSounds": "The Scratch sound library uses free sound resources from Adobe.com, Archive.org, FreeMusicArchive.org, FreeSound.org, and Incompetech.com.",
+    "credits.soundsThanks": "Thanks to Nina Paley from Archive.org; Kellee Maize, Peter Rudenko, and Chris Zabriskie from FreeMusicArchive.org; and Kevin MacLeod from Incompetech.com. Thanks to the following freesound.org artists:"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {
+    "dmca.intro": "The Lifelong Kindergarten research group respects the intellectual property of others, as well as our users. If you believe that your work has been copied in a way that constitutes copyright infringement, please email copyright@scratch.mit.edu, or mail your complaint to the following:",
+    "dmca.llkresponse": "The Lifelong Kindergarten Group will promptly process and investigate notices of alleged infringement and will take appropriate actions under the Digital Millennium Copyright Act (“DMCA”) and other applicable intellectual property laws. Upon receipt of notices complying or substantially complying with the DMCA, the Lifelong Kindergarten Group may act expeditiously to remove or disable access to any material claimed to be infringing. Repeat infringers of third-party copyrights are subject to termination in appropriate circumstances.",
+    "dmca.assessment": "In assessing whether or not a Scratch user has violated your copyrights, please keep in mind that Scratch is an educational and not-for-profit initiative, seeking to aid children’s learning by providing the tools for them to learn and express themselves using digital technology. Please also keep in mind the “Fair Use” doctrine incorporated into the Copyright Act of 1976, 17 U.S.C. § 107.",
+    "dmca.eyetoeye": "We hope you also see Scratch not only as a good way of popularizing your creations/website but also as an opportunity to do something good for children’s education.",
+    "dmca.afterfiling": "If you choose to make a copyright infringement complaint, please note that we may post your notification, with personally identifiable information redacted, to a clearinghouse such as chillingeffects.org. Please also note that you may be liable for damages (including costs and attorneys’ fees) if you materially misrepresent that an activity is infringing your copyright.",
+    "dmca.counternotification": "Counter-notification",
+    "dmca.ifremoved": "If your content has been removed due to a DMCA takedown notice, you believe you have a legal right to use the material, and you want to legally dispute this claim, you can file a DMCA counter-notification. You should only submit a counter-notification if the content was removed because of a mistake or misidentification and you are willing to go to court to defend your use of the material.",
+    "dmca.mailcounter": "A DMCA counter-notification can be emailed to copyright@scratch.mit.edu or mailed to:",
+    "dmca.mustinclude": "This counter-notice must include:",
+    "dmca.fullname": "Your full name",
+    "dmca.address": "Your address",
+    "dmca.phone": "Your phone number",
+    "dmca.email": "Your email address",
+    "dmca.username":

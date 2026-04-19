@@ -1,0 +1,1912 @@
+ommit/e45bfd66a21a2470c5a4a4cc1d6095494bbc0f6b)
+- [doc] added some documentation to functions and comments to understand better the code [`5dcdf2b`](https://github.com/http-party/node-http-proxy/commit/5dcdf2b36c24a9584f044b7529265b9ac861d8c7)
+- Fixed issue where error callback would not invoke, including new test cases. Added req/res values to error events. [`0bfb9be`](https://github.com/http-party/node-http-proxy/commit/0bfb9be418926f2113489e92504038127d4c04bb)
+- [examples] updated balancer examples [`831a44b`](https://github.com/http-party/node-http-proxy/commit/831a44b3c8c3acf6c046c47703a07cd6362a0d1c)
+- socket.io stuff [`a74cd85`](https://github.com/http-party/node-http-proxy/commit/a74cd85c8a5aae2851acf7139648fefd6a02a57b)
+- [tests] move contributions of @mmoulton to correct place [`7c72f3b`](https://github.com/http-party/node-http-proxy/commit/7c72f3b407a084a896e420c23ababc3e9357feca)
+- [tests] this file is not necessary anymore [`881c7e6`](https://github.com/http-party/node-http-proxy/commit/881c7e62e0bef7b4b9f81b6fd121f7ad6641bd77)
+- [refactor] move to leaner architecture [`8273cb6`](https://github.com/http-party/node-http-proxy/commit/8273cb6461e4d33f36e583b0354d1bea038d0a56)
+- [fix] remove trailing whitespaces [`0aeaba7`](https://github.com/http-party/node-http-proxy/commit/0aeaba7fe6c51f150d0322eb90a77c1701ed88f5)
+- [test] added tests for web-outgoing.js [`16a4d9d`](https://github.com/http-party/node-http-proxy/commit/16a4d9da1136b79f40ad80482d3fd17dc74274b1)
+- [fix] some stuff start debugging proxystream [`d4f0da8`](https://github.com/http-party/node-http-proxy/commit/d4f0da898e5e8a2d6740e50a7fc34576435e1132)
+- [tests] now each test use a different port to avoid some slow opening and closing ports [`c75d06c`](https://github.com/http-party/node-http-proxy/commit/c75d06c5f92eb7c814deb49bb33cf9fffc632d97)
+- [tests] fixed inherits problem and listen for the correct event [`c65ffbb`](https://github.com/http-party/node-http-proxy/commit/c65ffbb976467dc1768983dcffe111d18e8f2db1)
+- [fix] ProxyStraem now works [`356f43d`](https://github.com/http-party/node-http-proxy/commit/356f43d719998d135e0fc404ac8508e330cf1e5b)
+- [examples] fix the copyright header of example files [`e592c53`](https://github.com/http-party/node-http-proxy/commit/e592c53d1a23b7920d603a9e9ac294fc0e841f6d)
+- [feature] start working on the new server [`b79bd29`](https://github.com/http-party/node-http-proxy/commit/b79bd29d5e984f34b9c07fbdc803aed83b3fd0bb)
+- ENH: updated examples [`f566a42`](https://github.com/http-party/node-http-proxy/commit/f566a42e511f4a6a8f3620f64e05df209e61b64f)
+- [examples] add example of gzip using the connect.compress() middleware [`2142c50`](https://github.com/http-party/node-http-proxy/commit/2142c506e08f56d52e1995da5506c3e032f19c3c)
+- [fix] refactor error handling [`601dbcb`](https://github.com/http-party/node-http-proxy/commit/601dbcbfe929af31995568b4f36b877245809058)
+- [tests] fixed according new refactor and added test to common.setupSocket() [`1cb967b`](https://github.com/http-party/node-http-proxy/commit/1cb967b90aaa5b9da57727b8acbd95108437797a)
+- [feature] websocket support [`79a14ac`](https://github.com/http-party/node-http-proxy/commit/79a14acfd2b2bf03f5ae2b334e7a37e619da6bb9)
+- keepalive sockets [`dad211e`](https://github.com/http-party/node-http-proxy/commit/dad211e71c9ac3b32eba1ea3755edb688053b9d3)
+- [tests] Using target field, tests now pass. We are missing the tests using forward field [`8085178`](https://github.com/http-party/node-http-proxy/commit/8085178dc2c24567adfb872a583863709ce60b5b)
+- [fix] callback as optional error handler [`c7924e0`](https://github.com/http-party/node-http-proxy/commit/c7924e01f92aeec07333273f0882c1dd5e9521ae)
+- ENH: added new https example, needs to be simplified before merge [`427d8d8`](https://github.com/http-party/node-http-proxy/commit/427d8d85369b0cd1d38afa0dd0f28ac98fa16001)
+- [test] proxystream test [`c961279`](https://github.com/http-party/node-http-proxy/commit/c9612798f1207a4c40b616608bf6274d79ad0e4d)
+- [lib] initial draft to websockets passes [`79f7f99`](https://github.com/http-party/node-http-proxy/commit/79f7f99528661162ae4153856888f078f666e017)
+- [fix] minor [`7599cee`](https://github.com/http-party/node-http-proxy/commit/7599cee3fd03a5ce645e313f35557a41c9ac1aee)
+- [tests] added HTTPS to HTTPS test [`31d919b`](https://github.com/http-party/node-http-proxy/commit/31d919b0a3d0b7f574e88fc5eed093c6b1a53548)
+- [feature] started working on error propagation, kinda sucks, gotta think it over [`9ab8749`](https://github.com/http-party/node-http-proxy/commit/9ab8749a9bec33b49c495975e8364336ad7be1a3)
+- [test] testing the onResponse proxy method [`27df8d7`](https://github.com/http-party/node-http-proxy/commit/27df8d72ad86d02cfce00a6e5c183d93dd50f97e)
+- [fix] remove duplicate [`10c0f11`](https://github.com/http-party/node-http-proxy/commit/10c0f11b68e39552051e508c7bf20d65d2d59177)
+- [tests] add more tests [`cedc5c4`](https://github.com/http-party/node-http-proxy/commit/cedc5c4bd2059585e1222ec4f03f09e8bcc808fc)
+- [docs] Update readme with more how to [`ae0faef`](https://github.com/http-party/node-http-proxy/commit/ae0faef5aa0080d742a9740f9cb38bfd54b7d97e)
+- [tests] added test for socket.io proxying [`10a0db4`](https://github.com/http-party/node-http-proxy/commit/10a0db4f0dd4594839f9098b9d67130085a067bc)
+- [tests] added test HTTPS to HTTP using own server [`bbe3bfd`](https://github.com/http-party/node-http-proxy/commit/bbe3bfdf98255b82a185a798ff9f29e74615b6ca)
+- [examples] update the error-handling example using the new error handle way [`a1b25a1`](https://github.com/http-party/node-http-proxy/commit/a1b25a123b4ff71e731f9beb27c5e078acfead65)
+- [fix] quote [`c4ddc4e`](https://github.com/http-party/node-http-proxy/commit/c4ddc4edd324d9910a11eea14561a0e3b953f29c)
+- ENH: updated README and added examples file. [`07091b5`](https://github.com/http-party/node-http-proxy/commit/07091b5077a40dfee29f6fd33ecb38d3fa25b801)
+- [test] passes/web.js (first 2 funcs) [`d40e4be`](https://github.com/http-party/node-http-proxy/commit/d40e4beb62381b962b6cf3254451de0a39f182b1)
+- [test] add test for forwardstream [`8fc3389`](https://github.com/http-party/node-http-proxy/commit/8fc33893672d26013c2b2ff396b777bcf1751527)
+- [tests] fixing tests, fixed some typos and changed how passes are stored [`a704213`](https://github.com/http-party/node-http-proxy/commit/a7042132c881656dd32f915d9b0b962f0ef92efb)
+- [test] added the lib/caronte/streams/forward.js initial test, one test pending [`2fac7b9`](https://github.com/http-party/node-http-proxy/commit/2fac7b9b009b12a940efb22de3af6db55ee686a9)
+- [api] add draft for proxystream [`4f24664`](https://github.com/http-party/node-http-proxy/commit/4f24664e8a50aa9b9a3ea155d067b85f94a8c81b)
+- [experiment] new api for proxying [`07cfa6b`](https://github.com/http-party/node-http-proxy/commit/07cfa6b981ff54d8d96eea6c9aa4b560ee3867ec)
+- [tests] the options got a problem and this test probe that timeout is not being set [`1d1ee88`](https://github.com/http-party/node-http-proxy/commit/1d1ee8858283d7c8984f1c1d6c5185b6822f9235)
+- new error propagation [`3a39e44`](https://github.com/http-party/node-http-proxy/commit/3a39e444ff68a74f6b586f0736bbd3f8a2511ca5)
+- [fix] docs [`ec981c5`](https://github.com/http-party/node-http-proxy/commit/ec981c5b74bf43dd36c8ca89833b751f59f01d38)
+- [examples] added concurrent proxy example [`04c1011`](https://github.com/http-party/node-http-proxy/commit/04c10113f7a3b568fb95b18f30e4aca3e059d961)
+- [fix] closes number #487 [`cde08fb`](https://github.com/http-party/node-http-proxy/commit/cde08fb2ee2df03c9457678d8e6776a5d89165b2)
+- [test] started writing tests [`16eacfa`](https://github.com/http-party/node-http-proxy/commit/16eacfa961d2a2d80534e95eba83010ed6ab01b4)
+- [tests] added tests for websockets [`02007ed`](https://github.com/http-party/node-http-proxy/commit/02007ed0fb38f798436ae5669bb18d4f27496667)
+- Revert "[fix] fixed options and server reference to can access them from passes functions" [`babdf53`](https://github.com/http-party/node-http-proxy/commit/babdf531fecd32f9af0963902909fcfa2cd374f1)
+- mm test file [`1a7bef0`](https://github.com/http-party/node-http-proxy/commit/1a7bef0cda58243416a263075dc6eb51f22b6dec)
+- [fix] fixed options and server reference to can access them from passes functions [`90fb01d`](https://github.com/http-party/node-http-proxy/commit/90fb01d38ac5af7ef395547b24e985b6f63b4abc)
+- [examples] added forward example [`7a3f6df`](https://github.com/http-party/node-http-proxy/commit/7a3f6dfbcc80ba32fa81004438c637e8d29eb029)
+- [docs] add UPGRADING.md [`db12f6c`](https://github.com/http-party/node-http-proxy/commit/db12f6c24e22c034c698457cc28ff60c990b55a5)
+- DOC: Added error handling example [`32a4088`](https://github.com/http-party/node-http-proxy/commit/32a40889cedfd6b0d92224aa921700a7b7271c68)
+- [examples] updated the modifyResponse-middleware example [`de3ff11`](https://github.com/http-party/node-http-proxy/commit/de3ff11656b4a847de3a63b28feed39b6c816480)
+- [test] test onError part, proxying to no where [`b85aa16`](https://github.com/http-party/node-http-proxy/commit/b85aa16e75401a223a947cde444d42cf7eeafb67)
+- ENH: updated agent options in `common.setupOutgoing` [`12cda56`](https://github.com/http-party/node-http-proxy/commit/12cda561afe534427a5f84da9d7e0beb64a8ecbc)
+- [fix] minor and short fixes [`e0faaaf`](https://github.com/http-party/node-http-proxy/commit/e0faaaf81152203b96f0313c68706468e7ee7357)
+- support websockets [`4a4607d`](https://github.com/http-party/node-http-proxy/commit/4a4607d075a912746386d1751fd6b0fc98cf6b20)
+- [test] COVERAGE [`004a46c`](https://github.com/http-party/node-http-proxy/commit/004a46c09df2f0f7b15d8e8f7119bc6039e0c01c)
+- [misc] add a LICENSE file [`584ce76`](https://github.com/http-party/node-http-proxy/commit/584ce76e7576c906e25cdd04a2e079f97bcf86ff)
+- ENH: updated https and agent option [`13741a8`](https://github.com/http-party/node-http-proxy/commit/13741a823f1c1c884d4a37e597e4b188598b0e25)
+- [fix] write connection header [`2c10f25`](https://github.com/http-party/node-http-proxy/commit/2c10f256b658bc0e906c20f29d94ab7eaf653055)
+- [fix] merge #495, thanks @glasser [`d0862af`](https://github.com/http-party/node-http-proxy/commit/d0862aff0c693366dcb11649b6abe1d011268953)
+- support forward [`8c8c455`](https://github.com/http-party/node-http-proxy/commit/8c8c455541f21ad9a9ac7ca19d1f37368206a2e2)
+- [tests] fix tests set correct host headers [`cfd417d`](https://github.com/http-party/node-http-proxy/commit/cfd417de2352b0f05535b979dc15abff60c1fb96)
+- [fix] Optimize fix for `x-forwarded-for-port`. [`2d42709`](https://github.com/http-party/node-http-proxy/commit/2d42709c3283637de16a49e815b03e63432bbd29)
+- ENH: updated readme with an example [`edd8e2f`](https://github.com/http-party/node-http-proxy/commit/edd8e2f04e4b39391b062fa6437d61b4ebde8748)
+- [doc] update README.md [`dcb873a`](https://github.com/http-party/node-http-proxy/commit/dcb873ad9992b1534615d59b8a0a70e8b87d7884)
+- [test] passes/web.js XHeaders func [`c02b721`](https://github.com/http-party/node-http-proxy/commit/c02b721321c455bc287c3fed6b9b21392ce2fc70)
+- [fix] fixed passes functions, now 'this' can be used and options are stored on 'this.options' [`9b3e1eb`](https://github.com/http-party/node-http-proxy/commit/9b3e1eb247df29d18ea299ff4ebb2f10eeb71269)
+- Revert "[fix] fixed passes functions, now 'this' can be used and options are stored on 'this.options'" [`5e130de`](https://github.com/http-party/node-http-proxy/commit/5e130de8548ad41b821da49299b4fd1c9536c5f0)
+- [minor] Remove duplicate dependencies and cleanup of the scripts [`a51b062`](https://github.com/http-party/node-http-proxy/commit/a51b0622780f48160001f9e74340f7d720cbfce6)
+- TEST: added agent and header tests [`39b0c46`](https://github.com/http-party/node-http-proxy/commit/39b0c46a6967fda5329760ad93a8ec01bc4a6f14)
+- [examples] fix styling and bad spaces [`6a6dfbb`](https://github.com/http-party/node-http-proxy/commit/6a6dfbb79dc156679f75dd519344d19a5b61613b)
+- ENH: added error events [`1b867a7`](https://github.com/http-party/node-http-proxy/commit/1b867a7f594f7dfe49fc17ff53451a353ec509d9)
+- [test] remove chunked on http1.0 [`ca09263`](https://github.com/http-party/node-http-proxy/commit/ca092635e7ac4d967b554e3b94a16a931946d464)
+- [tests] fix test to use the new way to pass options [`52ecd52`](https://github.com/http-party/node-http-proxy/commit/52ecd52ee5aa78603e44ba8d5ff9187410351622)
+- [examples] fixed https examples [`a467b7b`](https://github.com/http-party/node-http-proxy/commit/a467b7b4a9614a7cbfdc256524e1495616e3d4d9)
+- Revert "[tests] fix test to use the new way to pass options" [`2bf20d6`](https://github.com/http-party/node-http-proxy/commit/2bf20d61d53201e9820c5f9215e641fcf88f5172)
+- [fix] better code [`3d8e538`](https://github.com/http-party/node-http-proxy/commit/3d8e5383cd9d527825f95d9071a87865fcebca05)
+- [feature] implement _write and _read [`6a4294c`](https://github.com/http-party/node-http-proxy/commit/6a4294cbdfe85fa162969b1393032adc9d418441)
+- [fix] use the correct arguments order [`cc09ae6`](https://github.com/http-party/node-http-proxy/commit/cc09ae6a345cfde1689e1d8731c5822675c59d4d)
+- [fix] fix the correct order of arguments in ws-incoming passes [`02df9a3`](https://github.com/http-party/node-http-proxy/commit/02df9a33c5cce17ea32a892017acbe5ce57ab2e5)
+- [fix] write status [`e08d4ed`](https://github.com/http-party/node-http-proxy/commit/e08d4edad339d0f7f55900b3e6e6a0e770960215)
+- [fix] finished jshint fixes [`455f97e`](https://github.com/http-party/node-http-proxy/commit/455f97e14cb4929e0a3a5c746471e9c5e76436fc)
+- Update the README to describe middleware err handler. [`25bb3bf`](https://github.com/http-party/node-http-proxy/commit/25bb3bfa7012e0f975e10f0311cae8c39183fa41)
+- Prevent headers to be sent twice [`8332e74`](https://github.com/http-party/node-http-proxy/commit/8332e744202ed9de94288d8f1c822cd9fe788983)
+- [examples] added package.json with the dependencies needed by examples [`d85ccdd`](https://github.com/http-party/node-http-proxy/commit/d85ccdd333edcfc7551bcf8e0ffd7dc166e38e61)
+- [tests] added .travis.yml file [`0602500`](https://github.com/http-party/node-http-proxy/commit/06025002303f351f71d9e5f78a93895257f0d283)
+- [dist minor] 2 space indents next time @samalba [`7e8041d`](https://github.com/http-party/node-http-proxy/commit/7e8041d2b687b8375a1d0fe45270029c6e8ddee6)
+- [fix] naming [`8931009`](https://github.com/http-party/node-http-proxy/commit/893100972c22febbf133134394bc0bcef47d9e12)
+- Fix for #458. Host header may cause some sites not to be proxyable with changeOrigin enabled [`781c038`](https://github.com/http-party/node-http-proxy/commit/781c038f2b4d14a01cc9297e1e0dba6ce39dd6cb)
+- [docs] typos, typos everywhere... [`03880d8`](https://github.com/http-party/node-http-proxy/commit/03880d8d069e9e17ca7d7aea6eb760f6626a869c)
+- ENH: updated `ws` and `web` functions to use the global options object as a base [`268afe3`](https://github.com/http-party/node-http-proxy/commit/268afe34bb51448d511c9cd73c03e97d1c1baee0)
+- [fix] make @mmalecki a happy camper [`c9cd6d2`](https://github.com/http-party/node-http-proxy/commit/c9cd6d2ad324e0e6222932c8f29f27621071e045)
+- write [`f97c0c6`](https://github.com/http-party/node-http-proxy/commit/f97c0c6167371c5ff92e6361b1df02e3fd5506d7)
+- [fix] [`a9f9e21`](https://github.com/http-party/node-http-proxy/commit/a9f9e21eda2f8e912523e6b62abb0101c0353505)
+- [fix] coveralls.. will it work? [`f36cb4d`](https://github.com/http-party/node-http-proxy/commit/f36cb4d5a110fc86272e878278f103f313c86f56)
+- ENH: updated target and forward options so that a string may be specified [`ef946a7`](https://github.com/http-party/node-http-proxy/commit/ef946a7697b38b13178881b3d1ebde63681dd4a1)
+- added option for eventlistenerCount(max) [`8eb6780`](https://github.com/http-party/node-http-proxy/commit/8eb6780f8705caff13a5375446539b0621d497d7)
+- [fix] support buffer [`1204a35`](https://github.com/http-party/node-http-proxy/commit/1204a35e467c6c1855ba0dac8f55d79f899148a6)
+- DOC: updated readme with options [`1b5fb1d`](https://github.com/http-party/node-http-proxy/commit/1b5fb1d8fc21421b8383919d93e4149b586b211b)
+- ENH: added 'headers' to available options, to add or overwrite existing headers [`7d840d3`](https://github.com/http-party/node-http-proxy/commit/7d840d35151be1aac612798754af47368594781d)
+- [fix] move l'use strict';
+
+var TOKEN    = /([!#\$%&'\*\+\-\.\^_`\|~0-9A-Za-z]+)/,
+    NOTOKEN  = /([^!#\$%&'\*\+\-\.\^_`\|~0-9A-Za-z])/g,
+    QUOTED   = /"((?:\\[\x00-\x7f]|[^\x00-\x08\x0a-\x1f\x7f"\\])*)"/,
+    PARAM    = new RegExp(TOKEN.source + '(?:=(?:' + TOKEN.source + '|' + QUOTED.source + '))?'),
+    EXT      = new RegExp(TOKEN.source + '(?: *; *' + PARAM.source + ')*', 'g'),
+    EXT_LIST = new RegExp('^' + EXT.source + '(?: *, *' + EXT.source + ')*$'),
+    NUMBER   = /^-?(0|[1-9][0-9]*)(\.[0-9]+)?$/;
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+var Parser = {
+  parseHeader: function(header) {
+    var offers = new Offers();
+    if (header === '' || header === undefined) return offers;
+
+    if (!EXT_LIST.test(header))
+      throw new SyntaxError('Invalid Sec-WebSocket-Extensions header: ' + header);
+
+    var values = header.match(EXT);
+
+    values.forEach(function(value) {
+      var params = value.match(new RegExp(PARAM.source, 'g')),
+          name   = params.shift(),
+          offer  = {};
+
+      params.forEach(function(param) {
+        var args = param.match(PARAM), key = args[1], data;
+
+        if (args[2] !== undefined) {
+          data = args[2];
+        } else if (args[3] !== undefined) {
+          data = args[3].replace(/\\/g, '');
+        } else {
+          data = true;
+        }
+        if (NUMBER.test(data)) data = parseFloat(data);
+
+        if (hasOwnProperty.call(offer, key)) {
+          offer[key] = [].concat(offer[key]);
+          offer[key].push(data);
+        } else {
+          offer[key] = data;
+        }
+      }, this);
+      offers.push(name, offer);
+    }, this);
+
+    return offers;
+  },
+
+  serializeParams: function(name, params) {
+    var values = [];
+
+    var print = function(key, value) {
+      if (value instanceof Array) {
+        value.forEach(function(v) { print(key, v) });
+      } else if (value === true) {
+        values.push(key);
+      } else if (typeof value === 'number') {
+        values.push(key + '=' + value);
+      } else if (NOTOKEN.test(value)) {
+        values.push(key + '="' + value.replace(/"/g, '\\"') + '"');
+      } else {
+        values.push(key + '=' + value);
+      }
+    };
+
+    for (var key in params) print(key, params[key]);
+
+    return [name].concat(values).join('; ');
+  }
+};
+
+var Offers = function() {
+  this._byName  = {};
+  this._inOrder = [];
+};
+
+Offers.prototype.push = function(name, params) {
+  if (!hasOwnProperty.call(this._byName, name))
+    this._byName[name] = [];
+
+  this._byName[name].push(params);
+  this._inOrder.push({ name: name, params: params });
+};
+
+Offers.prototype.eachOffer = function(callback, context) {
+  var list = this._inOrder;
+  for (var i = 0, n = list.length; i < n; i++)
+    callback.call(context, list[i].name, list[i].params);
+};
+
+Offers.prototype.byName = function(name) {
+  return this._byName[name] || [];
+};
+
+Offers.prototype.toArray = function() {
+  return this._inOrder.slice();
+};
+
+module.exports = Parser;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                # ![format-message-generate-id][logo]
+
+> Generate a message id from the default message pattern
+
+[![npm Version][npm-image]][npm]
+[![JS Standard Style][style-image]][style]
+[![MIT License][license-image]][LICENSE]
+
+A small collection of helper functions for use in format-message, to generate a message id based on the default message pattern.
+
+Quick Examples
+--------------
+
+`npm install format-message-generate-id --save`
+
+```js
+var formatMessage = require('format-message');
+formatMessage.setup({
+  generateId: require('format-message-generate-id/underscored_crc32')
+});
+```
+
+```js
+import formatMessage from 'format-message'
+import generate from 'format-message-generate-id'
+
+formatMessage.setup({
+  generateId: generate.normalized
+})
+```
+
+API
+---
+
+### `literal(pattern)`
+
+Simply returns the pattern passed in.
+
+### `normalized(pattern)`
+
+Normalizes insignificant whitespace within ICU placeholder syntax. This requires parsing and pretty-printing the message pattern, and an invalid message will cause an error to be thrown.
+
+### `underscored(pattern)`
+
+After normalizing the message pattern, a slug is generated with underscores replacing symbols and whitespace.
+
+### `underscored_crc32(pattern)`
+
+In addition to generating a slug, a crc32 checksum is calculated from the normalized pattern and appended to the result.
+
+License
+-------
+
+This software is free to use under the MIT license. See the [LICENSE-MIT file][LICENSE] for license text and copyright information.
+
+
+[logo]: https://cdn.rawgit.com/format-message/format-message/2febdd8/logo.svg
+[npm]: https://www.npmjs.org/package/format-message-generate-id
+[npm-image]: https://img.shields.io/npm/v/format-message-generate-id.svg
+[style]: https://github.com/feross/standard
+[style-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg
+[license-image]: https://img.shields.io/npm/l/format-message.svg
+[LICENSE]: https://github.com/format-message/format-message/blob/master/LICENSE-MIT
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # get-stream [![Build Status](https://travis-ci.org/sindresorhus/get-stream.svg?branch=master)](https://travis-ci.org/sindresorhus/get-stream)
+
+> Get a stream as a string, buffer, or array
+
+
+## Install
+
+```
+$ npm install --save get-stream
+```
+
+
+## Usage
+
+```js
+const fs = require('fs');
+const getStream = require('get-stream');
+const stream = fs.createReadStream('unicorn.txt');
+
+getStream(stream).then(str => {
+	console.log(str);
+	/*
+	              ,,))))))));,
+	           __)))))))))))))),
+	\|/       -\(((((''''((((((((.
+	-*-==//////((''  .     `)))))),
+	/|\      ))| o    ;-.    '(((((                                  ,(,
+	         ( `|    /  )    ;))))'                               ,_))^;(~
+	            |   |   |   ,))((((_     _____------~~~-.        %,;(;(>';'~
+	            o_);   ;    )))(((` ~---~  `::           \      %%~~)(v;(`('~
+	                  ;    ''''````         `:       `:::|\,__,%%    );`'; ~
+	                 |   _                )     /      `:|`----'     `-'
+	           ______/\/~    |                 /        /
+	         /~;;.____/;;'  /          ___--,-(   `;;;/
+	        / //  _;______;'------~~~~~    /;;/\    /
+	       //  | |                        / ;   \;;,\
+	      (<_  | ;                      /',/-----'  _>
+	       \_| ||_                     //~;~~~~~~~~~
+	           `\_|                   (,~~
+	                                   \~\
+	                                    ~~
+	*/
+});
+```
+
+
+## API
+
+The methods returns a promise that resolves when the `end` event fires on the stream, indicating that there is no more data to be read. The stream is switched to flowing mode.
+
+### getStream(stream, [options])
+
+Get the `stream` as a string.
+
+#### options
+
+##### encoding
+
+Type: `string`<br>
+Default: `utf8`
+
+[Encoding](https://nodejs.org/api/buffer.html#buffer_buffer) of the incoming stream.
+
+##### maxBuffer
+
+Type: `number`<br>
+Default: `Infinity`
+
+Maximum length of the returned string. If it exceeds this value before the stream ends, the promise will be rejected.
+
+### getStream.buffer(stream, [options])
+
+Get the `stream` as a buffer.
+
+It honors the `maxBuffer` option as above, but it refers to byte length rather than string length.
+
+### getStream.array(stream, [options])
+
+Get the `stream` as an array of values.
+
+It honors both the `maxBuffer` and `encoding` options. The behavior changes slightly based on the encoding chosen:
+
+- When `encoding` is unset, it assumes an [object mode stream](https://nodesource.com/blog/understanding-object-streams/) and collects values emitted from `stream` unmodified. In this case `maxBuffer` refers to the number of items in the array (not the sum of their sizes).
+
+- When `encoding` is set to `buffer`, it collects an array of buffers. `maxBuffer` refers to the summed byte lengths of every buffer in the array.
+
+- When `encoding` is set to anything else, it collects an array of strings. `maxBuffer` refers to the summed character lengths of every string in the array.
+
+
+## Errors
+
+If the input stream emits an `error` event, the promise will be rejected with the error. The buffered data will be attached to the `bufferedData` property of the error.
+
+```js
+getStream(streamThatErrorsAtTheEnd('unicorn'))
+	.catch(err => {
+		console.log(err.bufferedData);
+		//=> 'unicorn'
+	});
+```
+
+
+## FAQ
+
+### How is this different from [`concat-stream`](https://github.com/maxogden/concat-stream)?
+
+This module accepts a stream instead of being one and returns a promise instead of using a callback. The API is simpler and it only supports returning a string, buffer, or array. It doesn't have a fragile type inference. You explicitly choose what you want. And it doesn't depend on the huge `readable-stream` package.
+
+
+## Related
+
+- [get-stdin](https://github.com/sindresorhus/get-stdin) - Get stdin as a string or buffer
+
+
+## License
+
+MIT © [Sindre Sorhus](https://sindresorhus.com)
+                                                                                                                                                                                                                                   'use strict';
+
+/* eslint no-invalid-this: 1 */
+
+var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var slice = Array.prototype.slice;
+var toStr = Object.prototype.toString;
+var funcType = '[object Function]';
+
+module.exports = function bind(that) {
+    var target = this;
+    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
+        throw new TypeError(ERROR_MESSAGE + target);
+    }
+    var args = slice.call(arguments, 1);
+
+    var bound;
+    var binder = function () {
+        if (this instanceof bound) {
+            var result = target.apply(
+                this,
+                args.concat(slice.call(arguments))
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return this;
+        } else {
+            return target.apply(
+                that,
+                args.concat(slice.call(arguments))
+            );
+        }
+    };
+
+    var boundLength = Math.max(0, target.length - args.length);
+    var boundArgs = [];
+    for (var i = 0; i < boundLength; i++) {
+        boundArgs.push('$' + i);
+    }
+
+    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
+
+    if (target.prototype) {
+        var Empty = function Empty() {};
+        Empty.prototype = target.prototype;
+        bound.prototype = new Empty();
+        Empty.prototype = null;
+    }
+
+    return bound;
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         var url = require("url");
+var URL = url.URL;
+var http = require("http");
+var https = require("https");
+var Writable = require("stream").Writable;
+var assert = require("assert");
+var debug = require("./debug");
+
+// Create handlers that pass events from native requests
+var eventHandlers = Object.create(null);
+["abort", "aborted", "connect", "error", "socket", "timeout"].forEach(function (event) {
+  eventHandlers[event] = function (arg1, arg2, arg3) {
+    this._redirectable.emit(event, arg1, arg2, arg3);
+  };
+});
+
+// Error types with codes
+var RedirectionError = createErrorType(
+  "ERR_FR_REDIRECTION_FAILURE",
+  ""
+);
+var TooManyRedirectsError = createErrorType(
+  "ERR_FR_TOO_MANY_REDIRECTS",
+  "Maximum number of redirects exceeded"
+);
+var MaxBodyLengthExceededError = createErrorType(
+  "ERR_FR_MAX_BODY_LENGTH_EXCEEDED",
+  "Request body larger than maxBodyLength limit"
+);
+var WriteAfterEndError = createErrorType(
+  "ERR_STREAM_WRITE_AFTER_END",
+  "write after end"
+);
+
+// An HTTP(S) request that can be redirected
+function RedirectableRequest(options, responseCallback) {
+  // Initialize the request
+  Writable.call(this);
+  this._sanitizeOptions(options);
+  this._options = options;
+  this._ended = false;
+  this._ending = false;
+  this._redirectCount = 0;
+  this._redirects = [];
+  this._requestBodyLength = 0;
+  this._requestBodyBuffers = [];
+
+  // Attach a callback if passed
+  if (responseCallback) {
+    this.on("response", responseCallback);
+  }
+
+  // React to responses of native requests
+  var self = this;
+  this._onNativeResponse = function (response) {
+    self._processResponse(response);
+  };
+
+  // Perform the first request
+  this._performRequest();
+}
+RedirectableRequest.prototype = Object.create(Writable.prototype);
+
+// Writes buffered data to the current native request
+RedirectableRequest.prototype.write = function (data, encoding, callback) {
+  // Writing is not allowed if end has been called
+  if (this._ending) {
+    throw new WriteAfterEndError();
+  }
+
+  // Validate input and shift parameters if necessary
+  if (!(typeof data === "string" || typeof data === "object" && ("length" in data))) {
+    throw new TypeError("data should be a string, Buffer or Uint8Array");
+  }
+  if (typeof encoding === "function") {
+    callback = encoding;
+    encoding = null;
+  }
+
+  // Ignore empty buffers, since writing them doesn't invoke the callback
+  // https://github.com/nodejs/node/issues/22066
+  if (data.length === 0) {
+    if (callback) {
+      callback();
+    }
+    return;
+  }
+  // Only write when we don't exceed the maximum body length
+  if (this._requestBodyLength + data.length <= this._options.maxBodyLength) {
+    this._requestBodyLength += data.length;
+    this._requestBodyBuffers.push({ data: data, encoding: encoding });
+    this._currentRequest.write(data, encoding, callback);
+  }
+  // Error when we exceed the maximum body length
+  else {
+    this.emit("error", new MaxBodyLengthExceededError());
+    this.abort();
+  }
+};
+
+// Ends the current native request
+RedirectableRequest.prototype.end = function (data, encoding, callback) {
+  // Shift parameters if necessary
+  if (typeof data === "function") {
+    callback = data;
+    data = encoding = null;
+  }
+  else if (typeof encoding === "function") {
+    callback = encoding;
+    encoding = null;
+  }
+
+  // Write data if needed and end
+  if (!data) {
+    this._ended = this._ending = true;
+    this._currentRequest.end(null, null, callback);
+  }
+  else {
+    var self = this;
+    var currentRequest = this._currentRequest;
+    this.write(data, encoding, function () {
+      self._ended = true;
+      currentRequest.end(null, null, callback);
+    });
+    this._ending = true;
+  }
+};
+
+// Sets a header value on the current native request
+RedirectableRequest.prototype.setHeader = function (name, value) {
+  this._options.headers[name] = value;
+  this._currentRequest.setHeader(name, value);
+};
+
+// Clears a header value on the current native request
+RedirectableRequest.prototype.removeHeader = function (name) {
+  delete this._options.headers[name];
+  this._currentRequest.removeHeader(name);
+};
+
+// Global timeout for all underlying requests
+RedirectableRequest.prototype.setTimeout = function (msecs, callback) {
+  if (callback) {
+    this.once("timeout", callback);
+  }
+
+  if (this.socket) {
+    startTimer(this, msecs);
+  }
+  else {
+    var self = this;
+    this._currentRequest.once("socket", function () {
+      startTimer(self, msecs);
+    });
+  }
+
+  this.once("response", clearTimer);
+  this.once("error", clearTimer);
+
+  return this;
+};
+
+function startTimer(request, msecs) {
+  clearTimeout(request._timeout);
+  request._timeout = setTimeout(function () {
+    request.emit("timeout");
+  }, msecs);
+}
+
+function clearTimer() {
+  clearTimeout(this._timeout);
+}
+
+// Proxy all other public ClientRequest methods
+[
+  "abort", "flushHeaders", "getHeader",
+  "setNoDelay", "setSocketKeepAlive",
+].forEach(function (method) {
+  RedirectableRequest.prototype[method] = function (a, b) {
+    return this._currentRequest[method](a, b);
+  };
+});
+
+// Proxy all public ClientRequest properties
+["aborted", "connection", "socket"].forEach(function (property) {
+  Object.defineProperty(RedirectableRequest.prototype, property, {
+    get: function () { return this._currentRequest[property]; },
+  });
+});
+
+RedirectableRequest.prototype._sanitizeOptions = function (options) {
+  // Ensure headers are always present
+  if (!options.headers) {
+    options.headers = {};
+  }
+
+  // Since http.request treats host as an alias of hostname,
+  // but the url module interprets host as hostname plus port,
+  // eliminate the host property to avoid confusion.
+  if (options.host) {
+    // Use hostname if set, because it has precedence
+    if (!options.hostname) {
+      options.hostname = options.host;
+    }
+    delete options.host;
+  }
+
+  // Complete the URL object when necessary
+  if (!options.pathname && options.path) {
+    var searchPos = options.path.indexOf("?");
+    if (searchPos < 0) {
+      options.pathname = options.path;
+    }
+    else {
+      options.pathname = options.path.substring(0, searchPos);
+      options.search = options.path.substring(searchPos);
+    }
+  }
+};
+
+
+// Executes the next native request (initial or redirect)
+RedirectableRequest.prototype._performRequest = function () {
+  // Load the native protocol
+  var protocol = this._options.protocol;
+  var nativeProtocol = this._options.nativeProtocols[protocol];
+  if (!nativeProtocol) {
+    this.emit("error", new TypeError("Unsupported protocol " + protocol));
+    return;
+  }
+
+  // If specified, use the agent corresponding to the protocol
+  // (HTTP and HTTPS use different types of agents)
+  if (this._options.agents) {
+    var scheme = protocol.substr(0, protocol.length - 1);
+    this._options.agent = this._options.agents[scheme];
+  }
+
+  // Create the native request
+  var request = this._currentRequest =
+        nativeProtocol.request(this._options, this._onNativeResponse);
+  this._currentUrl = url.format(this._options);
+
+  // Set up event handlers
+  request._redirectable = this;
+  for (var event in eventHandlers) {
+    /* istanbul ignore else */
+    if (event) {
+      request.on(event, eventHandlers[event]);
+    }
+  }
+
+  // End a redirected request
+  // (The first request must be ended explicitly with RedirectableRequest#end)
+  if (this._isRedirect) {
+    // Write the request entity and end.
+    var i = 0;
+    var self = this;
+    var buffers = this._requestBodyBuffers;
+    (function writeNext(error) {
+      // Only write if this request has not been redirected yet
+      /* istanbul ignore else */
+      if (request === self._currentRequest) {
+        // Report any write errors
+        /* istanbul ignore if */
+        if (error) {
+          self.emit("error", error);
+        }
+        // Write the next buffer if there are still left
+        else if (i < buffers.length) {
+          var buffer = buffers[i++];
+          /* istanbul ignore else */
+          if (!request.finished) {
+            request.write(buffer.data, buffer.encoding, writeNext);
+          }
+        }
+        // End the request if `end` has been called on us
+        else if (self._ended) {
+          request.end();
+        }
+      }
+    }());
+  }
+};
+
+// Processes a response from the current native request
+RedirectableRequest.prototype._processResponse = function (response) {
+  // Store the redirected response
+  var statusCode = response.statusCode;
+  if (this._options.trackRedirects) {
+    this._redirects.push({
+      url: this._currentUrl,
+      headers: response.headers,
+      statusCode: statusCode,
+    });
+  }
+
+  // RFC7231§6.4: The 3xx (Redirection) class of status code indicates
+  // that further action needs to be taken by the user agent in order to
+  // fulfill the request. If a Location header field is provided,
+  // the user agent MAY automatically redirect its request to the URI
+  // referenced by the Location field value,
+  // even if the specific status code is not understood.
+  var location = response.headers.location;
+  if (location && this._options.followRedirects !== false &&
+      statusCode >= 300 && statusCode < 400) {
+    // Abort the current request
+    this._currentRequest.removeAllListeners();
+    this._currentRequest.on("error", noop);
+    this._currentRequest.abort();
+    // Discard the remainder of the response to avoid waiting for data
+    response.destroy();
+
+    // RFC7231§6.4: A client SHOULD detect and intervene
+    // in cyclical redirections (i.e., "infinite" redirection loops).
+    if (++this._redirectCount > this._options.maxRedirects) {
+      this.emit("error", new TooManyRedirectsError());
+      return;
+    }
+
+    // RFC7231§6.4: Automatic redirection needs to done with
+    // care for methods not known to be safe, […]
+    // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
+    // the request method from POST to GET for the subsequent request.
+    if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
+        // RFC7231§6.4.4: The 303 (See Other) status code indicates that
+        // the server is redirecting the user agent to a different resource […]
+        // A user agent can perform a retrieval request targeting that URI
+        // (a GET or HEAD request if using HTTP) […]
+        (statusCode === 303) && !/^(?:GET|HEAD)$/.test(this._options.method)) {
+      this._options.method = "GET";
+      // Drop a possible entity and headers related to it
+      this._requestBodyBuffers = [];
+      removeMatchingHeaders(/^content-/i, this._options.headers);
+    }
+
+    // Drop the Host header, as the redirect might lead to a different host
+    var previousHostName = removeMatchingHeaders(/^host$/i, this._options.headers) ||
+      url.parse(this._currentUrl).hostname;
+
+    // Create the redirected request
+    var redirectUrl = url.resolve(this._currentUrl, location);
+    debug("redirecting to", redirectUrl);
+    this._isRedirect = true;
+    var redirectUrlParts = url.parse(redirectUrl);
+    Object.assign(this._options, redirectUrlParts);
+
+    // Drop the Authorization header if redirecting to another host
+    if (redirectUrlParts.hostname !== previousHostName) {
+      removeMatchingHeaders(/^authorization$/i, this._options.headers);
+    }
+
+    // Evaluate the beforeRedirect callback
+    if (typeof this._options.beforeRedirect === "function") {
+      var responseDetails = { headers: response.headers };
+      try {
+        this._options.beforeRedirect.call(null, this._options, responseDetails);
+      }
+      catch (err) {
+        this.emit("error", err);
+        return;
+      }
+      this._sanitizeOptions(this._options);
+    }
+
+    // Perform the redirected request
+    try {
+      this._performRequest();
+    }
+    catch (cause) {
+      var error = new RedirectionError("Redirected request failed: " + cause.message);
+      error.cause = cause;
+      this.emit("error", error);
+    }
+  }
+  else {
+    // The response is not a redirect; return it as-is
+    response.responseUrl = this._currentUrl;
+    response.redirects = this._redirects;
+    this.emit("response", response);
+
+    // Clean up
+    this._requestBodyBuffers = [];
+  }
+};
+
+// Wraps the key/value object of protocols with redirect functionality
+function wrap(protocols) {
+  // Default settings
+  var exports = {
+    ma0.5.2 / 2017-09-13
+==================
+
+  * Fix regression matching multiple ETags in `If-None-Match`
+  * perf: improve `If-None-Match` token parsing
+
+0.5.1 / 2017-09-11
+==================
+
+  * Fix handling of modified headers with invalid dates
+  * perf: improve ETag match loop
+
+0.5.0 / 2017-02-21
+==================
+
+  * Fix incorrect result when `If-None-Match` has both `*` and ETags
+  * Fix weak `ETag` matching to match spec
+  * perf: delay reading header values until needed
+  * perf: skip checking modified time if ETag check failed
+  * perf: skip parsing `If-None-Match` when no `ETag` header
+  * perf: use `Date.parse` instead of `new Date`
+
+0.4.0 / 2017-02-05
+==================
+
+  * Fix false detection of `no-cache` request directive
+  * perf: enable strict mode
+  * perf: hoist regular expressions
+  * perf: remove duplicate conditional
+  * perf: remove unnecessary boolean coercions
+
+0.3.0 / 2015-05-12
+==================
+
+  * Add weak `ETag` matching support
+
+0.2.4 / 2014-09-07
+==================
+
+  * Support Node.js 0.6
+
+0.2.3 / 2014-09-07
+==================
+
+  * Move repository to jshttp
+
+0.2.2 / 2014-02-19
+==================
+
+  * Revert "Fix for blank page on Safari reload"
+
+0.2.1 / 2014-01-29
+==================
+
+  * Fix for blank page on Safari reload
+
+0.2.0 / 2013-08-11
+==================
+
+  * Return stale for `Cache-Control: no-cache`
+
+0.1.0 / 2012-06-15
+==================
+
+  * Add `If-None-Match: *` support
+
+0.0.1 / 2012-06-10
+==================
+
+  * Initial release
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    var test = require('tape');
+var forEach = require('./index.js');
+
+
+test('second argument: iterator', function (t) {
+    var arr = [];
+    t.throws(function () { forEach(arr); }, TypeError, 'undefined is not a function');
+    t.throws(function () { forEach(arr, null); }, TypeError, 'null is not a function');
+    t.throws(function () { forEach(arr, ''); }, TypeError, 'string is not a function');
+    t.throws(function () { forEach(arr, /a/); }, TypeError, 'regex is not a function');
+    t.throws(function () { forEach(arr, true); }, TypeError, 'true is not a function');
+    t.throws(function () { forEach(arr, false); }, TypeError, 'false is not a function');
+    t.throws(function () { forEach(arr, NaN); }, TypeError, 'NaN is not a function');
+    t.throws(function () { forEach(arr, 42); }, TypeError, '42 is not a function');
+    t.doesNotThrow(function () { forEach(arr, function () {}); }, 'function is a function');
+    t.end();
+});
+
+test('array', function (t) {
+    var arr = [1, 2, 3];
+
+    t.test('iterates over every item', function (st) {
+        var index = 0;
+        forEach(arr, function () { index += 1; });
+        st.equal(index, arr.length, 'iterates ' + arr.length + ' times');
+        st.end();
+    });
+
+    t.test('first iterator argument', function (st) {
+        var index = 0;
+        st.plan(arr.length);
+        forEach(arr, function (item) {
+            st.equal(arr[index], item, 'item ' + index + ' is passed as first argument');
+            index += 1;
+        });
+        st.end();
+    });
+
+    t.test('second iterator argument', function (st) {
+        var counter = 0;
+        st.plan(arr.length);
+        forEach(arr, function (item, index) {
+            st.equal(counter, index, 'index ' + index + ' is passed as second argument');
+            counter += 1;
+        });
+        st.end();
+    });
+
+    t.test('third iterator argument', function (st) {
+        st.plan(arr.length);
+        forEach(arr, function (item, index, array) {
+            st.deepEqual(arr, array, 'array is passed as third argument');
+        });
+        st.end();
+    });
+
+    t.test('context argument', function (st) {
+        var context = {};
+        st.plan(1);
+        forEach([1], function () {
+            st.equal(this, context, '"this" is the passed context');
+        }, context);
+        st.end();
+    });
+
+    t.end();
+});
+
+test('object', function (t) {
+    var obj = {
+        a: 1,
+        b: 2,
+        c: 3
+    };
+    var keys = ['a', 'b', 'c'];
+
+    var F = function () {
+        this.a = 1;
+        this.b = 2;
+    };
+    F.prototype.c = 3;
+    var fKeys = ['a', 'b'];
+
+    t.test('iterates over every object literal key', function (st) {
+        var counter = 0;
+        forEach(obj, function () { counter += 1; });
+        st.equal(counter, keys.length, 'iterated ' + counter + ' times');
+        st.end();
+    });
+
+    t.test('iterates only over own keys', function (st) {
+        var counter = 0;
+        forEach(new F(), function () { counter += 1; });
+        st.equal(counter, fKeys.length, 'iterated ' + fKeys.length + ' times');
+        st.end();
+    });
+
+    t.test('first iterator argument', function (st) {
+        var index = 0;
+        st.plan(keys.length);
+        forEach(obj, function (item) {
+            st.equal(obj[keys[index]], item, 'item at key ' + keys[index] + ' is passed as first argument');
+            index += 1;
+        });
+        st.end();
+    });
+
+    t.test('second iterator argument', function (st) {
+        var counter = 0;
+        st.plan(keys.length);
+        forEach(obj, function (item, key) {
+            st.equal(keys[counter], key, 'key ' + key + ' is passed as second argument');
+            counter += 1;
+        });
+        st.end();
+    });
+
+    t.test('third iterator argument', function (st) {
+        st.plan(keys.length);
+        forEach(obj, function (item, key, object) {
+            st.deepEqual(obj, object, 'object is passed as third argument');
+        });
+        st.end();
+    });
+
+    t.test('context argument', function (st) {
+        var context = {};
+        st.plan(1);
+        forEach({ a: 1 }, function () {
+            st.equal(this, context, '"this" is the passed context');
+        }, context);
+        st.end();
+    });
+
+    t.end();
+});
+
+
+test('string', function (t) {
+    var str = 'str';
+    t.test('second iterator argument', function (st) {
+        var counter = 0;
+        st.plan(str.length * 2 + 1);
+        forEach(str, function (item, index) {
+            st.equal(counter, index, 'index ' + index + ' is passed as second argument');
+            st.equal(str.charAt(index), item);
+            counter += 1;
+        });
+        st.equal(counter, str.length, 'iterates ' + str.length + ' times');
+    });
+    t.end();
+});
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                var isFunction = require('is-function')
+
+module.exports = forEach
+
+var toString = Object.prototype.toString
+var hasOwnProperty = Object.prototype.hasOwnProperty
+
+function forEach(list, iterator, context) {
+    if (!isFunction(iterator)) {
+        throw new TypeError('iterator must be a function')
+    }
+
+    if (arguments.length < 3) {
+        context = this
+    }
+    
+    if (toString.call(list) === '[object Array]')
+        forEachArray(list, iterator, context)
+    else if (typeof list === 'string')
+        forEachString(list, iterator, context)
+    else
+        forEachObject(list, iterator, context)
+}
+
+function forEachArray(array, iterator, context) {
+    for (var i = 0, len = array.length; i < len; i++) {
+        if (hasOwnProperty.call(array, i)) {
+            iterator.call(context, array[i], i, array)
+        }
+    }
+}
+
+function forEachString(string, iterator, context) {
+    for (var i = 0, len = string.length; i < len; i++) {
+        // no such thing as a sparse string.
+        iterator.call(context, string.charAt(i), i, string)
+    }
+}
+
+function forEachObject(object, iterator, context) {
+    for (var k in object) {
+        if (hasOwnProperty.call(object, k)) {
+            iterator.call(context, object[k], k, object)
+        }
+    }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   # filenamify [![Build Status](https://travis-ci.org/sindresorhus/filenamify.svg?branch=master)](https://travis-ci.org/sindresorhus/filenamify)
+
+> Convert a string to a valid safe filename
+
+On Unix-like systems `/` is reserved and [`<>:"/\|?*`](http://msdn.microsoft.com/en-us/library/aa365247%28VS.85%29#naming_conventions) on Windows.
+
+
+## Install
+
+```
+$ npm install filenamify
+```
+
+
+## Usage
+
+```js
+const filenamify = require('filenamify');
+
+filenamify('<foo/bar>');
+//=> 'foo!bar'
+
+filenamify('foo:"bar"', {replacement: '🐴'});
+//=> 'foo🐴bar'
+```
+
+
+## API
+
+### filenamify(input, [options])
+
+Accepts a filename and returns a valid filename.
+
+### filenamify.path(input, [options])
+
+Accepts a path and returns the path with a valid filename.
+
+#### input
+
+Type: `string`
+
+A string to convert to a valid filename.
+
+#### options
+
+Type: `Object`
+
+##### replacement
+
+Type: `string`<br>
+Default: `'!'`
+
+String to use as replacement for reserved filename characters.
+
+Cannot contain: `<` `>` `:` `"` `/` `\` `|` `?` `*`
+
+
+## Related
+
+- [filenamify-cli](https://github.com/sindresorhus/filenamify-cli) - CLI for this module
+- [filenamify-url](https://github.com/sindresorhus/filenamify-url) - Convert a URL to a valid filename
+- [valid-filename](https://github.com/sindresorhus/valid-filename) - Check if a string is a valid filename
+- [unused-filename](https://github.com/sindresorhus/unused-filename) - Get a unused filename by appending a number if it exists
+- [slugify](https://github.com/sindresorhus/slugify) - Slugify a string
+
+
+## License
+
+MIT © [Sindre Sorhus](https://sindresorhus.com)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      var path = require( 'path' );
+var fs = require( 'graceful-fs' );
+var del = require( 'del' ).sync;
+var utils = require( './utils' );
+var writeJSON = utils.writeJSON;
+
+var cache = {
+  /**
+   * Load a cache identified by the given Id. If the element does not exists, then initialize an empty
+   * cache storage. If specified `cacheDir` will be used as the directory to persist the data to. If omitted
+   * then the cache module directory `./cache` will be used instead
+   *
+   * @method load
+   * @param docId {String} the id of the cache, would also be used as the name of the file cache
+   * @param [cacheDir] {String} directory for the cache entry
+   */
+  load: function ( docId, cacheDir ) {
+    var me = this;
+
+    me._visited = { };
+    me._persisted = { };
+    me._pathToFile = cacheDir ? path.resolve( cacheDir, docId ) : path.resolve( __dirname, './.cache/', docId );
+
+    if ( fs.existsSync( me._pathToFile ) ) {
+      me._persisted = utils.tryParse( me._pathToFile, { } );
+    }
+  },
+
+  /**
+   * Load the cache from the provided file
+   * @method loadFile
+   * @param  {String} pathToFile the path to the file containing the info for the cache
+   */
+  loadFile: function ( pathToFile ) {
+    var me = this;
+    var dir = path.dirname( pathToFile );
+    var fName = path.basename( pathToFile );
+
+    me.load( fName, dir );
+  },
+
+  keys: function () {
+    return Object.keys( this._persisted );
+  },
+  /**
+   * sets a key to a given value
+   * @method setKey
+   * @param key {string} the key to set
+   * @param value {object} the value of the key. Could be any object that can be serialized with JSON.stringify
+   */
+  setKey: function ( key, value ) {
+    this._visited[ key ] = true;
+    this._persisted[ key ] = value;
+  },
+  /**
+   * remove a given key from the cache
+   * @method removeKey
+   * @param key {String} the key to remove from the object
+   */
+  removeKey: function ( key ) {
+    delete this._visited[ key ]; // esfmt-ignore-line
+    delete this._persisted[ key ]; // esfmt-ignore-line
+  },
+  /**
+   * Return the value of the provided key
+   * @method getKey
+   * @param key {String} the name of the key to retrieve
+   * @returns {*} the value from the key
+   */
+  getKey: function ( key ) {
+    this._visited[ key ] = true;
+    return this._persisted[ key ];
+  },
+
+  /**
+   * Remove keys that were not accessed/set since the
+   * last time the `prune` method was called.
+   * @method _prune
+   * @private
+   */
+  _prune: function () {
+    var me = this;
+    var obj = { };
+
+    var keys = Object.keys( me._visited );
+
+    // no keys visited for either get or set value
+    if ( keys.length === 0 ) {
+      return;
+    }
+
+    keys.forEach( function ( key ) {
+      obj[ key ] = me._persisted[ key ];
+    } );
+
+    me._visited = { };
+    me._persisted = obj;
+  },
+
+  /**
+   * Save the state of the cache identified by the docId to disk
+   * as a JSON structure
+   * @param [noPrune=false] {Boolean} whether to remove from cache the non visited files
+   * @method save
+   */
+  save: function ( noPrune ) {
+    var me = this;
+
+    (!noPrune) && me._prune();
+    writeJSON( me._pathToFile, me._persisted );
+  },
+
+  /**
+   * remove the file where the cache is persisted
+   * @method removeCacheFile
+   * @return {Boolean} true or false if the file was successfully deleted
+   */
+  removeCacheFile: function () {
+    return del( this._pathToFile, { force: true } );
+  },
+  /**
+   * Destroy the file cache and cache content.
+   * @method destroy
+   */
+  destroy: function () {
+    var me = this;
+    me._visited = { };
+    me._persisted = { };
+
+    me.removeCacheFile();
+  }
+};
+
+module.exports = {
+  /**
+   * Alias for create. Should be considered depreacted. Will be removed in next releases
+   *
+   * @method load
+   * @param docId {String} the id of the cache, would also be used as the name of the file cache
+   * @param [cacheDir] {String} directory for the cache entry
+   * @returns {cache} cache instance
+   */
+  load: function ( docId, cacheDir ) {
+    return this.create( docId, cacheDir );
+  },
+
+  /**
+  * Load a cache identified by the given Id. If the element does not exists, then initialize an empty
+  * cache storage.
+  *
+  * @method create
+  * @param docId {String} the id of the cache, would also be used as the name of the file cache
+  * @param [cacheDir] {String} directory for the cache entry
+  * @returns {cache} cache instance
+  */
+  create: function ( docId, cacheDir ) {
+    var obj = Object.create( cache );
+    obj.load( docId, cacheDir );
+    return obj;
+  },
+
+  createFromFile: function ( filePath ) {
+    var obj = Object.create( cache );
+    obj.loadFile( filePath );
+    return obj;
+  },
+  /**
+   * Clear the cache identified by the given id. Caches stored in a different cache directory can be deleted directly
+   *
+   * @method clearCache
+   * @param docId {String} the id of the cache, would also be used as the name of the file cache
+   * @param cacheDir {String} the directory where the cache file was written
+   * @returns {Boolean} true if the cache folder was deleted. False otherwise
+   */
+  clearCacheById: function ( docId, cacheDir ) {
+    var filePath = cacheDir ? path.resolve( cacheDir, docId ) : path.resolve( __dirname, './.cache/', docId );
+    return del( filePath, { force: true } ).length > 0;
+  },
+  /**
+   * Remove all cache stored in the cache directory
+   * @method clearAll
+   * @returns {Boolean} true if the cache folder was deleted. False otherwise
+   */
+  clearAll: function ( cacheDir ) {
+    var filePath = cacheDir ? path.resolve( cacheDir ) : path.resolve( __dirname, './.cache/' );
+    return del( filePath, { force: true } ).length > 0;
+  }
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      # finalhandler
+
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Node.js Version][node-image]][node-url]
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
+Node.js function to invoke as the final step to respond to HTTP request.
+
+## Installation
+
+This is a [Node.js](https://nodejs.org/en/) module available through the
+[npm registry](https://www.npmjs.com/). Installation is done using the
+[`npm install` command](https://docs.npmjs.com/getting-started/installing-npm-packages-locally):
+
+```sh
+$ npm install finalhandler
+```
+
+## API
+
+<!-- eslint-disable no-unused-vars -->
+
+```js
+var finalhandler = require('finalhandler')
+```
+
+### finalhandler(req, res, [options])
+
+Returns function to be invoked as the final step for the given `req` and `res`.
+This function is to be invoked as `fn(err)`. If `err` is falsy, the handler will
+write out a 404 response to the `res`. If it is truthy, an error response will
+be written out to the `res`.
+
+When an error is written, the following information is added to the response:
+
+  * The `res.statusCode` is set from `err.status` (or `err.statusCode`). If
+    this value is outside the 4xx or 5xx range, it will be set to 500.
+  * The `res.statusMessage` is set according to the status code.
+  * The body will be the HTML of the status code message if `env` is
+    `'production'`, otherwise will be `err.stack`.
+  * Any headers specified in an `err.headers` object.
+
+The final handler will also unpipe anything from `req` when it is invoked.
+
+#### options.env
+
+By default, the environment is determined by `NODE_ENV` variable, but it can be
+overridden by this option.
+
+#### options.onerror
+
+Provide a function to be called with the `err` when it exists. Can be used for
+writing errors to a central location without excessive function generation. Called
+as `onerror(err, req, res)`.
+
+## Examples
+
+### always 404
+
+```js
+var finalhandler = require('finalhandler')
+var http = require('http')
+
+var server = http.createServer(function (req, res) {
+  var done = finalhandler(req, res)
+  done()
+})
+
+server.listen(3000)
+```
+
+### perform simple action
+
+```js
+var finalhandler = require('finalhandler')
+var fs = require('fs')
+var http = require('http')
+
+var server = http.createServer(function (req, res) {
+  var done = finalhandler(req, res)
+
+  fs.readFile('index.html', function (err, buf) {
+    if (err) return done(err)
+    res.setHeader('Content-Type', 'text/html')
+    res.end(buf)
+  })
+})
+
+server.listen(3000)
+```
+
+### use with middleware-style functions
+
+```js
+var finalhandler = require('finalhandler')
+var http = require('http')
+var serveStatic = require('serve-static')
+
+var serve = serveStatic('public')
+
+var server = http.createServer(function (req, res) {
+  var done = finalhandler(req, res)
+  serve(req, res, done)
+})
+
+server.listen(3000)
+```
+
+### keep log of all errors
+
+```js
+var finalhandler = require('finalhandler')
+var fs = require('fs')
+var http = require('http')
+
+var server = http.createServer(function (req, res) {
+  var done = finalhandler(req, res, { onerror: logerror })
+
+  fs.readFile('index.html', function (err, buf) {
+    if (err) return done(err)
+    res.setHeader('Content-Type', 'text/html')
+    res.end(buf)
+  })
+})
+
+server.listen(3000)
+
+function logerror (err) {
+  console.error(err.stack || err.toString())
+}
+```
+
+## License
+
+[MIT](LICENSE)
+
+[npm-image]: https://img.shields.io/npm/v/finalhandler.svg
+[npm-url]: https://npmjs.org/package/finalhandler
+[node-image]: https://img.shields.io/node/v/finalhandler.svg
+[node-url]: https://nodejs.org/en/download
+[travis-image]: https://img.shields.io/travis/pillarjs/finalhandler.svg
+[travis-url]: https://travis-ci.org/pillarjs/finalhandler
+[coveralls-image]: https://img.shields.io/coveralls/pillarjs/finalhandler.svg
+[coveralls-url]: https://coveralls.io/r/pillarjs/finalhandler?branch=master
+[downloads-image]: https://img.shields.io/npm/dm/finalhandler.svg
+[downloads-url]: https://npmjs.org/package/finalhandler
+                                                                                    'use strict'
+
+var program = require('commander')
+var fsUtil = require('fs')
+var pathUtil = require('path')
+var glob = require('glob')
+var yaml = require('js-yaml')
+var lintFiles = require('./lint-files')
+var extractFromFiles = require('./extract-files')
+var transformFiles = require('./transform-files')
+var pkg = require('./package.json')
+
+var existsSync = fsUtil.existsSync
+var readFileSync = fsUtil.readFileSync
+
+function flattenFiles (files) {
+  var flat = []
+  files = [].concat(files || [])
+  files.forEach(function (pattern) {
+    flat = flat.concat(glob.sync(pattern))
+  })
+  return flat
+}
+
+function addStdinToFiles (files, options, next) {
+  if (files.length === 0) {
+    var sourceFileName = options.filename
+    var sourceCode = ''
+    process.stdin.setEncoding('utf8')
+    process.stdin.on('readable', function () {
+      var chunk = process.stdin.read()
+      if (chunk) {
+        sourceCode += chunk
+      }
+    })
+    process.stdin.on('end', function () {
+      files.push({ sourceCode: sourceCode, sourceFileName: sourceFileName })
+      next()
+    })
+  } else {
+    next()
+  }
+}
+
+function loadTranslations (file) {
+  file = pathUtil.resolve(file)
+  try {
+    return require(file)
+  } catch (err) {
+    var data = readFileSync(file, 'utf8')
+    return yaml.safeLoad(data)
+  }
+}
+
+function loadJSONFile (file) {
+  file = pathUtil.resolve(file)
+  try {
+    return require(file)
+  } catch (err) {
+    var data = readFileSync(file, 'utf8')
+    return JSON.parse(data)
+  }
+}
+
+/**
+ * version
+ **/
+module.exports = program
+  .version(pkg.version)
+
+/**
+ * format-message lint src/*.js
+ *  find message patterns in files and verify there are no obvious problems
+ **/
+program
+  .command('lint [files...]')
+  .description('find message patterns in files and verify there are no obvious problems')
+  .option('-g, --generate-id [type]',
+    'generate missing ids from default message pattern (literal | normalized | underscored | underscored_crc32) [underscored_crc32]',
+    'literal'
+  )
+  .option('-l, --locale [locale]', 'BCP 47 language tags specifying the source default locale [en]', 'en')
+  .option('-t, --translations [path]',
+    'location of the JSON file with message translations,' +
+      ' if specified, translations are also checked for errors'
+  )
+  .option('-f, --filename [filename]', 'filename to use when reading from stdin - this will be used in errors [stdin]', 'stdin')
+  .option('-s, --style [style]',
+    'error output format (stylish | checkstyle | compact | html | jslint-xml | json | junit | tap | unix) [stylish]',
+    'stylish'
+  )
+  .option('-e, --extends [extends]',
+    'sets the rules that are used for linting (default | recommended | customrules) [default]',
+    'default')
+  .option('-c, --customrules [path]', 'location of the custom rules file')
+  .action(function (files, options) {
+    files = flattenFiles(files)
+
+    var errors = []
+    files.forEach(function (file) {
+      if (!existsSync(file)) {
+        errors.push(file + ' doesn\'t exist')
+      }
+    })
+    if (options.translations) {
+      if (!existsSync(options.translations)) {
+        errors.push(options.translations + ' doesn\'t exist')
+      }
+      try {
+        options.translations = loadTranslations(options.translations)
+      } catch (err) {
+        errors.push(err.message)
+      }
+    }
+    if (options.extends === 'default') {
+      options.extends = [ 'plugin:format-message/default' ]
+      options.customrules = null
+    } else if (options.extends === 'recommended') {
+      options.extends = [ 'plugin:format-message/recommended' ]
+      options.customrules = null
+    } else if (options.extends === 'customrules') {
+      options.extends = null
+      if (options.customrules && existsSync(options.customrules)) {
+        options.customrules = loadJSONFile(options.customrules)
+      } else {
+        if (options.customrules) {
+          errors.push('A valid file needs to be provided for "customrules". "' + options.customrules + '" is not a valid file.')
+        } else {
+          errors.push('When "customrules" is specified for "extends", a valid path has to be provided for "customrules".')
+        }
+        options.customrules = null
+      }
+    } else {
+      errors.push('A valid extends value [default, recommended, customrules] needs to be provided. "' + options.extends + '" is not valid.')
+    }
+
+    if (errors.length) {
+      console.error(errors.join('. '))
+      return process.exit(2)
+    }
+
+    addStdinToFiles(files, options, function () {
+      lintFiles(files, {
+        style: options.style,
+        locale: options.locale,
+        generateId: options.generateId,
+        translations: options.translations,
+        extends: options.extends,
+        customrules: options.customrules
+      })
+    })
+  })
+
+/**
+ * format-message extract src/*.js
+ *  find and list all message patterns in files
+ **/
+program
+  .command('extract [files...]')
+  .description('find and list all message patterns in files')
+  .option('-g, --generate-id [type]',
+    'generate missing ids from default message pattern (literal | normalized | underscored | underscored_crc32) [underscored_crc32]',
+    'literal'
+  )
+  .option('-l, --locale [locale]', 'BCP 47 language tags specifying the source default locale [en]', 'en')
+  .option('-f, --filename [filename]', 'filename to use when reading from stdin - this will be used in errors', 'stdin')
+  .option('-o, --out-file [out]', 'write messages to this file instead of to stdout')
+  .option('--format [format]',
+    'use the specified format instead of detecting from the --out-file extension (yaml | es6 | commonjs | json)'
+  )
+  .action(function (files, options) {
+    files = flattenFiles(files)
+
+    var errors = []
+    files.forEach(function (file) {
+      if (!existsSync(file)) {
+        errors.push(file + ' doesn\'t exist')
+      }
+    })
+    if (errors.length) {
+      console.error(errors.join('. '))
+      return process.exit(2)
+    }
+
+    addStdinToFiles(files, options, function () {
+      extractFromFiles(files, {
+        generateId: options.generateId,
+        locale: options.locale,
+        outFile: options.outFile,
+        format: options.format
+      })
+    })
+  })
+
+/**
+ * format-message transform src/*.js
+ *  transform formatMessage calls either adding generated ids or inlining and optimizing a translation
+ **/
+program
+  .command('transform [files...]')
+  .description('transform formatMessage calls either adding generated ids or inlining and optimizing a translation')
+  .option('-g, --generate-id [type]',
+    'generate missing ids from default message pattern (literal | normalized | underscored | underscored_crc32) [underscored_crc32]',
+    'literal'
+  )
+  .option('-i, --inline', 'inline the translation for the specified locale')
+  .option('-l, --locale [locale]', 'BCP 47 language tags specifying the target locale [en]', 'en')
+  .option('-t, --translations [path]', 'location of the JSON file with message translations')
+  .option('-e, --missing-translation [behavior]',
+    'behavior when --translations is specified, but a translated pattern is missing (error | warning | ignore) [error]',
+    'error'
+  )
+  .option('-m, --missing-replacement [pattern]', 'pattern to inline when a translated pattern is missing, defaults to the source pattern')
+  .option('--source-maps-inline', 'append sourceMappingURL comment to bottom of code')
+  .option('-s, --source-maps', 'save source map alongside the compiled code')
+  .option('-f, --filename [filename]', 'filename to use when reading from stdin - this will be used in source-maps, errors etc [stdin]', 'stdin')
+  .option('-o, --out-file [out]', 'compile all input files into a single file')
+  .option('-d, --out-dir [out]', 'compile an input directory of modules into an output directory')
+  .option('-r, --root [path]', 'remove root path for source filename in output directory [cwd]')
+  .action(function (files, options) {
+    files = flattenFiles(files)
+
+    var errors = []
+    files.forEach(function (file) {
+      if (!existsSync(file)) {
+        errors.push(file + ' doesn\'t exist')
+      }
+    })
+    if (options.outDir && !files.length) {
+      errors.push('files required for --out-dir')
+    }
+    if (options.outFile && options.outDir) {
+      errors.push('cannot have --out-file and --out-dir')
+    }
+    if (options.sourceMaps && !options.outFile && !options.outDir) {
+      errors.push('--source-maps requires --out-file or --out-dir')
+    }
+    if (options.translations) {
+      if (!existsSync(options.translations)) {
+        errors.push(options.translations + ' doesn\'t exist')
+      }
+      try {
+        options.translations = loadTranslations(options.translations)
+      } catch (err) {
+        errors.push(err.message)
+      }
+    }
+    if (
+      options.missingTranslation !== 'error' &&
+      options.missingTranslation !== 'warning' &&
+      options.missingTranslation !== 'ignore'
+    ) {
+      errors.push('--missing-translation must be "error" "warning" or "ignore"')
+    }
+    if (errors.length) {
+      console.error(errors.join('. '))
+      return process.exit(2)
+    }
+
+    addStdinToFiles(files, options, function () {
+      transformFiles(files, {
+        generateId: options.generateId,
+        inline: options.inline,
+        locale: options.locale,
+        translations: options.translations,
+        missingTranslation: options.missingTranslation,
+        missingReplacement: options.missingReplacement,
+        sourceMaps: options.sourceMapsInline ? 'inline' : options.sourceMaps,
+        outFile: options.outFile,
+        outDir: options.outDir,
+        root: options.root || process.cwd()
+      })
+    })
+  })
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       var fs = require('fs');
+var util = require('util');
+var stream = require('stream');
+var Readable = stream.Readable;
+var Writable = stream.Writable;
+var PassThrough = stream.PassThrough;
+var Pend = require('pend');
+var EventEmitter = require('events').EventEmitter;
+
+exports.createFromBuffer = createFromBuffer;
+exports.createFromFd = createFromFd;
+exports.BufferSlicer = BufferSlicer;
+exports.FdSlicer = FdSlicer;
+
+util.inherits(FdSlicer, EventEmitter);
+function FdSlicer(fd, options) {
+  options = options || {};
+  EventEmitter.call(this);
+
+  this.fd = fd;
+  this.pend = new Pend();
+  this.pend.max = 1;
+  this.refCount = 0;
+  this.autoClose = !!options.autoClose;
+}
+
+FdSlicer.prototype.read = function(buffer, offset, length, position, callback) {
+  var self = this;
+  self.pend.go(function(cb) {
+    fs.read(self.fd, buffer, offset, length, position, function(err, bytesRead, buffer) {
+      cb();
+      callback(err, bytesRead, buffer);
+    });
+  });
+};
+
+FdSlicer.prototype.write = function(buffer, offset, length, position, callback) {
+  var self = this;
+  self.pend.go(function(cb) {
+    fs.write(self.fd, buffer, offset, length, position, function(err, written, buffer) {
+      cb();
+      callback(err, written, buffer);
+    });
+  });
+};
+
+FdSlicer.prototype.createReadStream = function(options) {
+  return new ReadStream(this, options);
+};
+
+FdSlicer.prototype.createWriteStream = function(options) {
+  return new WriteStream(this, options);
+};
+
+FdSlicer.prototype.ref = function() {
+  this.refCount += 1;
+};
+
+FdSlicer.prototype.unref = function() {
+  var self = this;
+  self.refCount -= 1;
+
+  if (self.refCount > 0) return;
+  if (self.refCount < 0) throw new Error("invalid unref");
+
+  if (self.autoClose) {
+    fs.close(self.fd, onCloseDone);
+  }
+
+  function onCloseDone(err) {
+    if (err) {
+      self.emit('error', err);
+    } else {
+      self.emit('close');
+    }
+  }
+};
+
+util.inherits(ReadStream, Readable);
+function ReadStream(context, options) {
+  options = options || {};
+  Readable.call(this, options);
+
+  this.context = context;
+  this.context.ref();
+
+  this.start = options.start || 0;
+  this.endOffset = options.end;
+  this.pos = this.start;
+  this.destroyed = false;
+}
+
+ReadStream.prototype._read = function(n) {
+  var self = this;
+  if (self.destroyed) return;
+
+  var toRead = Math.min(self._readableState.highWaterMark, n);
+  if (self.endOffset != null) {
+    toRead = Math.min(toRead, self.endOffset - self.pos);
+  }
+  if (toRead <= 0) {
+    self.destroyed = true;
+    self.push(null);
+    self.context.unref();
+    return;
+  }
+  self.context.pend.go(function(cb) {
+    if (self.destroyed) return cb();
+    var buffer = new Buffer(toRead);
+    fs.read(self.context.fd, buffer, 0, toRead, self.pos, function(err, bytesRead) {
+      if (err) {
+        self.destroy(err);
+      } else if (bytesRead === 0) {
+        self.destroyed = true;
+        self.push(null);
+        self.context.unref();
+      } else {
+        self.pos += bytesRead;
+        self.push(buffer.slice(0, bytesRead));
+      }
+      cb();
+    });
+  });
+};
+
+ReadStream.prototype.destroy = function(err) {
+  if (this.destroyed) return;
+  err = err || new Error("stream destroyed");
+  this.destroyed = true;
+  this.emit('error', err);
+  this.context.unref()

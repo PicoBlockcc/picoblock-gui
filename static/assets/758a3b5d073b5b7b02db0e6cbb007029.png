@@ -1,0 +1,1815 @@
+0.0-beta.8",
+		"11.0.0-beta.9",
+		"11.0.0-beta.11"
+	],
+	"87.0.4280.11": [
+		"11.0.0-beta.12",
+		"11.0.0-beta.13"
+	],
+	"87.0.4280.27": [
+		"11.0.0-beta.16",
+		"11.0.0-beta.17",
+		"11.0.0-beta.18",
+		"11.0.0-beta.19"
+	],
+	"87.0.4280.40": [
+		"11.0.0-beta.20"
+	],
+	"87.0.4280.47": [
+		"11.0.0-beta.22",
+		"11.0.0-beta.23"
+	],
+	"85.0.4156.0": [
+		"11.0.0-nightly.20200529"
+	],
+	"85.0.4162.0": [
+		"11.0.0-nightly.20200602",
+		"11.0.0-nightly.20200603",
+		"11.0.0-nightly.20200604",
+		"11.0.0-nightly.20200609",
+		"11.0.0-nightly.20200610",
+		"11.0.0-nightly.20200611",
+		"11.0.0-nightly.20200615",
+		"11.0.0-nightly.20200616",
+		"11.0.0-nightly.20200617",
+		"11.0.0-nightly.20200618",
+		"11.0.0-nightly.20200619"
+	],
+	"85.0.4179.0": [
+		"11.0.0-nightly.20200701",
+		"11.0.0-nightly.20200702",
+		"11.0.0-nightly.20200703",
+		"11.0.0-nightly.20200706",
+		"11.0.0-nightly.20200707",
+		"11.0.0-nightly.20200708",
+		"11.0.0-nightly.20200709"
+	],
+	"86.0.4203.0": [
+		"11.0.0-nightly.20200716",
+		"11.0.0-nightly.20200717",
+		"11.0.0-nightly.20200720",
+		"11.0.0-nightly.20200721"
+	],
+	"86.0.4209.0": [
+		"11.0.0-nightly.20200723",
+		"11.0.0-nightly.20200724",
+		"11.0.0-nightly.20200729",
+		"11.0.0-nightly.20200730",
+		"11.0.0-nightly.20200731",
+		"11.0.0-nightly.20200803",
+		"11.0.0-nightly.20200804",
+		"11.0.0-nightly.20200805",
+		"11.0.0-nightly.20200811",
+		"11.0.0-nightly.20200812"
+	],
+	"87.0.4280.60": [
+		"11.0.0",
+		"11.0.1"
+	],
+	"87.0.4280.67": [
+		"11.0.2",
+		"11.0.3",
+		"11.0.4"
+	],
+	"87.0.4280.88": [
+		"11.0.5",
+		"11.1.0",
+		"11.1.1"
+	],
+	"87.0.4280.141": [
+		"11.2.0",
+		"11.2.1",
+		"11.2.2",
+		"11.2.3",
+		"11.3.0",
+		"11.4.0",
+		"11.4.1",
+		"11.4.2",
+		"11.4.3",
+		"11.4.4",
+		"11.4.5",
+		"11.4.6",
+		"11.4.7",
+		"11.4.8",
+		"11.4.9",
+		"11.4.10"
+	],
+	"89.0.4328.0": [
+		"12.0.0-beta.1",
+		"12.0.0-beta.3",
+		"12.0.0-beta.4",
+		"12.0.0-beta.5",
+		"12.0.0-beta.6",
+		"12.0.0-beta.7",
+		"12.0.0-beta.8",
+		"12.0.0-beta.9",
+		"12.0.0-beta.10",
+		"12.0.0-beta.11",
+		"12.0.0-beta.12",
+		"12.0.0-beta.14",
+		"13.0.0-nightly.20201119",
+		"13.0.0-nightly.20201123",
+		"13.0.0-nightly.20201124",
+		"13.0.0-nightly.20201126",
+		"13.0.0-nightly.20201127",
+		"13.0.0-nightly.20201130",
+		"13.0.0-nightly.20201201",
+		"13.0.0-nightly.20201202",
+		"13.0.0-nightly.20201203",
+		"13.0.0-nightly.20201204",
+		"13.0.0-nightly.20201207",
+		"13.0.0-nightly.20201208",
+		"13.0.0-nightly.20201209",
+		"13.0.0-nightly.20201210",
+		"13.0.0-nightly.20201211",
+		"13.0.0-nightly.20201214"
+	],
+	"89.0.4348.1": [
+		"12.0.0-beta.16",
+		"12.0.0-beta.18",
+		"12.0.0-beta.19",
+		"12.0.0-beta.20"
+	],
+	"89.0.4388.2": [
+		"12.0.0-beta.21",
+		"12.0.0-beta.22",
+		"12.0.0-beta.23",
+		"12.0.0-beta.24",
+		"12.0.0-beta.25",
+		"12.0.0-beta.26"
+	],
+	"89.0.4389.23": [
+		"12.0.0-beta.27",
+		"12.0.0-beta.28",
+		"12.0.0-beta.29"
+	],
+	"89.0.4389.58": [
+		"12.0.0-beta.30",
+		"12.0.0-beta.31"
+	],
+	"87.0.4268.0": [
+		"12.0.0-nightly.20201013",
+		"12.0.0-nightly.20201014",
+		"12.0.0-nightly.20201015"
+	],
+	"88.0.4292.0": [
+		"12.0.0-nightly.20201023",
+		"12.0.0-nightly.20201026"
+	],
+	"88.0.4306.0": [
+		"12.0.0-nightly.20201030",
+		"12.0.0-nightly.20201102",
+		"12.0.0-nightly.20201103",
+		"12.0.0-nightly.20201104",
+		"12.0.0-nightly.20201105",
+		"12.0.0-nightly.20201106",
+		"12.0.0-nightly.20201111",
+		"12.0.0-nightly.20201112"
+	],
+	"88.0.4324.0": [
+		"12.0.0-nightly.20201116"
+	],
+	"89.0.4389.69": [
+		"12.0.0"
+	],
+	"89.0.4389.82": [
+		"12.0.1"
+	],
+	"89.0.4389.90": [
+		"12.0.2"
+	],
+	"89.0.4389.114": [
+		"12.0.3",
+		"12.0.4"
+	],
+	"89.0.4389.128": [
+		"12.0.5",
+		"12.0.6",
+		"12.0.7",
+		"12.0.8",
+		"12.0.9",
+		"12.0.10",
+		"12.0.11",
+		"12.0.12",
+		"12.0.13",
+		"12.0.14",
+		"12.0.15"
+	],
+	"90.0.4402.0": [
+		"13.0.0-beta.2",
+		"13.0.0-beta.3",
+		"13.0.0-nightly.20210210",
+		"13.0.0-nightly.20210211",
+		"13.0.0-nightly.20210212",
+		"13.0.0-nightly.20210216",
+		"13.0.0-nightly.20210217",
+		"13.0.0-nightly.20210218",
+		"13.0.0-nightly.20210219",
+		"13.0.0-nightly.20210222",
+		"13.0.0-nightly.20210225",
+		"13.0.0-nightly.20210226",
+		"13.0.0-nightly.20210301",
+		"13.0.0-nightly.20210302",
+		"13.0.0-nightly.20210303",
+		"14.0.0-nightly.20210304"
+	],
+	"90.0.4415.0": [
+		"13.0.0-beta.4",
+		"13.0.0-beta.5",
+		"13.0.0-beta.6",
+		"13.0.0-beta.7",
+		"13.0.0-beta.8",
+		"13.0.0-beta.9",
+		"13.0.0-beta.11",
+		"13.0.0-beta.12",
+		"13.0.0-beta.13",
+		"14.0.0-nightly.20210305",
+		"14.0.0-nightly.20210308",
+		"14.0.0-nightly.20210309",
+		"14.0.0-nightly.20210311",
+		"14.0.0-nightly.20210315",
+		"14.0.0-nightly.20210316",
+		"14.0.0-nightly.20210317",
+		"14.0.0-nightly.20210318",
+		"14.0.0-nightly.20210319",
+		"14.0.0-nightly.20210323",
+		"14.0.0-nightly.20210324",
+		"14.0.0-nightly.20210325",
+		"14.0.0-nightly.20210326",
+		"14.0.0-nightly.20210329",
+		"14.0.0-nightly.20210330"
+	],
+	"91.0.4448.0": [
+		"13.0.0-beta.14",
+		"13.0.0-beta.16",
+		"13.0.0-beta.17",
+		"13.0.0-beta.18",
+		"13.0.0-beta.20",
+		"14.0.0-nightly.20210331",
+		"14.0.0-nightly.20210401",
+		"14.0.0-nightly.20210402",
+		"14.0.0-nightly.20210406",
+		"14.0.0-nightly.20210407",
+		"14.0.0-nightly.20210408",
+		"14.0.0-nightly.20210409",
+		"14.0.0-nightly.20210413"
+	],
+	"91.0.4472.33": [
+		"13.0.0-beta.21",
+		"13.0.0-beta.22",
+		"13.0.0-beta.23"
+	],
+	"91.0.4472.38": [
+		"13.0.0-beta.24",
+		"13.0.0-beta.26",
+		"13.0.0-beta.27",
+		"13.0.0-beta.28"
+	],
+	"89.0.4349.0": [
+		"13.0.0-nightly.20201215",
+		"13.0.0-nightly.20201216",
+		"13.0.0-nightly.20201221",
+		"13.0.0-nightly.20201222"
+	],
+	"89.0.4359.0": [
+		"13.0.0-nightly.20201223",
+		"13.0.0-nightly.20210104",
+		"13.0.0-nightly.20210108",
+		"13.0.0-nightly.20210111"
+	],
+	"89.0.4386.0": [
+		"13.0.0-nightly.20210113",
+		"13.0.0-nightly.20210114",
+		"13.0.0-nightly.20210118",
+		"13.0.0-nightly.20210122",
+		"13.0.0-nightly.20210125"
+	],
+	"89.0.4389.0": [
+		"13.0.0-nightly.20210127",
+		"13.0.0-nightly.20210128",
+		"13.0.0-nightly.20210129",
+		"13.0.0-nightly.20210201",
+		"13.0.0-nightly.20210202",
+		"13.0.0-nightly.20210203",
+		"13.0.0-nightly.20210205",
+		"13.0.0-nightly.20210208",
+		"13.0.0-nightly.20210209"
+	],
+	"91.0.4472.69": [
+		"13.0.0",
+		"13.0.1"
+	],
+	"91.0.4472.77": [
+		"13.1.0",
+		"13.1.1",
+		"13.1.2"
+	],
+	"91.0.4472.106": [
+		"13.1.3",
+		"13.1.4"
+	],
+	"91.0.4472.124": [
+		"13.1.5",
+		"13.1.6",
+		"13.1.7"
+	],
+	"92.0.4511.0": [
+		"14.0.0-beta.1",
+		"14.0.0-beta.2",
+		"14.0.0-beta.3",
+		"14.0.0-nightly.20210520",
+		"14.0.0-nightly.20210523",
+		"14.0.0-nightly.20210524",
+		"15.0.0-nightly.20210527",
+		"15.0.0-nightly.20210528",
+		"15.0.0-nightly.20210531",
+		"15.0.0-nightly.20210601",
+		"15.0.0-nightly.20210602"
+	],
+	"93.0.4536.0": [
+		"14.0.0-beta.5",
+		"14.0.0-beta.6",
+		"14.0.0-beta.7",
+		"14.0.0-beta.8",
+		"15.0.0-nightly.20210609",
+		"15.0.0-nightly.20210610",
+		"15.0.0-nightly.20210611",
+		"15.0.0-nightly.20210614",
+		"15.0.0-nightly.20210615",
+		"15.0.0-nightly.20210616"
+	],
+	"93.0.4539.0": [
+		"14.0.0-beta.9",
+		"14.0.0-beta.10",
+		"15.0.0-nightly.20210617",
+		"15.0.0-nightly.20210618",
+		"15.0.0-nightly.20210621",
+		"15.0.0-nightly.20210622"
+	],
+	"93.0.4557.4": [
+		"14.0.0-beta.11",
+		"14.0.0-beta.12"
+	],
+	"93.0.4566.0": [
+		"14.0.0-beta.13",
+		"14.0.0-beta.14",
+		"14.0.0-beta.15",
+		"15.0.0-nightly.20210706",
+		"15.0.0-nightly.20210707",
+		"15.0.0-nightly.20210708",
+		"15.0.0-nightly.20210709",
+		"15.0.0-nightly.20210712",
+		"15.0.0-nightly.20210713",
+		"15.0.0-nightly.20210714",
+		"15.0.0-nightly.20210715",
+		"15.0.0-nightly.20210716",
+		"15.0.0-nightly.20210719",
+		"15.0.0-nightly.20210720"
+	],
+	"92.0.4475.0": [
+		"14.0.0-nightly.20210426",
+		"14.0.0-nightly.20210427"
+	],
+	"92.0.4488.0": [
+		"14.0.0-nightly.20210430",
+		"14.0.0-nightly.20210503"
+	],
+	"92.0.4496.0": [
+		"14.0.0-nightly.20210505"
+	],
+	"92.0.4498.0": [
+		"14.0.0-nightly.20210506"
+	],
+	"92.0.4499.0": [
+		"14.0.0-nightly.20210507",
+		"14.0.0-nightly.20210510",
+		"14.0.0-nightly.20210511",
+		"14.0.0-nightly.20210512",
+		"14.0.0-nightly.20210513"
+	],
+	"92.0.4505.0": [
+		"14.0.0-nightly.20210514",
+		"14.0.0-nightly.20210517",
+		"14.0.0-nightly.20210518",
+		"14.0.0-nightly.20210519"
+	],
+	"93.0.4530.0": [
+		"15.0.0-nightly.20210603",
+		"15.0.0-nightly.20210604"
+	],
+	"93.0.4535.0": [
+		"15.0.0-nightly.20210608"
+	],
+	"93.0.4550.0": [
+		"15.0.0-nightly.20210623",
+		"15.0.0-nightly.20210624"
+	],
+	"93.0.4552.0": [
+		"15.0.0-nightly.20210625",
+		"15.0.0-nightly.20210628",
+		"15.0.0-nightly.20210629"
+	],
+	"93.0.4558.0": [
+		"15.0.0-nightly.20210630",
+		"15.0.0-nightly.20210701",
+		"15.0.0-nightly.20210702",
+		"15.0.0-nightly.20210705"
+	]
+};                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 alid.
+   * Uses last set config, if any. Otherwise, uses config defaults.
+   * isValidAttribute
+   *
+   * @param  {string} tag Tag name of containing element.
+   * @param  {string} attr Attribute name.
+   * @param  {string} value Attribute value.
+   * @return {Boolean} Returns true if `value` is valid. Otherwise, returns false.
+   */
+  DOMPurify.isValidAttribute = function (tag, attr, value) {
+    /* Initialize shared config vars if necessary. */
+    if (!CONFIG) {
+      _parseConfig({});
+    }
+
+    var lcTag = stringToLowerCase(tag);
+    var lcName = stringToLowerCase(attr);
+    return _isValidAttribute(lcTag, lcName, value);
+  };
+
+  /**
+   * AddHook
+   * Public method to add DOMPurify hooks
+   *
+   * @param {String} entryPoint entry point for the hook to add
+   * @param {Function} hookFunction function to execute
+   */
+  DOMPurify.addHook = function (entryPoint, hookFunction) {
+    if (typeof hookFunction !== 'function') {
+      return;
+    }
+
+    hooks[entryPoint] = hooks[entryPoint] || [];
+    arrayPush(hooks[entryPoint], hookFunction);
+  };
+
+  /**
+   * RemoveHook
+   * Public method to remove a DOMPurify hook at a given entryPoint
+   * (pops it from the stack of hooks if more are present)
+   *
+   * @param {String} entryPoint entry point for the hook to remove
+   */
+  DOMPurify.removeHook = function (entryPoint) {
+    if (hooks[entryPoint]) {
+      arrayPop(hooks[entryPoint]);
+    }
+  };
+
+  /**
+   * RemoveHooks
+   * Public method to remove all DOMPurify hooks at a given entryPoint
+   *
+   * @param  {String} entryPoint entry point for the hooks to remove
+   */
+  DOMPurify.removeHooks = function (entryPoint) {
+    if (hooks[entryPoint]) {
+      hooks[entryPoint] = [];
+    }
+  };
+
+  /**
+   * RemoveAllHooks
+   * Public method to remove all DOMPurify hooks
+   *
+   */
+  DOMPurify.removeAllHooks = function () {
+    hooks = {};
+  };
+
+  return DOMPurify;
+}
+
+var purify = createDOMPurify();
+
+module.exports = purify;
+//# sourceMappingURL=purify.cjs.js.map
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   /debug/sponsor/27/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/27/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/28/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/28/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/29/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/29/avatar.svg"></a>
+
+## License
+
+(The MIT License)
+
+Copyright (c) 2014-2016 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  essible": true
+  },
+  "application/mbms-associated-procedure-description+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-deregister+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-envelope+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-msk+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-msk-response+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-protection-description+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-reception-report+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-register+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-register-response+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-schedule+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbms-user-service-description+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mbox": {
+    "source": "iana",
+    "extensions": ["mbox"]
+  },
+  "application/media-policy-dataset+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/media_control+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/mediaservercontrol+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["mscml"]
+  },
+  "application/merge-patch+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/metalink+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["metalink"]
+  },
+  "application/metalink4+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["meta4"]
+  },
+  "application/mets+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["mets"]
+  },
+  "application/mf4": {
+    "source": "iana"
+  },
+  "application/mikey": {
+    "source": "iana"
+  },
+  "application/mipc": {
+    "source": "iana"
+  },
+  "application/mmt-aei+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["maei"]
+  },
+  "application/mmt-usd+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["musd"]
+  },
+  "application/mods+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["mods"]
+  },
+  "application/moss-keys": {
+    "source": "iana"
+  },
+  "application/moss-signature": {
+    "source": "iana"
+  },
+  "application/mosskey-data": {
+    "source": "iana"
+  },
+  "application/mosskey-request": {
+    "source": "iana"
+  },
+  "application/mp21": {
+    "source": "iana",
+    "extensions": ["m21","mp21"]
+  },
+  "application/mp4": {
+    "source": "iana",
+    "extensions": ["mp4s","m4p"]
+  },
+  "application/mpeg4-generic": {
+    "source": "iana"
+  },
+  "application/mpeg4-iod": {
+    "source": "iana"
+  },
+  "application/mpeg4-iod-xmt": {
+    "source": "iana"
+  },
+  "application/mrb-consumer+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xdf"]
+  },
+  "application/mrb-publish+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xdf"]
+  },
+  "application/msc-ivr+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/msc-mixer+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/msword": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["doc","dot"]
+  },
+  "application/mud+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/multipart-core": {
+    "source": "iana"
+  },
+  "application/mxf": {
+    "source": "iana",
+    "extensions": ["mxf"]
+  },
+  "application/n-quads": {
+    "source": "iana",
+    "extensions": ["nq"]
+  },
+  "application/n-triples": {
+    "source": "iana",
+    "extensions": ["nt"]
+  },
+  "application/nasdata": {
+    "source": "iana"
+  },
+  "application/news-checkgroups": {
+    "source": "iana",
+    "charset": "US-ASCII"
+  },
+  "application/news-groupinfo": {
+    "source": "iana",
+    "charset": "US-ASCII"
+  },
+  "application/news-transmission": {
+    "source": "iana"
+  },
+  "application/nlsml+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/node": {
+    "source": "iana",
+    "extensions": ["cjs"]
+  },
+  "application/nss": {
+    "source": "iana"
+  },
+  "application/ocsp-request": {
+    "source": "iana"
+  },
+  "application/ocsp-response": {
+    "source": "iana"
+  },
+  "application/octet-stream": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]
+  },
+  "application/oda": {
+    "source": "iana",
+    "extensions": ["oda"]
+  },
+  "application/odm+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/odx": {
+    "source": "iana"
+  },
+  "application/oebps-package+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["opf"]
+  },
+  "application/ogg": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["ogx"]
+  },
+  "application/omdoc+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["omdoc"]
+  },
+  "application/onenote": {
+    "source": "apache",
+    "extensions": ["onetoc","onetoc2","onetmp","onepkg"]
+  },
+  "application/opc-nodeset+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/oscore": {
+    "source": "iana"
+  },
+  "application/oxps": {
+    "source": "iana",
+    "extensions": ["oxps"]
+  },
+  "application/p2p-overlay+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["relo"]
+  },
+  "application/parityfec": {
+    "source": "iana"
+  },
+  "application/passport": {
+    "source": "iana"
+  },
+  "application/patch-ops-error+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xer"]
+  },
+  "application/pdf": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["pdf"]
+  },
+  "application/pdx": {
+    "source": "iana"
+  },
+  "application/pem-certificate-chain": {
+    "source": "iana"
+  },
+  "application/pgp-encrypted": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["pgp"]
+  },
+  "application/pgp-keys": {
+    "source": "iana"
+  },
+  "application/pgp-signature": {
+    "source": "iana",
+    "extensions": ["asc","sig"]
+  },
+  "application/pics-rules": {
+    "source": "apache",
+    "extensions": ["prf"]
+  },
+  "application/pidf+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/pidf-diff+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/pkcs10": {
+    "source": "iana",
+    "extensions": ["p10"]
+  },
+  "application/pkcs12": {
+    "source": "iana"
+  },
+  "application/pkcs7-mime": {
+    "source": "iana",
+    "extensions": ["p7m","p7c"]
+  },
+  "application/pkcs7-signature": {
+    "source": "iana",
+    "extensions": ["p7s"]
+  },
+  "application/pkcs8": {
+    "source": "iana",
+    "extensions": ["p8"]
+  },
+  "application/pkcs8-encrypted": {
+    "source": "iana"
+  },
+  "application/pkix-attr-cert": {
+    "source": "iana",
+    "extensions": ["ac"]
+  },
+  "application/pkix-cert": {
+    "source": "iana",
+    "extensions": ["cer"]
+  },
+  "application/pkix-crl": {
+    "source": "iana",
+    "extensions": ["crl"]
+  },
+  "application/pkix-pkipath": {
+    "source": "iana",
+    "extensions": ["pkipath"]
+  },
+  "application/pkixcmp": {
+    "source": "iana",
+    "extensions": ["pki"]
+  },
+  "application/pls+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["pls"]
+  },
+  "application/poc-settings+xml": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true
+  },
+  "application/postscript": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["ai","eps","ps"]
+  },
+  "application/ppsp-tracker+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/problem+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/problem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/provenance+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["provx"]
+  },
+  "application/prs.alvestrand.titrax-sheet": {
+    "source": "iana"
+  },
+  "application/prs.cww": {
+    "source": "iana",
+    "extensions": ["cww"]
+  },
+  "application/prs.hpub+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/prs.nprend": {
+    "source": "iana"
+  },
+  "application/prs.plucker": {
+    "source": "iana"
+  },
+  "application/prs.rdf-xml-crypt": {
+    "source": "iana"
+  },
+  "application/prs.xsf+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/pskc+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["pskcxml"]
+  },
+  "application/pvd+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/qsig": {
+    "source": "iana"
+  },
+  "application/raml+yaml": {
+    "compressible": true,
+    "extensions": ["raml"]
+  },
+  "application/raptorfec": {
+    "source": "iana"
+  },
+  "application/rdap+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/rdf+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rdf","owl"]
+  },
+  "application/reginfo+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rif"]
+  },
+  "application/relax-ng-compact-syntax": {
+    "source": "iana",
+    "extensions": ["rnc"]
+  },
+  "application/remote-printing": {
+    "source": "iana"
+  },
+  "application/reputon+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/resource-lists+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rl"]
+  },
+  "application/resource-lists-diff+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rld"]
+  },
+  "application/rfc+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/riscos": {
+    "source": "iana"
+  },
+  "application/rlmi+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/rls-services+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rs"]
+  },
+  "application/route-apd+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rapd"]
+  },
+  "application/route-s-tsid+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["sls"]
+  },
+  "application/route-usd+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rusd"]
+  },
+  "application/rpki-ghostbusters": {
+    "source": "iana",
+    "extensions": ["gbr"]
+  },
+  "application/rpki-manifest": {
+    "source": "iana",
+    "extensions": ["mft"]
+  },
+  "application/rpki-publication": {
+    "source": "iana"
+  },
+  "application/rpki-roa": {
+    "source": "iana",
+    "extensions": ["roa"]
+  },
+  "application/rpki-updown": {
+    "source": "iana"
+  },
+  "application/rsd+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["rsd"]
+  },
+  "application/rss+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["rss"]
+  },
+  "application/rtf": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rtf"]
+  },
+  "application/rtploopback": {
+    "source": "iana"
+  },
+  "application/rtx": {
+    "source": "iana"
+  },
+  "application/samlassertion+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/samlmetadata+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sarif+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sbe": {
+    "source": "iana"
+  },
+  "application/sbml+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["sbml"]
+  },
+  "application/scaip+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/scim+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/scvp-cv-request": {
+    "source": "iana",
+    "extensions": ["scq"]
+  },
+  "application/scvp-cv-response": {
+    "source": "iana",
+    "extensions": ["scs"]
+  },
+  "application/scvp-vp-request": {
+    "source": "iana",
+    "extensions": ["spq"]
+  },
+  "application/scvp-vp-response": {
+    "source": "iana",
+    "extensions": ["spp"]
+  },
+  "application/sdp": {
+    "source": "iana",
+    "extensions": ["sdp"]
+  },
+  "application/secevent+jwt": {
+    "source": "iana"
+  },
+  "application/senml+cbor": {
+    "source": "iana"
+  },
+  "application/senml+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/senml+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["senmlx"]
+  },
+  "application/senml-etch+cbor": {
+    "source": "iana"
+  },
+  "application/senml-etch+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/senml-exi": {
+    "source": "iana"
+  },
+  "application/sensml+cbor": {
+    "source": "iana"
+  },
+  "application/sensml+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sensml+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["sensmlx"]
+  },
+  "application/sensml-exi": {
+    "source": "iana"
+  },
+  "application/sep+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sep-exi": {
+    "source": "iana"
+  },
+  "application/session-info": {
+    "source": "iana"
+  },
+  "application/set-payment": {
+    "source": "iana"
+  },
+  "application/set-payment-initiation": {
+    "source": "iana",
+    "extensions": ["setpay"]
+  },
+  "application/set-registration": {
+    "source": "iana"
+  },
+  "application/set-registration-initiation": {
+    "source": "iana",
+    "extensions": ["setreg"]
+  },
+  "application/sgml": {
+    "source": "iana"
+  },
+  "application/sgml-open-catalog": {
+    "source": "iana"
+  },
+  "application/shf+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["shf"]
+  },
+  "application/sieve": {
+    "source": "iana",
+    "extensions": ["siv","sieve"]
+  },
+  "application/simple-filter+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/simple-message-summary": {
+    "source": "iana"
+  },
+  "application/simplesymbolcontainer": {
+    "source": "iana"
+  },
+  "application/sipc": {
+    "source": "iana"
+  },
+  "application/slate": {
+    "source": "iana"
+  },
+  "application/smil": {
+    "source": "iana"
+  },
+  "application/smil+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["smi","smil"]
+  },
+  "application/smpte336m": {
+    "source": "iana"
+  },
+  "application/soap+fastinfoset": {
+    "source": "iana"
+  },
+  "application/soap+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sparql-query": {
+    "source": "iana",
+    "extensions": ["rq"]
+  },
+  "application/sparql-results+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["srx"]
+  },
+  "application/spirits-event+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/sql": {
+    "source": "iana"
+  },
+  "application/srgs": {
+    "source": "iana",
+    "extensions": ["gram"]
+  },
+  "application/srgs+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["grxml"]
+  },
+  "application/sru+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["sru"]
+  },
+  "application/ssdl+xml": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["ssdl"]
+  },
+  "application/ssml+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["ssml"]
+  },
+  "application/stix+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/swid+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["swidtag"]
+  },
+  "application/tamp-apex-update": {
+    "source": "iana"
+  },
+  "application/tamp-apex-update-confirm": {
+    "source": "iana"
+  },
+  "application/tamp-community-update": {
+    "source": "iana"
+  },
+  "application/tamp-community-update-confirm": {
+    "source": "iana"
+  },
+  "application/tamp-error": {
+    "source": "iana"
+  },
+  "application/tamp-sequence-adjust": {
+    "source": "iana"
+  },
+  "application/tamp-sequence-adjust-confirm": {
+    "source": "iana"
+  },
+  "application/tamp-status-query": {
+    "source": "iana"
+  },
+  "application/tamp-status-response": {
+    "source": "iana"
+  /debug/sponsor/27/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/27/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/28/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/28/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/29/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/29/avatar.svg"></a>
+
+## License
+
+(The MIT License)
+
+Copyright (c) 2014-2016 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  #!/usr/bin/env node
+// Standalone semver comparison program.
+// Exits successfully and prints matching version(s) if
+// any supplied version is valid and passes all tests.
+
+var argv = process.argv.slice(2)
+
+var versions = []
+
+var range = []
+
+var inc = null
+
+var version = require('../package.json').version
+
+var loose = false
+
+var includePrerelease = false
+
+var coerce = false
+
+var rtl = false
+
+var identifier
+
+var semver = require('../semver')
+
+var reverse = false
+
+var options = {}
+
+main()
+
+function main () {
+  if (!argv.length) return help()
+  while (argv.length) {
+    var a = argv.shift()
+    var indexOfEqualSign = a.indexOf('=')
+    if (indexOfEqualSign !== -1) {
+      a = a.slice(0, indexOfEqualSign)
+      argv.unshift(a.slice(indexOfEqualSign + 1))
+    }
+    switch (a) {
+      case '-rv': case '-rev': case '--rev': case '--reverse':
+        reverse = true
+        break
+      case '-l': case '--loose':
+        loose = true
+        break
+      case '-p': case '--include-prerelease':
+        includePrerelease = true
+        break
+      case '-v': case '--version':
+        versions.push(argv.shift())
+        break
+      case '-i': case '--inc': case '--increment':
+        switch (argv[0]) {
+          case 'major': case 'minor': case 'patch': case 'prerelease':
+          case 'premajor': case 'preminor': case 'prepatch':
+            inc = argv.shift()
+            break
+          default:
+            inc = 'patch'
+            break
+        }
+        break
+      case '--preid':
+        identifier = argv.shift()
+        break
+      case '-r': case '--range':
+        range.push(argv.shift())
+        break
+      case '-c': case '--coerce':
+        coerce = true
+        break
+      case '--rtl':
+        rtl = true
+        break
+      case '--ltr':
+        rtl = false
+        break
+      case '-h': case '--help': case '-?':
+        return help()
+      default:
+        versions.push(a)
+        break
+    }
+  }
+
+  var options = { loose: loose, includePrerelease: includePrerelease, rtl: rtl }
+
+  versions = versions.map(function (v) {
+    return coerce ? (semver.coerce(v, options) || { version: v }).version : v
+  }).filter(function (v) {
+    return semver.valid(v)
+  })
+  if (!versions.length) return fail()
+  if (inc && (versions.length !== 1 || range.length)) { return failInc() }
+
+  for (var i = 0, l = range.length; i < l; i++) {
+    versions = versions.filter(function (v) {
+      return semver.satisfies(v, range[i], options)
+    })
+    if (!versions.length) return fail()
+  }
+  return success(versions)
+}
+
+function failInc () {
+  console.error('--inc can only be used on a single version with no range')
+  fail()
+}
+
+function fail () { process.exit(1) }
+
+function success () {
+  var compare = reverse ? 'rcompare' : 'compare'
+  versions.sort(function (a, b) {
+    return semver[compare](a, b, options)
+  }).map(function (v) {
+    return semver.clean(v, options)
+  }).map(function (v) {
+    return inc ? semver.inc(v, inc, options, identifier) : v
+  }).forEach(function (v, i, _) { console.log(v) })
+}
+
+function help () {
+  console.log(['SemVer ' + version,
+    '',
+    'A JavaScript implementation of the https://semver.org/ specification',
+    'Copyright Isaac Z. Schlueter',
+    '',
+    'Usage: semver [options] <version> [<version> [...]]',
+    'Prints valid versions sorted by SemVer precedence',
+    '',
+    'Options:',
+    '-r --range <range>',
+    '        Print versions that match the specified range.',
+    '',
+    '-i --increment [<level>]',
+    '        Increment a version by the specified level.  Level can',
+    '        be one of: major, minor, patch, premajor, preminor,',
+    "        prepatch, or prerelease.  Default level is 'patch'.",
+    '        Only one version may be specified.',
+    '',
+    '--preid <identifier>',
+    '        Identifier to be used to prefix premajor, preminor,',
+    '        prepatch or prerelease version increments.',
+    '',
+    '-l --loose',
+    '        Interpret versions and ranges loosely',
+    '',
+    '-p --include-prerelease',
+    '        Always include prerelease versions in range matching',
+    '',
+    '-c --coerce',
+    '        Coerce a string into SemVer if possible',
+    '        (does not imply --loose)',
+    '',
+    '--rtl',
+    '        Coerce version strings right to left',
+    '',
+    '--ltr',
+    '        Coerce version strings left to right (default)',
+    '',
+    'Program exits successfully if any valid version satisfies',
+    'all supplied ranges, and prints all satisfying versions.',
+    '',
+    'If no satisfying versions are found, then exits failure.',
+    '',
+    'Versions are printed in ascending order, so supplying',
+    'multiple versions to the utility will just sort them.'
+  ].join('\n'))
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   0x30 && code <= 0x39)
+}
+
+function parseSubMessages (current/*: Context */, parentType/*: string */)/*: SubMessages */ {
+  var pattern = current.pattern
+  var length = pattern.length
+  var options/*: SubMessages */ = {}
+  while (current.index < length && pattern[current.index] !== ARG_CLS) {
+    var selector = parseId(current)
+    if (!selector) throw expected(current, 'sub-message selector')
+    if (current.tokens) current.tokens.push([ 'selector', selector ])
+    skipWhitespace(current)
+    options[selector] = parseSubMessage(current, parentType)
+    skipWhitespace(current)
+  }
+  if (!options.other && submTypes.indexOf(parentType) >= 0) {
+    throw expected(current, null, null, '"other" sub-message must be specified in ' + parentType)
+  }
+  return options
+}
+
+function parseSubMessage (current/*: Context */, parentType/*: string */)/*: AST */ {
+  if (current.pattern[current.index] !== ARG_OPN) throw expected(current, ARG_OPN + ' to start sub-message')
+  if (current.tokens) current.tokens.push([ 'syntax', ARG_OPN ])
+  ++current.index // move passed {
+  var message = parseAST(current, parentType)
+  if (current.pattern[current.index] !== ARG_CLS) throw expected(current, ARG_CLS + ' to end sub-message')
+  if (current.tokens) current.tokens.push([ 'syntax', ARG_CLS ])
+  ++current.index // move passed }
+  return message
+}
+
+function expected (current/*: Context */, expected/*:: ?: ?string */, found/*:: ?: ?string */, message/*:: ?: string */) {
+  var pattern = current.pattern
+  var lines = pattern.slice(0, current.index).split(/\r?\n/)
+  var offset = current.index
+  var line = lines.length
+  var column = lines.slice(-1)[0].length
+  found = found || (
+    (current.index >= pattern.length) ? 'end of message pattern'
+      : (parseId(current) || pattern[current.index])
+  )
+  if (!message) message = errorMessage(expected, found)
+  message += ' in ' + pattern.replace(/\r?\n/g, '\n')
+  return new SyntaxError(message, expected, found, offset, line, column)
+}
+
+function errorMessage (expected/*: ?string */, found/* string */) {
+  if (!expected) return 'Unexpected ' + found + ' found'
+  return 'Expected ' + expected + ' but found ' + found
+}
+
+/**
+ * SyntaxError
+ *  Holds information about bad syntax found in a message pattern
+ **/
+function SyntaxError (message/*: string */, expected/*: ?string */, found/*: ?string */, offset/*: number */, line/*: number */, column/*: number */) {
+  Error.call(this, message)
+  this.name = 'SyntaxError'
+  this.message = message
+  this.expected = expected
+  this.found = found
+  this.offset = offset
+  this.line = line
+  this.column = column
+}
+SyntaxError.prototype = Object.create(Error.prototype)
+exports.SyntaxError = SyntaxError
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              0x30 && code <= 0x39)
+}
+
+function parseSubMessages (current/*: Context */, parentType/*: string */)/*: SubMessages */ {
+  var pattern = current.pattern
+  var length = pattern.length
+  var options/*: SubMessages */ = {}
+  while (current.index < length && pattern[current.index] !== ARG_CLS) {
+    var selector = parseId(current)
+    if (!selector) throw expected(current, 'sub-message selector')
+    if (current.tokens) current.tokens.push([ 'selector', selector ])
+    skipWhitespace(current)
+    options[selector] = parseSubMessage(current, parentType)
+    skipWhitespace(current)
+  }
+  if (!options.other && submTypes.indexOf(parentType) >= 0) {
+    throw expected(current, null, null, '"other" sub-message must be specified in ' + parentType)
+  }
+  return options
+}
+
+function parseSubMessage (current/*: Context */, parentType/*: string */)/*: AST */ {
+  if (current.pattern[current.index] !== ARG_OPN) throw expected(current, ARG_OPN + ' to start sub-message')
+  if (current.tokens) current.tokens.push([ 'syntax', ARG_OPN ])
+  ++current.index // move passed {
+  var message = parseAST(current, parentType)
+  if (current.pattern[current.index] !== ARG_CLS) throw expected(current, ARG_CLS + ' to end sub-message')
+  if (current.tokens) current.tokens.push([ 'syntax', ARG_CLS ])
+  ++current.index // move passed }
+  return message
+}
+
+function expected (current/*: Context */, expected/*:: ?: ?string */, found/*:: ?: ?string */, message/*:: ?: string */) {
+  var pattern = current.pattern
+  var lines = pattern.slice(0, current.index).split(/\r?\n/)
+  var offset = current.index
+  var line = lines.length
+  var column = lines.slice(-1)[0].length
+  found = found || (
+    (current.index >= pattern.length) ? 'end of message pattern'
+      : (parseId(current) || pattern[current.index])
+  )
+  if (!message) message = errorMessage(expected, found)
+  message += ' in ' + pattern.replace(/\r?\n/g, '\n')
+  return new SyntaxError(message, expected, found, offset, line, column)
+}
+
+function errorMessage (expected/*: ?string */, found/* string */) {
+  if (!expected) return 'Unexpected ' + found + ' found'
+  return 'Expected ' + expected + ' but found ' + found
+}
+
+/**
+ * SyntaxError
+ *  Holds information about bad syntax found in a message pattern
+ **/
+function SyntaxError (message/*: string */, expected/*: ?string */, found/*: ?string */, offset/*: number */, line/*: number */, column/*: number */) {
+  Error.call(this, message)
+  this.name = 'SyntaxError'
+  this.message = message
+  this.expected = expected
+  this.found = found
+  this.offset = offset
+  this.line = line
+  this.column = column
+}
+SyntaxError.prototype = Object.create(Error.prototype)
+exports.SyntaxError = SyntaxError
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              #!/usr/bin/env node
+// Standalone semver comparison program.
+// Exits successfully and prints matching version(s) if
+// any supplied version is valid and passes all tests.
+
+var argv = process.argv.slice(2)
+
+var versions = []
+
+var range = []
+
+var inc = null
+
+var version = require('../package.json').version
+
+var loose = false
+
+var includePrerelease = false
+
+var coerce = false
+
+var rtl = false
+
+var identifier
+
+var semver = require('../semver')
+
+var reverse = false
+
+var options = {}
+
+main()
+
+function main () {
+  if (!argv.length) return help()
+  while (argv.length) {
+    var a = argv.shift()
+    var indexOfEqualSign = a.indexOf('=')
+    if (indexOfEqualSign !== -1) {
+      a = a.slice(0, indexOfEqualSign)
+      argv.unshift(a.slice(indexOfEqualSign + 1))
+    }
+    switch (a) {
+      case '-rv': case '-rev': case '--rev': case '--reverse':
+        reverse = true
+        break
+      case '-l': case '--loose':
+        loose = true
+        break
+      case '-p': case '--include-prerelease':
+        includePrerelease = true
+        break
+      case '-v': case '--version':
+        versions.push(argv.shift())
+        break
+      case '-i': case '--inc': case '--increment':
+        switch (argv[0]) {
+          case 'major': case 'minor': case 'patch': case 'prerelease':
+          case 'premajor': case 'preminor': case 'prepatch':
+            inc = argv.shift()
+            break
+          default:
+            inc = 'patch'
+            break
+        }
+        break
+      case '--preid':
+        identifier = argv.shift()
+        break
+      case '-r': case '--range':
+        range.push(argv.shift())
+        break
+      case '-c': case '--coerce':
+        coerce = true
+        break
+      case '--rtl':
+        rtl = true
+        break
+      case '--ltr':
+        rtl = false
+        break
+      case '-h': case '--help': case '-?':
+        return help()
+      default:
+        versions.push(a)
+        break
+    }
+  }
+
+  var options = { loose: loose, includePrerelease: includePrerelease, rtl: rtl }
+
+  versions = versions.map(function (v) {
+    return coerce ? (semver.coerce(v, options) || { version: v }).version : v
+  }).filter(function (v) {
+    return semver.valid(v)
+  })
+  if (!versions.length) return fail()
+  if (inc && (versions.length !== 1 || range.length)) { return failInc() }
+
+  for (var i = 0, l = range.length; i < l; i++) {
+    versions = versions.filter(function (v) {
+      return semver.satisfies(v, range[i], options)
+    })
+    if (!versions.length) return fail()
+  }
+  return success(versions)
+}
+
+function failInc () {
+  console.error('--inc can only be used on a single version with no range')
+  fail()
+}
+
+function fail () { process.exit(1) }
+
+function success () {
+  var compare = reverse ? 'rcompare' : 'compare'
+  versions.sort(function (a, b) {
+    return semver[compare](a, b, options)
+  }).map(function (v) {
+    return semver.clean(v, options)
+  }).map(function (v) {
+    return inc ? semver.inc(v, inc, options, identifier) : v
+  }).forEach(function (v, i, _) { console.log(v) })
+}
+
+function help () {
+  console.log(['SemVer ' + version,
+    '',
+    'A JavaScript implementation of the https://semver.org/ specification',
+    'Copyright Isaac Z. Schlueter',
+    '',
+    'Usage: semver [options] <version> [<version> [...]]',
+    'Prints valid versions sorted by SemVer precedence',
+    '',
+    'Options:',
+    '-r --range <range>',
+    '        Print versions that match the specified range.',
+    '',
+    '-i --increment [<level>]',
+    '        Increment a version by the specified level.  Level can',
+    '        be one of: major, minor, patch, premajor, preminor,',
+    "        prepatch, or prerelease.  Default level is 'patch'.",
+    '        Only one version may be specified.',
+    '',
+    '--preid <identifier>',
+    '        Identifier to be used to prefix premajor, preminor,',
+    '        prepatch or prerelease version increments.',
+    '',
+    '-l --loose',
+    '        Interpret versions and ranges loosely',
+    '',
+    '-p --include-prerelease',
+    '        Always include prerelease versions in range matching',
+    '',
+    '-c --coerce',
+    '        Coerce a string into SemVer if possible',
+    '        (does not imply --loose)',
+    '',
+    '--rtl',
+    '        Coerce version strings right to left',
+    '',
+    '--ltr',
+    '        Coerce version strings left to right (default)',
+    '',
+    'Program exits successfully if any valid version satisfies',
+    'all supplied ranges, and prints all satisfying versions.',
+    '',
+    'If no satisfying versions are found, then exits failure.',
+    '',
+    'Versions are printed in ascending order, so supplying',
+    'multiple versions to the utility will just sort them.'
+  ].join('\n'))
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   // Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+//

@@ -1,0 +1,1685 @@
+# [1.0.7](https://github.com/EventSource/eventsource/compare/v1.0.6...v1.0.7)
+
+* Add dispatchEvent to EventSource ([#101](https://github.com/EventSource/eventsource/pull/101) Ali Afroozeh)
+* Added `checkServerIdentity` option ([#104](https://github.com/EventSource/eventsource/pull/104) cintolas)
+* Surface request error message ([#107](https://github.com/EventSource/eventsource/pull/107) RasPhilCo)
+
+# [1.0.6](https://github.com/EventSource/eventsource/compare/v1.0.5...v1.0.6)
+
+* Fix issue where a unicode sequence split in two chunks would lead to invalid messages ([#108](https://github.com/EventSource/eventsource/pull/108) Espen Hovlandsdal)
+* Change example to use `eventsource/ssestream` (Aslak Hellesøy)
+
+# [1.0.5](https://github.com/EventSource/eventsource/compare/v1.0.4...v1.0.5)
+
+* Check for `window` existing before polyfilling. ([#80](https://github.com/EventSource/eventsource/pull/80) Neftaly Hernandez)
+
+# [1.0.4](https://github.com/EventSource/eventsource/compare/v1.0.2...v1.0.4)
+
+* Pass withCredentials on to the XHR. ([#79](https://github.com/EventSource/eventsource/pull/79) Ken Mayer)
+
+# [1.0.2](https://github.com/EventSource/eventsource/compare/v1.0.1...v1.0.2)
+
+* Fix proxy not working when proxy and target URL uses different protocols. ([#76](https://github.com/EventSource/eventsource/pull/76) Espen Hovlandsdal)
+* Make `close()` a prototype method instead of an instance method. ([#77](https://github.com/EventSource/eventsource/pull/77) Espen Hovlandsdal)
+
+# [1.0.1](https://github.com/EventSource/eventsource/compare/v1.0.0...v1.0.1)
+
+* Reconnect if server responds with HTTP 500, 502, 503 or 504. ([#74](https://github.com/EventSource/eventsource/pull/74) Vykintas Narmontas)
+
+# [1.0.0](https://github.com/EventSource/eventsource/compare/v0.2.3...v1.0.0)
+
+* Add missing `removeEventListener`-method. ([#51](https://github.com/EventSource/eventsource/pull/51) Yucheng Tu / Espen Hovlandsdal)
+* Fix EventSource reconnecting on non-200 responses. ([af84476](https://github.com/EventSource/eventsource/commit/af84476b519a01e61b8c80727261df52ae40022c) Espen Hovlandsdal)
+* Add ability to customize https options. ([#53](https://github.com/EventSource/eventsource/pull/53) Rafael Alfaro)
+* Add readyState constants to EventSource instances. ([#66](https://github.com/EventSource/eventsource/pull/66) Espen Hovlandsdal)
+
+# [0.2.3](https://github.com/EventSource/eventsource/compare/v0.2.2...v0.2.3)
+
+* Fix `onConnectionClosed` firing multiple times resulting in multiple connections. ([#61](https://github.com/EventSource/eventsource/pull/61) Phil Strong / Duncan Wong)
+* Remove unneeded isPlainObject check for headers. ([#64](https://github.com/EventSource/eventsource/pull/64) David Mark)
+
+# [0.2.2](https://github.com/EventSource/eventsource/compare/v0.2.1...v0.2.2)
+
+* Don't include test files in npm package. ([#56](https://github.com/EventSource/eventsource/pull/56) eanplatter)
+
+# [0.2.1](https://github.com/EventSource/eventsource/compare/v0.2.0...v0.2.1)
+
+* Fix `close()` for polyfill. ([#52](https://github.com/EventSource/eventsource/pull/52) brian-medendorp)
+* Add http/https proxy function. ([#46](https://github.com/EventSource/eventsource/pull/46) Eric Lu)
+* Fix reconnect for polyfill. Only disable reconnect when server status is 204. (Aslak Hellesøy).
+* Drop support for Node 0.10.x and older (Aslak Hellesøy).
+
+# [0.2.0](https://github.com/EventSource/eventsource/compare/v0.1.6...v0.2.0)
+
+* Renamed repository to `eventsource` (since it's not just Node, but also browser polyfill). (Aslak Hellesøy).
+* Compatibility with webpack/browserify. ([#44](https://github.com/EventSource/eventsource/pull/44) Adriano Raiano).
+
+# [0.1.6](https://github.com/EventSource/eventsource/compare/v0.1.5...v0.1.6)
+
+* Ignore headers without a value. ([#41](https://github.com/EventSource/eventsource/issues/41), [#43](https://github.com/EventSource/eventsource/pull/43) Adriano Raiano)
+
+# [0.1.5](https://github.com/EventSource/eventsource/compare/v0.1.4...v0.1.5)
+
+* Refactor tests to support Node.js 0.12.0 and Io.js 1.1.0. (Aslak Hellesøy)
+
+# [0.1.4](https://github.com/EventSource/eventsource/compare/v0.1.3...master)
+
+* Bugfix: Added missing origin property. ([#39](https://github.com/EventSource/eventsource/pull/39), [#38](https://github.com/EventSource/eventsource/issues/38) Arnout Kazemier)
+* Expose `status` property on `error` events. ([#40](https://github.com/EventSource/eventsource/pull/40) Adriano Raiano)
+
+# [0.1.3](https://github.com/EventSource/eventsource/compare/v0.1.2...v0.1.3)
+
+* Bugfix: Made message properties enumerable. ([#37](https://github.com/EventSource/eventsource/pull/37) Golo Roden)
+
+# [0.1.2](https://github.com/EventSource/eventsource/compare/v0.1.1...v0.1.2)
+
+* Bugfix: Blank lines not read. ([#35](https://github.com/EventSource/eventsource/issues/35), [#36](https://github.com/EventSource/eventsource/pull/36) Lesterpig)
+
+# [0.1.1](https://github.com/EventSource/eventsource/compare/v0.1.0...v0.1.1)
+
+* Bugfix: Fix message type. ([#33](https://github.com/EventSource/eventsource/pull/33) Romain Gauthier)
+
+# [0.1.0](https://github.com/EventSource/eventsource/compare/v0.0.10...v0.1.0)
+
+* Bugfix: High CPU usage by replacing Jison with port of WebKit's parser. ([#25](https://github.com/EventSource/eventsource/issues/25), [#32](https://github.com/EventSource/eventsource/pull/32), [#18](https://github.com/EventSource/eventsource/issues/18) qqueue)
+* Reformatted all code to 2 spaces.
+
+# [0.0.10](https://github.com/EventSource/eventsource/compare/v0.0.9...v0.0.10)
+
+* Provide `Event` argument on `open` and `error` event ([#30](https://github.com/EventSource/eventsource/issues/30), [#31](https://github.com/EventSource/eventsource/pull/31) Donghwan Kim)
+* Expose `lastEventId` on messages. ([#28](https://github.com/EventSource/eventsource/pull/28) mbieser)
+
+# [0.0.9](https://github.com/EventSource/eventsource/compare/v0.0.8...v0.0.9)
+
+* Bugfix: old "last-event-id" used on reconnect ([#27](https://github.com/EventSource/eventsource/pull/27) Aslak Hellesøy)
+
+# [0.0.8](https://github.com/EventSource/eventsource/compare/v0.0.7...v0.0.8)
+
+* Bugfix: EventSource still reconnected when closed ([#24](https://github.com/EventSource/eventsource/pull/24) FrozenCow)
+* Allow unauthorized HTTPS connections by setting `rejectUnauthorized` to false. (Aslak Hellesøy)
+
+# [0.0.7](https://github.com/EventSource/eventsource/compare/v0.0.6...v0.0.7)
+
+* Explicitly raise an error when server returns http 403 and don't continue ([#20](https://github.com/EventSource/eventsource/pull/20) Scott Moak)
+* Added ability to send custom http headers to server ([#21](https://github.com/EventSource/eventsource/pull/21), [#9](https://github.com/EventSource/eventsource/issues/9) Scott Moak)
+* Fix Unicode support to cope with Javascript Unicode size limitations ([#23](https://github.com/EventSource/eventsource/pull/23), [#22](https://github.com/EventSource/eventsource/issues/22) Devon Adkisson)
+* Graceful handling of parse errors ([#19](https://github.com/EventSource/eventsource/issues/19) Aslak Hellesøy)
+* Switched from testing with Nodeunit to Mocha (Aslak Hellesøy)
+
+# [0.0.6](https://github.com/EventSource/eventsource/compare/v0.0.5...v0.0.6)
+
+* Add Accept: text/event-stream header ([#17](https://github.com/EventSource/eventsource/pull/17) William Wicks)
+
+# [0.0.5](https://github.com/EventSource/eventsource/compare/v0.0.4...v0.0.5)
+
+* Add no-cache and https support ([#10](https://github.com/EventSource/eventsource/pull/10) Einar Otto Stangvik)
+* Ensure that Last-Event-ID is sent to the server for reconnects, as defined in the spec ([#8](https://github.com/EventSource/eventsource/pull/8) Einar Otto Stangvik)
+* Verify that CR and CRLF are accepted alongside LF ([#7](https://github.com/EventSource/eventsource/pull/7) Einar Otto Stangvik)
+* Emit 'open' event ([#4](https://github.com/EventSource/eventsource/issues/4) Einar Otto Stangvik)
+
+# [0.0.4](https://github.com/EventSource/eventsource/compare/v0.0.3...v0.0.4)
+
+* Automatic reconnect every second if the server is down. Reconnect interval can be set with `reconnectInterval` (not in W3C spec). (Aslak Hellesøy)
+
+# [0.0.3](https://github.com/EventSource/eventsource/compare/v0.0.2...v0.0.3)
+
+* Jison based eventstream parser ([#2](https://github.com/EventSource/eventsource/pull/2) Einar Otto Stangvik)
+
+# [0.0.2](https://github.com/EventSource/eventsource/compare/v0.0.1...v0.0.2)
+
+* Use native EventListener (Aslak Hellesøy)
+
+# 0.0.1
+
+* First release
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   language: node_js
+os:
+ - linux
+node_js:
+  - "10.7"
+  - "9.11"
+  - "8.11"
+  - "7.10"
+  - "6.14"
+  - "5.12"
+  - "4.9"
+  - "iojs-v3.3"
+  - "iojs-v2.5"
+  - "iojs-v1.8"
+  - "0.12"
+  - "0.10"
+  - "0.8"
+before_install:
+  - 'case "${TRAVIS_NODE_VERSION}" in 0.*) export NPM_CONFIG_STRICT_SSL=false ;; esac'
+  - 'nvm install-latest-npm'
+install:
+  - 'if [ "${TRAVIS_NODE_VERSION}" = "0.6" ] || [ "${TRAVIS_NODE_VERSION}" = "0.9" ]; then nvm install --latest-npm 0.8 && npm install && nvm use "${TRAVIS_NODE_VERSION}"; else npm install; fi;'
+script:
+  - 'if [ -n "${PRETEST-}" ]; then npm run pretest ; fi'
+  - 'if [ -n "${POSTTEST-}" ]; then npm run posttest ; fi'
+  - 'if [ -n "${COVERAGE-}" ]; then npm run coverage ; fi'
+  - 'if [ -n "${TEST-}" ]; then npm run tests-only ; fi'
+sudo: false
+env:
+  - TEST=true
+matrix:
+  fast_finish: true
+  include:
+    - node_js: "lts/*"
+      env: PRETEST=true
+    - node_js: "lts/*"
+      env: POSTTEST=true
+    - node_js: "4"
+      env: COVERAGE=true
+    - node_js: "10.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "10.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "9.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "8.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "7.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.13"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.12"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "6.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.10"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "5.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.8"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "4.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v3.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v2.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.7"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.5"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.4"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.3"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.2"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.1"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "iojs-v1.0"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.11"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.9"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.6"
+      env: TEST=true ALLOW_FAILURE=true
+    - node_js: "0.4"
+      env: TEST=true ALLOW_FAILURE=true
+  allow_failures:
+    - os: osx
+    - env: TEST=true ALLOW_FAILURE=true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+Copyright JS Foundation and other contributors
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                # External Editor
+
+[![ExternalEditor on Travis CI](https://img.shields.io/travis/mrkmg/node-external-editor.svg?style=flat-square)](https://travis-ci.org/mrkmg/node-external-editor/branches)
+[![ExternalEditor on NPM](https://img.shields.io/npm/v/external-editor.svg?style=flat-square)](https://www.npmjs.com/package/external-editor)
+[![ExternalEditor uses the MIT](https://img.shields.io/npm/l/external-editor.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
+
+A node module to edit a string with a users preferred text editor using $VISUAL or $ENVIRONMENT.
+
+Version: 2.2.0
+
+As of version 2.0.0, node 0.10 is no longer support. Minimum node version is now 0.12.
+
+## Install
+
+`npm install external-editor --save`
+
+## Usage
+
+A simple example using the `.edit` convenience method
+
+    var ExternalEditor = require('external-editor')
+    var data = ExternalEditor.edit('\n\n# Please write your text above');
+    console.log(data);
+
+A full featured example
+
+    var ExternalEditor = require('external-editor');
+    
+    try {
+        var editor = new ExternalEditor();
+        var text = editor.run() // the text is also available in editor.text
+        
+        if (editor.last_exit_status !== 0) {
+            console.log("The editor exited with a non-zero code");
+        }
+    } catch (err) {
+        if (err instanceOf ExternalEditor.CreateFileError) {
+            console.log('Failed to create the temporary file');
+        } else if (err instanceOf ExternalEditor.ReadFileError) {
+            console.log('Failed to read the temporary file');
+        } else if (err instanceOf ExternalEditor.LaunchEditorError) {
+            console.log('Failed to launch your editor');
+        } else {
+            throw err;
+        }
+    }
+    
+    // Do things with the text
+    
+    // Eventually call the cleanup to remove the temporary file
+    try {
+        editor.cleanup();   
+    } catch (err) {
+         if (err instanceOf ExternalEditor.RemoveFileError) {
+             console.log('Failed to remove the temporary file');
+         } else {
+            throw err
+        }
+    }
+    
+    
+#### API
+**Static Methods**
+
+- `edit(text)`
+    - `text` (string) *Optional* Defaults to empty string
+    - **Returns** (string) The contents of the file
+    - Could throw `CreateFileError`, `ReadFileError`, or `LaunchEditorError`, or `RemoveFileError`
+- `editAsync(text, callback)`
+    - `text` (string) *Optional* Defaults to empty string
+    - `callback` (function (error, text))
+        - `error` could be of type `CreateFileError`, `ReadFileError`, or `LaunchEditorError`, or `RemoveFileError`
+        - `text`(string) The contents of the file     
+
+
+**Static Properties**
+
+- `CreateFileError` Error thrown if the temporary file could not be created. 
+- `ReadFileError` Error thrown if the temporary file could not be read.
+- `RemoveFileError` Error thrown if the temporary file could not be removed during cleanup.
+- `LaunchEditorError` Error thrown if the editor could not be launched.
+
+**Public Methods**
+
+- `new ExternalEditor(text)`
+    - `text` (string) *Optional* Defaults to empty string
+    - Could throw `CreateFileError`
+- `run()` Launches the editor.
+    - **Returns** (string) The contents of the file
+    - Could throw `LaunchEditorError` or `ReadFileError`
+- `runAsync(callback)` Launches the editor in an async way
+    - `callback` (function (error, text))
+        - `error` could be of type `ReadFileError` or `LaunchEditorError`
+        - `text`(string) The contents of the file
+- `cleanup()`  Removes the temporary file.
+    - Could throw `RemoveFileError`
+    
+**Public Properties**
+
+- `text` (string) *readonly* The text in the temporary file.
+- `editor.bin` (string) The editor determined from the environment.
+- `editor.args` (array) Default arguments for the bin
+- `temp_file` (string) Path to temporary file. Can be changed, but be careful as the temporary file probably already 
+    exists and would need be removed manually.
+- `last_exit_status` (number) The last exit code emitted from the editor.
+    
+## Errors
+
+All errors have a simple message explaining what went wrong. They all also have an `original_error` property containing
+the original error thrown for debugging purposes.
+    
+## Why Synchronous?
+ 
+Everything is synchronous to make sure the editor has complete control of the stdin and stdout. Testing has shown 
+async launching of the editor can lead to issues when using readline or other packages which try to read from stdin or 
+write to stdout. Seeing as this will be used in an interactive CLI environment, I made the decision to force the package
+to be synchronous. If you know a reliable way to force all stdin and stdout to be limited only to the child_process,
+please submit a PR.
+
+If async is really needed, you can use `editAsync` or `runAsync`. If you are using readline or have anything else
+listening to the stdin or you write to stdout, you will most likely have problem, so make sure to remove any other 
+listeners on stdin, stdout, or stdin.
+
+## Demo
+
+[![asciicast](https://asciinema.org/a/a1qh9lypbe65mj0ivfuoslz2s.png)](https://asciinema.org/a/a1qh9lypbe65mj0ivfuoslz2s)
+    
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2016 Kevin Gravier
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         1.8.1 / 2017-09-12
+==================
+
+  * perf: replace regular expression with substring
+
+1.8.0 / 2017-02-18
+==================
+
+  * Use SHA1 instead of MD5 for ETag hashing
+    - Improves performance for larger entities
+    - Works with FIPS 140-2 OpenSSL configuration
+
+1.7.0 / 2015-06-08
+==================
+
+  * Always include entity length in ETags for hash length extensions
+  * Generate non-Stats ETags using MD5 only (no longer CRC32)
+  * Improve stat performance by removing hashing
+  * Remove base64 padding in ETags to shorten
+  * Use MD5 instead of MD4 in weak ETags over 1KB
+
+1.6.0 / 2015-05-10
+==================
+
+  * Improve support for JXcore
+  * Remove requirement of `atime` in the stats object
+  * Support "fake" stats objects in environments without `fs`
+
+1.5.1 / 2014-11-19
+==================
+
+  * deps: crc@3.2.1
+    - Minor fixes
+
+1.5.0 / 2014-10-14
+==================
+
+  * Improve string performance
+  * Slightly improve speed for weak ETags over 1KB
+
+1.4.0 / 2014-09-21
+==================
+
+  * Support "fake" stats objects
+  * Support Node.js 0.6
+
+1.3.1 / 2014-09-14
+==================
+
+  * Use the (new and improved) `crc` for crc32
+
+1.3.0 / 2014-08-29
+==================
+
+  * Default strings to strong ETags
+  * Improve speed for weak ETags over 1KB
+
+1.2.1 / 2014-08-29
+==================
+
+  * Use the (much faster) `buffer-crc32` for crc32
+
+1.2.0 / 2014-08-24
+==================
+
+  * Add support for file stat objects
+
+1.1.0 / 2014-08-24
+==================
+
+  * Add fast-path for empty entity
+  * Add weak ETag generation
+  * Shrink size of generated ETags
+
+1.0.1 / 2014-08-24
+==================
+
+  * Fix behavior of string containing Unicode
+
+1.0.0 / 2014-05-18
+==================
+
+  * Initial release
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Observable(source, pauser) {
+      this.source = source;
+      this.controller = new Subject();
+
+      if (pauser && pauser.subscribe) {
+        this.pauser = this.controller.merge(pauser);
+      } else {
+        this.pauser = this.controller;
+      }
+
+      __super__.call(this, subscribe, source);
+    }
+
+    PausableObservable.prototype.pause = function () {
+      this.controller.onNext(false);
+    };
+
+    PausableObservable.prototype.resume = function () {
+      this.controller.onNext(true);
+    };
+
+    return PausableObservable;
+
+  }(Observable));
+
+  /**
+   * Pauses the underlying observable sequence based upon the observable sequence which yields true/false.
+   * @example
+   * var pauser = new Rx.Subject();
+   * var source = Rx.Observable.interval(100).pausable(pauser);
+   * @param {Observable} pauser The observable sequence used to pause the underlying sequence.
+   * @returns {Observable} The observable sequence which is paused based upon the pauser.
+   */
+  observableProto.pausable = function (pauser) {
+    return new PausableObservable(this, pauser);
+  };
+
+  function combineLatestSource(source, subject, resultSelector) {
+    return new AnonymousObservable(function (o) {
+      var hasValue = [false, false],
+        hasValueAll = false,
+        isDone = false,
+        values = new Array(2),
+        err;
+
+      function next(x, i) {
+        values[i] = x;
+        hasValue[i] = true;
+        if (hasValueAll || (hasValueAll = hasValue.every(identity))) {
+          if (err) { return o.onError(err); }
+          var res = tryCatch(resultSelector).apply(null, values);
+          if (res === errorObj) { return o.onError(res.e); }
+          o.onNext(res);
+        }
+        isDone && values[1] && o.onCompleted();
+      }
+
+      return new CompositeDisposable(
+        source.subscribe(
+          function (x) {
+            next(x, 0);
+          },
+          function (e) {
+            if (values[1]) {
+              o.onError(e);
+            } else {
+              err = e;
+            }
+          },
+          function () {
+            isDone = true;
+            values[1] && o.onCompleted();
+          }),
+        subject.subscribe(
+          function (x) {
+            next(x, 1);
+          },
+          function (e) { o.onError(e); },
+          function () {
+            isDone = true;
+            next(true, 1);
+          })
+        );
+    }, source);
+  }
+
+  var PausableBufferedObservable = (function (__super__) {
+
+    inherits(PausableBufferedObservable, __super__);
+
+    function subscribe(o) {
+      var q = [], previousShouldFire;
+
+      function drainQueue() { while (q.length > 0) { o.onNext(q.shift()); } }
+
+      var subscription =
+        combineLatestSource(
+          this.source,
+          this.pauser.startWith(false).distinctUntilChanged(),
+          function (data, shouldFire) {
+            return { data: data, shouldFire: shouldFire };
+          })
+          .subscribe(
+            function (results) {
+              if (previousShouldFire !== undefined && results.shouldFire != previousShouldFire) {
+                previousShouldFire = results.shouldFire;
+                // change in shouldFire
+                if (results.shouldFire) { drainQueue(); }
+              } else {
+                previousShouldFire = results.shouldFire;
+                // new data
+                if (results.shouldFire) {
+                  o.onNext(results.data);
+                } else {
+                  q.push(results.data);
+                }
+              }
+            },
+            function (err) {
+              drainQueue();
+              o.onError(err);
+            },
+            function () {
+              drainQueue();
+              o.onCompleted();
+            }
+          );
+      return subscription;
+    }
+
+    function PausableBufferedObservable(source, pauser) {
+      this.source = source;
+      this.controller = new Subject();
+
+      if (pauser && pauser.subscribe) {
+        this.pauser = this.controller.merge(pauser);
+      } else {
+        this.pauser = this.controller;
+      }
+
+      __super__.call(this, subscribe, source);
+    }
+
+    PausableBufferedObservable.prototype.pause = function () {
+      this.controller.onNext(false);
+    };
+
+    PausableBufferedObservable.prototype.resume = function () {
+      this.controller.onNext(true);
+    };
+
+    return PausableBufferedObservable;
+
+  }(Observable));
+
+  /**
+   * Pauses the underlying observable sequence based upon the observable sequence which yields true/false,
+   * and yields the values that were buffered while paused.
+   * @example
+   * var pauser = new Rx.Subject();
+   * var source = Rx.Observable.interval(100).pausableBuffered(pauser);
+   * @param {Observable} pauser The observable sequence used to pause the underlying sequence.
+   * @returns {Observable} The observable sequence which is paused based upon the pauser.
+   */
+  observableProto.pausableBuffered = function (subject) {
+    return new PausableBufferedObservable(this, subject);
+  };
+
+var ControlledObservable = (function (__super__) {
+
+  inherits(ControlledObservable, __super__);
+
+  function subscribe (observer) {
+    return this.source.subscribe(observer);
+  }
+
+  function ControlledObservable (source, enableQueue, scheduler) {
+    __super__.call(this, subscribe, source);
+    this.subject = new ControlledSubject(enableQueue, scheduler);
+    this.source = source.multicast(this.subject).refCount();
+  }
+
+  ControlledObservable.prototype.request = function (numberOfItems) {
+    return this.subject.request(numberOfItems == null ? -1 : numberOfItems);
+  };
+
+  return ControlledObservable;
+
+}(Observable));
+
+var ControlledSubject = (function (__super__) {
+
+  function subscribe (observer) {
+    return this.subject.subscribe(observer);
+  }
+
+  inherits(ControlledSubject, __super__);
+
+  function ControlledSubject(enableQueue, scheduler) {
+    enableQueue == null && (enableQueue = true);
+
+    __super__.call(this, subscribe);
+    this.subject = new Subject();
+    this.enableQueue = enableQueue;
+    this.queue = enableQueue ? [] : null;
+    this.requestedCount = 0;
+    this.requestedDisposable = null;
+    this.error = null;
+    this.hasFailed = false;
+    this.hasCompleted = false;
+    this.scheduler = scheduler || currentThreadScheduler;
+  }
+
+  addProperties(ControlledSubject.prototype, Observer, {
+    onCompleted: function () {
+      this.hasCompleted = true;
+      if (!this.enableQueue || this.queue.length === 0) {
+        this.subject.onCompleted();
+        this.disposeCurrentRequest()
+      } else {
+        this.queue.push(Notification.createOnCompleted());
+      }
+    },
+    onError: function (error) {
+      this.hasFailed = true;
+      this.error = error;
+      if (!this.enableQueue || this.queue.length === 0) {
+        this.subject.onError(error);
+        this.disposeCurrentRequest()
+      } else {
+        this.queue.push(Notification.createOnError(error));
+      }
+    },
+    onNext: function (value) {
+      if (this.requestedCount <= 0) {
+        this.enableQueue && this.queue.push(Notification.createOnNext(value));
+      } else {
+        (this.requestedCount-- === 0) && this.disposeCurrentRequest();
+        this.subject.onNext(value);
+      }
+    },
+    _processRequest: function (numberOfItems) {
+      if (this.enableQueue) {
+        while (this.queue.length > 0 && (numberOfItems > 0 || this.queue[0].kind !== 'N')) {
+          var first = this.queue.shift();
+          first.accept(this.subject);
+          if (first.kind === 'N') {
+            numberOfItems--;
+          } else {
+            this.disposeCurrentRequest();
+            this.queue = [];
+          }
+        }
+      }
+
+      return numberOfItems;
+    },
+    request: function (number) {
+      this.disposeCurrentRequest();
+      var self = this;
+
+      this.requestedDisposable = this.scheduler.scheduleWithState(number,
+      function(s, i) {
+        var remaining = self._processRequest(i);
+        var stopped = self.hasCompleted || self.hasFailed
+        if (!stopped && remaining > 0) {
+          self.requestedCount = remaining;
+
+          return disposableCreate(function () {
+            self.requestedCount = 0;
+          });
+            // Scheduled item is still in progress. Return a new
+            // disposable to allow the request to be interrupted
+            // via dispose.
+        }
+      });
+
+      return this.requestedDisposable;
+    },
+    disposeCurrentRequest: function () {
+      if (this.requestedDisposable) {
+        this.requestedDisposable.dispose();
+        this.requestedDisposable = null;
+      }
+    }
+  });
+
+  return ControlledSubject;
+}(Observable));
+
+/**
+ * Attaches a controller to the observable sequence with the ability to queue.
+ * @example
+ * var source = Rx.Observable.interval(100).controlled();
+ * source.request(3); // Reads 3 values
+ * @param {bool} enableQueue truthy value to determine if values should be queued pending the next request
+ * @param {Scheduler} scheduler determines how the requests will be scheduled
+ * @returns {Observable} The observable sequence which only propagates values on request.
+ */
+observableProto.controlled = function (enableQueue, scheduler) {
+
+  if (enableQueue && isScheduler(enableQueue)) {
+      scheduler = enableQueue;
+      enableQueue = true;
+  }
+
+  if (enableQueue == null) {  enableQueue = true; }
+  return new ControlledObservable(this, enableQueue, scheduler);
+};
+
+  /**
+   * Pipes the existing Observable sequence into a Node.js Stream.
+   * @param {Stream} dest The destination Node.js stream.
+   * @returns {Stream} The destination stream.
+   */
+  observableProto.pipe = function (dest) {
+    var source = this.pausableBuffered();
+
+    function onDrain() {
+      source.resume();
+    }
+
+    dest.addListener('drain', onDrain);
+
+    source.subscribe(
+      function (x) {
+        !dest.write(String(x)) && source.pause();
+      },
+      function (err) {
+        dest.emit('error', err);
+      },
+      function () {
+        // Hack check because STDIO is not closable
+        !dest._isStdio && dest.end();
+        dest.removeListener('drain', onDrain);
+      });
+
+    source.resume();
+
+    return dest;
+  };
+
+  /**
+   * Executes a transducer to transform the observable sequence
+   * @param {Transducer} transducer A transducer to execute
+   * @returns {Observable} An Observable sequence containing the results from the transducer.
+   */
+  observableProto.transduce = function(transducer) {
+    var source = this;
+
+    function transformForObserver(o) {
+      return {
+        '@@transducer/init': function() {
+          return o;
+        },
+        '@@transducer/step': function(obs, input) {
+          return obs.onNext(input);
+        },
+        '@@transducer/result': function(obs) {
+          return obs.onCompleted();
+        }
+      };
+    }
+
+    return new AnonymousObservable(function(o) {
+      var xform = transducer(transformForObserver(o));
+      return source.subscribe(
+        function(v) {
+          var res = tryCatch(xform['@@transducer/step']).call(xform, o, v);
+          if (res === errorObj) { o.onError(res.e); }
+        },
+        function (e) { o.onError(e); },
+        function() { xform['@@transducer/result'](o); }
+      );
+    }, source);
+  };
+
+  var AnonymousObservable = Rx.AnonymousObservable = (function (__super__) {
+    inherits(AnonymousObservable, __super__);
+
+    // Fix subscriber to check for undefined or function returned to decorate as Disposable
+    function fixSubscriber(subscriber) {
+      return subscriber && isFunction(subscriber.dispose) ? subscriber :
+        isFunction(subscriber) ? disposableCreate(subscriber) : disposableEmpty;
+    }
+
+    function setDisposable(s, state) {
+      var ado = state[0], self = state[1];
+      var sub = tryCatch(self.__subscribe).call(self, ado);
+
+      if (sub === errorObj) {
+        if(!ado.fail(errorObj.e)) { return thrower(errorObj.e); }
+      }
+      ado.setDisposable(fixSubscriber(sub));
+    }
+
+    function innerSubscribe(observer) {
+      var ado = new AutoDetachObserver(observer), state = [ado, this];
+
+      if (currentThreadScheduler.scheduleRequired()) {
+        currentThreadScheduler.scheduleWithState(state, setDisposable);
+      } else {
+        setDisposable(null, state);
+      }
+      return ado;
+    }
+
+    function AnonymousObservable(subscribe, parent) {
+      this.source = parent;
+      this.__subscribe = subscribe;
+      __super__.call(this, innerSubscribe);
+    }
+
+    return AnonymousObservable;
+
+  }(Observable));
+
+  var AutoDetachObserver = (function (__super__) {
+    inherits(AutoDetachObserver, __super__);
+
+    function AutoDetachObserver(observer) {
+      __super__.call(this);
+      this.observer = observer;
+      this.m = new SingleAssignmentDisposable();
+    }
+
+    var AutoDetachObserverPrototype = AutoDetachObserver.prototype;
+
+    AutoDetachObserverPrototype.next = function (value) {
+      var result = tryCatch(this.observer.onNext).call(this.observer, value);
+      if (result === errorObj) {
+        this.dispose();
+        thrower(result.e);
+      }
+    };
+
+    AutoDetachObserverPrototype.error = function (err) {
+      var result = tryCatch(this.observer.onError).call(this.observer, err);
+      this.dispose();
+      result === errorObj && thrower(result.e);
+    };
+
+    AutoDetachObserverPrototype.completed = function () {
+      var result = tryCatch(this.observer.onCompleted).call(this.observer);
+      this.dispose();
+      result === errorObj && thrower(result.e);
+    };
+
+    AutoDetachObserverPrototype.setDisposable = function (value) { this.m.setDisposable(value); };
+    AutoDetachObserverPrototype.getDisposable = function () { return this.m.getDisposable(); };
+
+    AutoDetachObserverPrototype.dispose = function () {
+      __super__.prototype.dispose.call(this);
+      this.m.dispose();
+    };
+
+    return AutoDetachObserver;
+  }(AbstractObserver));
+
+  var InnerSubscription = function (subject, observer) {
+    this.subject = subject;
+    this.observer = observer;
+  };
+
+  InnerSubscription.prototype.dispose = function () {
+    if (!this.subject.isDisposed && this.observer !== null) {
+      var idx = this.subject.observers.indexOf(this.observer);
+      this.subject.observers.splice(idx, 1);
+      this.observer = null;
+    }
+  };
+
+  /**
+   *  Represents an object that is both an observable sequence as well as an observer.
+   *  Each notification is broadcasted to all subscribed observers.
+   */
+  var Subject = Rx.Subject = (function (__super__) {
+    function subscribe(observer) {
+      checkDisposed(this);
+      if (!this.isStopped) {
+        this.observers.push(observer);
+        return new InnerSubscription(this, observer);
+      }
+      if (this.hasError) {
+        observer.onError(this.error);
+        return disposableEmpty;
+      }
+      observer.onCompleted();
+      return disposableEmpty;
+    }
+
+    inherits(Subject, __super__);
+
+    /**
+     * Creates a subject.
+     */
+    function Subject() {
+      __super__.call(this, subscribe);
+      this.isDisposed = false,
+      this.isStopped = false,
+      this.observers = [];
+      this.hasError = false;
+    }
+
+    addProperties(Subject.prototype, Observer.prototype, {
+      /**
+       * Indicates whether the subject has observers subscribed to it.
+       * @returns {Boolean} Indicates whether the subject has observers subscribed to it.
+       */
+      hasObservers: function () { return this.observers.length > 0; },
+      /**
+       * Notifies all subscribed observers about the end of the sequence.
+       */
+      onCompleted: function () {
+        checkDisposed(this);
+        if (!this.isStopped) {
+          this.isStopped = true;
+          for (var i = 0, os = cloneArray(this.observers), len = os.length; i < len; i++) {
+            os[i].onCompleted();
+          }
+
+          this.observers.length = 0;
+        }
+      },
+      /**
+       * Notifies all subscribed observers about the exception.
+       * @param {Mixed} error The exception to send to all observers.
+       */
+      onError: function (error) {
+        checkDisposed(this);
+        if (!this.isStopped) {
+          this.isStopped = true;
+          this.error = error;
+          this.hasError = true;
+          for (var i = 0, os = cloneArray(this.observers), len = os.length; i < len; i++) {
+            os[i].onError(error);
+          }
+
+          this.observers.length = 0;
+        }
+      },
+      /**
+       * Notifies all subscribed observers about the arrival of 'use strict';
+
+var forEach    = require('es5-ext/object/for-each')
+  , validValue = require('es5-ext/object/valid-object')
+
+  , push = Array.prototype.apply, defineProperty = Object.defineProperty
+  , create = Object.create, hasOwnProperty = Object.prototype.hasOwnProperty
+  , d = { configurable: true, enumerable: false, writable: true };
+
+module.exports = function (e1, e2) {
+	var data;
+	(validValue(e1) && validValue(e2));
+	if (!hasOwnProperty.call(e1, '__ee__')) {
+		if (!hasOwnProperty.call(e2, '__ee__')) {
+			d.value = create(null);
+			defineProperty(e1, '__ee__', d);
+			defineProperty(e2, '__ee__', d);
+			d.value = null;
+			return;
+		}
+		d.value = e2.__ee__;
+		defineProperty(e1, '__ee__', d);
+		d.value = null;
+		return;
+	}
+	data = d.value = e1.__ee__;
+	if (!hasOwnProperty.call(e2, '__ee__')) {
+		defineProperty(e2, '__ee__', d);
+		d.value = null;
+		return;
+	}
+	if (data === e2.__ee__) return;
+	forEach(e2.__ee__, function (listener, name) {
+		if (!data[name]) {
+			data[name] = listener;
+			return;
+		}
+		if (typeof data[name] === 'object') {
+			if (typeof listener === 'object') push.apply(data[name], listener);
+			else data[name].push(listener);
+		} else if (typeof listener === 'object') {
+			listener.unshift(data[name]);
+			data[name] = listener;
+		} else {
+			data[name] = [data[name], listener];
+		}
+	});
+	defineProperty(e2, '__ee__', d);
+	d.value = null;
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           module.exports = {
+    parser: 'babel-eslint',
+    rules: {
+        // Errors
+        'valid-jsdoc': [2, {
+            prefer: {
+                arg: 'param',
+                argument: 'param',
+                class: 'constructor',
+                return: 'return',
+                virtual: 'abstract'
+            },
+            preferType: {
+                Boolean: 'boolean',
+                Number: 'number',
+                Object: 'object',
+                String: 'string'
+            },
+            requireReturn: false,
+            requireReturnType: true,
+            requireParamDescription: true,
+            requireReturnDescription: true
+        }],
+
+        // Best practices
+        'array-callback-return': [2],
+        'block-scoped-var': [2],
+        'curly': [2, 'multi-line'],
+        'dot-location': [2, 'property'],
+        'dot-notation': [2],
+        'eqeqeq': [2],
+        'no-alert': [2],
+        'no-div-regex': [2],
+        'no-else-return': [2],
+        'no-eq-null': [2],
+        'no-eval': [2],
+        'no-extend-native': [2],
+        'no-extra-bind': [2],
+        'no-global-assign': [2],
+        'no-implied-eval': [2],
+        'no-invalid-this': [2],
+        'no-iterator': [2],
+        'no-lone-blocks': [2],
+        'no-loop-func': [2],
+        'no-multi-spaces': [2],
+        'no-multi-str': [2],
+        'no-new': [2],
+        'no-proto': [2],
+        'no-return-assign': [2],
+        'no-script-url': [2],
+        'no-self-compare': [2],
+        'no-sequences': [2],
+        'no-throw-literal': [2],
+        'no-unmodified-loop-condition': [2],
+        'no-unused-expressions': [2],
+        'no-useless-call': [2],
+        'no-useless-concat': [2],
+        'no-useless-escape': [2],
+        'no-warning-comments': [1, {
+            location: 'anywhere'
+        }],
+        'no-with': [2],
+        'radix': [2],
+        'wrap-iife': [2],
+        'yoda': [2],
+
+        // Variables
+        'no-unused-vars': [2, {args: 'after-used', varsIgnorePattern: '^_'}],
+        'no-catch-shadow': [2],
+        'no-shadow': [2],
+        'no-undefined': [2],
+        'no-use-before-define': [2],
+
+        // Strict
+        'strict': [2, 'never'],
+
+        // Style
+        'array-bracket-spacing': [2, 'never'],
+        'block-spacing': [2, 'always'],
+        'brace-style': [2],
+        'camelcase': [2, {
+            properties: 'never'
+        }],
+        'comma-dangle': [2, 'never'],
+        'comma-spacing': [2],
+        'comma-style': [2],
+        'eol-last': [2, 'always'],
+        'func-call-spacing': [2, 'never'],
+        'func-style': [2, 'expression'],
+        'indent': [2, 4],
+        'jsx-quotes': [2, 'prefer-double'],
+        'key-spacing': [2, {
+            beforeColon: false,
+            afterColon: true,
+            mode: 'strict'
+        }],
+        'keyword-spacing': [2, {
+            before: true,
+            after: true
+        }],
+        'linebreak-style': [2, 'unix'],
+        'max-len': [2, {
+            code: 120,
+            tabWidth: 4,
+            ignoreUrls: true
+        }],
+        'new-parens': [2],
+        'newline-per-chained-call': [2],
+        'no-lonely-if': [2],
+        'no-mixed-operators': [2],
+        'no-multiple-empty-lines': [2, {
+            max: 2,
+            maxBOF: 0,
+            maxEOF: 0
+        }],
+        'no-negated-condition': [2],
+        'no-tabs': [2],
+        'no-trailing-spaces': [2, {skipBlankLines: true}],
+        'no-unneeded-ternary': [2],
+        'object-curly-spacing': [2],
+        'object-property-newline': [2, {
+            allowMultiplePropertiesPerLine: true
+        }],
+        'one-var': [2, 'never'],
+        'operator-linebreak': [2, 'after'],
+        'quote-props': [2, 'consistent-as-needed'],
+        'quotes': [2, 'single', {
+            allowTemplateLiterals: true,
+            avoidEscape: true
+        }],
+        'require-jsdoc': [2],
+        'semi': [2, 'always'],
+        'semi-spacing': [2],
+        'space-before-function-paren': [2, 'always'],
+        'space-in-parens': [2],
+        'space-infix-ops': [2],
+        'space-unary-ops': [2],
+        'spaced-comment': [2]
+    },
+    env: {
+        commonjs: true
+    },
+    extends: ['eslint:recommended']
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # esm
+
+The brilliantly simple, babel-less, bundle-less ECMAScript module loader.
+
+> `esm` is the world’s most advanced ECMAScript module loader.
+This fast, production ready, zero dependency loader is all you need to support
+ECMAScript modules in Node 6+. See the release [post](https://medium.com/web-on-the-edge/tomorrows-es-modules-today-c53d29ac448c)
+and [video](https://www.youtube.com/watch?v=JcZ-FzfDq8A#t=5) for details!
+
+Install
+---
+
+* __New projects__
+
+  Run `npm init esm` or `yarn create esm`.
+
+  :bulb: Use the `-y` flag to answer “yes” to all prompts.
+
+* __Existing projects__
+
+  Run `npm i esm` or `yarn add esm`.
+
+Getting started
+---
+
+There are two ways to enable `esm`.
+
+1. Enable `esm` for packages:
+
+   Use `esm` to load the main ES module and export it as CommonJS.
+
+    __index.js__
+    ```js
+    // Set options as a parameter, environment variable, or rc file.
+    require = require("esm")(module/*, options*/)
+    module.exports = require("./main.js")
+    ```
+    __main.js__
+    ```js
+    // ESM syntax is supported.
+    export {}
+    ```
+    :bulb: These files are automagically created with `npm init esm` or `yarn create esm`.
+
+2. Enable `esm` for local runs:
+
+    ```shell
+    node -r esm main.js
+    ```
+    :bulb: Omit the filename to enable `esm` in the REPL.
+
+Features
+---
+
+:clap: By default, :100: percent CJS interoperability is enabled so you can get stuff done.<br>
+:lock: `.mjs` files are limited to basic functionality without support for `esm` options.
+
+Out of the box `esm` just works, no configuration necessary, and supports:
+
+* Passing all applicable [test262](https://github.com/tc39/test262) compliance tests
+* [`import`](https://ponyfoo.com/articles/es6-modules-in-depth#import)/[`export`](https://ponyfoo.com/articles/es6-modules-in-depth#export)
+* [`import.meta`](https://github.com/tc39/proposal-import-meta)
+* [Dynamic `import`](https://github.com/tc39/proposal-dynamic-import)
+* [Live bindings](https://ponyfoo.com/articles/es6-modules-in-depth#bindings-not-values)
+* [File URI scheme](https://en.wikipedia.org/wiki/File_URI_scheme)
+* Node `stdin`, [`--eval`](https://nodejs.org/api/cli.html#cli_e_eval_script), [`--print`](https://nodejs.org/api/cli.html#cli_p_print_script) flags
+* Node [`--check`](https://nodejs.org/api/cli.html#cli_c_check) flag _(Node 10+)_
+
+Options
+---
+
+Specify options with one of the following:
+
+* `"esm"` field in `package.json`
+* CJS/ESM in an `.esmrc.js`, `.esmrc.cjs`, or `.esmrc.mjs` file
+* [JSON6](https://github.com/d3x0r/json6) in an `.esmrc` or `.esmrc.json` file
+* JSON6 or file path in the `ESM_OPTIONS` environment variable
+* `ESM_DISABLE_CACHE` environment variable
+
+<table><tr><td colspan=2><code>{</code><tr><td valign=top><code>"cjs":true</code><td><p>A boolean or object for toggling CJS features in ESM.<details><summary>Features</summary><table><tr><td colspan=2><code>{</code><tr><td valign=top><code>"cache":true</code><td><p>A boolean for storing ES modules in <code>require.cache</code>.<tr><td valign=top><code>"esModule":true</code><td><p>A boolean for <code>__esModule</code> interoperability.<tr><td valign=top><code>"extensions":true</code><td><p>A boolean for respecting <code>require.extensions</code> in ESM.<tr><td valign=top><code>"mutableNamespace":true</code><td><p>A boolean for mutable <a href=https://ponyfoo.com/articles/es6-modules-in-depth#import-all-the-things>namespace objects</a>.<tr><td valign=top><code>"namedExports":true</code><td><p>A boolean for <a href=https://ponyfoo.com/articles/es6-modules-in-depth#importing-named-exports>importing named exports</a> of CJS modules.<tr><td valign=top><code>"paths":true</code><td><p>A boolean for following CJS <a href=https://github.com/nodejs/node-eps/blob/master/002-es-modules.md#432-removal-of-non-local-dependencies>path rules</a> in ESM.<tr><td valign=top><code>"vars":true</code><td><p>A boolean for <code>__dirname</code>, <code>__filename</code>, and <code>require</code> in ESM.<tr><td valign=top><code>"dedefault":false</code><td><p>A boolean for requiring ES modules without the dangling <code>require().default</code>.<tr><td valign=top><code>"topLevelReturn":false</code><td><p>A boolean for top-level <code>return</code> support.<tr><td colspan=2><code>}</code></table></details><tr><td valign=top><code>"mainFields":["main"]</code><td><p>An array of fields checked when importing a package.<tr><td valign=top><code>"mode":"auto"</code><td><p>A string mode:<ul><li><code>"auto"</code> detect files with <code>import</code>, <code>import.meta</code>, <code>export</code>,<br><a href=https://github.com/tc39/proposal-modules-pragma><code>"use module"</code></a>, or <code>.mjs</code> as ESM.<li><code>"all"</code> files besides those with <code>"use script"</code> or <code>.cjs</code> are treated as ESM.<li><code>"strict"</code> to treat <strong>only</strong> <code>.mjs</code> files as ESM.</ul><tr><td valign=top><code>"await":false</code><td><p>A boolean for <a href=https://github.com/tc39/proposal-top-level-await>top-level <code>await</code></a> in modules without ESM exports. <em>(Node 10+)</em><tr><td valign=top><code>"force":false</code><td><p>A boolean to apply these options to all module loads.<tr><td valign=top><code>"wasm":false</code><td><p>A boolean for <a href=https://nodejs.org/api/globals.html#globals_webassembly>WebAssembly</a> module support. <em>(Node 8+)</em><tr><td colspan=2><code>}</code></table>
+
+DevOpts
+---
+
+<table><tr><td colspan=2><code>{</code><tr><td valign=top><code>"cache":true</code><td><p>A boolean for toggling cache creation or a cache directory path.<tr><td valign=top><code>"sourceMap":false</code><td><p>A boolean for including inline source maps.<tr><td colspan=2><code>}</code></table>
+
+Tips
+---
+
+### Bundling
+
+* For bundlers like [`browserify`](http://browserify.org/)+[`esmify`](https://github.com/mattdesl/esmify),
+  [`parcel-bundler`](https://parceljs.org/), and [`webpack`](https://webpack.js.org/)
+  add a `"module"` field to `package.json` pointing to the main ES module.
+  ```json
+  "main": "index.js",
+  "module": "main.js"
+  ```
+
+  :bulb: This is automagically done with `npm init esm` or `yarn create esm`.
+
+### Extensions
+
+* Enable `esm` for [`wallaby.js`](https://wallabyjs.com/) following their
+  [integration example](https://wallabyjs.com/docs/integration/node.html#es-modules).
+
+### Loading
+
+* Load `esm` before loaders/monitors like
+  [`@babel/register`](https://babeljs.io/docs/en/next/babel-register.html),
+  [`newrelic`](https://github.com/newrelic/node-newrelic),
+  [`sqreen`](https://docs.sqreen.io/sqreen-for-nodejs/getting-started-2/), and
+  [`ts-node`](https://github.com/TypeStrong/ts-node#programmatic).
+
+* Load `esm` for [`jasmine`](https://jasmine.github.io/) using the
+  [`"helpers"`](https://jasmine.github.io/setup/nodejs.html#configuration)
+  field in `jasmine.json`:
+  ```json
+  "helpers": [
+    "node_modules/esm"
+  ]
+  ```
+
+* Load `esm` with “node-args" options of:<br>
+  - [`pm2`](https://pm2.io/doc/en/runtime/reference/pm2-cli/#pm2-flags): `--node-args="-r esm"`
+
+* Load `esm` with “require” options of
+  [`ava`](https://github.com/avajs/ava/blob/master/docs/recipes/es-modules.md),
+  [`mocha`](https://mochajs.org/#-require-module-r-module),
+  [`nodemon`](https://nodemon.io/),
+  [`nyc`](https://github.com/istanbuljs/nyc#require-additional-modules),
+  [`qunit`](https://github.com/qunitjs/qunit/releases/tag/2.6.0),
+  [`tape`](https://github.com/substack/tape#preloading-modules), and
+  [`webpack`](https://webpack.js.org/api/cli/#config-options).
+
+  :bulb: Builtin `require` cannot sideload `.mjs` files. However, `.js` files
+  can be sideloaded or `.mjs` files may be loaded with dynamic `import`.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          'use strict';
+
+var toStr = Object.prototype.toString;
+
+var isPrimitive = require('./helpers/isPrimitive');
+
+var isCallable = require('is-callable');
+
+// https://es5.github.io/#x8.12
+var ES5internalSlots = {
+	'[[DefaultValue]]': function (O, hint) {
+		var actualHint = hint || (toStr.call(O) === '[object Date]' ? String : Number);
+
+		if (actualHint === String || actualHint === Number) {
+			var methods = actualHint === String ? ['toString', 'valueOf'] : ['valueOf', 'toString'];
+			var value, i;
+			for (i = 0; i < methods.length; ++i) {
+				if (isCallable(O[methods[i]])) {
+					value = O[methods[i]]();
+					if (isPrimitive(value)) {
+						return value;
+					}
+				}
+			}
+			throw new TypeError('No default value');
+		}
+		throw new TypeError('invalid [[DefaultValue]] hint supplied');
+	}
+};
+
+// https://es5.github.io/#x9
+module.exports = function ToPrimitive(input, PreferredType) {
+	if (isPrimitive(input)) {
+		return input;
+	}
+	return ES5internalSlots['[[DefaultValue]]'](input, PreferredType);
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     var crypto = require("crypto");
+var BigInteger = require("jsbn").BigInteger;
+var ECPointFp = require("./lib/ec.js").ECPointFp;
+exports.ECCurves = require("./lib/sec.js");
+
+// zero prepad
+function unstupid(hex,len)
+{
+	return (hex.length >= len) ? hex : unstupid("0"+hex,len);
+}
+
+exports.ECKey = function(curve, key, isPublic)
+{
+  var priv;
+	var c = curve();
+	var n = c.getN();
+  var bytes = Math.floor(n.bitLength()/8);
+
+  if(key)
+  {
+    if(isPublic)
+    {
+      var curve = c.getCurve();
+//      var x = key.slice(1,bytes+1); // skip the 04 for uncompressed format
+//      var y = key.slice(bytes+1);
+//      this.P = new ECPointFp(curve,
+//        curve.fromBigInteger(new BigInteger(x.toString("hex"), 16)),
+//        curve.fromBigInteger(new BigInteger(y.toString("hex"), 16)));      
+      this.P = curve.decodePointHex(key.toString("hex"));
+    }else{
+      if(key.length != bytes) return false;
+      priv = new BigInteger(key.toString("hex"), 16);      
+    }
+  }else{
+    var n1 = n.subtract(BigInteger.ONE);
+    var r = new BigInteger(crypto.randomBytes(n.bitLength()));
+    priv = r.mod(n1).add(BigInteger.ONE);
+    this.P = c.getG().multiply(priv);
+  }
+  if(this.P)
+  {
+//  var pubhex = unstupid(this.P.getX().toBigInteger().toString(16),bytes*2)+unstupid(this.P.getY().toBigInteger().toString(16),bytes*2);
+//  this.PublicKey = new Buffer("04"+pubhex,"hex");
+    this.PublicKey = new Buffer(c.getCurve().encodeCompressedPointHex(this.P),"hex");
+  }
+  if(priv)
+  {
+    this.PrivateKey = new Buffer(unstupid(priv.toString(16),bytes*2),"hex");
+    this.deriveSharedSecret = function(key)
+    {
+      if(!key || !key.P) return false;
+      var S = key.P.multiply(priv);
+      return new Buffer(unstupid(S.getX().toBigInteger().toString(16),bytes*2),"hex");
+   }     
+  }
+}
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         'use strict'
+
+var bindexOf = require('buffer-indexof')
+
+var equalSign = new Buffer('=')
+
+module.exports = function (opts) {
+  var binary = opts ? opts.binary : false
+  var that = {}
+
+  that.encode = function (data, buf, offset) {
+    if (!data) data = {}
+    if (!offset) offset = 0
+    if (!buf) buf = new Buffer(that.encodingLength(data) + offset)
+
+    var oldOffset = offset
+    var keys = Object.keys(data)
+
+    if (keys.length === 0) {
+      buf[offset] = 0
+      offset++
+    }
+
+    keys.forEach(function (key) {
+      var val = data[key]
+      var oldOffset = offset
+      offset++
+
+      if (val === true) {
+        offset += buf.write(key, offset)
+      } else if (Buffer.isBuffer(val)) {
+        offset += buf.write(key + '=', offset)
+        var len = val.length
+        val.copy(buf, offset, 0, len)
+        offset += len
+      } else {
+        offset += buf.write(key + '=' + val, offset)
+      }
+
+      buf[oldOffset] = offset - oldOffset - 1
+    })
+
+    that.encode.bytes = offset - oldOffset
+    return buf
+  }
+
+  that.decode = function (buf, offset, len) {
+    if (!offset) offset = 0
+    if (!Number.isFinite(len)) len = buf.length
+    var data = {}
+    var oldOffset = offset
+
+    while (offset < len) {
+      var b = decodeBlock(buf, offset)
+      var i = bindexOf(b, equalSign)
+      offset += decodeBlock.bytes
+
+      if (b.length === 0) continue // ignore: most likely a single zero byte
+      if (i === -1) data[b.toString().toLowerCase()] = true
+      else if (i === 0) continue // ignore: invalid key-length
+      else {
+        var key = b.slice(0, i).toString().toLowerCase()
+        if (key in data) continue // ignore: overwriting not allowed
+        data[key] = binary ? b.slice(i + 1) : b.slice(i + 1).toString()
+      }
+    }
+
+    that.decode.bytes = offset - oldOffset
+    return data
+  }
+
+  that.encodingLength = function (data) {
+    if (!data) return 1 // 1 byte (single empty byte)
+    var keys = Object.keys(data)
+    if (keys.length === 0) return 1 // 1 byte (single empty byte)
+    return keys.reduce(function (total, key) {
+      var val = data[key]
+      total += Buffer.byteLength(key) + 1 // +1 byte to store field length
+      if (Buffer.isBuffer(val)) total += val.length + 1 // +1 byte to fit equal sign
+      else if (val !== true) total += Buffer.byteLength(String(val)) + 1 // +1 byte to fit equal sign
+      return total
+    }, 0)
+  }
+
+  return that
+}
+
+function decodeBlock (buf, offset) {
+  var len = buf[offset]
+  var to = offset + 1 + len
+  var b = buf.slice(offset + 1, to > buf.length ? buf.length : to)
+  decodeBlock.bytes = len + 1
+  return b
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    # emoji-regex [![Build status](https://travis-ci.org/mathiasbynens/emoji-regex.svg?branch=master)](https://travis-ci.org/mathiasbynens/emoji-regex)
+
+_emoji-regex_ offers a regular expression to match all emoji symbols (including textual representations of emoji) as per the Unicode Standard.
+
+This repository contains a script that generates this regular expression based on [the data from Unicode Technical Report #51](https://github.com/mathiasbynens/unicod

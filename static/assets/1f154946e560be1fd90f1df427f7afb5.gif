@@ -1,0 +1,1476 @@
+{
+    "privacyApps.title": "Melao ya Sephiri",
+    "privacyApps.updated": "The Scratch Privacy Policy was last updated: January 6, 2022",
+    "privacyApps.intro": "The Scratch Foundation (“Scratch”, “we” or “us”) understands how important privacy is to our community. We wrote this Privacy Policy to explain what Personal Information (“Information”) we collect through our offline editor (the “Scratch App”), how we use, process, and share it, and what we’re doing to keep it safe. It also tells you about your rights and choices with respect to your Personal Information, and how you can contact us if you have any questions or concerns.",
+    "privacyApps.collectionHeader": "What Information Does Scratch Collect About Me?",
+    "privacyApps.collectionParagraph": "For the purpose of this Privacy Policy, “Information” means any information relating to an identified or identifiable individual. The Scratch App automatically collects and stores locally the following Information through its telemetry system: the title of your project in text form, language setting, time zone and events related to your use of the Scratch App (namely when the Scratch App was opened and closed, if a project file has been loaded or saved, or if a new project is created). If you choose to turn on the telemetry sharing feature, the Scratch App will transmit this information to Scratch. Projects created in the Scratch App are not transmitted to or accessible by Scratch unless you choose to upload your project to the Scratch Online Community, at which point the information you share will be subject to the terms of the Scratch Online Community {privacyPolicyLink}. Please see the section “What Happens if I Upload My Project to the Scratch Online Community?” below for more information.",
+    "privacyApps.privacyPolicyLinkText": "Melao ya Sephiri",
+    "privacyApps.usageHeader": "How Does Scratch Use My Information?",
+    "privacyApps.usageIntro": "We use this Information for the following purposes:",
+    "privacyApps.analyticsTitle": "Analytics and Improving the Scratch App",
+    "privacyApps.analyticsDescription": "We use the Information to analyze use of the Scratch App and to enhance your learning experience on the Scratch App.",
+    "privacyApps.researchTitle": "Academic and Scientific Research",
+    "privacyApps.researchDescription": "We de-identify and aggregate Information for statistical analysis in the context of scientific and academic research. For example, to help us understand how people learn through the Scratch App and how we can enhance learning tools for young people. The results of such research are shared with educators and researchers through conferences, journals, and other academic or scientific publications. You can find out more on our {researchPageLink} page.",
+    "privacyApps.researchPageLinkText": "Research",
+    "privacyApps.legalTitle": "Semolao",
+    "privacyApps.legalDescription": "We may use your Information to enforce our {termsOfUseLink}, to defend our legal rights, and to comply with our legal obligations and internal policies. We may do this by analyzing your use of the Scratch App.",
+    "privacyApps.termsOfUseLinkText": "Melawana ya Tiriso",
+    "privacyApps.processingHeader": "What Are The Legal Grounds For Processing Your Information?",
+    "privacyApps.processingParagraph": "If you are located in the European Economic Area, the United Kingdom or Switzerland, we only process your Information based on a valid legal ground. A “legal ground” is a reason that justifies our use of your Information. In this case, we or a third party have a legitimate interest in using your Information (if you choose to allow the Scratch App to send the Scratch team your Information) to create, analyze and share your aggregated or de-identified Information for research purposes, to analyze and enhance your learning experience on the Scratch App and otherwise ensure and improve the safety, security, and performance of the Scratch App. We only rely on our or a third party’s legitimate interests to process your Information when these interests are not overridden by your rights and interests.",
+    "privacyApps.sharingHeader": "How Does Scratch Share My Information?",
+    "privacyApps.sharingIntro": "We disclose information that we collect through the Scratch App to third parties in the following circumstances:",
+    "privacyApps.serviceProvidersTitle": "Service Providers",
+    "privacyApps.serviceProvidersDescription": "To third parties who provide services such as website hosting, data analysis, Information technology and related infrastructure provisions, customer service, email delivery, and other services.",
+    "privacyApps.researchSharingDescription": "To research institutions, such as the Massachusetts Institute of Technology (MIT), to learn about how our users learn through the Scratch App and develop new learning tools. The results of this research or the statistical analysis may be shared through conferences, journals, and other publications.",
+    "privacyApps.mergerTitle": "Merger",
+    "privacyApps.mergerDescription": "To a potential or actual acquirer, successor, or assignee as part of any reorganization, merger, sale, joint venture, assignment, transfer, or other disposition of all or any portion of our organization or assets. You will have the opportunity to opt out of any such transfer if the new entity’s planned processing of your Information differs materially from that set forth in this Privacy Policy.",
+    "privacyApps.legalSharingDescription": "If required to do so by law or in the good faith belief that such action is appropriate: (a) under applicable law, including laws outside your country of residence; (b) to comply with legal process; (c) to respond to requests from public and government authorities, such as school, school districts, and law enforcement, including public and government authorities outside your country of residence; (d) to enforce our terms and conditions; (e) to protect our operations or those of any of our affiliates; (f) to protect our rights, privacy, safety, or property, and/or that of our affiliates, you, or others; and (g) to allow us to pursue available remedies or limit the damages that we may sustain.",
+    "privacyApps.communityHeader": "What Happens If I Upload My Project to the Scratch Online Community?",
+    "privacyApps.communityParagraph": "While using the Scratch App, you may choose to upload your project to the Scratch online community (“Online Community”). If you choose to upload your project to the Online Community, you are sharing your information outside of the Scratch App and providing it to the Online Community service. The information you share when uploading your project, such as your account and project information, will be governed by the Scratch online community {privacyPolicyLink}.",
+    "privacyApps.studentsHeader": "Children and Student Privacy",
+    "privacyApps.coppa": "The Scratch Foundation is a 501(c)(3) nonprofit organization. As such, the Children's Online Privacy Protection Act (COPPA) does not apply to Scratch. Nevertheless, Scratch takes children's privacy seriously. Scratch collects only minimal information from its users, and only uses and discloses information to provide the services and for limited other purposes, such as research, as described in this Privacy Policy.",
+    "privacyApps.ferpa": "Scratch does not collect information from a student's education record, as defined by the Family Educational Rights and Privacy Act (FERPA). Scratch does not disclose information of students to any third parties except as described in this Privacy Policy.",
+    "privacyApps.eeaHeader": "Your Data Protection Rights (EEA)",
+    "privacyApps.eeaIntro": "If you are located in the European Economic Area, the United Kingdom or Switzerland, you have certain rights in relation to your Information:",
+    "privacyApps.accessTitle": "Access, Correction and Data Portability",
+    "privacyApps.accessDescription": "You may ask for an overview of the Information we process about you and to receive a copy of your Information. You also have the right to request to correct incomplete, inaccurate or outdated Information. To the extent required by applicable law, you may request us to provide your Information to another company.",
+    "privacyApps.objectionTitle": "Objection",
+    "privacyApps.objectionDescription": "You may object to (this means “ask us to stop”) any use of your Information that is not (i) processed to comply with a legal obligation, (ii) necessary to do what is provided in a contract between Scratch and you, or (iii) if we have a compelling reason to do so (such as, to ensure safety and security in our online community). If you do object, we will work with you to find a reasonable solution.",
+    "privacyApps.deletionTitle": "Deletion",
+    "privacyApps.deletionDescription": "You may also request the deletion of your Information, as permitted under applicable law. This applies, for instance, where your Information is outdated or the processing is not necessary or is unlawful; where you withdraw your consent to our processing based on such consent; or where you have objected to our processing. In some situations, we may need to retain your Information due to legal obligations or for litigation purposes. If you want to have all of your Information removed from our servers, please contact {helpEmail} for assistance.",
+    "privacyApps.restrictionTitle": "Restriction of Processing",
+    "privacyApps.restrictionDescription": "You may request that we restrict processing of your Information while we are processing a request relating to (i) the accuracy of your Information, (ii) the lawfulness of the processing of your Information, or (iii) our legitimate interests to process this Information. You may also request that we restrict processing of your Information if you wish to use the Information for litigation purposes.",
+    "privacyApps.withdrawalTitle": "Withdrawal Of Consent",
+    "privacyApps.withdrawalDescription": "Where we rely on consent for the processing of your Information, you have the right to withdraw it at any time and free of charge. When you do so, this will not affect the lawfulness of the processing before your consent withdrawal.",
+    "privacyApps.eeaComplaint": "In addition to the above-mentioned rights, you also have the right to lodge a complaint with a competent supervisory authority subject to applicable law. However, there are exceptions and limitations to each of these rights. We may, for example, refuse to act on a request if the request is manifestly unfounded or excessive, or if the request is likely to adversely affect the rights and freedoms of others, prejudice the execution or enforcement of the law, interfere with pending or future litigation, or infringe applicable law. To submit a request to exercise your rights, please contact {helpEmail} for assistance.",
+    "privacyApps.retentionHeader": "Data Retention",
+    "privacyApps.retentionParagraph": "We take measures to delete your Information or keep it in a form that does not allow you to be identified when this Information is no longer necessary for the purposes for which we process it, unless we are required by law to keep this Information for a longer period. When determining the retention period, we take into account various criteria, such as the type of services requested by or provided to you, the nature and length of our relationship with you, possible re-enrollment with our services, the impact on the services we provide to you if we delete some Information from or about you, mandatory retention periods provided by law and the statute of limitations.",
+    "privacyApps.protectHeader": "How Does Scratch Protect My Information?",
+    "privacyApps.protectParagraph": "Scratch has in place administrative, physical, and technical procedures that are intended to protect the Information we collect on the Scratch App against accidental or unlawful destruction, accidental loss, unauthorized alteration, unauthorized disclosure or access, misuse, and any other unlawful form of processing of the Information. However, as effective as these measures are, no security system is impenetrable. We cannot completely guarantee the security of our databases, nor can we guarantee that the Information you supply will not be intercepted while being transmitted to us over the Internet.",
+    "privacyApps.internationalTransferHeader": "International Data Transfer",
+    "privacyApps.internationalTransferParagraph": "We may transfer your Information to countries other than the country where you are located, including to the U.S. (where our Scratch servers are located) or any other country in which we or our service providers maintain facilities. If you are located in the European Economic Area, the United Kingdom or Switzerland, or other regions with laws governing data collection and use that may differ from U.S. law, please note that we may transfer your Information to a country and jurisdiction that does not have the same data protection laws as your jurisdiction. We apply appropriate safeguards to the Information processed and transferred on our behalf. Please contact us for more information on the safeguards used.",
+    "privacyApps.notificationsHeader": "Notifications Of Changes To The Privacy Policy",
+    "privacyApps.notificationsParagraph": "We review our Privacy Policy on a periodic basis, and we may modify our policies as appropriate. We will notify you of any material changes. We encourage you to review our Privacy Policy on a regular basis. The “Last Updated” date at the top of this page indicates when this Privacy Policy was last revised. Your continued use of the Scratch App following these changes means that you accept the revised Privacy Policy.",
+    "privacyApps.contactHeader": "Ikgolaganye le Rona",
+    "privacyApps.contactIntro": "The Scratch Foundation is the entity responsible for the processing of your Information. If you have any questions about this Privacy Policy, or if you would like to exercise your rights to your Information, you may contact us at {helpEmail} or via mail at:"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               {
+    "onePointFour.intro": "A previous version of Scratch, version 1.4, is still available for download.",
+    "onePointFour.introNoteLabel": "Note:",
+    "onePointFour.introNote": "{noteLabel} You can still share projects from 1.4 to the Scratch website. However, projects created in newer versions of Scratch cannot be opened in 1.4.",
+    "onePointFour.downloads": "Downloads",
+    "onePointFour.macTitle": "Mac OS X",
+    "onePointFour.macBody": "Compatible with Mac OSX 10.4 through 10.14",
+    "onePointFour.windowsTitle": "Windows",
+    "onePointFour.windowsBody": "Compatible with Windows 2000, XP, Vista, 7, and 8",
+    "onePointFour.windowsNetworkInstaller": "installer",
+    "onePointFour.windowsNetwork": "Network deployments use the {windowsNetworkInstaller}",
+    "onePointFour.linuxTitle": "Debian / Ubuntu",
+    "onePointFour.linuxBody": "Compatible with Ubuntu 12.04 or later",
+    "onePointFour.linuxInstall": "Install Scratch with Software Center",
+    "onePointFour.linuxOptions": "{linuxInstall} or {linuxDownload}",
+    "onePointFour.linuxDownload": "download here",
+    "onePointFour.faqsTitle": "Frequently Asked Questions",
+    "onePointFour.resourcesQ": "What resources are available to help me learn how to use Scratch 1.4?",
+    "onePointFour.gettingStartedGuide": "Scratch 1.4 Getting Started Guide",
+    "onePointFour.referenceGuide": "Scratch 1.4 Reference Guide",
+    "onePointFour.scratchCards": "Scratch Cards",
+    "onePointFour.resourcesA": "For a step-by-step introduction, download the {gettingStartedGuide}. The {referenceGuide} has a thorough explanation of the Scratch interface and programming language. {scratchCards} provide brief explanations that show how to make animations and interactive projects with Scratch.",
+    "onePointFour.requirementsQ": "What are the system requirements for Scratch 1.4?",
+    "onePointFour.requirementsDisplay": "Display: 800 x 480 or larger, thousands or millions of colors (16-bit color or greater) ",
+    "onePointFour.requirementsOS": "Operating System: Windows 2000 or later, Mac OS X 10.4 through 10.14, Ubuntu Linux 9.04 or later (For other versions of Linux, see the Linux Installer page) ",
+    "onePointFour.requirementsDisk": "Disk: at least 120 megabytes of free space to install Scratch.",
+    "onePointFour.requirementsCPUMemory": "CPU and memory: Most computers have enough memory to run Scratch 1.4, but very old computers may run Scratch slowly.",
+    "onePointFour.requirementsSoundVideo": "Sound / Video: Sound playback requires speakers (or headphones), and recording requires a microphone. Many laptops have speakers and microphones built in. Scratch 1.4 can use a USB or built-in camera (optional).",
+    "onePointFour.errorQ": "What if I get an error when I try to upload or share my project to the Scratch website?",
+    "onePointFour.errorFileTooBig": "File too big. The largest file limit is 10 MB. To shrink the size of your Scratch project, click the Edit menu > and select compress sounds, or compress images. If you have compressed sounds and your project still won't upload, try deleting some of the sounds to make it smaller. ",
+    "onePointFour.errorInternet": "Internet connection too slow and times out. Try making the file smaller. If that doesn't work, try connecting from a different computer or connection or web browser.",
+    "onePointFour.errorProxy": "Proxy server getting in the way. Try an Internet connection that does not go through a proxy server, or configure Scratch to use your proxy server. ",
+    "onePointFour.errorLogin": "Wrong username and password. Try logging into Scratch website to make sure username and password are correct. "
+}                                                                                                                                                                                                                                                                                                                                                                                                                                          {
+    "sec.title": "Scratch Education Collaborative (SEC)",
+    "sec.intro": "Participating Orgs",
+    "sec.applyNow": "Apply now!",
+    "sec.applyBanner": "Applications are now closed. The deadline for applying to the SEC for 2021 was March 1st.",
+    "sec.projectsTitle": "Participating Orgs",
+    "sec.yearRange": "2021-2022",
+    "sec.org1": "{org1Listing} - AK, USA",
+    "sec.org2": "{org2Listing} - AR, USA",
+    "sec.org3": "{org3Listing} - UT, USA",
+    "sec.org4": "{org4Listing} - TX, USA",
+    "sec.org5": "{org5Listing} - MS, USA",
+    "sec.org6": "{org6Listing} - Santa Bárbara, Brazil",
+    "sec.org7": "{org7Listing} - Sydney, Australia",
+    "sec.org8": "{org8Listing} - Memphis, TN, USA",
+    "sec.org9": "{org9Listing} - NYC, NY, USA",
+    "sec.org10": "{org10Listing} - Jos, Nigeria",
+    "sec.org11": "{org11Listing} - Baltimore, MD, USA",
+    "sec.org12": "{org12Listing} - Johannesburg, South Africa",
+    "sec.org13": "{org13Listing} - Hayward, CA, USA",
+    "sec.org14": "{org14Listing} - Humble, TX, USA",
+    "sec.org15": "{org15Listing} - Guildford, UK",
+    "sec.org16": "{org16Listing} - México City, MX",
+    "sec.org17": "{org17Listing} - Montréal, Canada",
+    "sec.org18": "{org18Listing} - Clark County School District, NV, USA",
+    "sec.org19": "{org19Listing} - Othello School District, WA, USA",
+    "sec.org20": "{org20Listing} - Uganda",
+    "sec.org21": "{org21Listing} - NYC, NY, USA",
+    "sec.org22": "{org22Listing} - USA",
+    "sec.org23": "{org23Listing} - FL, USA",
+    "sec.org24": "{org24Listing} - NYC, NY, USA",
+    "sec.org25": "{org25Listing} - NYC, NY, USA",
+    "sec.org26": "{org26Listing} - Nigeria",
+    "sec.org27": "{org27Listing} - Princeton, NJ, USA",
+    "sec.org28": "{org28Listing} - Bengaluru, India",
+    "sec.org29": "{org29Listing} - Johannesburg, South Africa",
+    "sec.org30": "{org30Listing} - Barcelona, Spain",
+    "sec.org31": "{org31Listing} - Phnom Penh, Cambodia",
+    "sec.org32": "{org32Listing} - Nairobi, Kenya",
+    "sec.org33": "{org33Listing} - Nairobi, Kenya",
+    "sec.org34": "{org34Listing} - Johannesburg, South Africa",
+    "sec.org35": "{org35Listing} - Chicago Public Schools, IL, USA",
+    "sec.org36": "{org36Listing} - Lagos, Nigeria",
+    "sec.org37": "{org37Listing} - Girona, Spain",
+    "sec.org38": "{org38Listing} - Halifax, Nova Scotia",
+    "sec.org39": "{org39Listing} - USA",
+    "sec.org40": "{org40Listing} - Owerri, Nigeria & Nairobi, Kenya",
+    "sec.partnerOrgsTitle": "Partner Orgs",
+    "sec.partnerOrg1": "{partnerOrg1Listing} - Cambridge, UK",
+    "sec.partnerOrg2": "{partnerOrg2Listing} (Formerly {partnerOrg2FormerName}) - Stanford, CA, USA",
+    "sec.partnerOrg3": "{partnerOrg3Listing} - IL, USA",
+    "sec.partnerOrg4": "{partnerOrg4Listing} - New Orleans, LA, USA",
+    "sec.partnerOrg5": "{partnerOrg5Listing} - Brazil",
+    "sec.partnerOrg6": "{partnerOrg6Listing} - San Francisco, CA, USA"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
+    "splash.featuredProjects": "Dikarolo tsa Diporojeke",
+    "splash.featuredStudios": "Dikarolo tsa Ditudio",
+    "splash.projectsCuratedBy": "Diporojeke tse di tlhokomelwang ke {curatorId}",
+    "splash.scratchDesignStudioTitle": "Setlhangwa sa setudio sa Scratch",
+    "splash.visitTheStudio": "Etela setudio",
+    "splash.projectsByScratchersFollowing": "Diporojeke ka diScratchers tse ke di latelang",
+    "splash.projectsLovedByScratchersFollowing": "Diporojeke tse di ratiwang ke diScratchers tse ke di latelang",
+    "splash.projectsInStudiosFollowing": "Diporojeke tse di mo ditudiong tse ke di latelang",
+    "splash.communityRemixing": "Se setšhaba se se tswakanyang",
+    "splash.communityLoving": "Se setšhaba se se ratang",
+    "messages.becomeCuratorText": "{username}e nnile motlhokomedi wa {studio}",
+    "messages.becomeManagerText": "{username}o godisitswe go nna motsamaisi wa {studio}",
+    "messages.favoriteText": "{profileLink}e ratile {projectLink}",
+    "messages.followProfileText": "{profileLink}jaanong e latela {followeeLink}",
+    "messages.followStudioText": "{profileLink}jaanong e latela {studioLink}",
+    "messages.loveText": "{profileLink}e ratile {projectLink}",
+    "messages.remixText": "{profileLink}e tswakantse {remixedProjectLink}jaaka {projectLink}",
+    "messages.shareText": "{profileLink}e abelane ka porojeke {projectLink}",
+    "intro.aboutScratch": "Ka ga Scratch",
+    "intro.forEducators": "Tsa Barutabana",
+    "intro.forParents": "Tsa Batsadi",
+    "intro.join": "tsenela",
+    "intro.startCreating": "Simolola go itlhamela",
+    "intro.tagLine1": "Tlhama dikgang, metshameko le ditlhangwa",
+    "intro.tagLine2": "Abelana le ba bangwe lefatshe ka bophara",
+    "intro.watchVideo": "Bogela Vidio",
+    "news.scratchNews": "Dikgang tsa Scratch",
+    "donatebanner.askSupport": "Scratch is the world's largest free coding community for kids. Your support makes a difference.",
+    "donatebanner.scratchWeek": "May 19-20 is Scratch’s 15th Anniversary! {celebrationLink}. Donate to support creative coding worldwide.",
+    "donatebanner.learnMore": "Learn more",
+    "teacherbanner.greeting": "Dumela",
+    "teacherbanner.subgreeting": "Akhaonto ya Morutabana",
+    "teacherbanner.classesButton": "Di phaphusi tsame",
+    "teacherbanner.faqButton": "Akhaonto ya Morutabana ya FAQ",
+    "hocbanner.title": "Simolola go itlhamela ka Ditogwana",
+    "hocbanner.titleTellStory": "Tell Your Story with Scratch!",
+    "hocbanner.moreActivities": "Bona ditirwana tse di oketsegileng",
+    "hocbanner.imagine": "Akanya ka Lefatshe",
+    "hocbanner.codeACartoon": "Dira togwana ya setshwantsho sa metlae",
+    "hocbanner.talking": "Di neolwane tse di buang",
+    "hocbanner.makeItFly": "Dira gore e Fofe",
+    "hocbanner.makeMusic": "Dira Mmino",
+    "hocbanner.chaseGame": "Dira motshameko wa go lelekisa",
+    "hocbanner.createAStory": "Tlhama Kgang",
+    "hocbanner.animateACharacter": "Tlhama moanelwa",
+    "welcome.welcomeToScratch": "Re a go amogela go Scratch",
+    "welcome.learn": "Ithute go dira porojeke ya Scratch",
+    "welcome.tryOut": "Leka diporojeke tse di simololang",
+    "welcome.connect": "Ikgolaganye le diScratchers tse dingwe",
+    "activity.seeUpdates": "Fa, ke fa o tlileng go bona tshedimosetso e e baakantsweng go tswa go diScratchers tse o di latelang",
+    "activity.checkOutScratchers": "Lebelela diScratchers tse o ka ratang go di latela"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  {
+    "studio.tabNavProjects": "Diporojeke",
+    "studio.tabNavProjectsWithCount": "Projects {projectCount}",
+    "studio.tabNavCurators": "Curators",
+    "studio.tabNavComments": "Dikakgelo",
+    "studio.tabNavCommentsWithCount": "Comments {commentCount}",
+    "studio.tabNavActivity": "Activity",
+    "studio.showingDeleted": "Showing Deleted Studio",
+    "studio.title": "Title",
+    "studio.description": "Description",
+    "studio.thumbnail": "Thumbnail",
+    "studio.updateErrors.generic": "Something went wrong updating the studio.",
+    "studio.updateErrors.inappropriate": "That seems inappropriate. Please be respectful.",
+    "studio.updateErrors.textTooLong": "That is too long.",
+    "studio.updateErrors.requiredField": "This cannot be blank.",
+    "studio.updateErrors.thumbnailTooLarge": "Maximum file size is 512 KB and less than 500x500 pixels.",
+    "studio.updateErrors.thumbnailInvalid": "Upload a valid image. The file you uploaded was either not an image or a corrupted image.",
+    "studio.followErrors.confirmEmail": "Please confirm your email address first",
+    "studio.followErrors.generic": "Something went wrong following the studio",
+    "studio.sectionLoadError.projectsHeadline": "Something went wrong loading projects",
+    "studio.sectionLoadError.curatorsHeadline": "Something went wrong loading curators",
+    "studio.sectionLoadError.managersHeadline": "Something went wrong loading managers",
+    "studio.sectionLoadError.activityHeadline": "Something went wrong loading activity",
+    "studio.sectionLoadError.tryAgain": "Leka gape",
+    "studio.projectsHeader": "Diporojeke",
+    "studio.addProjectsHeader": "Add Projects",
+    "studio.addProject": "Add by URL",
+    "studio.openToAll": "Anyone can add projects",
+    "studio.addProjects.noSharedYet": "You don’t have shared projects that you can add to this studio yet.",
+    "studio.addProjects.noFavoritedYet": "You don’t have favorite projects that you can add to this studio yet.",
+    "studio.addProjects.noRecentYet": "You don’t have recently viewed projects that you can add to this studio yet.",
+    "studio.addProjects.noStudentsYet": "You don’t have student projects that you can add to this studio yet.",
+    "studio.projectsEmptyCanAdd1": "Your studio is looking a little empty.",
+    "studio.projectsEmptyCanAdd2": "Add your first project!",
+    "studio.projectsEmpty1": "This studio has no projects yet.",
+    "studio.projectsEmpty2": "Suggest projects you want to add in the comments!",
+    "studio.browseProjects": "Browse Projects",
+    "studio.projectErrors.checkUrl": "Could not find that project. Check the URL and try again.",
+    "studio.projectErrors.generic": "Could not add project.",
+    "studio.projectErrors.tooFast": "You are adding projects too quickly.",
+    "studio.projectErrors.permission": "You do not have permission to add that project.",
+    "studio.projectErrors.duplicate": "That project is already in this studio.",
+    "studio.creatorRole": "Studio Creator",
+    "studio.hostRole": "Studio Host",
+    "studio.managersHeader": "Managers",
+    "studio.unfollowStudio": "Unfollow Studio",
+    "studio.followStudio": "Follow Studio",
+    "studio.editThumbnail": "Edit Thumbnail",
+    "studio.curatorsHeader": "Curators",
+    "studio.inviteCuratorsHeader": "Invite Curators",
+    "studio.inviteCurator": "Invite",
+    "studio.inviteCuratorPlaceholder": "Scratch Username",
+    "studio.curatorInvitationAccepted": "Congratulations! You are now a curator of this studio.",
+    "studio.curatorInvitation": "You’ve been invited to become a curator of this studio.",
+    "studio.curatorAcceptInvite": "Accept Invite",
+    "studio.curatorInvitationError": "Something went wrong, try again later.",
+    "studio.curatorsEmptyCanAdd1": "You don’t have curators right now.",
+    "studio.curatorsEmptyCanAdd2": "Add some curators to collaborate with!",
+    "studio.curatorsEmpty1": "This studio has no curators right now.",
+    "studio.curatorErrors.generic": "Could not invite curator.",
+    "studio.curatorErrors.alreadyCurator": "They are already part of the studio.",
+    "studio.curatorErrors.unknownUsername": "Could not invite a curator with that username.",
+    "studio.curatorErrors.tooFast": "You are adding curators too fast.",
+    "studio.curatorDoYouWantToPromote": "Do you want to promote this person to a manager?",
+    "studio.curatorManagersCan": "Managers can...",
+    "studio.curatorAddAndDeleteCurators": "add and delete curators",
+    "studio.curatorDeleteManagers": "delete other managers",
+    "studio.curatorAddAndDeleteProjects": "add and delete projects",
+    "studio.curatorIfYouTrust": "If you trust this person and you’re sure you want to give them extra permissions, click Promote.",
+    "studio.managerLimitReachedHeader": "This studio has reached the limit of {managerLimit} managers.",
+    "studio.managerLimitMessageCollaborative": "It’s great to see that this studio is collaborative!",
+    "studio.managerLimitMessageRemoveManagers": "Before you can add another manager, you will need to remove an existing manager.",
+    "studio.managerCountInfo": "{numberOfManagers} of {managerLimit}",
+    "studio.managerThresholdInfo": "This studio has {numberOfManagers} managers. Studios can have a maximum of {managerLimit} managers.",
+    "studio.managerThresholdRemoveManagers": "Before you can add another manager, you will need to remove managers until there are fewer than {managerLimit}.",
+    "studio.transfer.youAreAboutTo": "You are about to make someone else the studio host.",
+    "studio.transfer.cannotUndo": "You cannot undo this.",
+    "studio.transfer.thisMeans": "This means...",
+    "studio.transfer.noLongerEdit": "You will no longer be able to edit the title, thumbnail, and description",
+    "studio.transfer.noLongerDelete": "You will no longer be able to delete the studio",
+    "studio.transfer.whichManager": "Which manager do you want to make the host?",
+    "studio.transfer.currentHost": "Current Host",
+    "studio.transfer.newHost": "New Host",
+    "studio.transfer.confirmWithPassword": "To confirm changing the studio host, please enter your password.",
+    "studio.transfer.forgotPassword": "Forgot password?",
+    "studio.transfer.alert.somethingWentWrong": "Something went wrong transferring this studio to a new host.",
+    "studio.transfer.alert.wasntTheRightPassword": "Hmm, that wasn’t the right password.",
+    "studio.transfer.alert.tooManyPasswordAttempts": "Too many password attempts. Please try again later.",
+    "studio.transfer.alert.thisUserCannotBecomeHost": "This user cannot become the host — try transferring to another manager",
+    "studio.remove": "Remove",
+    "studio.promote": "Promote",
+    "studio.transfer": "Change Studio Host",
+    "studio.cancel": "Phimola",
+    "studio.okay": "Go siame",
+    "studio.next": "Go Latela",
+    "studio.back": "Morago",
+    "studio.confirm": "Confirm",
+    "studio.commentsHeader": "Dikakgelo",
+    "studio.commentsNotAllowed": "Commenting for this studio has been turned off.",
+    "studio.comments.toggleOff": "Kakgelo e timilwe",
+    "studio.comments.toggleOn": "Kakgelo e tshumilwe",
+    "studio.comments.turnedOff": "Sorry, comment posting has been turned off for this studio.",
+    "studio.comments.turnedOffGlobally": "Studio comments across Scratch are turned off, but don't worry, your comments are saved and will be back soon.",
+    "studio.sharedFilter": "Abelanwe",
+    "studio.favoritedFilter": "Favorited",
+    "studio.recentFilter": "bošeng",
+    "studio.studentsFilter": "Students",
+    "studio.activityHeader": "Activity",
+    "studio.activityAddProjectToStudio": "{profileLink} added the project {projectLink}",
+    "studio.activityRemoveProjectStudio": "{profileLink} removed the project {projectLink}",
+    "studio.activityUpdateStudio": "{profileLink} made edits to the title, thumbnail, or description",
+    "studio.activityBecomeCurator": "{newCuratorProfileLink} accepted an invitation from {inviterProfileLink} to curate this studio",
+    "studio.activityRemoveCurator": "{removerProfileLink} removed the curator {removedProfileLink}",
+    "studio.activityBecomeOwner": "{promotedProfileLink} was promoted to manager by {promotorProfileLink}",
+    "studio.activityBecomeHost": "{newHostProfileLink} was made the studio host by {actorProfileLink}",
+    "studio.activityBecomeHostAdminActor": "{newHostProfileLink} was made the studio host by a Scratch Team member",
+    "studio.lastUpdated": "Updated {lastUpdatedDate, date, medium}",
+    "studio.followerCount": "{followerCount} followers",
+    "studio.reportThisStudio": "Report this studio",
+    "studio.reportPleaseExplain": "Please select which part of the studio you find to be disrespectful or inappropriate, or otherwise breaks the Scratch Community Guidelines.",
+    "studio.reportAreThereComments": "Are there inappropriate comments in the studio? Please report them by clicking the \"report\" button on the individual comments.",
+    "studio.reportThanksForLettingUsKnow": "Thanks for letting us know!",
+    "studio.reportYourFeedback": "Your feedback will help us make Scratch better.",
+    "studio.mutedCurators": "You will be able to invite curators and add managers again {inDuration}.",
+    "studio.mutedProjects": "You will be able to add and remove projects again {inDuration}.",
+    "studio.mutedEdit": "You will be able to edit studios again {inDuration}.",
+    "studio.mutedPaused": "Your account has been paused from using studios until then.",
+    "studio.mutedError": "Your account has been paused from using studios. Refresh for more information.",
+    "studio.alertProjectAdded": "\"{title}\" added to studio",
+    "studio.alertProjectAlreadyAdded": "That project is already in this studio",
+    "studio.alertProjectRemoveError": "Something went wrong removing the project",
+    "studio.alertProjectAddError": "Something went wrong adding the project",
+    "studio.alertCuratorAlreadyInvited": "\"{name}\" has already been invited",
+    "studio.alertCuratorInvited": "Curator invite sent to \"{name}\"",
+    "studio.alertManagerPromote": "\"{name}\" is now a manager",
+    "studio.alertManagerPromoteError": "Something went wrong promoting \"{name}\"",
+    "studio.alertMemberRemoveError": "Something went wrong removing \"{name}\"",
+    "studio.alertTransfer": "\"{name}\" is now the host",
+    "studio.alertTransferRateLimit": "A studio can only change hosts once per day. Try again tomorrow."
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+    "teacherfaq.title": "Scratch Teacher Account FAQ",
+    "teacherfaq.educatorTitle": "Scratch Educator FAQ",
+    "teacherfaq.educatorGetStartedTitle": "I’m an educator who is new to Scratch, how can I get started?",
+    "teacherfaq.educatorGetStartedBody": "Scratch has many resources available to help you get started! Please see our {educatorResourcesLink} for Guides, Tutorials, and many other resources to help you run your class with Scratch!",
+    "teacherfaq.educatorResourcesLink": "Educator Resources page",
+    "teacherfaq.teacherWhatTitle": "What are teacher accounts?",
+    "teacherfaq.teacherWhatBody": "A Scratch Teacher Account provides educators with additional features to manage student participation on Scratch, including the ability to create student accounts, organize student projects into studios, and monitor student comments. Learn more about Teacher Accounts in the video below:",
+    "teacherfaq.teacherSignUpTitle": "How do I request a teacher account?",
+    "teacherfaq.teacherSignUpBody": "To request a Teacher Account, please go to the teacher account <a href=\"/educators/register\">request form</a>.",
+    "teacherfaq.teacherSignUpBodyHTML": "To request a Teacher Account, please go to the teacher account <a>request form</a>.",
+    "teacherfaq.classMultipleTeachersTitle": "Can a class have multiple teachers?",
+    "teacherfaq.classMultipleTeachersBody": "A class can only have one teacher account associated with it.",
+    "teacherfaq.teacherPersonalTitle": "Why do you need to know my personal information during registration?",
+    "teacherfaq.teacherPersonalBody": "We use this information to verify the account creator is an educator. We will not share this information with anyone else, and it will not be shared publicly on the site.",
+    "teacherfaq.teacherGoogleTitle": "Does Scratch connect with Google Classroom, Clever or any other classroom management service?",
+    "teacherfaq.teacherGoogleBody": "No, Scratch does not connect with any classroom management services.",
+    "teacherfaq.teacherEdTitle": "Are Scratch Teacher accounts linked to ScratchEd accounts?",
+    "teacherfaq.teacherEdBody": "No, Scratch Teacher accounts are not linked to <a href=\"http://scratched.gse.harvard.edu/\">ScratchEd</a> accounts.",
+    "teacherfaq.teacherEdBodyHTML": "No, Scratch Teacher accounts are not linked to <a>ScratchEd</a> accounts.",
+    "teacherfaq.teacherFeaturesTitle": "Does this feature exist, and if not, can you please add it?",
+    "teacherfaq.teacherFeaturesBody": "Many features are commonly requested, including:",
+    "teacherfaq.teacherFeaturesConvert": "Converting existing Scratch Accounts into Student Accounts",
+    "teacherfaq.teacherMoveStudents": "Moving Student Accounts to other Teacher Accounts and Classes",
+    "teacherfaq.teacherMultipleClasses": "Having Student Accounts be in multiple Classes, or associated with multiple Teacher Accounts",
+    "teacherfaq.teacherLMSs": "Connecting with classroom management systems like Google Classroom and Clever",
+    "teacherfaq.teacherLimitStudent": "Limit what features students have, such as seeing or being able to post comments",
+    "teacherfaq.teacherWillNotImplement": "It is not currently possible to do any of these things on Scratch. We would love to expand the functionality of Teacher Accounts, and all of these features are things we would like to add. However, Scratch is a small organization and our resources are limited, so it may take us a very long time before we can implement any of these changes.",
+    "teacherfaq.studentTransferTitle": "Can I transfer a student from one Teacher Account or class to another?",
+    "teacherfaq.studentTransferBody": "No, it is not possible to transfer students from one class or teacher to another. You can create a new Student Account for the student using a different Teacher Account if they need to be part of a new class.",
+    "teacherfaq.studentAccountsTitle": "Student Accounts",
+    "teacherfaq.studentVerifyTitle": "Do I have to verify each of my student emails?",
+    "teacherfaq.studentVerifyBody": "No. The Teacher Account’s email address is used for all Student Accounts, so there is no need to verify students’ email addresses.",
+    "teacherfaq.studentEndTitle": "What happens when I \"end\" my class?",
+    "teacherfaq.studentEndBody": "When you end a class, your class profile page will be hidden and your students will no longer be able to log in (but their projects and the class studios will still be visible on the site).  You may re-open the class at any time. ",
+    "teacherfaq.studentForgetTitle": "What happens if a student forgets their password?",
+    "teacherfaq.studentForgetBody": "You can manually reset a student password from within your Scratch Teacher Account. First, navigate to My Classes (either from the purple banner on the homepage or in the dropdown menu next to your user icon). From there, find the correct Class and click on the Students link. You can then reset the password at the student level using the Settings menu. ",
+    "teacherfaq.studentUnsharedTitle": "Can I see unshared student projects?",
+    "teacherfaq.studentUnsharedBody": "Teacher accounts can only access shared student projects.",
+    "teacherfaq.studentDeleteTitle": "Can I delete student accounts?",
+    "teacherfaq.studentDeleteBody": "You cannot delete a student’s account by using a Teacher Account, but Student Accounts can be deleted through the {accountSettingsLink} page while logged in to the Student Account.",
+    "teacherfaq.accountSettings": "Account Settings",
+    "teacherfaq.studentAddExistingTitle": "Some of my students already have Scratch accounts, how do I add them to my classroom?",
+    "teacherfaq.studentAddExistingBody": "It is not possible to add an existing Scratch account to a classroom. You will need to create a new Student Account for them using your Teacher Account.",
+    "teacherfaq.studentMultipleTitle": "Can a student be in multiple classes? ",
+    "teacherfaq.studentMultipleBody": "A student can only be a part of one class.",
+    "teacherfaq.studentDiscussTitle": "Is there a space to discuss Teacher Accounts with other teachers?",
+    "teacherfaq.studentDiscussionBody": "You can engage in discussions with other teachers by joining the {facebookGroupLink}, where you will find conversations about a number of topics, including Teacher Accounts. This group was established by the {creativeComputingLabLink} at the Harvard Graduate School of Education. You can also browse {scratchEdLink}, which is now an archived site, but includes extensive forums and resources related to Scratch in educational settings.",
+    "teacherfaq.creativeComputingLab": "Creative Computing Lab",
+    "teacherfaq.facebookGroup": "Teaching with Scratch Facebook group",
+    "teacherfaq.privacyPolicy": "Scratch Privacy Policy",
+    "teacherfaq.studentDataTitle": "What data does Scratch collect about students?",
+    "teacherfaq.studentDataBody": "When a student first signs up on Scratch, we ask for basic demographic data including gender, age (birth month and year), country, and an email address for verification. This data is used (in aggregated form) in research studies intended to improve our understanding of how people learn with Scratch.",
+    "teacherfaq.studentDataBody2": "When an educator uses a Scratch Teacher Account to create Student Accounts, students are not required to provide an email address. We encourage you to read the {privacyPolicyLink} for more information.",
+    "teacherfaq.studentPrivacyLawsTitle": "Is Scratch compliant with United States local and federal data privacy laws?",
+    "teacherfaq.studentPrivacyLawsBody": "Scratch cares deeply about the privacy of students and of all individuals who use our platform. We have physical and electronic procedures in place to protect the information we collect. Although we are not in a position to offer contractual guarantees with each entity that uses our free educational product, we are in compliance with all United States federal laws that are applicable to a 501(c)(3) non-profit organization. We encourage you to read the {privacyPolicyLink} for more information.",
+    "teacherfaq{
+    "developers.hereLinkText": "here",
+    "developers.title": "Scratch for Developers",
+    "developers.introLinkText": "Scratch Team",
+    "developers.intro": "On this page, you’ll find information about open source projects created and maintained by the {introLink}, as well as our thoughts on best practices for designing learning experiences for children.",
+    "developers.projectsTitle": "Projects",
+    "developers.principlesTitle": "Principles",
+    "developers.joinTitle": "Join Us",
+    "developers.donateTitle": "Donate",
+    "developers.partnersTitle": "Partners",
+    "developers.faqTitle": "FAQ",
+    "developers.projectsIntro": "The following projects are open source and available for any purpose.",
+    "developers.scratchBlocksTitle": "Scratch Blocks",
+    "developers.scratchBlocksIntroBlocklyLinkText": "Blockly technology",
+    "developers.scratchBlocksIntro": "Scratch Blocks is a new development project for the next generation of graphical programming blocks, based on a collaboration between Google and MIT’s Scratch Team — building on Google’s {blocklyLink} and informed by the Scratch Team’s expertise in developing creative learning tools for young people. Scratch Blocks will provide a framework for building programming blocks in both vertical (text-based) and horizontal (icon-based) formats. You can access the code (currently as a developer-preview) and documentation {githubLink}.",
+    "developers.scratchBlocksBody": "This first release includes code for Scratch’s Horizontal Grammar. Looking ahead, we plan to release additional code including but not limited to the Vertical Grammar (currently used by Scratch), a new Rendering Engine to support sprites and graphic effects, and a new Audio Engine to support creation with sound and music.",
+    "developers.wwwTitle": "Scratch WWW",
+    "developers.wwwIntro": "Scratch-www is a standalone web client for the Scratch Community, built using React and Redux. Access the code and documentation through {wwwIntroLink}.",
+    "developers.LearningPrinciples": "Learning Principles",
+    "developers.DesignPrinciples": "Design Principles",
+    "developers.principlesIntro": "We created Scratch to empower young people to think creatively, reason systematically, and work collaboratively. We are guided by a set of {learningPrinciples} and {designPrinciples} that we hope you will follow as you develop new tools and technologies with Scratch Blocks.",
+    "developers.jrBodyWebsiteLinkText": "ScratchJr website",
+    "developers.jrBody": "ScratchJr is an introductory programming language that enables young children (ages 5-7) to create their own interactive stories and games. For more information, visit the {websiteLink} or access the code and documentation on {githubLink}.",
+    "developers.learningPrinciplesProjectsBody": "People learn best when they are actively working on projects — generating new ideas, designing prototypes, making improvements and creating final products.",
+    "developers.learningPrinciplesPassionTitle": "Passion",
+    "developers.learningPrinciplesPassionBody": "When people focus on things they care about, they work longer and harder, persist in the face of challenges, and learn more in the process.",
+    "developers.learningPrinciplesPeersTitle": "Peers",
+    "developers.learningPrinciplesPeersBody": "Learning flourishes as a social activity, with people sharing ideas, collaborating on projects, and building on one another's work.",
+    "developers.learningPrinciplesPlayTitle": "Play",
+    "developers.learningPrinciplesPlayBody": "Learning involves playful experimentation — trying new things, tinkering with materials, testing boundaries, taking risks, iterating again and again.",
+    "developers.designPrinciplesRoomTitle": "Low Floor & Wide Walls",
+    "developers.designPrinciplesRoomBody": "In order to encourage a varied and diverse set of interactions, we explicitly include elements and features that are easy for kids to understand (low floor), but general enough to support diverse uses (wide walls).",
+    "developers.designPrinciplesSimpleTitle": "Make it as Simple as Possible — And Maybe Even Simpler",
+    "developers.designPrinciplesSimpleBody": "Despite the common drive to add more features to software products, we have found that reducing the number of features often improves the user experience. What initially seems like a constraint or limitation can foster new forms of creativity.",
+    "developers.designPrinciplesGlobalTitle": "Many Paths, Many Styles",
+    "developers.designPrinciplesGlobalBody": "Many math and science activities have traditionally been biased towards specific populations. By paying special attention to creating accessible and appealing technologies, we are working to close the gap.",
+    "developers.designPrinciplesTinkerTitle": "Design for Tinkerability",
+    "developers.designPrinciplesTinkerBody": "We believe that the learning process is inherently iterative. Tinkerers start by exploring and experimenting, then revising and refining their goals and creations. To support this style of interaction, we design our interfaces to encourage quick experimentation and rapid cycles of iteration.",
+    "developers.joinBodyJobsLinkText": "Jobs Page",
+    "developers.joinBody": "We're a diverse group of educators, designers, and engineers, who work together in a playful, creative environment full of LEGO bricks, craft materials, and maker tools. We strongly value diversity, collaboration, and respect in the workplace. If you're interested in joining us, take a look at our open positions on our {jobsPageLink}, or send us an email at {emailLink}.",
+    "developers.donateIntroLinkText": "making a donation to support Scratch",
+    "developers.donateIntro": "We are pleased to provide Scratch free of charge. If you enjoy using Scratch, please consider {donateLink}. Donations of any size are appreciated.",
+    "developers.donateBody": "Your donation to the Scratch Foundation will be used to support future development of Scratch software and the Scratch website.",
+    "developers.donateThanks": "Thanks for supporting Scratch!",
+    "developers.partnersIntro": "The creation and maintenance of this open source code would not be possible without generous technical and financial support from our partners:",
+    "developers.faqAboutTitle": "Where can I learn more about Scratch?",
+    "developers.faqAboutBodyLLKLinkText": "Lifelong Kindergarten",
+    "developers.faqAboutBodyMITLinkText": "MIT Media Lab",
+    "developers.faqAboutBody": "Scratch is a free programming language and online community where young people can create their own interactive stories, games, and animations. Scratch is a project of the {llkLink} Group at the {mitLink}. You can learn more about Scratch {aboutLink}.",
+    "developers.faqRulesTitle": "Are there rules to using this code in my application?",
+    "developers.faqRulesBody": "You may use this code in accordance with the license which governs each project. We also strongly encourage you to consider the learning and design principles (above, on this page) when building creative learning experiences for kids of all ages.",
+    "developers.faqNameTitle": "Am I allowed to use the name \"Scratch Blocks\" in the description of my app and other public messaging?",
+    "developers.faqNameBody": "If you wish, you can publicly state that your application is powered by Scratch Blocks. If you do so, we would also encourage you to link back to the code repository.",
+    "developers.faqReleasesTitle": "Are you releasing more code and when?",
+    "developers.faqReleasesBody": "We plan to open source additional code relating to the Scratch programming language over the next few months. Keep an eye on this page!",
+    "developers.faqDifferencesTitle": "What’s the difference between Blockly and Scratch Blocks?",
+    "developers.faqDifferencesBody": "Scratch Blocks builds upon the Blockly code base, and is specifically designed with our principles in mind to support creative learning experiences.",
+    "developers.faqCollabTitle": "I’d like to collaborate. How do I get in touch?",
+    "developers.faqCollabBody": "You can reach us over on {githubLink} or on our {contactUsLink} page. We look forward to hearing from you!"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {
+    "research.title": "Investigaciones acerca de Scratch",
+    "research.conductors": "La investigación de Scratch está siendo dirigida por el equipo de la Fundación Scratch. Al compartir proyectos y participar en la comunidad en línea de Scratch, nos estás ayudando a entender mejor cómo la gente usa y aprende con Scratch. Cualquier proyecto público, comentarios u otro material en Scratch puede ser incluido en análisis de investigación, presentaciones y reportes. Nunca compartiremos información personal que pueda identificar a alguien. Para saber más, por favor lee {ethicsCodeLink} (si tienes cualquier pregunta, por favor haz uso del formulario {contactLink}).",
+    "research.collaborators": "Los colaboradores de investigación anteriores han incluido el grupo Lifelong Kindergarten en MIT, Yasmin Kafai en la Escuela de Graduados en Educación de la Universidad de Pensilvania, Karen Brennan en la Escuela de Graduados en Educación de Harvard, Benjamin Mako Hill en la Universidad de Washington, Andrés Monroy Hernandez en Microsoft Research, Mimi Ito y Crystle Martin en la Universidad de California, Irvine, Quinn Burke en la Universidad de Charleston, Deborah Fields en la Universidad Estatal de Utah y Kylie Peppler en la Universidad de Indiana. A continuación se encuentran trabajos de investigación, presentaciones y tesis seleccionados sobre Scratch y la comunidad en línea de Scratch, seguidos de una lista de subvenciones de la Fundación Nacional de Ciencias otorgadas para apoyar a Scratch.",
+    "research.ethicsCodeLinkText": "Código de Ética de Investigación de la Fundación Scratch",
+    "research.contactLinkText": "Contáctenos",
+    "research.papers": "Documentos de investigación y presentaciones",
+    "research.grants": "Patrocinios de la National Science Foundation"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {"version":3,"file":"map.js","sources":["../../src/internal/operators/map.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;AACA,4CAA2C;AA2C3C,SAAgB,GAAG,CAAO,OAAuC,EAAE,OAAa;IAC9E,OAAO,SAAS,YAAY,CAAC,MAAqB;QAChD,IAAI,OAAO,OAAO,KAAK,UAAU,EAAE;YACjC,MAAM,IAAI,SAAS,CAAC,4DAA4D,CAAC,CAAC;SACnF;QACD,OAAO,MAAM,CAAC,IAAI,CAAC,IAAI,WAAW,CAAC,OAAO,EAAE,OAAO,CAAC,CAAC,CAAC;IACxD,CAAC,CAAC;AACJ,CAAC;AAPD,kBAOC;AAED;IACE,qBAAoB,OAAuC,EAAU,OAAY;QAA7D,YAAO,GAAP,OAAO,CAAgC;QAAU,YAAO,GAAP,OAAO,CAAK;IACjF,CAAC;IAED,0BAAI,GAAJ,UAAK,UAAyB,EAAE,MAAW;QACzC,OAAO,MAAM,CAAC,SAAS,CAAC,IAAI,aAAa,CAAC,UAAU,EAAE,IAAI,CAAC,OAAO,EAAE,IAAI,CAAC,OAAO,CAAC,CAAC,CAAC;IACrF,CAAC;IACH,kBAAC;AAAD,CAAC,AAPD,IAOC;AAPY,kCAAW;AAcxB;IAAkC,iCAAa;IAI7C,uBAAY,WAA0B,EAClB,OAAuC,EAC/C,OAAY;QAFxB,YAGE,kBAAM,WAAW,CAAC,SAEnB;QAJmB,aAAO,GAAP,OAAO,CAAgC;QAJ3D,WAAK,GAAW,CAAC,CAAC;QAOhB,KAAI,CAAC,OAAO,GAAG,OAAO,IAAI,KAAI,CAAC;;IACjC,CAAC;IAIS,6BAAK,GAAf,UAAgB,KAAQ;QACtB,IAAI,MAAW,CAAC;QAChB,IAAI;YACF,MAAM,GAAG,IAAI,CAAC,OAAO,CAAC,IAAI,CAAC,IAAI,CAAC,OAAO,EAAE,KAAK,EAAE,IAAI,CAAC,KAAK,EAAE,CAAC,CAAC;SAC/D;QAAC,OAAO,GAAG,EAAE;YACZ,IAAI,CAAC,WAAW,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC;YAC5B,OAAO;SACR;QACD,IAAI,CAAC,WAAW,CAAC,IAAI,CAAC,MAAM,CAAC,CAAC;IAChC,CAAC;IACH,oBAAC;AAAD,CAAC,AAvBD,CAAkC,uBAAU,GAuB3C"}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'use strict';
+require('../../modules/es.object.to-string');
+require('../../modules/es.map');
+require('../../modules/esnext.map.key-by');
+require('../../modules/esnext.map.delete-all');
+require('../../modules/esnext.map.emplace');
+require('../../modules/esnext.map.every');
+require('../../modules/esnext.map.filter');
+require('../../modules/esnext.map.find');
+require('../../modules/esnext.map.find-key');
+require('../../modules/esnext.map.get-or-insert');
+require('../../modules/esnext.map.get-or-insert-computed');
+require('../../modules/esnext.map.includes');
+require('../../modules/esnext.map.key-of');
+require('../../modules/esnext.map.map-keys');
+require('../../modules/esnext.map.map-values');
+require('../../modules/esnext.map.merge');
+require('../../modules/esnext.map.reduce');
+require('../../modules/esnext.map.some');
+require('../../modules/esnext.map.update');
+var call = require('../../internals/function-call');
+var isCallable = require('../../internals/is-callable');
+var path = require('../../internals/path');
+
+var Map = path.Map;
+var mapKeyBy = Map.keyBy;
+
+module.exports = function keyBy(source, iterable, keyDerivative) {
+  return call(mapKeyBy, isCallable(this) ? this : Map, source, iterable, keyDerivative);
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'use strict';
+
+const word = '[a-fA-F\\d:]';
+const b = options => options && options.includeBoundaries ?
+	`(?:(?<=\\s|^)(?=${word})|(?<=${word})(?=\\s|$))` :
+	'';
+
+const v4 = '(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)){3}';
+
+const v6seg = '[a-fA-F\\d]{1,4}';
+const v6 = `
+(?:
+(?:${v6seg}:){7}(?:${v6seg}|:)|                                    // 1:2:3:4:5:6:7::  1:2:3:4:5:6:7:8
+(?:${v6seg}:){6}(?:${v4}|:${v6seg}|:)|                             // 1:2:3:4:5:6::    1:2:3:4:5:6::8   1:2:3:4:5:6::8  1:2:3:4:5:6::1.2.3.4
+(?:${v6seg}:){5}(?::${v4}|(?::${v6seg}){1,2}|:)|                   // 1:2:3:4:5::      1:2:3:4:5::7:8   1:2:3:4:5::8    1:2:3:4:5::7:1.2.3.4
+(?:${v6seg}:){4}(?:(?::${v6seg}){0,1}:${v4}|(?::${v6seg}){1,3}|:)| // 1:2:3:4::        1:2:3:4::6:7:8   1:2:3:4::8      1:2:3:4::6:7:1.2.3.4
+(?:${v6seg}:){3}(?:(?::${v6seg}){0,2}:${v4}|(?::${v6seg}){1,4}|:)| // 1:2:3::          1:2:3::5:6:7:8   1:2:3::8        1:2:3::5:6:7:1.2.3.4
+(?:${v6seg}:){2}(?:(?::${v6seg}){0,3}:${v4}|(?::${v6seg}){1,5}|:)| // 1:2::            1:2::4:5:6:7:8   1:2::8          1:2::4:5:6:7:1.2.3.4
+(?:${v6seg}:){1}(?:(?::${v6seg}){0,4}:${v4}|(?::${v6seg}){1,6}|:)| // 1::              1::3:4:5:6:7:8   1::8            1::3:4:5:6:7:1.2.3.4
+(?::(?:(?::${v6seg}){0,5}:${v4}|(?::${v6seg}){1,7}|:))             // ::2:3:4:5:6:7:8  ::2:3:4:5:6:7:8  ::8             ::1.2.3.4
+)(?:%[0-9a-zA-Z]{1,})?                                             // %eth0            %1
+`.replace(/\s*\/\/.*$/gm, '').replace(/\n/g, '').trim();
+
+// Pre-compile only the exact regexes because adding a global flag make regexes stateful
+const v46Exact = new RegExp(`(?:^${v4}$)|(?:^${v6}$)`);
+const v4exact = new RegExp(`^${v4}$`);
+const v6exact = new RegExp(`^${v6}$`);
+
+const ip = options => options && options.exact ?
+	v46Exact :
+	new RegExp(`(?:${b(options)}${v4}${b(options)})|(?:${b(options)}${v6}${b(options)})`, 'g');
+
+ip.v4 = options => options && options.exact ? v4exact : new RegExp(`${b(options)}${v4}${b(options)}`, 'g');
+ip.v6 = options => options && options.exact ? v6exact : new RegExp(`${b(options)}${v6}${b(options)}`, 'g');
+
+module.exports = ip;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Browser-friendly inheritance fully compatible with standard node.js
+[inherits](http://nodejs.org/api/util.html#util_util_inherits_constructor_superconstructor).
+
+This package exports standard `inherits` from node.js `util` module in
+node environment, but also provides alternative browser-friendly
+implementation through [browser
+field](https://gist.github.com/shtylman/4339901). Alternative
+implementation is a literal copy of standard one located in standalone
+module to avoid requiring of `util`. It also has a shim for old
+browsers with no `Object.create` support.
+
+While keeping you sure you are using standard `inherits`
+implementation in node.js environment, it allows bundlers such as
+[browserify](https://github.com/substack/node-browserify) to not
+include full `util` package to your client code if all you need is
+just `inherits` function. It worth, because browser shim for `util`
+package is large and `inherits` is often the single function you need
+from it.
+
+It's recommended to use this package instead of
+`require('util').inherits` for any code that has chances to be used
+not only in node.js but in browser too.
+
+## usage
+
+```js
+var inherits = require('inherits');
+// then use exactly as the standard one
+```
+
+## note on version ~1.0
+
+Version ~1.0 had completely different motivation and is not compatible
+neither with 2.0 nor with standard node.js `inherits`.
+
+If you are using version ~1.0 and planning to switch to ~2.0, be
+careful:
+
+* new version uses `super_` instead of `super` for referencing
+  superclass
+* new version overwrites current prototype while old one preserves any
+  existing fields on it
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       /**
+ * Helpers.
+ */
+
+var s = 1000;
+var m = s * 60;
+var h = m * 60;
+var d = h * 24;
+var w = d * 7;
+var y = d * 365.25;
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} [options]
+ * @throws {Error} throw an error if val is not a non-empty string or a number
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function(val, options) {
+  options = options || {};
+  var type = typeof val;
+  if (type === 'string' && val.length > 0) {
+    return parse(val);
+  } else if (type === 'number' && isFinite(val)) {
+    return options.long ? fmtLong(val) : fmtShort(val);
+  }
+  throw new Error(
+    'val is not a non-empty string or a valid number. val=' +
+      JSON.stringify(val)
+  );
+};
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = String(str);
+  if (str.length > 100) {
+    return;
+  }
+  var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
+    str
+  );
+  if (!match) {
+    return;
+  }
+  var n = parseFloat(match[1]);
+  var type = (match[2] || 'ms').toLowerCase();
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y;
+    case 'weeks':
+    case 'week':
+    case 'w':
+      return n * w;
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d;
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h;
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m;
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s;
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n;
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtShort(ms) {
+  var msAbs = Math.abs(ms);
+  if (msAbs >= d) {
+    return Math.round(ms / d) + 'd';
+  }
+  if (msAbs >= h) {
+    return Math.round(ms / h) + 'h';
+  }
+  if (msAbs >= m) {
+    return Math.round(ms / m) + 'm';
+  }
+  if (msAbs >= s) {
+    return Math.round(ms / s) + 's';
+  }
+  return ms + 'ms';
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtLong(ms) {
+  var msAbs = Math.abs(ms);
+  if (msAbs >= d) {
+    return plural(ms, msAbs, d, 'day');
+  }
+  if (msAbs >= h) {
+    return plural(ms, msAbs, h, 'hour');
+  }
+  if (msAbs >= m) {
+    return plural(ms, msAbs, m, 'minute');
+  }
+  if (msAbs >= s) {
+    return plural(ms, msAbs, s, 'second');
+  }
+  return ms + ' ms';
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, msAbs, n, name) {
+  var isPlural = msAbs >= n * 1.5;
+  return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createTester = require('./internal/createTester');
+
+var _createTester2 = _interopRequireDefault(_createTester);
+
+var _doParallel = require('./internal/doParallel');
+
+var _doParallel2 = _interopRequireDefault(_doParallel);
+
+var _notId = require('./internal/notId');
+
+var _notId2 = _interopRequireDefault(_notId);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Returns `true` if every element in `coll` satisfies an async test. If any
+ * iteratee call returns `false`, the main `callback` is immediately called.
+ *
+ * @name every
+ * @static
+ * @memberOf module:Collections
+ * @method
+ * @alias all
+ * @category Collection
+ * @param {Array|Iterable|Object} coll - A collection to iterate over.
+ * @param {AsyncFunction} iteratee - An async truth test to apply to each item
+ * in the collection in parallel.
+ * The iteratee must complete with a boolean result value.
+ * Invoked with (item, callback).
+ * @param {Function} [callback] - A callback which is called after all the
+ * `iteratee` functions have finished. Result will be either `true` or `false`
+ * depending on the values of the async tests. Invoked with (err, result).
+ * @example
+ *
+ * async.every(['file1','file2','file3'], function(filePath, callback) {
+ *     fs.access(filePath, function(err) {
+ *         callback(null, !err)
+ *     });
+ * }, function(err, result) {
+ *     // if result is true then every file exists
+ * });
+ */
+exports.default = (0, _doParallel2.default)((0, _createTester2.default)(_notId2.default, _notId2.default));
+module.exports = exports['default'];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // Copyright 2010 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview A content-aware textarea control that grows and shrinks
+ * automatically. This implementation extends {@link goog.ui.Control}.
+ * This code is inspired by Dojo Dijit's Textarea implementation with
+ * modifications to support native (when available) textarea resizing and
+ * minHeight and maxHeight enforcement.
+ *
+ * @see ../demos/textarea.html
+ */
+
+goog.provide('goog.ui.Textarea');
+goog.provide('goog.ui.Textarea.EventType');
+
+goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.classlist');
+goog.require('goog.events.EventType');
+goog.require('goog.style');
+goog.require('goog.ui.Control');
+goog.require('goog.ui.TextareaRenderer');
+goog.require('goog.userAgent');
+
+
+
+/**
+ * A textarea control to handle growing/shrinking with textarea.value.
+ *
+ * @param {string} content Text to set as the textarea's value.
+ * @param {goog.ui.TextareaRenderer=} opt_renderer Renderer used to render or
+ *     decorate the textarea. Defaults to {@link goog.ui.TextareaRenderer}.
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
+ *     document interaction.
+ * @constructor
+ * @extends {goog.ui.Control}
+ */
+goog.ui.Textarea = function(content, opt_renderer, opt_domHelper) {
+  goog.ui.Control.call(
+      this, content, opt_renderer || goog.ui.TextareaRenderer.getInstance(),
+      opt_domHelper);
+
+  this.setHandleMouseEvents(false);
+  this.setAllowTextSelection(true);
+  this.hasUserInput_ = (content != '');
+  if (!content) {
+    this.setContentInternal('');
+  }
+};
+goog.inherits(goog.ui.Textarea, goog.ui.Control);
+goog.tagUnsealableClass(goog.ui.Textarea);
+
+
+/**
+ * Some UAs will shrink the textarea automatically, some won't.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Textarea.NEEDS_HELP_SHRINKING_ =
+    !(goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11));
+
+
+/**
+ * True if the resizing function is executing, false otherwise.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Textarea.prototype.isResizing_ = false;
+
+
+/**
+ * Represents if we have focus on the textarea element, used only
+ * to render the placeholder if we don't have native placeholder
+ * support.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Textarea.prototype.hasFocusForPlaceholder_ = false;
+
+
+/**
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Textarea.prototype.hasUserInput_ = false;
+
+
+/**
+ * The height of the textarea as last measured.
+ * @type {number}
+ * @private
+ */
+goog.ui.Textarea.prototype.height_ = 0;
+
+
+/**
+ * A maximum height for the textarea. When set to 0, the default, there is no
+ * enforcement of this value during resize.
+ * @type {number}
+ * @private
+ */
+goog.ui.Textarea.prototype.maxHeight_ = 0;
+
+
+/**
+ * A minimum height for the textarea. When set to 0, the default, there is no
+ * enforcement of this value during resize.
+ * @type {number}
+ * @private
+ */
+goog.ui.Textarea.prototype.minHeight_ = 0;
+
+
+/**
+ * Whether or not textarea rendering characteristics have been discovered.
+ * Specifically we determine, at runtime:
+ *    If the padding and border box is included in offsetHeight.
+ *    @see {goog.ui.Textarea.prototype.needsPaddingBorderFix_}
+ *    If the padding and border box is included in scrollHeight.
+ *    @see {goog.ui.Textarea.prototype.scrollHeightIncludesPadding_} and
+ *    @see {goog.ui.Textarea.prototype.scrollHeightIncludesBorder_}
+ * TODO(user): See if we can determine goog.ui.Textarea.NEEDS_HELP_SHRINKING_.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Textarea.prototype.hasDiscoveredTextareaCharacteristics_ = false;
+
+
+/**
+ * If a user agent doesn't correctly support the box-sizing:border-box CSS
+ * value then we'll need to adjust our height calculations.
+ * @see {goog.ui.Textarea.prototype.discoverTextareaCharacteristics_}
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Textarea.prototype.needsPaddingBorderFix_ = false;
+
+
+/**
+ * Whether or not scrollHeight of a textarea includes the padding box.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Textarea.prototype.scrollHeightIncludesPadding_ = false;
+
+
+/**
+ * Whether or not scrollHeight of a textarea includes the border box.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.Textarea.prototype.scrollHeightIncludesBorder_ = false;
+
+
+/**
+ * For storing the padding box size during enterDocument, to prevent possible
+ * measurement differences that can happen after text zooming.
+ * Note: runtime padding changes will cause problems with this.
+ * @type {goog.math.Box}
+ * @private
+ */
+goog.ui.Textarea.prototype.paddingBox_;
+
+
+/**
+ * For storing the border box size during enterDocument, to prevent possible
+ * measurement differences that can happen after text zooming.
+ * Note: runtime border width changes will cause problems with this.
+ * @type {goog.math.Box}
+ * @private
+ */
+goog.ui.Textarea.prototype.borderBox_;
+
+
+/**
+ * Default text content for the textarea when it is unchanged and unfocussed.
+ * We use the placeholder attribute for all browsers that have support for
+ * it (new in HTML5 for the following browsers:
+ *
+ *   Internet Explorer 10.0
+ *   Firefox 4.0
+ *   Opera 11.6
+ *   Chrome 4.0
+ *   Safari 5.0
+ *
+ * For older browsers, we save the placeholderText_ and set it as the element's
+ * value and add the TEXTAREA_PLACEHOLDER_CLASS to indicate that it's a
+ * placeholder string.
+ * @type {string}
+ * @private
+ */
+goog.ui.Textarea.prototype.placeholderText_ = '';
+
+
+/**
+ * Constants for event names.
+ * @enum {string}
+ */
+goog.ui.Textarea.EventType = {
+  RESIZE: 'resize'
+};
+
+
+/**
+ * Sets the default text for the textarea.
+ * @param {string} text The default text for the textarea.
+ */
+goog.ui.Textarea.prototype.setPlaceholder = function(text) {
+  this.placeholderText_ = text;
+  if (this.getElement()) {
+    this.restorePlaceholder_();
+  }
+};
+
+
+/**
+ * @return {number} The padding plus the border box height.
+ * @private
+ */
+goog.ui.Textarea.prototype.getPaddingBorderBoxHeight_ = function() {
+  var paddingBorderBoxHeight = this.paddingBox_.top + this.paddingBox_.bottom +
+      this.borderBox_.top + this.borderBox_.bottom;
+  return paddingBorderBoxHeight;
+};
+
+
+/**
+ * @return {number} The minHeight value.
+ */
+goog.ui.Textarea.prototype.getMinHeight = function() {
+  return this.minHeight_;
+};
+
+
+/**
+ * @return {number} The minHeight value with a potential padding fix.
+ * @private
+ */
+goog.ui.Textarea.prototype.getMinHeight_ = function() {
+  var minHeight = this.minHeight_;
+  var textarea = this.getElement();
+  if (minHeight && textarea && this.needsPaddingBorderFix_) {
+    minHeight -= this.getPaddingBorderBoxHeight_();
+  }
+  return minHeight;
+};
+
+
+/**
+ * Sets a minimum height for the textarea, and calls resize if rendered.
+ * @param {number} height New minHeight value.
+ */
+goog.ui.Textarea.prototype.setMinHeight = function(height) {
+  this.minHeight_ = height;
+  this.resize();
+};
+
+
+/**
+ * @return {number} The maxHeight value.
+ */
+goog.ui.Textarea.prototype.getMaxHeight = function() {
+  return this.maxHeight_;
+};
+
+
+/**
+ * @return {number} The maxHeight value with a potential padding fix.
+ * @private
+ */
+goog.ui.Textarea.prototype.getMaxHeight_ = function() {
+  var maxHeight = this.maxHeight_;
+  var textarea = this.getElement();
+  if (maxHeight && textarea && this.needsPaddingBorderFix_) {
+    maxHeight -= this.getPaddingBorderBoxHeight_();
+  }
+  return maxHeight;
+};
+
+
+/**
+ * Sets a maximum height for the textarea, and calls resize if rendered.
+ * @param {number} height New maxHeight value.
+ */
+goog.ui.Textarea.prototype.setMaxHeight = function(height) {
+  this.maxHeight_ = height;
+  this.resize();
+};
+
+
+/**
+ * Sets the textarea's value.
+ * @param {*} value The value property for the textarea, will be cast to a
+ *     string by the browser when setting textarea.value.
+ */
+goog.ui.Textarea.prototype.setValue = function(value) {
+  this.setContent(String(value));
+};
+
+
+/**
+ * Gets the textarea's value.
+ * @return {string} value The value of the textarea.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
+ */
+goog.ui.Textarea.prototype.getValue = function() {
+  // We potentially have the placeholder stored in the value.
+  // If a client of this class sets this.getElement().value directly
+  // we don't set the this.hasUserInput_ boolean. Thus, we need to
+  // explicitly check if the value != the placeholder text. This has
+  // the unfortunate edge case of:
+  //   If the client sets this.getElement().value to the placeholder
+  //   text, we'll return the empty string.
+  // The normal use case shouldn't be an issue, however, since the
+  // default placeholderText is the empty string. Also, if the end user
+  // inputs text, then this.hasUserInput_ will always be true.
+  if (this.getElement().value != this.placeholderText_ ||
+      this.supportsNativePlaceholder_() || this.hasUserInput_) {
+    // We don't do anything fancy here.
+    return this.getElement().value;
+  }
+  return '';
+};
+
+
+/** @override */
+goog.ui.Textarea.prototype.setContent = function(content) {
+  goog.ui.Textarea.superClass_.setContent.call(this, content);
+  this.hasUserInput_ = (content != '');
+  this.resize();
+};
+
+
+/**
+ * @override *
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
+ */
+goog.ui.Textarea.prototype.setEnabled = function(enable) {
+  goog.ui.Textarea.superClass_.setEnabled.call(this, enable);
+  this.getElement().disabled = !enable;
+};
+
+
+/**
+ * Resizes the textarea vertically.
+ */
+goog.ui.Textarea.prototype.resize = function() {
+  if (this.getElement()) {
+    this.grow_();
+  }
+};
+
+
+/**
+ * @return {boolean} True if the element supports the placeholder attribute.
+ * @private
+ */
+goog.ui.Textarea.prototype.supportsNativePlaceholder_ = function() {
+  goog.asserts.assert(this.getElement());
+  return 'placeholder' in this.getElement();
+};
+
+
+/**
+ * Sets the value of the textarea element to the default text.
+ * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
+ */
+goog.ui.Textarea.prototype.restorePlaceholder_ = function() {
+  if (!this.placeholderText_) {
+    // Return early if there is no placeholder to mess with.
+    return;
+  }
+  // Check again in case something changed since this was scheduled.
+  // We check that the element is still there since this is called by a timer
+  // and the dispose method may have been called prior to this.
+  if (this.supportsNativePlaceholder_()) {
+    this.getElement().placeholder = this.placeholderText_;
+  } else if (
+      this.getElement() && !this.hasUserInput_ &&
+      !this.hasFocusForPlaceholder_) {
+    // We only want to set the value + placeholder CSS if we actually have
+    // some placeholder text to show.
+    goog.dom.classlist.add(
+        goog.asserts.assert(this.getElement()),
+        goog.ui.Textarea.TEXTAREA_PLACEHOLDER_CLASS);
+    this.getElement().value = this.placeholderText_;
+  }
+};
+
+
+/** @override **/
+goog.ui.Textarea.prototype.enterDocument = function() {
+  goog.ui.Textarea.base(this, 'enterDocument');
+  var textarea = this.getElement();
+
+  // Eliminates the vertical scrollbar and changes the box-sizing mode for the
+  // textarea to the border-box (aka quirksmode) paradigm.
+  goog.style.setStyle(textarea, {
+    'overflowY': 'hidden',
+    'overflowX': 'auto',
+    'boxSizing': 'border-box',
+    'MsBoxSizing': 'border-box',
+    'WebkitBoxSizing': 'border-box',
+    'MozBoxSizing': 'border-box'
+  });
+
+  this.paddingBox_ = goog.style.getPaddingBox(textarea);
+  this.borderBox_ = goog.style.getBorderBox(textarea);
+
+  this.getHandler()
+      .listen(textarea, goog.events.EventType.SCROLL, this.grow_)
+      .listen(textarea, goog.events.EventType.FOCUS, this.grow_)
+      .listen(textarea, goog.events.EventType.KEYUP, this.grow_)
+      .listen(textarea, goog.events.EventType.MOUSEUP, this.mouseUpListener_)
+      .listen(textarea, goog.events.EventType.BLUR, this.blur_);
+
+  this.restorePlaceholder_();
+  this.resize();
+};
+
+
+/**
+ * Gets the textarea's content height + padding height + border height.
+ * This is done by getting the scrollHeight and adjusting from there.
+ * In the end this result is what we want the new offsetHeight to equal.
+ * @return {number} The height of the textarea.
+ * @private
+ */
+goog.ui.Textarea.prototype.getHeight_ = function() {
+  this.discoverTextareaCharacteristics_();
+  var textarea = this.getElement();
+  // Because enterDocument can be called even when the component is rendered
+  // without being in a document, we may not have cached the correct paddingBox
+  // data on render(). We try to make up for this here.
+  if (isNaN(this.paddingBox_.top)) {
+    this.paddingBox_ = goog.style.getPaddingBox(textarea);
+    this.borderBox_ = goog.style.getBorderBox(textarea);
+  }
+  // Accounts for a possible (though unlikely) horizontal scrollbar.
+  var height =
+      this.getElement().scrollHeight + this.getHorizontalScrollBarHeight_();
+  if (this.needsPaddingBorderFix_) {
+    height -= this.getPaddingBorderBoxHeight_();
+  } else {
+    if (!this.scrollHeightIncludesPadding_) {
+      var paddingBox = this.paddingBox_;
+      var paddingBoxHeight = paddingBox.top + paddingBox.bottom;
+      height += paddingBoxHeight;
+    }
+    if (!this.scrollHeightIncludesBorder_) {
+      var borderBox = goog.style.getBorderBox(textarea);
+      var borderBoxHeight = borderBox.top + borderBox.bottom;
+      height += borderBoxHeight;
+    }
+  }
+  return height;
+};
+
+
+/**
+ * Sets the textarea's height.
+ * @param {number} height The height to set.
+ * @private
+ */
+goog.ui.Textarea.prototype.setHeight_ = function(height) {
+  if (this.height_ != height) {
+    this.height_ = height;
+    this.getElement().style.height = height + 'px';
+  }
+};
+
+
+/**
+ * Sets the textarea's rows attribute to be the number of newlines + 1.
+ * This is necessary when the textarea is hidden, in which case scrollHeight
+ * is not available.
+ * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
+ */
+goog.ui.Textarea.prototype.setHeightToEstimate_ = function() {
+  var textarea = this.getElement();
+  textarea.style.height = 'auto';
+  var newlines = textarea.value.match(/\n/g) || [];
+  textarea.rows = newlines.length + 1;
+  this.height_ = 0;
+};
+
+
+/**
+ * Gets the the height of (possibly present) horizontal scrollbar.
+ * @return {number} The height of the horizontal scrollbar.
+ * @private
+ */
+goog.ui.Textarea.prototype.getHorizontalScrollBarHeight_ = function() {
+  var textarea = /** @type {!HTMLElement} */ (this.getElement());
+  var height = textarea.offsetHeight - textarea.clientHeight;
+  if (!this.scrollHeightIncludesPadding_) {
+    var paddingBox = this.paddingBox_;
+    var paddingBoxHeight = paddingBox.top + paddingBox.bottom;
+    height -= paddingBoxHeight;
+  }
+  if (!this.scrollHeightIncludesBorder_) {
+    var borderBox = goog.style.getBorderBox(textarea);
+    var borderBoxHeight = borderBox.top + borderBox.bottom;
+    height -= borderBoxHeight;
+  }
+  // Prevent negative number results, which sometimes show up.
+  return height > 0 ? height : 0;
+};
+
+
+/**
+ * In order to assess the correct height for a textarea, we need to know
+ * whether the scrollHeight (the full height of the text) property includes
+ * the values for padding and borders. We can also test whether the
+ * box-sizing: border-box setting is working and then tweak accordingly.
+ * Instead of hardcoding a list of currently known behaviors and testing
+ * for quirksmode, we do a runtime check out of the flow. The performance
+ * impact should be very small.
+ * @private
+ */
+goog.ui.Textarea.prototype.discoverTextareaCharacteristics_ = function() {
+  if (!this.hasDiscoveredTextareaCharacteristics_) {
+    var textarea =
+        /** @type {!HTMLElement} */ (this.getElement().cloneNode(false));
+    // We need to overwrite/write box model specific styles that might
+    // affect height.
+    goog.style.setStyle(textarea, {
+      'position': 'absolute',
+      'height': 'auto',
+      'top': '-9999px',
+      'margin': '0',
+      'padding': '1px',
+      'border': '1px solid #000',
+      'overflow': 'hidden'
+    });
+    goog.dom.appendChild(this.getDomHelper().getDocument().body, textarea);
+    var initialScrollHeight = textarea.scrollHeight;
+
+    textarea.style.padding = '10px';
+    var paddingScrollHeight = textarea.scrollHeight;
+    this.scrollHeightIncludesPadding_ =
+        paddingScrollHeight > initialScrollHeight;
+
+    initialScrollHeight = paddingScrollHeight;
+    textarea.style.borderWidth = '10px';
+    var borderScrollHeight = textarea.scrollHeight;
+    this.scrollHeightIncludesBorder_ = borderScrollHeight > initialScrollHeight;
+
+    // Tests if border-box sizing is working or not.
+    textarea.style.height = '100px';
+    var offsetHeightAtHeight100 = textarea.offsetHeight;
+    if (offsetHeightAtHeight100 != 100) {
+      this.needsPaddingBorderFix_ = true;
+    }
+
+    goog.dom.removeNode(textarea);
+    this.hasDiscoveredTextareaCharacteristics_ = true;
+  }
+};
+
+
+/**
+ * The CSS class name to add to the input when the user has not entered a
+ * value.
+ */
+goog.ui.Textarea.TEXTAREA_PLACEHOLDER_CLASS =
+    goog.getCssName('textarea-placeholder-input');
+
+
+/**
+ * Called when the element goes out of focus.
+ * @param {goog.events.Event=} opt_e The browser event.
+ * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
+ */
+goog.ui.Textarea.prototype.blur_ = function(opt_e) {
+  if (!this.supportsNativePlaceholder_()) {
+    this.hasFocusForPlaceholder_ = false;
+    if (this.getElement().value == '') {
+      // Only transition to the default text if we have
+      // no user input.
+      this.hasUserInput_ = false;
+      this.restorePlaceholder_();
+    }
+  }
+};
+
+
+/**
+ * Resizes the textarea to grow/shrink to match its contents.
+ * @param {goog.events.Event=} opt_e The browser event.
+ * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
+ */
+goog.ui.Textarea.prototype.grow_ = function(opt_e) {
+  if (this.isResizing_) {
+    return;
+  }
+  var textarea = /** @type {!HTMLElement} */ (this.getElement());
+  // If the element is getting focus and we don't support placeholders
+  // natively, then remove the placeholder class.
+  if (!this.supportsNativePlaceholder_() && opt_e &&
+      opt_e.type == goog.events.EventType.FOCUS) {
+    // We must have a textarea element, since we're growing it.
+    // Remove the placeholder CSS + set the value to empty if we're currently
+    // showing the placeholderText_ value if this is the first time we're
+    // getting focus.
+    if (textarea.value == this.placeholderText_ && this.placeholderText_ &&
+        !this.hasFocusForPlaceholder_) {
+      goog.dom.classlist.remove(
+          textarea, goog.ui.Textarea.TEXTAREA_PLACEHOLDER_CLASS);
+      textarea.value = '';
+    }
+    this.hasFocusForPlaceholder_ = true;
+    this.hasUserInput_ = (textarea.value != '');
+  }
+  var shouldCallShrink = false;
+  this.isResizing_ = true;
+  var oldHeight = this.height_;
+  if (textarea.scrollHeight) {
+    var setMinHeight = false;
+    var setMaxHeight = false;
+    var newHeight = this.getHeight_();
+    var currentHeight = textarea.offsetHeight;
+    var minHeight = this.getMinHeight_();
+    var maxHeight = this.getMaxHeight_();
+    if (minHeight && newHeight < minHeight) {
+      this.setHeight_(minHeight);
+      setMinHeight = true;
+    } else if (maxHeight && newHeight > maxHeight) {
+      this.setHeight_(maxHeight);
+      // If the content is greater than the height, we'll want the vertical
+      // scrollbar back.
+      textarea.style.overflowY = '';
+      setMaxHeight = true;
+    } else if (currentHeight != newHeight) {
+      this.setHeight_(newHeight);
+      // Makes sure that height_ is at least set.
+    } else if (!this.height_) {
+      this.height_ = newHeight;
+    }
+    if (!setMinHeight && !setMaxHeight &&
+        goog.ui.Textarea.NEEDS_HELP_SHRINKING_) {
+      shouldCallShrink = true;
+    }
+  } else {
+    this.setHeightToEstimate_();
+  }
+  this.isResizing_ = false;
+
+  if (shouldCallShrink) {
+    this.shrink_();
+  }
+  if (oldHeight != this.height_) {
+    this.dispatchEvent(goog.ui.Textarea.EventType.RESIZE);
+  }
+};
+
+
+/**
+ * Resizes the textarea to shrink to fit its contents. The way this works is
+ * by increasing the padding of the textarea by 1px (it's important here that
+ * we're in box-sizing: border-box mode). If the size of the textarea grows,
+ * then the box is filled up to the padding box with text.
+ * If it doesn't change, then we can shrink.
+ * @private
+ */
+goog.ui.Textarea.prototype.shrink_ = function() {
+  var textarea = this.getElement();
+  if (!this.isResizing_) {
+    this.isResizing_ = true;
+    var scrollHeight = textarea.scrollHeight;
+    if (!scrollHeight) {
+      this.setHeightToEstimate_();
+    } else {
+      var currentHeight = this.getHeight_();
+      var minHeight = this.getMinHeight_();
+      if (!(minHeight && currentHeight <= minHeight)) {
+        // Nudge the padding by 1px.
+        var paddingBox = this.paddingBox_;
+        textarea.style.paddingBottom = paddingBox.bottom + 1 + 'px';
+        var heightAfterNudge = this.getHeight_();
+        // If the one px of padding had no effect, then we can shrink.
+        if (heightAfterNudge == currentHeight) {
+          textarea.style.paddingBottom =
+ 

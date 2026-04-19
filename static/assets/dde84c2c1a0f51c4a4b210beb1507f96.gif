@@ -1,0 +1,1798 @@
+var support = {
+  searchParams: 'URLSearchParams' in self,
+  iterable: 'Symbol' in self && 'iterator' in Symbol,
+  blob:
+    'FileReader' in self &&
+    'Blob' in self &&
+    (function() {
+      try {
+        new Blob()
+        return true
+      } catch (e) {
+        return false
+      }
+    })(),
+  formData: 'FormData' in self,
+  arrayBuffer: 'ArrayBuffer' in self
+}
+
+function isDataView(obj) {
+  return obj && DataView.prototype.isPrototypeOf(obj)
+}
+
+if (support.arrayBuffer) {
+  var viewClasses = [
+    '[object Int8Array]',
+    '[object Uint8Array]',
+    '[object Uint8ClampedArray]',
+    '[object Int16Array]',
+    '[object Uint16Array]',
+    '[object Int32Array]',
+    '[object Uint32Array]',
+    '[object Float32Array]',
+    '[object Float64Array]'
+  ]
+
+  var isArrayBufferView =
+    ArrayBuffer.isView ||
+    function(obj) {
+      return obj && viewClasses.indexOf(Object.prototype.toString.call(obj)) > -1
+    }
+}
+
+function normalizeName(name) {
+  if (typeof name !== 'string') {
+    name = String(name)
+  }
+  if (/[^a-z0-9\-#$%&'*+.^_`|~]/i.test(name)) {
+    throw new TypeError('Invalid character in header field name')
+  }
+  return name.toLowerCase()
+}
+
+function normalizeValue(value) {
+  if (typeof value !== 'string') {
+    value = String(value)
+  }
+  return value
+}
+
+// Build a destructive iterator for the value list
+function iteratorFor(items) {
+  var iterator = {
+    next: function() {
+      var value = items.shift()
+      return {done: value === undefined, value: value}
+    }
+  }
+
+  if (support.iterable) {
+    iterator[Symbol.iterator] = function() {
+      return iterator
+    }
+  }
+
+  return iterator
+}
+
+export function Headers(headers) {
+  this.map = {}
+
+  if (headers instanceof Headers) {
+    headers.forEach(function(value, name) {
+      this.append(name, value)
+    }, this)
+  } else if (Array.isArray(headers)) {
+    headers.forEach(function(header) {
+      this.append(header[0], header[1])
+    }, this)
+  } else if (headers) {
+    Object.getOwnPropertyNames(headers).forEach(function(name) {
+      this.append(name, headers[name])
+    }, this)
+  }
+}
+
+Headers.prototype.append = function(name, value) {
+  name = normalizeName(name)
+  value = normalizeValue(value)
+  var oldValue = this.map[name]
+  this.map[name] = oldValue ? oldValue + ', ' + value : value
+}
+
+Headers.prototype['delete'] = function(name) {
+  delete this.map[normalizeName(name)]
+}
+
+Headers.prototype.get = function(name) {
+  name = normalizeName(name)
+  return this.has(name) ? this.map[name] : null
+}
+
+Headers.prototype.has = function(name) {
+  return this.map.hasOwnProperty(normalizeName(name))
+}
+
+Headers.prototype.set = function(name, value) {
+  this.map[normalizeName(name)] = normalizeValue(value)
+}
+
+Headers.prototype.forEach = function(callback, thisArg) {
+  for (var name in this.map) {
+    if (this.map.hasOwnProperty(name)) {
+      callback.call(thisArg, this.map[name], name, this)
+    }
+  }
+}
+
+Headers.prototype.keys = function() {
+  var items = []
+  this.forEach(function(value, name) {
+    items.push(name)
+  })
+  return iteratorFor(items)
+}
+
+Headers.prototype.values = function() {
+  var items = []
+  this.forEach(function(value) {
+    items.push(value)
+  })
+  return iteratorFor(items)
+}
+
+Headers.prototype.entries = function() {
+  var items = []
+  this.forEach(function(value, name) {
+    items.push([name, value])
+  })
+  return iteratorFor(items)
+}
+
+if (support.iterable) {
+  Headers.prototype[Symbol.iterator] = Headers.prototype.entries
+}
+
+function consumed(body) {
+  if (body.bodyUsed) {
+    return Promise.reject(new TypeError('Already read'))
+  }
+  body.bodyUsed = true
+}
+
+function fileReaderReady(reader) {
+  return new Promise(function(resolve, reject) {
+    reader.onload = function() {
+      resolve(reader.result)
+    }
+    reader.onerror = function() {
+      reject(reader.error)
+    }
+  })
+}
+
+function readBlobAsArrayBuffer(blob) {
+  var reader = new FileReader()
+  var promise = fileReaderReady(reader)
+  reader.readAsArrayBuffer(blob)
+  return promise
+}
+
+function readBlobAsText(blob) {
+  var reader = new FileReader()
+  var promise = fileReaderReady(reader)
+  reader.readAsText(blob)
+  return promise
+}
+
+function readArrayBufferAsText(buf) {
+  var view = new Uint8Array(buf)
+  var chars = new Array(view.length)
+
+  for (var i = 0; i < view.length; i++) {
+    chars[i] = String.fromCharCode(view[i])
+  }
+  return chars.join('')
+}
+
+function bufferClone(buf) {
+  if (buf.slice) {
+    return buf.slice(0)
+  } else {
+    var view = new Uint8Array(buf.byteLength)
+    view.set(new Uint8Array(buf))
+    return view.buffer
+  }
+}
+
+function Body() {
+  this.bodyUsed = false
+
+  this._initBody = function(body) {
+    this._bodyInit = body
+    if (!body) {
+      this._bodyText = ''
+    } else if (typeof body === 'string') {
+      this._bodyText = body
+    } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+      this._bodyBlob = body
+    } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+      this._bodyFormData = body
+    } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
+      this._bodyText = body.toString()
+    } else if (support.arrayBuffer && support.blob && isDataView(body)) {
+      this._bodyArrayBuffer = bufferClone(body.buffer)
+      // IE 10-11 can't handle a DataView body.
+      this._bodyInit = new Blob([this._bodyArrayBuffer])
+    } else if (support.arrayBuffer && (ArrayBuffer.prototype.isPrototypeOf(body) || isArrayBufferView(body))) {
+      this._bodyArrayBuffer = bufferClone(body)
+    } else {
+      this._bodyText = body = Object.prototype.toString.call(body)
+    }
+
+    if (!this.headers.get('content-type')) {
+      if (typeof body === 'string') {
+        this.headers.set('content-type', 'text/plain;charset=UTF-8')
+      } else if (this._bodyBlob && this._bodyBlob.type) {
+        this.headers.set('content-type', this._bodyBlob.type)
+      } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
+        this.headers.set('content-type', 'application/x-www-form-urlencoded;charset=UTF-8')
+      }
+    }
+  }
+
+  if (support.blob) {
+    this.blob = function() {
+      var rejected = consumed(this)
+      if (rejected) {
+        return rejected
+      }
+
+      if (this._bodyBlob) {
+        return Promise.resolve(this._bodyBlob)
+      } else if (this._bodyArrayBuffer) {
+        return Promise.resolve(new Blob([this._bodyArrayBuffer]))
+      } else if (this._bodyFormData) {
+        throw new Error('could not read FormData body as blob')
+      } else {
+        return Promise.resolve(new Blob([this._bodyText]))
+      }
+    }
+
+    this.arrayBuffer = function() {
+      if (this._bodyArrayBuffer) {
+        return consumed(this) || Promise.resolve(this._bodyArrayBuffer)
+      } else {
+        return this.blob().then(readBlobAsArrayBuffer)
+      }
+    }
+  }
+
+  this.text = function() {
+    var rejected = consumed(this)
+    if (rejected) {
+      return rejected
+    }
+
+    if (this._bodyBlob) {
+      return readBlobAsText(this._bodyBlob)
+    } else if (this._bodyArrayBuffer) {
+      return Promise.resolve(readArrayBufferAsText(this._bodyArrayBuffer))
+    } else if (this._bodyFormData) {
+      throw new Error('could not read FormData body as text')
+    } else {
+      return Promise.resolve(this._bodyText)
+    }
+  }
+
+  if (support.formData) {
+    this.formData = function() {
+      return this.text().then(decode)
+    }
+  }
+
+  this.json = function() {
+    return this.text().then(JSON.parse)
+  }
+
+  return this
+}
+
+// HTTP methods whose capitalization should be normalized
+var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
+
+function normalizeMethod(method) {
+  var upcased = method.toUpperCase()
+  return methods.indexOf(upcased) > -1 ? upcased : method
+}
+
+export function Request(input, options) {
+  options = options || {}
+  var body = options.body
+
+  if (input instanceof Request) {
+    if (input.bodyUsed) {
+      throw new TypeError('Already read')
+    }
+    this.url = input.url
+    this.credentials = input.credentials
+    if (!options.headers) {
+      this.headers = new Headers(input.headers)
+    }
+    this.method = input.method
+    this.mode = input.mode
+    this.signal = input.signal
+    if (!body && input._bodyInit != null) {
+      body = input._bodyInit
+      input.bodyUsed = true
+    }
+  } else {
+    this.url = String(input)
+  }
+
+  this.credentials = options.credentials || this.credentials || 'same-origin'
+  if (options.headers || !this.headers) {
+    this.headers = new Headers(options.headers)
+  }
+  this.method = normalizeMethod(options.method || this.method || 'GET')
+  this.mode = options.mode || this.mode || null
+  this.signal = options.signal || this.signal
+  this.referrer = null
+
+  if ((this.method === 'GET' || this.method === 'HEAD') && body) {
+    throw new TypeError('Body not allowed for GET or HEAD requests')
+  }
+  this._initBody(body)
+}
+
+Request.prototype.clone = function() {
+  return new Request(this, {body: this._bodyInit})
+}
+
+function decode(body) {
+  var form = new FormData()
+  body
+    .trim()
+    .split('&')
+    .forEach(function(bytes) {
+      if (bytes) {
+        var split = bytes.split('=')
+        var name = split.shift().replace(/\+/g, ' ')
+        var value = split.join('=').replace(/\+/g, ' ')
+        form.append(decodeURIComponent(name), decodeURIComponent(value))
+      }
+    })
+  return form
+}
+
+function parseHeaders(rawHeaders) {
+  var headers = new Headers()
+  // Replace instances of \r\n and \n followed by at least one space or horizontal tab with a space
+  // https://tools.ietf.org/html/rfc7230#section-3.2
+  var preProcessedHeaders = rawHeaders.replace(/\r?\n[\t ]+/g, ' ')
+  preProcessedHeaders.split(/\r?\n/).forEach(function(line) {
+    var parts = line.split(':')
+    var key = parts.shift().trim()
+    if (key) {
+      var value = parts.join(':').trim()
+      headers.append(key, value)
+    }
+  })
+  return headers
+}
+
+Body.call(Request.prototype)
+
+export function Response(bodyInit, options) {
+  if (!options) {
+    options = {}
+  }
+
+  this.type = 'default'
+  this.status = options.status === undefined ? 200 : options.status
+  this.ok = this.status >= 200 && this.status < 300
+  this.statusText = 'statusText' in options ? options.statusText : 'OK'
+  this.headers = new Headers(options.headers)
+  this.url = options.url || ''
+  this._initBody(bodyInit)
+}
+
+Body.call(Response.prototype)
+
+Response.prototype.clone = function() {
+  return new Response(this._bodyInit, {
+    status: this.status,
+    statusText: this.statusText,
+    headers: new Headers(this.headers),
+    url: this.url
+  })
+}
+
+Response.error = function() {
+  var response = new Response(null, {status: 0, statusText: ''})
+  response.type = 'error'
+  return response
+}
+
+var redirectStatuses = [301, 302, 303, 307, 308]
+
+Response.redirect = function(url, status) {
+  if (redirectStatuses.indexOf(status) === -1) {
+    throw new RangeError('Invalid status code')
+  }
+
+  return new Response(null, {status: status, headers: {location: url}})
+}
+
+export var DOMException = self.DOMException
+try {
+  new DOMException()
+} catch (err) {
+  DOMException = function(message, name) {
+    this.message = message
+    this.name = name
+    var error = Error(message)
+    this.stack = error.stack
+  }
+  DOMException.prototype = Object.create(Error.prototype)
+  DOMException.prototype.constructor = DOMException
+}
+
+export function fetch(input, init) {
+  return new Promise(function(resolve, reject) {
+    var request = new Request(input, init)
+
+    if (request.signal && request.signal.aborted) {
+      return reject(new DOMException('Aborted', 'AbortError'))
+    }
+
+    var xhr = new XMLHttpRequest()
+
+    function abortXhr() {
+      xhr.abort()
+    }
+
+    xhr.onload = function() {
+      var options = {
+        status: xhr.status,
+        statusText: xhr.statusText,
+        headers: parseHeaders(xhr.getAllResponseHeaders() || '')
+      }
+      options.url = 'responseURL' in xhr ? xhr.responseURL : options.headers.get('X-Request-URL')
+      var body = 'response' in xhr ? xhr.response : xhr.responseText
+      resolve(new Response(body, options))
+    }
+
+    xhr.onerror = function() {
+      reject(new TypeError('Network request failed'))
+    }
+
+    xhr.ontimeout = function() {
+      reject(new TypeError('Network request failed'))
+    }
+
+    xhr.onabort = function() {
+      reject(newos) {\n              s5 = input.charAt(peg$currPos);\n              peg$currPos++;\n            } else {\n              s5 = peg$FAILED;\n              if (peg$silentFails === 0) { peg$fail(peg$c53); }\n            }\n            if (s5 !== peg$FAILED) {\n              peg$savedPos = s3;\n              s4 = peg$c54(s4, s5);\n              s3 = s4;\n            } else {\n              peg$currPos = s3;\n              s3 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s3;\n            s3 = peg$FAILED;\n          }\n        }\n        while (s3 !== peg$FAILED) {\n          s2.push(s3);\n          if (peg$c49.test(input.charAt(peg$currPos))) {\n            s3 = input.charAt(peg$currPos);\n            peg$currPos++;\n          } else {\n            s3 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c50); }\n          }\n          if (s3 === peg$FAILED) {\n            s3 = peg$currPos;\n            if (input.charCodeAt(peg$currPos) === 92) {\n              s4 = peg$c51;\n              peg$currPos++;\n            } else {\n              s4 = peg$FAILED;\n              if (peg$silentFails === 0) { peg$fail(peg$c52); }\n            }\n            if (s4 !== peg$FAILED) {\n              if (input.length > peg$currPos) {\n                s5 = input.charAt(peg$currPos);\n                peg$currPos++;\n              } else {\n                s5 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c53); }\n              }\n              if (s5 !== peg$FAILED) {\n                peg$savedPos = s3;\n                s4 = peg$c54(s4, s5);\n                s3 = s4;\n              } else {\n                peg$currPos = s3;\n                s3 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s3;\n              s3 = peg$FAILED;\n            }\n          }\n        }\n        if (s2 !== peg$FAILED) {\n          if (input.charCodeAt(peg$currPos) === 34) {\n            s3 = peg$c47;\n            peg$currPos++;\n          } else {\n            s3 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c48); }\n          }\n          if (s3 !== peg$FAILED) {\n            peg$savedPos = s0;\n            s1 = peg$c55(s2);\n            s0 = s1;\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n      if (s0 === peg$FAILED) {\n        s0 = peg$currPos;\n        if (input.charCodeAt(peg$currPos) === 39) {\n          s1 = peg$c56;\n          peg$currPos++;\n        } else {\n          s1 = peg$FAILED;\n          if (peg$silentFails === 0) { peg$fail(peg$c57); }\n        }\n        if (s1 !== peg$FAILED) {\n          s2 = [];\n          if (peg$c58.test(input.charAt(peg$currPos))) {\n            s3 = input.charAt(peg$currPos);\n            peg$currPos++;\n          } else {\n            s3 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c59); }\n          }\n          if (s3 === peg$FAILED) {\n            s3 = peg$currPos;\n            if (input.charCodeAt(peg$currPos) === 92) {\n              s4 = peg$c51;\n              peg$currPos++;\n            } else {\n              s4 = peg$FAILED;\n              if (peg$silentFails === 0) { peg$fail(peg$c52); }\n            }\n            if (s4 !== peg$FAILED) {\n              if (input.length > peg$currPos) {\n                s5 = input.charAt(peg$currPos);\n                peg$currPos++;\n              } else {\n                s5 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c53); }\n              }\n              if (s5 !== peg$FAILED) {\n                peg$savedPos = s3;\n                s4 = peg$c54(s4, s5);\n                s3 = s4;\n              } else {\n                peg$currPos = s3;\n                s3 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s3;\n              s3 = peg$FAILED;\n            }\n          }\n          while (s3 !== peg$FAILED) {\n            s2.push(s3);\n            if (peg$c58.test(input.charAt(peg$currPos))) {\n              s3 = input.charAt(peg$currPos);\n              peg$currPos++;\n            } else {\n              s3 = peg$FAILED;\n              if (peg$silentFails === 0) { peg$fail(peg$c59); }\n            }\n            if (s3 === peg$FAILED) {\n              s3 = peg$currPos;\n              if (input.charCodeAt(peg$currPos) === 92) {\n                s4 = peg$c51;\n                peg$currPos++;\n              } else {\n                s4 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c52); }\n              }\n              if (s4 !== peg$FAILED) {\n                if (input.length > peg$currPos) {\n                  s5 = input.charAt(peg$currPos);\n                  peg$currPos++;\n                } else {\n                  s5 = peg$FAILED;\n                  if (peg$silentFails === 0) { peg$fail(peg$c53); }\n                }\n                if (s5 !== peg$FAILED) {\n                  peg$savedPos = s3;\n                  s4 = peg$c54(s4, s5);\n                  s3 = s4;\n                } else {\n                  peg$currPos = s3;\n                  s3 = peg$FAILED;\n                }\n              } else {\n                peg$currPos = s3;\n                s3 = peg$FAILED;\n              }\n            }\n          }\n          if (s2 !== peg$FAILED) {\n            if (input.charCodeAt(peg$currPos) === 39) {\n              s3 = peg$c56;\n              peg$currPos++;\n            } else {\n              s3 = peg$FAILED;\n              if (peg$silentFails === 0) { peg$fail(peg$c57); }\n            }\n            if (s3 !== peg$FAILED) {\n              peg$savedPos = s0;\n              s1 = peg$c55(s2);\n              s0 = s1;\n            } else {\n              peg$currPos = s0;\n              s0 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsenumber() {\n      var s0, s1, s2, s3;\n\n      var key    = peg$currPos * 30 + 16,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      s1 = peg$currPos;\n      s2 = [];\n      if (peg$c60.test(input.charAt(peg$currPos))) {\n        s3 = input.charAt(peg$currPos);\n        peg$currPos++;\n      } else {\n        s3 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c61); }\n      }\n      while (s3 !== peg$FAILED) {\n        s2.push(s3);\n        if (peg$c60.test(input.charAt(peg$currPos))) {\n          s3 = input.charAt(peg$currPos);\n          peg$currPos++;\n        } else {\n          s3 = peg$FAILED;\n          if (peg$silentFails === 0) { peg$fail(peg$c61); }\n        }\n      }\n      if (s2 !== peg$FAILED) {\n        if (input.charCodeAt(peg$currPos) === 46) {\n          s3 = peg$c42;\n          peg$currPos++;\n        } else {\n          s3 = peg$FAILED;\n          if (peg$silentFails === 0) { peg$fail(peg$c43); }\n        }\n        if (s3 !== peg$FAILED) {\n          s2 = [s2, s3];\n          s1 = s2;\n        } else {\n          peg$currPos = s1;\n          s1 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s1;\n        s1 = peg$FAILED;\n      }\n      if (s1 === peg$FAILED) {\n        s1 = null;\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = [];\n        if (peg$c60.test(input.charAt(peg$currPos))) {\n          s3 = input.charAt(peg$currPos);\n          peg$currPos++;\n        } else {\n          s3 = peg$FAILED;\n          if (peg$silentFails === 0) { peg$fail(peg$c61); }\n        }\n        if (s3 !== peg$FAILED) {\n          while (s3 !== peg$FAILED) {\n            s2.push(s3);\n            if (peg$c60.test(input.charAt(peg$currPos))) {\n              s3 = input.charAt(peg$currPos);\n              peg$currPos++;\n            } else {\n              s3 = peg$FAILED;\n              if (peg$silentFails === 0) { peg$fail(peg$c61); }\n            }\n          }\n        } else {\n          s2 = peg$FAILED;\n        }\n        if (s2 !== peg$FAILED) {\n          peg$savedPos = s0;\n          s1 = peg$c62(s1, s2);\n          s0 = s1;\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsepath() {\n      var s0, s1;\n\n      var key    = peg$currPos * 30 + 17,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      s1 = peg$parseidentifierName();\n      if (s1 !== peg$FAILED) {\n        peg$savedPos = s0;\n        s1 = peg$c63(s1);\n      }\n      s0 = s1;\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsetype() {\n      var s0, s1, s2, s3, s4, s5;\n\n      var key    = peg$currPos * 30 + 18,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.substr(peg$currPos, 5) === peg$c64) {\n        s1 = peg$c64;\n        peg$currPos += 5;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c65); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = peg$parse_();\n        if (s2 !== peg$FAILED) {\n          s3 = [];\n          if (peg$c66.test(input.charAt(peg$currPos))) {\n            s4 = input.charAt(peg$currPos);\n            peg$currPos++;\n          } else {\n            s4 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c67); }\n          }\n          if (s4 !== peg$FAILED) {\n            while (s4 !== peg$FAILED) {\n              s3.push(s4);\n              if (peg$c66.test(input.charAt(peg$currPos))) {\n                s4 = input.charAt(peg$currPos);\n                peg$currPos++;\n              } else {\n                s4 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c67); }\n              }\n            }\n          } else {\n            s3 = peg$FAILED;\n          }\n          if (s3 !== peg$FAILED) {\n            s4 = peg$parse_();\n            if (s4 !== peg$FAILED) {\n              if (input.charCodeAt(peg$currPos) === 41) {\n                s5 = peg$c68;\n                peg$currPos++;\n              } else {\n                s5 = peg$FAILED;\n                if (peg$silentFails === 0) { peg$fail(peg$c69); }\n              }\n              if (s5 !== peg$FAILED) {\n                peg$savedPos = s0;\n                s1 = peg$c70(s3);\n                s0 = s1;\n              } else {\n                peg$currPos = s0;\n                s0 = peg$FAILED;\n              }\n            } else {\n              peg$currPos = s0;\n              s0 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parseflags() {\n      var s0, s1;\n\n      var key    = peg$currPos * 30 + 19,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = [];\n      if (peg$c71.test(input.charAt(peg$currPos))) {\n        s1 = input.charAt(peg$currPos);\n        peg$currPos++;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c72); }\n      }\n      if (s1 !== peg$FAILED) {\n        while (s1 !== peg$FAILED) {\n          s0.push(s1);\n          if (peg$c71.test(input.charAt(peg$currPos))) {\n            s1 = input.charAt(peg$currPos);\n            peg$currPos++;\n          } else {\n            s1 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c72); }\n          }\n        }\n      } else {\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parseregex() {\n      var s0, s1, s2, s3, s4;\n\n      var key    = peg$currPos * 30 + 20,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.charCodeAt(peg$currPos) === 47) {\n        s1 = peg$c73;\n        peg$currPos++;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c74); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = [];\n        if (peg$c75.test(input.charAt(peg$currPos))) {\n          s3 = input.charAt(peg$currPos);\n          peg$currPos++;\n        } else {\n          s3 = peg$FAILED;\n          if (peg$silentFails === 0) { peg$fail(peg$c76); }\n        }\n        if (s3 !== peg$FAILED) {\n          while (s3 !== peg$FAILED) {\n            s2.push(s3);\n            if (peg$c75.test(input.charAt(peg$currPos))) {\n              s3 = input.charAt(peg$currPos);\n              peg$currPos++;\n            } else {\n              s3 = peg$FAILED;\n              if (peg$silentFails === 0) { peg$fail(peg$c76); }\n            }\n          }\n        } else {\n          s2 = peg$FAILED;\n        }\n        if (s2 !== peg$FAILED) {\n          if (input.charCodeAt(peg$currPos) === 47) {\n            s3 = peg$c73;\n            peg$currPos++;\n          } else {\n            s3 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c74); }\n          }\n          if (s3 !== peg$FAILED) {\n            s4 = peg$parseflags();\n            if (s4 === peg$FAILED) {\n              s4 = null;\n            }\n            if (s4 !== peg$FAILED) {\n              peg$savedPos = s0;\n              s1 = peg$c77(s2, s4);\n              s0 = s1;\n            } else {\n              peg$currPos = s0;\n              s0 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s0;\n            s0 = peg$FAILED;\n          }\n        } else {\n          peg$currPos = s0;\n          s0 = peg$FAILED;\n        }\n      } else {\n        peg$currPos = s0;\n        s0 = peg$FAILED;\n      }\n\n      peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };\n\n      return s0;\n    }\n\n    function peg$parsefield() {\n      var s0, s1, s2, s3, s4, s5, s6;\n\n      var key    = peg$currPos * 30 + 21,\n          cached = peg$resultsCache[key];\n\n      if (cached) {\n        peg$currPos = cached.nextPos;\n\n        return cached.result;\n      }\n\n      s0 = peg$currPos;\n      if (input.charCodeAt(peg$currPos) === 46) {\n        s1 = peg$c42;\n        peg$currPos++;\n      } else {\n        s1 = peg$FAILED;\n        if (peg$silentFails === 0) { peg$fail(peg$c43); }\n      }\n      if (s1 !== peg$FAILED) {\n        s2 = peg$parseidentifierName();\n        if (s2 !== peg$FAILED) {\n          s3 = [];\n          s4 = peg$currPos;\n          if (input.charCodeAt(peg$currPos) === 46) {\n            s5 = peg$c42;\n            peg$currPos++;\n          } else {\n            s5 = peg$FAILED;\n            if (peg$silentFails === 0) { peg$fail(peg$c43); }\n          }\n          if (s5 !== peg$FAILED) {\n            s6 = peg$parseidentifierName();\n            if (s6 !== peg$FAILED) {\n              s5 = [s5, s6];\n              s4 = s5;\n            } else {\n              peg$currPos = s4;\n              s4 = peg$FAILED;\n            }\n          } else {\n            peg$currPos = s4;\n            s4 = peg$FAILED;\n          }\n          while (s4 !== peg$FAILED) {\n            s3.push(s4);\n            s4 = peg$currPpost(uri + '/echo')
+.send({ name: 'tobi' })
+.then(function(res) {
+  res.text.should.equal('{&quot;name&quot;:&quot;tobi&quot;}');
+  done();
+})</code></pre></dd>
+            <dt>should reject an error with .then(null, reject)</dt>
+            <dd><pre><code>request
+.get(uri + '/error')
+.then(null, function(err) {
+  assert.equal(err.status, 500);
+  assert.equal(err.response.text, 'boom');
+  done();
+})</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.abort()</h1>
+          <dl>
+            <dt>should abort the request</dt>
+            <dd><pre><code>var req = request
+.get(uri + '/delay/3000')
+.end(function(err, res){
+  assert(false, 'should not complete the request');
+});
+req.on('abort', done);
+setTimeout(function() {
+  req.abort();
+}, 1000);</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>request</h1>
+      <dl>
+        <section class="suite">
+          <h1>persistent agent</h1>
+          <dl>
+            <dt>should gain a session on POST</dt>
+            <dd><pre><code>agent3
+  .post('http://localhost:4000/signin')
+  .end(function(err, res) {
+    should.not.exist(err);
+    res.should.have.status(200);
+    should.not.exist(res.headers['set-cookie']);
+    res.text.should.containEql('dashboard');
+    done();
+  });</code></pre></dd>
+            <dt>should start with empty session (set cookies)</dt>
+            <dd><pre><code>agent1
+  .get('http://localhost:4000/dashboard')
+  .end(function(err, res) {
+    should.exist(err);
+    res.should.have.status(401);
+    should.exist(res.headers['set-cookie']);
+    done();
+  });</code></pre></dd>
+            <dt>should gain a session (cookies already set)</dt>
+            <dd><pre><code>agent1
+  .post('http://localhost:4000/signin')
+  .end(function(err, res) {
+    should.not.exist(err);
+    res.should.have.status(200);
+    should.not.exist(res.headers['set-cookie']);
+    res.text.should.containEql('dashboard');
+    done();
+  });</code></pre></dd>
+            <dt>should persist cookies across requests</dt>
+            <dd><pre><code>agent1
+  .get('http://localhost:4000/dashboard')
+  .end(function(err, res) {
+    should.not.exist(err);
+    res.should.have.status(200);
+    done();
+  });</code></pre></dd>
+            <dt>should have the cookie set in the end callback</dt>
+            <dd><pre><code>agent4
+  .post('http://localhost:4000/setcookie')
+  .end(function(err, res) {
+    agent4
+      .get('http://localhost:4000/getcookie')
+      .end(function(err, res) {
+        should.not.exist(err);
+        res.should.have.status(200);
+        assert.strictEqual(res.text, 'jar');
+        done();
+      });
+  });</code></pre></dd>
+            <dt>should not share cookies</dt>
+            <dd><pre><code>agent2
+  .get('http://localhost:4000/dashboard')
+  .end(function(err, res) {
+    should.exist(err);
+    res.should.have.status(401);
+    done();
+  });</code></pre></dd>
+            <dt>should not lose cookies between agents</dt>
+            <dd><pre><code>agent1
+  .get('http://localhost:4000/dashboard')
+  .end(function(err, res) {
+    should.not.exist(err);
+    res.should.have.status(200);
+    done();
+  });</code></pre></dd>
+            <dt>should be able to follow redirects</dt>
+            <dd><pre><code>agent1
+  .get('http://localhost:4000/')
+  .end(function(err, res) {
+    should.not.exist(err);
+    res.should.have.status(200);
+    res.text.should.containEql('dashboard');
+    done();
+  });</code></pre></dd>
+            <dt>should be able to post redirects</dt>
+            <dd><pre><code>agent1
+  .post('http://localhost:4000/redirect')
+  .send({ foo: 'bar', baz: 'blaaah' })
+  .end(function(err, res) {
+    should.not.exist(err);
+    res.should.have.status(200);
+    res.text.should.containEql('simple');
+    res.redirects.should.eql(['http://localhost:4000/simple']);
+    done();
+  });</code></pre></dd>
+            <dt>should be able to limit redirects</dt>
+            <dd><pre><code>agent1
+  .get('http://localhost:4000/')
+  .redirects(0)
+  .end(function(err, res) {
+    should.exist(err);
+    res.should.have.status(302);
+    res.redirects.should.eql([]);
+    res.header.location.should.equal('/dashboard');
+    done();
+  });</code></pre></dd>
+            <dt>should be able to create a new session (clear cookie)</dt>
+            <dd><pre><code>agent1
+  .post('http://localhost:4000/signout')
+  .end(function(err, res) {
+    should.not.exist(err);
+    res.should.have.status(200);
+    should.exist(res.headers['set-cookie']);
+    done();
+  });</code></pre></dd>
+            <dt>should regenerate with an empty session</dt>
+            <dd><pre><code>agent1
+  .get('http://localhost:4000/dashboard')
+  .end(function(err, res) {
+    should.exist(err);
+    res.should.have.status(401);
+    should.not.exist(res.headers['set-cookie']);
+    done();
+  });</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Basic auth</h1>
+      <dl>
+        <section class="suite">
+          <h1>when credentials are present in url</h1>
+          <dl>
+            <dt>should set Authorization</dt>
+            <dd><pre><code>request
+.get('http://tobi:learnboost@localhost:3010')
+.end(function(err, res){
+  res.status.should.equal(200);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>req.auth(user, pass)</h1>
+          <dl>
+            <dt>should set Authorization</dt>
+            <dd><pre><code>request
+.get('http://localhost:3010')
+.auth('tobi', 'learnboost')
+.end(function(err, res){
+  res.status.should.equal(200);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>req.auth(user + &quot;:&quot; + pass)</h1>
+          <dl>
+            <dt>should set authorization</dt>
+            <dd><pre><code>request
+.get('http://localhost:3010/again')
+.auth('tobi')
+.end(function(err, res){
+  res.status.should.eql(200);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>[node] request</h1>
+      <dl>
+        <section class="suite">
+          <h1>res.statusCode</h1>
+          <dl>
+            <dt>should set statusCode</dt>
+            <dd><pre><code>request
+.get('http://localhost:5000/login', function(err, res){
+  assert.strictEqual(res.statusCode, 200);
+  done();
+})</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with an object</h1>
+          <dl>
+            <dt>should format the url</dt>
+            <dd><pre><code>request
+.get(url.parse('http://localhost:5000/login'))
+.end(function(err, res){
+  assert(res.ok);
+  done();
+})</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>without a schema</h1>
+          <dl>
+            <dt>should default to http</dt>
+            <dd><pre><code>request
+.get('localhost:5000/login')
+.end(function(err, res){
+  assert.equal(res.status, 200);
+  done();
+})</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>req.toJSON()</h1>
+          <dl>
+            <dt>should describe the request</dt>
+            <dd><pre><code>request
+.post(':5000/echo')
+.send({ foo: 'baz' })
+.end(function(err, res){
+  var obj = res.request.toJSON();
+  assert.equal('POST', obj.method);
+  assert.equal(':5000/echo', obj.url);
+  assert.equal('baz', obj.data.foo);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>should allow the send shorthand</h1>
+          <dl>
+            <dt>with callback in the method call</dt>
+            <dd><pre><code>request
+.get('http://localhost:5000/login', function(err, res) {
+    assert.equal(res.status, 200);
+    done();
+});</code></pre></dd>
+            <dt>with data in the method call</dt>
+            <dd><pre><code>request
+.post('http://localhost:5000/echo', { foo: 'bar' })
+.end(function(err, res) {
+  assert.equal('{&quot;foo&quot;:&quot;bar&quot;}', res.text);
+  done();
+});</code></pre></dd>
+            <dt>with callback and data in the method call</dt>
+            <dd><pre><code>request
+.post('http://localhost:5000/echo', { foo: 'bar' }, function(err, res) {
+  assert.equal('{&quot;foo&quot;:&quot;bar&quot;}', res.text);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>res.toJSON()</h1>
+          <dl>
+            <dt>should describe the response</dt>
+            <dd><pre><code>request
+.post('http://localhost:5000/echo')
+.send({ foo: 'baz' })
+.end(function(err, res){
+  var obj = res.toJSON();
+  assert.equal('object', typeof obj.header);
+  assert.equal('object', typeof obj.req);
+  assert.equal(200, obj.status);
+  assert.equal('{&quot;foo&quot;:&quot;baz&quot;}', obj.text);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>res.links</h1>
+          <dl>
+            <dt>should default to an empty object</dt>
+            <dd><pre><code>request
+.get('http://localhost:5000/login')
+.end(function(err, res){
+  res.links.should.eql({});
+  done();
+})</code></pre></dd>
+            <dt>should parse the Link header field</dt>
+            <dd><pre><code>request
+.get('http://localhost:5000/links')
+.end(function(err, res){
+  res.links.next.should.equal('https://api.github.com/repos/visionmedia/mocha/issues?page=2');
+  done();
+})</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>req.unset(field)</h1>
+          <dl>
+            <dt>should remove the header field</dt>
+            <dd><pre><code>request
+.post('http://localhost:5000/echo')
+.unset('User-Agent')
+.end(function(err, res){
+  assert.equal(void 0, res.header['user-agent']);
+  done();
+})</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>req.write(str)</h1>
+          <dl>
+            <dt>should write the given data</dt>
+            <dd><pre><code>var req = request.post('http://localhost:5000/echo');
+req.set('Content-Type', 'application/json');
+req.write('{&quot;name&quot;').should.be.a.boolean;
+req.write(':&quot;tobi&quot;}').should.be.a.boolean;
+req.end(function(err, res){
+  res.text.should.equal('{&quot;name&quot;:&quot;tobi&quot;}');
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>req.pipe(stream)</h1>
+          <dl>
+            <dt>should pipe the response to the given stream</dt>
+            <dd><pre><code>var stream = new EventEmitter;
+stream.buf = '';
+stream.writable = true;
+stream.write = function(chunk){
+  this.buf += chunk;
+};
+stream.end = function(){
+  this.buf.should.equal('{&quot;name&quot;:&quot;tobi&quot;}');
+  done();
+};
+request
+.post('http://localhost:5000/echo')
+.send('{&quot;name&quot;:&quot;tobi&quot;}')
+.pipe(stream);</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.buffer()</h1>
+          <dl>
+            <dt>should enable buffering</dt>
+            <dd><pre><code>request
+.get('http://localhost:5000/custom')
+.buffer()
+.end(function(err, res){
+  assert.equal(null, err);
+  assert.equal('custom stuff', res.text);
+  assert(res.buffered);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.buffer(false)</h1>
+          <dl>
+            <dt>should disable buffering</dt>
+            <dd><pre><code>request
+.post('http://localhost:5000/echo')
+.type('application/x-dog')
+.send('hello this is dog')
+.buffer(false)
+.end(function(err, res){
+  assert.equal(null, err);
+  assert.equal(null, res.text);
+  res.body.should.eql({});
+  var buf = '';
+  res.setEncoding('utf8');
+  res.on('data', function(chunk){ buf += chunk });
+  res.on('end', function(){
+    buf.should.equal('hello this is dog');
+    done();
+  });
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.agent()</h1>
+          <dl>
+            <dt>should return the defaut agent</dt>
+            <dd><pre><code>var req = request.post('http://localhost:5000/echo');
+req.agent().should.equal(false);
+done();</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.agent(undefined)</h1>
+          <dl>
+            <dt>should set an agent to undefined and ensure it is chainable</dt>
+            <dd><pre><code>var req = request.get('http://localhost:5000/echo');
+var ret = req.agent(undefined);
+ret.should.equal(req);
+assert.strictEqual(req.agent(), undefined);
+done();</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>.agent(new http.Agent())</h1>
+          <dl>
+            <dt>should set passed agent</dt>
+            <dd><pre><code>var http = require('http');
+var req = request.get('http://localhost:5000/echo');
+var agent = new http.Agent();
+var ret = req.agent(agent);
+ret.should.equal(req);
+req.agent().should.equal(agent)
+done();</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>with a content type other than application/json or text/*</h1>
+          <dl>
+            <dt>should disable buffering</dt>
+            <dd><pre><code>request
+.post('http://localhost:5000/echo')
+.type('application/x-dog')
+.send('hello this is dog')
+.end(function(err, res){
+  assert.equal(null, err);
+  assert.equal(null, res.text);
+  res.body.should.eql({});
+  var buf = '';
+  res.setEncoding('utf8');
+  res.buffered.should.be.false;
+  res.on('data', function(chunk){ buf += chunk });
+  res.on('end', function(){
+    buf.should.equal('hello this is dog');
+    done();
+  });
+});</code></pre></dd>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>content-length</h1>
+          <dl>
+            <dt>should be set to the byte length of a non-buffer object</dt>
+            <dd><pre><code>var decoder = new StringDecoder('utf8');
+var img = fs.readFileSync(__dirname + '/fixtures/test.png');
+img = decoder.write(img);
+request
+.post('http://localhost:5000/echo')
+.type('application/x-image')
+.send(img)
+.buffer(false)
+.end(function(err, res){
+  assert.equal(null, err);
+  assert(!res.buffered);
+  assert.equal(res.header['content-length'], Buffer.byteLength(img));
+  done();
+});</code></pre></dd>
+            <dt>should be set to the length of a buffer object</dt>
+            <dd><pre><code>var img = fs.readFileSync(__dirname + '/fixtures/test.png');
+request
+.post('http://localhost:5000/echo')
+.type('application/x-image')
+.send(img)
+.buffer(true)
+.end(function(err, res){
+  assert.equal(null, err);
+  assert(res.buffered);
+  assert.equal(res.header['content-length'], img.length);
+  done();
+});</code></pre></dd>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>req.set(&quot;Content-Type&quot;, contentType)</h1>
+      <dl>
+        <dt>should work with just the contentType component</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.set('Content-Type', 'application/json')
+.send({ name: 'tobi' })
+.end(function(err, res){
+  assert(!err);
+  done();
+});</code></pre></dd>
+        <dt>should work with the charset component</dt>
+        <dd><pre><code>request
+.post('http://localhost:3005/echo')
+.set('Content-Type', 'application/json; charset=utf-8')
+.send({ name: 'tobi' })
+.end(function(err, res){
+  assert(!err);
+  done();
+});</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>exports</h1>
+      <dl>
+        <dt>should expose Part</dt>
+        <dd><pre><code>request.Part.should.be.a.function;</code></pre></dd>
+        <dt>should expose .protocols</dt>
+        <dd><pre><code>Object.keys(request.protocols)
+  .should.eql(['http:', 'https:']);</code></pre></dd>
+        <dt>should expose .serialize</dt>
+        <dd><pre><code>Object.keys(request.serialize)
+  .should.eql(['application/x-www-form-urlencoded', 'application/json']);</code></pre></dd>
+        <dt>should expose .parse</dt>
+        <dd><pre><code>Object.keys(request.parse)
+  .should.eql(['application/x-www-form-urlencoded', 'application/json', 'text', 'image']);</code></pre></dd>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>flags</h1>
+      <dl>
+        <section class="su= -1 ? matches[7] : undefined;
+            components.fragment = uriString.indexOf("#") !== -1 ? matches[8] : undefined;
+            //fix port number
+            if (isNaN(components.port)) {
+                components.port = uriString.match(/\/\/(?:.|\n)*\:(?:\/|\?|\#|$)/) ? matches[4] : undefined;
+            }
+        }
+        if (components.host) {
+            //normalize IP hosts
+            components.host = _normalizeIPv6(_normalizeIPv4(components.host, protocol), protocol);
+        }
+        //determine reference type
+        if (components.scheme === undefined && components.userinfo === undefined && components.host === undefined && components.port === undefined && !components.path && components.query === undefined) {
+            components.reference = "same-document";
+        } else if (components.scheme === undefined) {
+            components.reference = "relative";
+        } else if (components.fragment === undefined) {
+            components.reference = "absolute";
+        } else {
+            components.reference = "uri";
+        }
+        //check for reference errors
+        if (options.reference && options.reference !== "suffix" && options.reference !== components.reference) {
+            components.error = components.error || "URI is not a " + options.reference + " reference.";
+        }
+        //find scheme handler
+        var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
+        //check if scheme can't handle IRIs
+        if (!options.unicodeSupport && (!schemeHandler || !schemeHandler.unicodeSupport)) {
+            //if host component is a domain name
+            if (components.host && (options.domainHost || schemeHandler && schemeHandler.domainHost)) {
+                //convert Unicode IDN -> ASCII IDN
+                try {
+                    components.host = punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase());
+                } catch (e) {
+                    components.error = components.error || "Host's domain name can not be converted to ASCII via punycode: " + e;
+                }
+            }
+            //convert IRI -> URI
+            _normalizeComponentEncoding(components, URI_PROTOCOL);
+        } else {
+            //normalize encodings
+            _normalizeComponentEncoding(components, protocol);
+        }
+        //perform scheme specific parsing
+        if (schemeHandler && schemeHandler.parse) {
+            schemeHandler.parse(components, options);
+        }
+    } else {
+        components.error = components.error || "URI can not be parsed.";
+    }
+    return components;
+}
+
+function _recomposeAuthority(components, options) {
+    var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
+    var uriTokens = [];
+    if (components.userinfo !== undefined) {
+        uriTokens.push(components.userinfo);
+        uriTokens.push("@");
+    }
+    if (components.host !== undefined) {
+        //normalize IP hosts, add brackets and escape zone separator for IPv6
+        uriTokens.push(_normalizeIPv6(_normalizeIPv4(String(components.host), protocol), protocol).replace(protocol.IPV6ADDRESS, function (_, $1, $2) {
+            return "[" + $1 + ($2 ? "%25" + $2 : "") + "]";
+        }));
+    }
+    if (typeof components.port === "number" || typeof components.port === "string") {
+        uriTokens.push(":");
+        uriTokens.push(String(components.port));
+    }
+    return uriTokens.length ? uriTokens.join("") : undefined;
+}
+
+var RDS1 = /^\.\.?\//;
+var RDS2 = /^\/\.(\/|$)/;
+var RDS3 = /^\/\.\.(\/|$)/;
+var RDS5 = /^\/?(?:.|\n)*?(?=\/|$)/;
+function removeDotSegments(input) {
+    var output = [];
+    while (input.length) {
+        if (input.match(RDS1)) {
+            input = input.replace(RDS1, "");
+        } else if (input.match(RDS2)) {
+            input = input.replace(RDS2, "/");
+        } else if (input.match(RDS3)) {
+            input = input.replace(RDS3, "/");
+            output.pop();
+        } else if (input === "." || input === "..") {
+            input = "";
+        } else {
+            var im = input.match(RDS5);
+            if (im) {
+                var s = im[0];
+                input = input.slice(s.length);
+                output.push(s);
+            } else {
+                throw new Error("Unexpected dot segment condition");
+            }
+        }
+    }
+    return output.join("");
+}
+
+function serialize(components) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var protocol = options.iri ? IRI_PROTOCOL : URI_PROTOCOL;
+    var uriTokens = [];
+    //find scheme handler
+    var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
+    //perform scheme specific serialization
+    if (schemeHandler && schemeHandler.serialize) schemeHandler.serialize(components, options);
+    if (components.host) {
+        //if host component is an IPv6 address
+        if (protocol.IPV6ADDRESS.test(components.host)) {}
+        //TODO: normalize IPv6 address as per RFC 5952
+
+        //if host component is a domain name
+        else if (options.domainHost || schemeHandler && schemeHandler.domainHost) {
+                //convert IDN via punycode
+                try {
+                    components.host = !options.iri ? punycode.toASCII(components.host.replace(protocol.PCT_ENCODED, pctDecChars).toLowerCase()) : punycode.toUnicode(components.host);
+                } catch (e) {
+                    components.error = components.error || "Host's domain name can not be converted to " + (!options.iri ? "ASCII" : "Unicode") + " via punycode: " + e;
+                }
+            }
+    }
+    //normalize encoding
+    _normalizeComponentEncoding(components, protocol);
+    if (options.reference !== "suffix" && components.scheme) {
+        uriTokens.push(components.scheme);
+        uriTokens.push(":");
+    }
+    var authority = _recomposeAuthority(components, options);
+    if (authority !== undefined) {
+        if (options.reference !== "suffix") {
+            uriTokens.push("//");
+        }
+        uriTokens.push(authority);
+        if (components.path && components.path.charAt(0) !== "/") {
+            uriTokens.push("/");
+        }
+    }
+    if (components.path !== undefined) {
+        var s = components.path;
+        if (!options.absolutePath && (!schemeHandler || !schemeHandler.absolutePath)) {
+            s = removeDotSegments(s);
+        }
+        if (authority === undefined) {
+            s = s.replace(/^\/\//, "/%2F"); //don't allow the path to start with "//"
+        }
+        uriTokens.push(s);
+    }
+    if (components.query !== undefined) {
+        uriTokens.push("?");
+        uriTokens.push(components.query);
+    }
+    if (components.fragment !== undefined) {
+        uriTokens.push("#");
+        uriTokens.push(components.fragment);
+    }
+    return uriTokens.join(""); //merge tokens into a string
+}
+
+function resolveComponents(base, relative) {
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var skipNormalization = arguments[3];
+
+    var target = {};
+    if (!skipNormalization) {
+        base = parse(serialize(base, options), options); //normalize base components
+        relative = parse(serialize(relative, options), options); //normalize relative components
+    }
+    options = options || {};
+    if (!options.tolerant && relative.scheme) {
+        target.scheme = relative.scheme;
+        //target.authority = relative.authority;
+        target.userinfo = relative.userinfo;
+        target.host = relative.host;
+        target.port = relative.port;
+        target.path = removeDotSegments(relative.path || "");
+        target.query = relative.query;
+    } else {
+        if (relative.userinfo !== undefined || relative.host !== undefined || relative.port !== undefined) {
+            //target.authority = relative.authority;
+            target.userinfo = relative.userinfo;
+            target.host = relative.host;
+            target.port = relative.port;
+            target.path = removeDotSegments(relative.path || "");
+            target.query = relative.query;
+        } else {
+            if (!relative.path) {
+                target.path = base.path;
+                if (relative.query !== undefined) {
+                    target.query = relative.query;
+                } else {
+                    target.query = base.query;
+                }
+            } else {
+                if (relative.path.charAt(0) === "/") {
+                    target.path = removeDotSegments(relative.path);
+                } else {
+                    if ((base.userinfo !== undefined || base.host !== undefined || base.port !== undefined) && !base.path) {
+                        target.path = "/" + relative.path;
+                    } else if (!base.path) {
+                        target.path = relative.path;
+                    } else {
+                        target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative.path;
+                    }
+                    target.path = removeDotSegments(target.path);
+                }
+                target.query = relative.query;
+            }
+            //target.authority = base.authority;
+            target.userinfo = base.userinfo;
+            target.host = base.host;
+            target.port = base.port;
+        }
+        target.scheme = base.scheme;
+    }
+    target.fragment = relative.fragment;
+    return target;
+}
+
+function resolve(baseURI, relativeURI, options) {
+    var schemelessOptions = assign({ scheme: 'null' }, options);
+    return serialize(resolveComponents(parse(baseURI, schemelessOptions), parse(relativeURI, schemelessOptions), schemelessOptions, true), schemelessOptions);
+}
+
+function normalize(uri, options) {
+    if (typeof uri === "string") {
+        uri = serialize(parse(uri, options), options);
+    } else if (typeOf(uri) === "object") {
+        uri = parse(serialize(uri, options), options);
+    }
+    return uri;
+}
+
+function equal(uriA, uriB, options) {
+    if (typeof uriA === "string") {
+        uriA = serialize(parse(uriA, options), options);
+    } else if (typeOf(uriA) === "object") {
+        uriA = serialize(uriA, options);
+    }
+    if (typeof uriB === "string") {
+        uriB = serialize(parse(uriB, options), options);
+    } else if (typeOf(uriB) === "object") {
+        uriB = serialize(uriB, options);
+    }
+    return uriA === uriB;
+}
+
+function escapeComponent(str, options) {
+    return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.ESCAPE : IRI_PROTOCOL.ESCAPE, pctEncChar);
+}
+
+function unescapeComponent(str, options) {
+    return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.PCT_ENCODED : IRI_PROTOCOL.PCT_ENCODED, pctDecChars);
+}
+
+var handler = {
+    scheme: "http",
+    domainHost: true,
+    parse: function parse(components, options) {
+        //report missing host
+        if (!components.host) {
+            components.error = components.error || "HTTP URIs must have a host.";
+        }
+        return components;
+    },
+    serialize: function serialize(components, options) {
+        var secure = String(components.scheme).toLowerCase() === "https";
+        //normalize the default port
+        if (components.port === (secure ? 443 : 80) || components.port === "") {
+            components.port = undefined;
+        }
+        //normalize the empty path
+        if (!components.path) {
+            components.path = "/";
+        }
+        //NOTE: We do not parse query strings for HTTP URIs
+        //as WWW Form Url Encoded query strings are part of the HTML4+ spec,
+        //and not the HTTP spec.
+        return components;
+    }
+};
+
+var handler$1 = {
+    scheme: "https",
+    domainHost: handler.domainHost,
+    parse: handler.parse,
+    serialize: handler.serialize
+};
+
+function isSecure(wsComponents) {
+    return typeof wsComponents.secure === 'boolean' ? wsComponents.secure : String(wsComponents.scheme).toLowerCase() === "wss";
+}
+//RFC 6455
+var handler$2 = {
+    scheme: "ws",
+    domainHost: true,
+    parse: function parse(components, options) {
+        var wsComponents = components;
+        //indicate if the secure flag is set
+        wsComponents.secure = isSecure(wsComponents);
+        //construct resouce name
+        wsComponents.resourceName = (wsComponents.path || '/') + (wsComponents.query ? '?' + wsComponents.query : '');
+        wsComponents.path = undefined;
+        wsComponents.query = undefined;
+        return wsComponents;
+    },
+    serialize: function serialize(wsComponents, options) {
+        //normalize the default port
+        if (wsComponents.port === (isSecure(wsComponents) ? 443 : 80) || wsComponents.port === "") {
+            wsComponents.port = undefined;
+        }
+        //ensure scheme matches secure flag
+        if (typeof wsComponents.secure === 'boolean') {
+            wsComponents.scheme = wsComponents.secure ? 'wss' : 'ws';
+            wsComponents.secure = undefined;
+        }
+        //reconstruct path from resource name
+        if (wsComponents.resourceName) {
+            var _wsComponents$resourc = wsComponents.resourceName.split('?'),
+                _wsComponents$resourc2 = slicedToArray(_wsComponents$resourc, 2),
+                path = _wsComponents$resourc2[0],
+                query = _wsComponents$resourc2[1];
+
+            wsComponents.path = path && path !== '/' ? path : undefined;
+            wsComponents.query = query;
+            wsComponents.resourceName = undefined;
+        }
+        //forbid fragment component
+        wsComponents.fragment = undefined;
+        return wsComponents;
+    }
+};
+
+var handler$3 = {
+    scheme: "wss",
+    domainHost: handler$2.domainHost,
+    parse: handler$2.parse,
+    serialize: handler$2.serialize
+};
+
+var O = {};
+var isIRI = true;
+//RFC 3986
+var UNRESERVED$$ = "[A-Za-z0-9\\-\\.\\_\\~" + (isIRI ? "\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF" : "") + "]";
+var HEXDIG$$ = "[0-9A-Fa-f]"; //case-insensitive
+var PCT_ENCODED$ = subexp(subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%[89A-Fa-f]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%" + HEXDIG$$ + HEXDIG$$)); //expanded
+//RFC 5322, except these symbols as per RFC 6068: @ : / ? # [ ] & ; =
+//const ATEXT$$ = "[A-Za-z0-9\\!\\#\\$\\%\\&\\'\\*\\+\\-\\/\\=\\?\\^\\_\\`\\{\\|\\}\\~]";
+//const WSP$$ = "[\\x20\\x09]";
+//const OBS_QTEXT$$ = "[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]";  //(%d1-8 / %d11-12 / %d14-31 / %d127)
+//const QTEXT$$ = merge("[\\x21\\x23-\\x5B\\x5D-\\x7E]", OBS_QTEXT$$);  //%d33 / %d35-91 / %d93-126 / obs-qtext
+//const VCHAR$$ = "[\\x21-\\x7E]";
+//const WSP$$ = "[\\x20\\x09]";
+//const OBS_QP$ = subexp("\\\\" + merge("[\\x00\\x0D\\x0A]", OBS_QTEXT$$));  //%d0 / CR / LF / obs-qtext
+//const FWS$ = subexp(subexp(WSP$$ + "*" + "\\x0D\\x0A") + "?" + WSP$$ + "+");
+//const QUOTED_PAIR$ = subexp(subexp("\\\\" + subexp(VCHAR$$ + "|" + WSP$$)) + "|" + OBS_QP$);
+//const QUOTED_STRING$ = subexp('\\"' + subexp(FWS$ + "?" + QCONTENT$) + "*" + FWS$ + "?" + '\\"');
+var ATEXT$$ = "[A-Za-z0-9\\!\\$\\%\\'\\*\\+\\-\\^\\_\\`\\{\\|\\}\\~]";
+var QTEXT$$ = "[\\!\\$\\%\\'\\(\\)\\*\\+\\,\\-\\.0-9\\<\\>A-Z\\x5E-\\x7E]";
+var VCHAR$$ = merge(QTEXT$$, "[\\\"\\\\]");
+var SOME_DELIMS$$ = "[\\!\\$\\'\\(\\)\\*\\+\\,\\;\\:\\@]";
+var UNRESERVED = new RegExp(UNRESERVED$$, "g");
+var PCT_ENCODED = new RegExp(PCT_ENCODED$, "g");
+var NOT_LOCAL_PART = new RegExp(merge("[^]", ATEXT$$, "[\\.]", '[\\"]', VCHAR$$), "g");
+var NOT_HFNAME = new RegExp(merge("[^]", UNRESERVED$$, SOME_DELIMS$$), "g");
+var NOT_HFVALUE = NOT_HFNAME;
+function decodeUnreserved(str) {
+    var decStr = pctDecChars(str);
+    return !decStr.match(UNRESERVED) ? str : decStr;
+}
+var handler$4 = {
+    scheme: "mailto",
+    parse: function parse$$1(components, options) {
+        var mailtoComponents = components;
+        var to = mailtoComponents.to = mailtoComponents.path ? mailtoComponents.path.split(",") : [];
+        mailtoComponents.path = undefined;
+        if (mailtoComponents.query) {
+            var unknownHeaders = false;
+            var headers = {};
+            var hfields = mailtoComponents.query.split("&");
+            for (var x = 0, xl = hfields.length; x < xl; ++x) {
+                var hfield = hfields[x].split("=");
+                switch (hfield[0]) {
+                    case "to":
+            rnpkg.com/path-exists/-/path-exists-3.0.0.tgz#ce0ebeaa5f78cb18925ea7d810d7b59b010fd515"
+  integrity sha1-zg6+ql94yxiSXqfYENe1mwEP1RU=
+
+path-exists@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/path-exists/-/path-exists-4.0.0.tgz#513bdbe2d3b95d7762e8c1137efa195c6c61b5b3"
+  integrity sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==
+
+path-is-absolute@^1.0.0, path-is-absolute@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
+  integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
+
+path-parse@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.5.tgz#3c1adf871ea9cd6c9431b6ea2bd74a0ff055c4c1"
+
+picomatch@^2.0.4, picomatch@^2.2.1:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.2.2.tgz#21f333e9b6b8eaff02468f5146ea406d345f4dad"
+  integrity sha512-q0M/9eZHzmr0AulXyPwNfZjtwZ/RBZlbN3K3CErVrk50T2ASYI7Bye0EvekFY3IP1Nt2DHu0re+V2ZHIpMkuWg==
+
+posix-character-classes@^0.1.0:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
+  integrity sha1-AerA/jta9xoqbAL+q7jB/vfgDqs=
+
+preserve@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
+  integrity sha1-gV7R9uvGWSb4ZbMQwHE7yzMVzks=
+
+private@^0.1.6, private@^0.1.7, private@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/private/-/private-0.1.8.tgz#2381edb3689f7a53d653190060fcf822d2f368ff"
+
+process-nextick-args@~2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
+  integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
+
+punycode@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.0.tgz#5f863edc89b96db09074bad7947bf09056ca4e7d"
+
+randomatic@^3.0.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/randomatic/-/randomatic-3.1.1.tgz#b776efc59375984e36c537b2f51a1f0aff0da1ed"
+  integrity sha512-TuDE5KxZ0J461RVjrJZCJc+J+zCkTb1MbH9AQUq68sMhOMcy9jLcb3BrZKgp9q9Ncltdg4QVqWrH02W2EFFVYw==
+  dependencies:
+    is-number "^4.0.0"
+    kind-of "^6.0.0"
+    math-random "^1.0.1"
+
+randombytes@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.1.0.tgz#df6f84372f0270dc65cdf6291349ab7a473d4f2a"
+  integrity sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==
+  dependencies:
+    safe-buffer "^5.1.0"
+
+readable-stream@^2.0.2:
+  version "2.3.7"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.7.tgz#1eca1cf711aef814c04f62252a36a62f6cb23b57"
+  integrity sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==
+  dependencies:
+    core-util-is "~1.0.0"
+    inherits "~2.0.3"
+    isarray "~1.0.0"
+    process-nextick-args "~2.0.0"
+    safe-buffer "~5.1.1"
+    string_decoder "~1.1.1"
+    util-deprecate "~1.0.1"
+
+readdirp@^2.0.0:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-2.2.1.tgz#0e87622a3325aa33e892285caf8b4e846529a525"
+  integrity sha512-1JU/8q+VgFZyxwrJ+SVIOsh+KywWGpds3NTqikiKpDMZWScmAYyKIgqkO+ARvNWJfXeXR1zxz7aHF4u4CyH6vQ==
+  dependencies:
+    graceful-fs "^4.1.11"
+    micromatch "^3.1.10"
+    readable-stream "^2.0.2"
+
+readdirp@~3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-3.5.0.tgz#9ba74c019b15d365278d2e91bb8c48d7b4d42c9e"
+  integrity sha512-cMhu7c/8rdhkHXWsY+osBhfSy0JikwpHK/5+imo+LpeasTF8ouErHrlYkwT0++njiyuDvc7OFY5T3ukvZ8qmFQ==
+  dependencies:
+    picomatch "^2.2.1"
+
+regenerate@^1.2.1:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.3.3.tgz#0c336d3980553d755c39b586ae3b20aa49c82b7f"
+
+regenerator-runtime@^0.10.5:
+  version "0.10.5"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.5.tgz#336c3efc1220adcedda2c9fab67b5a7955a33658"
+  integrity sha1-M2w+/BIgrc7dosn6tntaeVWjNlg=
+
+regenerator-runtime@^0.11.0:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
+  integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
+
+regenerator-transform@^0.10.0:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.10.1.tgz#1e4996837231da8b7f3cf4114d71b5691a0680dd"
+  dependencies:
+    babel-runtime "^6.18.0"
+    babel-types "^6.19.0"
+    private "^0.1.6"
+
+regex-cache@^0.4.2:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/regex-cache/-/regex-cache-0.4.4.tgz#75bdc58a2a1496cec48a12835bc54c8d562336dd"
+  integrity sha512-nVIZwtCjkC9YgvWkpM55B5rBhBYRZhAaJbgcFYXXsHnbZ9UZI9nnVWYZpBlCqv9ho2eZryPnWrZGsOdPwVWXWQ==
+  dependencies:
+    is-equal-shallow "^0.1.3"
+
+regex-not@^1.0.0, regex-not@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/regex-not/-/regex-not-1.0.2.tgz#1f4ece27e00b0b65e0247a6810e6a85d83a5752c"
+  integrity sha512-J6SDjUgDxQj5NusnOtdFxDwN/+HWykR8GELwctJ7mdqhcyy1xEc4SRFHUXvxTp661YaVKAjfRLZ9cCqS6tn32A==
+  dependencies:
+    extend-shallow "^3.0.2"
+    safe-regex "^1.1.0"
+
+regexpu-core@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/regexpu-core/-/regexpu-core-2.0.0.tgz#49d038837b8dcf8bfa5b9a42139938e6ea2ae240"
+  dependencies:
+    regenerate "^1.2.1"
+    regjsgen "^0.2.0"
+    regjsparser "^0.1.4"
+
+regjsgen@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/regjsgen/-/regjsgen-0.2.0.tgz#6c016adeac554f75823fe37ac05b92d5a4edb1f7"
+
+regjsparser@^0.1.4:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/regjsparser/-/regjsparser-0.1.5.tgz#7ee8f84dc6fa792d3fd0ae228d24bd949ead205c"
+  dependencies:
+    jsesc "~0.5.0"
+
+remove-trailing-separator@^1.0.1:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.1.0.tgz#c24bce2a283adad5bc3f58e0d48249b92379d8ef"
+  integrity sha1-wkvOKig62tW8P1jg1IJJuSN52O8=
+
+repeat-element@^1.1.2:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/repeat-element/-/repeat-element-1.1.3.tgz#782e0d825c0c5a3bb39731f84efee6b742e6b1ce"
+  integrity sha512-ahGq0ZnV5m5XtZLMb+vP76kcAM5nkLqk0lpqAuojSKGgQtn4eRi4ZZGm2olo2zKFH+sMsWaqOCW1dqAnOru72g==
+
+repeat-string@^1.5.2, repeat-string@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/repeat-string/-/repeat-string-1.6.1.tgz#8dcae470e1c88abc2d600fff4a776286da75e637"
+  integrity sha1-jcrkcOHIirwtYA//Sndihtp15jc=
+
+repeating@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/repeating/-/repeating-2.0.1.tgz#5214c53a926d3552707527fbab415dbc08d06dda"
+  integrity sha1-UhTFOpJtNVJwdSf7q0FdvAjQbdo=
+  dependencies:
+    is-finite "^1.0.0"
+
+require-directory@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
+  integrity sha1-jGStX9MNqxyXbiNE/+f3kqam30I=
+
+require-main-filename@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-2.0.0.tgz#d0b329ecc7cc0f61649f62215be69af54aa8989b"
+  integrity sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==
+
+resolve-url@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
+  integrity sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
+
+resolve@1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
+
+resolve@^1.1.6:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.6.0.tgz#0fbd21278b27b4004481c395349e7aba60a9ff5c"
+  dependencies:
+    path-parse "^1.0.5"
+
+ret@~0.1.10:
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
+  integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
+
+right-align@^0.1.1:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/right-align/-/right-align-0.1.3.tgz#61339b722fe6a3515689210d24e14c96148613ef"
+  dependencies:
+    align-text "^0.1.1"
+
+rimraf@^2.5.2:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.7.1.tgz#35797f13a7fdadc566142c29d4f07ccad483e3ec"
+  dependencies:
+    glob "^7.1.3"
+
+rollup-plugin-babel@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-babel/-/rollup-plugin-babel-2.7.1.tgz#16528197b0f938a1536f44683c7a93d573182f57"
+  dependencies:
+    babel-core "6"
+    babel-plugin-transform-es2015-classes "^6.9.0"
+    object-assign "^4.1.0"
+    rollup-pluginutils "^1.5.0"
+
+rollup-plugin-node-resolve@^2.0.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-node-resolve/-/rollup-plugin-node-resolve-2.1.1.tgz#cbb783b0d15b02794d58915350b2f0d902b8ddc8"
+  dependencies:
+    browser-resolve "^1.11.0"
+    builtin-modules "^1.1.0"
+    resolve "^1.1.6"
+
+rollup-pluginutils@^1.5.0:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/rollup-pluginutils/-/rollup-pluginutils-1.5.2.tgz#1e156e778f94b7255bfa1b3d0178be8f5c552408"
+  dependencies:
+    estree-walker "^0.2.1"
+    minimatch "^3.0.2"
+
+rollup@^0.41.6:
+  version "0.41.6"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.41.6.tgz#e0d05497877a398c104d816d2733a718a7a94e2a"
+  dependencies:
+    source-map-support "^0.4.0"
+
+safe-buffer@^5.1.0:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
+  integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
+
+safe-buffer@~5.1.0, safe-buffer@~5.1.1:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
+  integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
+
+safe-regex@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/safe-regex/-/safe-regex-1.1.0.tgz#40a3669f3b077d1e943d44629e157dd48023bf2e"
+  integrity sha1-QKNmnzsHfR6UPURinhV91IAjvy4=
+  dependencies:
+    ret "~0.1.10"
+
+sander@^0.5.0:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/sander/-/sander-0.5.1.tgz#741e245e231f07cafb6fdf0f133adfa216a502ad"
+  dependencies:
+    es6-promise "^3.1.2"
+    graceful-fs "^4.1.3"
+    mkdirp "^0.5.1"
+    rimraf "^2.5.2"
+
+serialize-javascript@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-5.0.1.tgz#7886ec848049a462467a97d3d918ebb2aaf934f4"
+  integrity sha512-SaaNal9imEO737H2c05Og0/8LUXG7EnsZyMa8MzkmuHoELfT6txuj0cMqRj6zfPKnmQ1yasR4PCJc8x+M4JSPA==
+  dependencies:
+    randombytes "^2.1.0"
+
+set-blocking@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
+
+set-value@^2.0.0, set-value@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/set-value/-/set-value-2.0.1.tgz#a18d40530e6f07de4228c7defe4227af8cad005b"
+  integrity sha512-JxHc1weCN68wRY0fhCoXpyK55m/XPHafOmK4UWD7m2CI14GMcFypt4w/0+NV5f/ZMby2F6S2wwA7fgynh9gWSw==
+  dependencies:
+    extend-shallow "^2.0.1"
+    is-extendable "^0.1.1"
+    is-plain-object "^2.0.3"
+    split-string "^3.0.1"
+
+slash@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
+  integrity sha1-xB8vbDn8FtHNF61LXYlhFK5HDVU=
+
+snapdragon-node@^2.0.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
+  integrity sha512-O27l4xaMYt/RSQ5TR3vpWCAB5Kb/czIcqUFOM/C4fYcLnbZUc1PkjTAMjof2pBWaSTwOUd6qUHcFGVGj7aIwnw==
+  dependencies:
+    define-property "^1.0.0"
+    isobject "^3.0.0"
+    snapdragon-util "^3.0.1"
+
+snapdragon-util@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/snapdragon-util/-/snapdragon-util-3.0.1.tgz#f956479486f2acd79700693f6f7b805e45ab56e2"
+  integrity sha512-mbKkMdQKsjX4BAL4bRYTj21edOf8cN7XHdYUJEe+Zn99hVEYcMvKPct1IqNe7+AZPirn8BCDOQBHQZknqmKlZQ==
+  dependencies:
+    kind-of "^3.2.0"
+
+snapdragon@^0.8.1:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/snapdragon/-/snapdragon-0.8.2.tgz#64922e7c565b0e14204ba1aa7d6964278d25182d"
+  integrity sha512-FtyOnWN/wCHTVXOMwvSv26d+ko5vWlIDD6zoUJ7LW8vh+ZBC8QdljveRP+crNrtBwioEUWy/4dMtbBjA4ioNlg==
+  dependencies:
+    base "^0.11.1"
+    debug "^2.2.0"
+    define-property "^0.2.5"
+    extend-shallow "^2.0.1"
+    map-cache "^0.2.2"
+    source-map "^0.5.6"
+    source-map-resolve "^0.5.0"
+    use "^3.1.0"
+
+sorcery@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/sorcery/-/sorcery-0.10.0.tgz#8ae90ad7d7cb05fc59f1ab0c637845d5c15a52b7"
+  dependencies:
+    buffer-crc32 "^0.2.5"
+    minimist "^1.2.0"
+    sander "^0.5.0"
+    sourcemap-codec "^1.3.0"
+
+source-map-resolve@^0.5.0:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/source-map-resolve/-/source-map-resolve-0.5.3.tgz#190866bece7553e1f8f267a2ee82c606b5509a1a"
+  integrity sha512-Htz+RnsXWk5+P2slx5Jh3Q66vhQj1Cllm0zvnaY98+NFx+Dv2CF/f5O/t8x+KaNdrdIAsruNzoh/KpialbqAnw==
+  dependencies:
+    atob "^2.1.2"
+    decode-uri-component "^0.2.0"
+    resolve-url "^0.2.1"
+    source-map-url "^0.4.0"
+    urix "^0.1.0"
+
+source-map-support@^0.4.0, source-map-support@^0.4.15:
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.18.tgz#0286a6de8be42641338594e97ccea75f0a2c585f"
+  dependencies:
+    source-map "^0.5.6"
+
+source-map-url@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.0.tgz#3e935d7ddd73631b97659956d55128e87b5084a3"
+  integrity sha1-PpNdfd1zYxuXZZlW1VEo6HtQhKM=
+
+source-map@^0.5.6, source-map@^0.5.7, source-map@~0.5.1:
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
+  integrity sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w=
+
+sourcemap-codec@^1.3.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/sourcemap-codec/-/sourcemap-codec-1.4.1.tgz#c8fd92d91889e902a07aee392bdd2c5863958ba2"
+
+split-string@^3.0.1, split-string@^3.0.2:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/split-string/-/split-string-3.1.0.tgz#7cb09dda3a86585705c64b39a6466038682e8fe2"
+  integrity sha512-NzNVhJDYpwceVVii8/Hu6DKfD2G+NrQHlS/V/qgv763EYudVwEcMQNxd2lh+0VrUByXN/oJkl5grOhYWvQUYiw==
+  dependencies:
+    extend-shallow "^3.0.0"
+
+sprintf-js@~1.0.2:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
+  integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
+
+static-extend@^0.1.1:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/static-extend/-/static-extend-0.1.2.tgz#60809c39cbff55337226fd5e0b520f341f1fb5c6"
+  integrity sha1-YICcOcv/VTNyJv1eC1IPNB8ftcY=
+  dependencies:
+    define-property "^0.2.5"
+    object-copy "^0.1.0"
+
+"string-width@^1.0.2 || 2":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-2.1.1.tgz#ab93f27a8dc13d28cac815c462143a6d9012ae9e"
+  integrity sha512-nOqH59deCq9SRHlxq1Aw85Jnt4w6KvLKqWVik6oA9ZklXLNIOlqg4F2yrT1MVaTjAqvVwdfeZ7w7aCvJD7ugkw==
+  dependencies:
+    is-fullwidth-code-point "^2.0.0"
+    strip-ansi "^4.0.0"
+
+string-width@^3.0.0, string-width@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-3.1.0.tgz#22767be21b62af1081574306f69ac51b62203961"
+  integrity sha512-vafcv6KjVZKSgz06oM/H6GDBrAtz8vdhQakGjFIvNrHA6y3HCF1CInLy+QLq8dTJPQ1b+KDUqDFctkdRW44e1w==
+  dependencies:
+    emoji-regex "^7.0.1"
+    is-fullwidth-code-point "^2.0.0"
+    strip-ansi "^5.1.0"
+
+string_decoder@~1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba6 {\n        this._lastStrValue = \"\"\n        if (this.eat(QuestionMark)) {\n            if (this.eatGroupName()) {\n                if (!this._groupNames.has(this._lastStrValue)) {\n                    this._groupNames.add(this._lastStrValue)\n                    return\n                }\n                this.raise(\"Duplicate capture group name\")\n            }\n            this.raise(\"Invalid group\")\n        }\n    }\n\n    // GroupName[U] ::\n    //   `<` RegExpIdentifierName[?U] `>`\n    private eatGroupName(): boolean {\n        this._lastStrValue = \"\"\n        if (this.eat(LessThanSign)) {\n            if (this.eatRegExpIdentifierName() && this.eat(GreaterThanSign)) {\n                return true\n            }\n            this.raise(\"Invalid capture group name\")\n        }\n        return false\n    }\n\n    // RegExpIdentifierName[U] ::\n    //   RegExpIdentifierStart[?U]\n    //   RegExpIdentifierName[?U] RegExpIdentifierPart[?U]\n    private eatRegExpIdentifierName(): boolean {\n        this._lastStrValue = \"\"\n        if (this.eatRegExpIdentifierStart()) {\n            this._lastStrValue += String.fromCodePoint(this._lastIntValue)\n            while (this.eatRegExpIdentifierPart()) {\n                this._lastStrValue += String.fromCodePoint(this._lastIntValue)\n            }\n            return true\n        }\n        return false\n    }\n\n    // RegExpIdentifierStart[U] ::\n    //   UnicodeIDStart\n    //   `$`\n    //   `_`\n    //   `\\` RegExpUnicodeEscapeSequence[?U]\n    private eatRegExpIdentifierStart(): boolean {\n        const start = this.index\n        let cp = this.currentCodePoint\n        this.advance()\n\n        if (cp === ReverseSolidus && this.eatRegExpUnicodeEscapeSequence()) {\n            cp = this._lastIntValue\n        }\n        if (isRegExpIdentifierStart(cp)) {\n            this._lastIntValue = cp\n            return true\n        }\n\n        if (this.index !== start) {\n            this.rewind(start)\n        }\n        return false\n    }\n\n    // RegExpIdentifierPart[U] ::\n    //   UnicodeIDContinue\n    //   `$`\n    //   `_`\n    //   `\\` RegExpUnicodeEscapeSequence[?U]\n    //   <Zwnj>\n    //   <Zwj>\n    private eatRegExpIdentifierPart(): boolean {\n        const start = this.index\n        let cp = this.currentCodePoint\n        this.advance()\n\n        if (cp === ReverseSolidus && this.eatRegExpUnicodeEscapeSequence()) {\n            cp = this._lastIntValue\n        }\n        if (isRegExpIdentifierPart(cp)) {\n            this._lastIntValue = cp\n            return true\n        }\n\n        if (this.index !== start) {\n            this.rewind(start)\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-strict-AtomEscape\n    private eatAtomEscape(): boolean {\n        if (\n            this.eatBackreference() ||\n            this.eatCharacterClassEscape() ||\n            this.eatCharacterEscape() ||\n            (this._nFlag && this.eatKGroupName())\n        ) {\n            return true\n        }\n        if (this.strict || this._uFlag) {\n            this.raise(\"Invalid escape\")\n        }\n        return false\n    }\n\n    private eatBackreference(): boolean {\n        const start = this.index\n        if (this.eatDecimalEscape()) {\n            const n = this._lastIntValue\n            if (n <= this._numCapturingParens) {\n                this.onBackreference(start - 1, this.index, n)\n                return true\n            }\n            if (this.strict) {\n                this.raise(\"Invalid escape\")\n            }\n            this.rewind(start)\n        }\n        return false\n    }\n\n    private eatKGroupName(): boolean {\n        const start = this.index\n        if (this.eat(LatinSmallLetterK)) {\n            if (this.eatGroupName()) {\n                const groupName = this._lastStrValue\n                this._backreferenceNames.add(groupName)\n                this.onBackreference(start - 1, this.index, groupName)\n                return true\n            }\n            this.raise(\"Invalid named reference\")\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-strict-CharacterEscape\n    private eatCharacterEscape(): boolean {\n        const start = this.index\n        if (\n            this.eatControlEscape() ||\n            this.eatCControlLetter() ||\n            this.eatZero() ||\n            this.eatHexEscapeSequence() ||\n            this.eatRegExpUnicodeEscapeSequence() ||\n            (!this.strict && this.eatLegacyOctalEscapeSequence()) ||\n            this.eatIdentityEscape()\n        ) {\n            this.onCharacter(start - 1, this.index, this._lastIntValue)\n            return true\n        }\n        return false\n    }\n\n    private eatCControlLetter(): boolean {\n        const start = this.index\n        if (this.eat(LatinSmallLetterC)) {\n            if (this.eatControlLetter()) {\n                return true\n            }\n            this.rewind(start)\n        }\n        return false\n    }\n\n    private eatZero(): boolean {\n        if (\n            this.currentCodePoint === DigitZero &&\n            !isDecimalDigit(this.nextCodePoint)\n        ) {\n            this._lastIntValue = 0\n            this.advance()\n            return true\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-ControlEscape\n    private eatControlEscape(): boolean {\n        if (this.eat(LatinSmallLetterT)) {\n            this._lastIntValue = CharacterTabulation\n            return true\n        }\n        if (this.eat(LatinSmallLetterN)) {\n            this._lastIntValue = LineFeed\n            return true\n        }\n        if (this.eat(LatinSmallLetterV)) {\n            this._lastIntValue = LineTabulation\n            return true\n        }\n        if (this.eat(LatinSmallLetterF)) {\n            this._lastIntValue = FormFeed\n            return true\n        }\n        if (this.eat(LatinSmallLetterR)) {\n            this._lastIntValue = CarriageReturn\n            return true\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-ControlLetter\n    private eatControlLetter(): boolean {\n        const cp = this.currentCodePoint\n        if (isLatinLetter(cp)) {\n            this.advance()\n            this._lastIntValue = cp % 0x20\n            return true\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-RegExpUnicodeEscapeSequence\n    //eslint-disable-next-line complexity\n    private eatRegExpUnicodeEscapeSequence(): boolean {\n        const start = this.index\n\n        if (this.eat(LatinSmallLetterU)) {\n            if (this.eatFixedHexDigits(4)) {\n                const lead = this._lastIntValue\n                if (this._uFlag && lead >= 0xd800 && lead <= 0xdbff) {\n                    const leadSurrogateEnd = this.index\n                    if (\n                        this.eat(ReverseSolidus) &&\n                        this.eat(LatinSmallLetterU) &&\n                        this.eatFixedHexDigits(4)\n                    ) {\n                        const trail = this._lastIntValue\n                        if (trail >= 0xdc00 && trail <= 0xdfff) {\n                            this._lastIntValue =\n                                (lead - 0xd800) * 0x400 +\n                                (trail - 0xdc00) +\n                                0x10000\n                            return true\n                        }\n                    }\n                    this.rewind(leadSurrogateEnd)\n                    this._lastIntValue = lead\n                }\n                return true\n            }\n            if (\n                this._uFlag &&\n                this.eat(LeftCurlyBracket) &&\n                this.eatHexDigits() &&\n                this.eat(RightCurlyBracket) &&\n                isValidUnicode(this._lastIntValue)\n            ) {\n                return true\n            }\n            if (this.strict || this._uFlag) {\n                this.raise(\"Invalid unicode escape\")\n            }\n            this.rewind(start)\n        }\n\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-strict-IdentityEscape\n    private eatIdentityEscape(): boolean {\n        if (this._uFlag) {\n            if (this.eatSyntaxCharacter()) {\n                return true\n            }\n            if (this.eat(Solidus)) {\n                this._lastIntValue = Solidus\n                return true\n            }\n            return false\n        }\n\n        if (this.isValidIdentityEscape(this.currentCodePoint)) {\n            this._lastIntValue = this.currentCodePoint\n            this.advance()\n            return true\n        }\n\n        return false\n    }\n    private isValidIdentityEscape(cp: number): boolean {\n        if (cp === -1) {\n            return false\n        }\n        if (this.strict) {\n            return !isIdContinue(cp)\n        }\n        return (\n            cp !== LatinSmallLetterC &&\n            (!this._nFlag || cp !== LatinSmallLetterK)\n        )\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-DecimalEscape\n    private eatDecimalEscape(): boolean {\n        this._lastIntValue = 0\n        let cp = this.currentCodePoint\n        if (cp >= DigitOne && cp <= DigitNine) {\n            do {\n                this._lastIntValue = 10 * this._lastIntValue + (cp - DigitZero)\n                this.advance()\n            } while (\n                (cp = this.currentCodePoint) >= DigitZero &&\n                cp <= DigitNine\n            )\n            return true\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-CharacterClassEscape\n    private eatCharacterClassEscape(): boolean {\n        const start = this.index\n\n        if (this.eat(LatinSmallLetterD)) {\n            this._lastIntValue = -1\n            this.onEscapeCharacterSet(start - 1, this.index, \"digit\", false)\n            return true\n        }\n        if (this.eat(LatinCapitalLetterD)) {\n            this._lastIntValue = -1\n            this.onEscapeCharacterSet(start - 1, this.index, \"digit\", true)\n            return true\n        }\n        if (this.eat(LatinSmallLetterS)) {\n            this._lastIntValue = -1\n            this.onEscapeCharacterSet(start - 1, this.index, \"space\", false)\n            return true\n        }\n        if (this.eat(LatinCapitalLetterS)) {\n            this._lastIntValue = -1\n            this.onEscapeCharacterSet(start - 1, this.index, \"space\", true)\n            return true\n        }\n        if (this.eat(LatinSmallLetterW)) {\n            this._lastIntValue = -1\n            this.onEscapeCharacterSet(start - 1, this.index, \"word\", false)\n            return true\n        }\n        if (this.eat(LatinCapitalLetterW)) {\n            this._lastIntValue = -1\n            this.onEscapeCharacterSet(start - 1, this.index, \"word\", true)\n            return true\n        }\n\n        let negate = false\n        if (\n            this._uFlag &&\n            this.ecmaVersion >= 2018 &&\n            (this.eat(LatinSmallLetterP) ||\n                (negate = this.eat(LatinCapitalLetterP)))\n        ) {\n            this._lastIntValue = -1\n            if (\n                this.eat(LeftCurlyBracket) &&\n                this.eatUnicodePropertyValueExpression() &&\n                this.eat(RightCurlyBracket)\n            ) {\n                this.onUnicodePropertyCharacterSet(\n                    start - 1,\n                    this.index,\n                    \"property\",\n                    this._lastKeyValue,\n                    this._lastValValue || null,\n                    negate,\n                )\n                return true\n            }\n            this.raise(\"Invalid property name\")\n        }\n\n        return false\n    }\n\n    // UnicodePropertyValueExpression ::\n    //   UnicodePropertyName `=` UnicodePropertyValue\n    //   LoneUnicodePropertyNameOrValue\n    private eatUnicodePropertyValueExpression(): boolean {\n        const start = this.index\n\n        // UnicodePropertyName `=` UnicodePropertyValue\n        if (this.eatUnicodePropertyName() && this.eat(EqualsSign)) {\n            this._lastKeyValue = this._lastStrValue\n            if (this.eatUnicodePropertyValue()) {\n                this._lastValValue = this._lastStrValue\n                if (\n                    isValidUnicodeProperty(\n                        this._lastKeyValue,\n                        this._lastValValue,\n                    )\n                ) {\n                    return true\n                }\n                this.raise(\"Invalid property name\")\n            }\n        }\n        this.rewind(start)\n\n        // LoneUnicodePropertyNameOrValue\n        if (this.eatLoneUnicodePropertyNameOrValue()) {\n            const nameOrValue = this._lastStrValue\n            if (isValidUnicodeProperty(\"General_Category\", nameOrValue)) {\n                this._lastKeyValue = \"General_Category\"\n                this._lastValValue = nameOrValue\n                return true\n            }\n            if (isValidUnicodePropertyName(nameOrValue)) {\n                this._lastKeyValue = nameOrValue\n                this._lastValValue = \"\"\n                return true\n            }\n            this.raise(\"Invalid property name\")\n        }\n        return false\n    }\n\n    // UnicodePropertyName ::\n    //   UnicodePropertyNameCharacters\n    private eatUnicodePropertyName(): boolean {\n        this._lastStrValue = \"\"\n        while (isUnicodePropertyNameCharacter(this.currentCodePoint)) {\n            this._lastStrValue += String.fromCodePoint(this.currentCodePoint)\n            this.advance()\n        }\n        return this._lastStrValue !== \"\"\n    }\n\n    // UnicodePropertyValue ::\n    //   UnicodePropertyValueCharacters\n    private eatUnicodePropertyValue(): boolean {\n        this._lastStrValue = \"\"\n        while (isUnicodePropertyValueCharacter(this.currentCodePoint)) {\n            this._lastStrValue += String.fromCodePoint(this.currentCodePoint)\n            this.advance()\n        }\n        return this._lastStrValue !== \"\"\n    }\n\n    // LoneUnicodePropertyNameOrValue ::\n    //   UnicodePropertyValueCharacters\n    private eatLoneUnicodePropertyNameOrValue(): boolean {\n        return this.eatUnicodePropertyValue()\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-CharacterClass\n    private eatCharacterClass(): boolean {\n        const start = this.index\n        if (this.eat(LeftSquareBracket)) {\n            const negate = this.eat(CircumflexAccent)\n            this.onCharacterClassEnter(start, negate)\n            this.classRanges()\n            if (!this.eat(RightSquareBracket)) {\n                this.raise(\"Unterminated character class\")\n            }\n            this.onCharacterClassLeave(start, this.index, negate)\n            return true\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-ClassRanges\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-NonemptyClassRanges\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-NonemptyClassRangesNoDash\n    private classRanges(): void {\n        let start = this.index\n        while (this.eatClassAtom()) {\n            const left = this._lastIntValue\n            const hyphenStart = this.index\n            if (this.eat(HyphenMinus)) {\n                this.onCharacter(hyphenStart, this.index, HyphenMinus)\n\n                if (this.eatClassAtom()) {\n                    const right = this._lastIntValue\n\n                    if (left === -1 || right === -1) {\n                        if (this.strict) {\n                            this.raise(\"Invalid character class\")\n                        }\n                    } else if (left > right) {\n                        this.raise(\"Range out of order in character class\")\n                    } else {\n                        this.onCharacterClassRange(\n                            start,\n                            this.index,\n                  vD,QAAQ,IAAIA,OAAK,KAAK,EAAE,IAAE,OAAO,IAAI,CAAC,QAAQ,CAACX,KAAE,CAAC,MAAM,EAAE,CAAC,GAAC;AAC5D,OAAO;AACP,MAAM,OAAO,IAAI,CAAC,QAAQ,CAACA,KAAE,CAAC,QAAQ,EAAE,CAAC,CAAC;AAC1C,KAAK;AACL,GAAG;AACH,EAAE,OAAO,IAAI,CAAC,QAAQ,CAACA,KAAE,CAAC,QAAQ,EAAE,CAAC,CAAC;AACtC,EAAC;AACD;AACAC,IAAE,CAAC,gBAAgB,GAAG,SAAS,IAAI,EAAE;AACrC,EAAE,QAAQ,IAAI;AACd;AACA;AACA,EAAE,KAAK,EAAE;AACT,IAAI,OAAO,IAAI,CAAC,aAAa,EAAE;AAC/B;AACA;AACA,EAAE,KAAK,EAAE,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACD,KAAE,CAAC,MAAM,CAAC;AACzD,EAAE,KAAK,EAAE,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,MAAM,CAAC;AACzD,EAAE,KAAK,EAAE,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,IAAI,CAAC;AACvD,EAAE,KAAK,EAAE,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,KAAK,CAAC;AACxD,EAAE,KAAK,EAAE,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,QAAQ,CAAC;AAC3D,EAAE,KAAK,EAAE,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,QAAQ,CAAC;AAC3D,EAAE,KAAK,GAAG,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,MAAM,CAAC;AAC1D,EAAE,KAAK,GAAG,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,MAAM,CAAC;AAC1D,EAAE,KAAK,EAAE,EAAE,EAAE,IAAI,CAAC,GAAG,CAAC,CAAC,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,KAAK,CAAC;AACxD;AACA,EAAE,KAAK,EAAE;AACT,IAAI,IAAI,IAAI,CAAC,OAAO,CAAC,WAAW,GAAG,CAAC,IAAE,OAAK;AAC3C,IAAI,EAAE,IAAI,CAAC,IAAG;AACd,IAAI,OAAO,IAAI,CAAC,WAAW,CAACA,KAAE,CAAC,SAAS,CAAC;AACzC;AACA,EAAE,KAAK,EAAE;AACT,IAAIF,IAAI,IAAI,GAAG,IAAI,CAAC,KAAK,CAAC,UAAU,CAAC,IAAI,CAAC,GAAG,GAAG,CAAC,EAAC;AAClD,IAAI,IAAI,IAAI,KAAK,GAAG,IAAI,IAAI,KAAK,EAAE,IAAE,OAAO,IAAI,CAAC,eAAe,CAAC,EAAE,GAAC;AACpE,IAAI,IAAI,IAAI,CAAC,OAAO,CAAC,WAAW,IAAI,CAAC,EAAE;AACvC,MAAM,IAAI,IAAI,KAAK,GAAG,IAAI,IAAI,KAAK,EAAE,IAAE,OAAO,IAAI,CAAC,eAAe,CAAC,CAAC,GAAC;AACrE,MAAM,IAAI,IAAI,KAAK,EAAE,IAAI,IAAI,KAAK,EAAE,IAAE,OAAO,IAAI,CAAC,eAAe,CAAC,CAAC,GAAC;AACpE,KAAK;AACL;AACA;AACA;AACA,EAAE,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE;AACjF,IAAI,OAAO,IAAI,CAAC,UAAU,CAAC,KAAK,CAAC;AACjC;AACA;AACA,EAAE,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE;AAClB,IAAI,OAAO,IAAI,CAAC,UAAU,CAAC,IAAI,CAAC;AAChC;AACA;AACA;AACA;AACA;AACA;AACA,EAAE,KAAK,EAAE;AACT,IAAI,OAAO,IAAI,CAAC,eAAe,EAAE;AACjC;AACA,EAAE,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE;AAClB,IAAI,OAAO,IAAI,CAAC,yBAAyB,CAAC,IAAI,CAAC;AAC/C;AACA,EAAE,KAAK,GAAG,CAAC,CAAC,KAAK,EAAE;AACnB,IAAI,OAAO,IAAI,CAAC,kBAAkB,CAAC,IAAI,CAAC;AACxC;AACA,EAAE,KAAK,EAAE;AACT,IAAI,OAAO,IAAI,CAAC,eAAe,EAAE;AACjC;AACA,EAAE,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE;AAClB,IAAI,OAAO,IAAI,CAAC,kBAAkB,CAAC,IAAI,CAAC;AACxC;AACA,EAAE,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE;AAClB,IAAI,OAAO,IAAI,CAAC,eAAe,CAAC,IAAI,CAAC;AACrC;AACA,EAAE,KAAK,EAAE,CAAC,CAAC,KAAK,EAAE;AAClB,IAAI,OAAO,IAAI,CAAC,iBAAiB,CAAC,IAAI,CAAC;AACvC;AACA,EAAE,KAAK,EAAE;AACT,IAAI,OAAO,IAAI,CAAC,kBAAkB,EAAE;AACpC;AACA,EAAE,KAAK,GAAG;AACV,IAAI,OAAO,IAAI,CAAC,QAAQ,CAACE,KAAE,CAAC,MAAM,EAAE,CAAC,CAAC;AACtC,GAAG;AACH;AACA,EAAE,IAAI,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,EAAE,wBAAwB,GAAGY,mBAAiB,CAAC,IAAI,CAAC,GAAG,GAAG,EAAC;AAChF,EAAC;AACD;AACAX,IAAE,CAAC,QAAQ,GAAG,SAAS,IAAI,EAAE,IAAI,EAAE;AACnC,EAAEH,IAAI,GAAG,GAAG,IAAI,CAAC,KAAK,CAAC,KAAK,CAAC,IAAI,CAAC,GAAG,EAAE,IAAI,CAAC,GAAG,GAAG,IAAI,EAAC;AACvD,EAAE,IAAI,CAAC,GAAG,IAAI,KAAI;AAClB,EAAE,OAAO,IAAI,CAAC,WAAW,CAAC,IAAI,EAAE,GAAG,CAAC;AACpC,EAAC;AACD;AACAG,IAAE,CAAC,UAAU,GAAG,WAAW;AAC3B,EAAEH,IAAI,OAAO,EAAE,OAAO,EAAE,KAAK,GAAG,IAAI,CAAC,IAAG;AACxC,EAAE,SAAS;AACX,IAAI,IAAI,IAAI,CAAC,GAAG,IAAI,IAAI,CAAC,KAAK,CAAC,MAAM,IAAE,IAAI,CAAC,KAAK,CAAC,KAAK,EAAE,iCAAiC,IAAC;AAC3F,IAAIA,IAAI,EAAE,GAAG,IAAI,CAAC,KAAK,CAAC,MAAM,CAAC,IAAI,CAAC,GAAG,EAAC;AACxC,IAAI,IAAI,SAAS,CAAC,IAAI,CAAC,EAAE,CAAC,IAAE,IAAI,CAAC,KAAK,CAAC,KAAK,EAAE,iCAAiC,IAAC;AAChF,IAAI,IAAI,CAAC,OAAO,EAAE;AAClB,MAAM,IAAI,EAAE,KAAK,GAAG,IAAE,OAAO,GAAG,OAAI;AACpC,WAAW,IAAI,EAAE,KAAK,GAAG,IAAI,OAAO,IAAE,OAAO,GAAG,QAAK;AACrD,WAAW,IAAI,EAAE,KAAK,GAAG,IAAI,CAAC,OAAO,IAAE,OAAK;AAC5C,MAAM,OAAO,GAAG,EAAE,KAAK,KAAI;AAC3B,KAAK,QAAM,OAAO,GAAG,QAAK;AAC1B,IAAI,EAAE,IAAI,CAAC,IAAG;AACd,GAAG;AACH,EAAEA,IAAI,OAAO,GAAG,IAAI,CAAC,KAAK,CAAC,KAAK,CAAC,KAAK,EAAE,IAAI,CAAC,GAAG,EAAC;AACjD,EAAE,EAAE,IAAI,CAAC,IAAG;AACZ,EAAEA,IAAI,UAAU,GAAG,IAAI,CAAC,IAAG;AAC3B,EAAEA,IAAI,KAAK,GAAG,IAAI,CAAC,SAAS,GAAE;AAC9B,EAAE,IAAI,IAAI,CAAC,WAAW,IAAE,IAAI,CAAC,UAAU,CAAC,UAAU,IAAC;AACnD;AACA;AACA,EAAED,IAAM,KAAK,GAAG,IAAI,CAAC,WAAW,KAAK,IAAI,CAAC,WAAW,GAAG,IAAI,qBAAqB,CAAC,IAAI,CAAC,EAAC;AACxF,EAAE,KAAK,CAAC,KAAK,CAAC,KAAK,EAAE,OAAO,EAAE,KAAK,EAAC;AACpC,EAAE,IAAI,CAAC,mBAAmB,CAAC,KAAK,EAAC;AACjC,EAAE,IAAI,CAAC,qBAAqB,CAAC,KAAK,EAAC;AACnC;AACA;AACA,EAAEC,IAAI,KAAK,GAAG,KAAI;AAClB,EAAE,IAAI;AACN,IAAI,KAAK,GAAG,IAAI,MAAM,CAAC,OAAO,EAAE,KAAK,EAAC;AACtC,GAAG,CAAC,OAAO,CAAC,EAAE;AACd;AACA;AACA,GAAG;AACH;AACA,EAAE,OAAO,IAAI,CAAC,WAAW,CAACE,KAAE,CAAC,MAAM,EAAE,UAAC,OAAO,SAAE,KAAK,SAAE,KAAK,CAAC,CAAC;AAC7D,EAAC;AACD;AACA;AACA;AACA;AACA;AACAC,IAAE,CAAC,OAAO,GAAG,SAAS,KAAK,EAAE,GAAG,EAAE,8BAA8B,EAAE;AAClE;AACA,EAAEJ,IAAM,eAAe,GAAG,IAAI,CAAC,OAAO,CAAC,WAAW,IAAI,EAAE,IAAI,GAAG,KAAK,UAAS;AAC7E;AACA;AACA;AACA;AACA,EAAEA,IAAM,2BAA2B,GAAG,8BAA8B,IAAI,IAAI,CAAC,KAAK,CAAC,UAAU,CAAC,IAAI,CAAC,GAAG,CAAC,KAAK,GAAE;AAC9G;AACA,EAAEC,IAAI,KAAK,

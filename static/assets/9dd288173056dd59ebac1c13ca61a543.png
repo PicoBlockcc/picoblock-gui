@@ -1,0 +1,1932 @@
+ns": ["fh","fhc","fh4","fh5","fh7"]
+  },
+  "image/x-icon": {
+    "source": "apache",
+    "compressible": true,
+    "extensions": ["ico"]
+  },
+  "image/x-jng": {
+    "source": "nginx",
+    "extensions": ["jng"]
+  },
+  "image/x-mrsid-image": {
+    "source": "apache",
+    "extensions": ["sid"]
+  },
+  "image/x-ms-bmp": {
+    "source": "nginx",
+    "compressible": true,
+    "extensions": ["bmp"]
+  },
+  "image/x-pcx": {
+    "source": "apache",
+    "extensions": ["pcx"]
+  },
+  "image/x-pict": {
+    "source": "apache",
+    "extensions": ["pic","pct"]
+  },
+  "image/x-portable-anymap": {
+    "source": "apache",
+    "extensions": ["pnm"]
+  },
+  "image/x-portable-bitmap": {
+    "source": "apache",
+    "extensions": ["pbm"]
+  },
+  "image/x-portable-graymap": {
+    "source": "apache",
+    "extensions": ["pgm"]
+  },
+  "image/x-portable-pixmap": {
+    "source": "apache",
+    "extensions": ["ppm"]
+  },
+  "image/x-rgb": {
+    "source": "apache",
+    "extensions": ["rgb"]
+  },
+  "image/x-tga": {
+    "source": "apache",
+    "extensions": ["tga"]
+  },
+  "image/x-xbitmap": {
+    "source": "apache",
+    "extensions": ["xbm"]
+  },
+  "image/x-xcf": {
+    "compressible": false
+  },
+  "image/x-xpixmap": {
+    "source": "apache",
+    "extensions": ["xpm"]
+  },
+  "image/x-xwindowdump": {
+    "source": "apache",
+    "extensions": ["xwd"]
+  },
+  "message/cpim": {
+    "source": "iana"
+  },
+  "message/delivery-status": {
+    "source": "iana"
+  },
+  "message/disposition-notification": {
+    "source": "iana",
+    "extensions": [
+      "disposition-notification"
+    ]
+  },
+  "message/external-body": {
+    "source": "iana"
+  },
+  "message/feedback-report": {
+    "source": "iana"
+  },
+  "message/global": {
+    "source": "iana",
+    "extensions": ["u8msg"]
+  },
+  "message/global-delivery-status": {
+    "source": "iana",
+    "extensions": ["u8dsn"]
+  },
+  "message/global-disposition-notification": {
+    "source": "iana",
+    "extensions": ["u8mdn"]
+  },
+  "message/global-headers": {
+    "source": "iana",
+    "extensions": ["u8hdr"]
+  },
+  "message/http": {
+    "source": "iana",
+    "compressible": false
+  },
+  "message/imdn+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "message/news": {
+    "source": "iana"
+  },
+  "message/partial": {
+    "source": "iana",
+    "compressible": false
+  },
+  "message/rfc822": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["eml","mime"]
+  },
+  "message/s-http": {
+    "source": "iana"
+  },
+  "message/sip": {
+    "source": "iana"
+  },
+  "message/sipfrag": {
+    "source": "iana"
+  },
+  "message/tracking-status": {
+    "source": "iana"
+  },
+  "message/vnd.si.simp": {
+    "source": "iana"
+  },
+  "message/vnd.wfa.wsc": {
+    "source": "iana",
+    "extensions": ["wsc"]
+  },
+  "model/3mf": {
+    "source": "iana"
+  },
+  "model/gltf+json": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["gltf"]
+  },
+  "model/gltf-binary": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["glb"]
+  },
+  "model/iges": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["igs","iges"]
+  },
+  "model/mesh": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["msh","mesh","silo"]
+  },
+  "model/stl": {
+    "source": "iana"
+  },
+  "model/vnd.collada+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["dae"]
+  },
+  "model/vnd.dwf": {
+    "source": "iana",
+    "extensions": ["dwf"]
+  },
+  "model/vnd.flatland.3dml": {
+    "source": "iana"
+  },
+  "model/vnd.gdl": {
+    "source": "iana",
+    "extensions": ["gdl"]
+  },
+  "model/vnd.gs-gdl": {
+    "source": "apache"
+  },
+  "model/vnd.gs.gdl": {
+    "source": "iana"
+  },
+  "model/vnd.gtw": {
+    "source": "iana",
+    "extensions": ["gtw"]
+  },
+  "model/vnd.moml+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "model/vnd.mts": {
+    "source": "iana",
+    "extensions": ["mts"]
+  },
+  "model/vnd.opengex": {
+    "source": "iana"
+  },
+  "model/vnd.parasolid.transmit.binary": {
+    "source": "iana"
+  },
+  "model/vnd.parasolid.transmit.text": {
+    "source": "iana"
+  },
+  "model/vnd.rosette.annotated-data-model": {
+    "source": "iana"
+  },
+  "model/vnd.usdz+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "model/vnd.valve.source.compiled-map": {
+    "source": "iana"
+  },
+  "model/vnd.vtu": {
+    "source": "iana",
+    "extensions": ["vtu"]
+  },
+  "model/vrml": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["wrl","vrml"]
+  },
+  "model/x3d+binary": {
+    "source": "apache",
+    "compressible": false,
+    "extensions": ["x3db","x3dbz"]
+  },
+  "model/x3d+fastinfoset": {
+    "source": "iana"
+  },
+  "model/x3d+vrml": {
+    "source": "apache",
+    "compressible": false,
+    "extensions": ["x3dv","x3dvz"]
+  },
+  "model/x3d+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["x3d","x3dz"]
+  },
+  "model/x3d-vrml": {
+    "source": "iana"
+  },
+  "multipart/alternative": {
+    "source": "iana",
+    "compressible": false
+  },
+  "multipart/appledouble": {
+    "source": "iana"
+  },
+  "multipart/byteranges": {
+    "source": "iana"
+  },
+  "multipart/digest": {
+    "source": "iana"
+  },
+  "multipart/encrypted": {
+    "source": "iana",
+    "compressible": false
+  },
+  "multipart/form-data": {
+    "source": "iana",
+    "compressible": false
+  },
+  "multipart/header-set": {
+    "source": "iana"
+  },
+  "multipart/mixed": {
+    "source": "iana",
+    "compressible": false
+  },
+  "multipart/multilingual": {
+    "source": "iana"
+  },
+  "multipart/parallel": {
+    "source": "iana"
+  },
+  "multipart/related": {
+    "source": "iana",
+    "compressible": false
+  },
+  "multipart/report": {
+    "source": "iana"
+  },
+  "multipart/signed": {
+    "source": "iana",
+    "compressible": false
+  },
+  "multipart/vnd.bint.med-plus": {
+    "source": "iana"
+  },
+  "multipart/voice-message": {
+    "source": "iana"
+  },
+  "multipart/x-mixed-replace": {
+    "source": "iana"
+  },
+  "text/1d-interleaved-parityfec": {
+    "source": "iana"
+  },
+  "text/cache-manifest": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["appcache","manifest"]
+  },
+  "text/calendar": {
+    "source": "iana",
+    "extensions": ["ics","ifb"]
+  },
+  "text/calender": {
+    "compressible": true
+  },
+  "text/cmd": {
+    "compressible": true
+  },
+  "text/coffeescript": {
+    "extensions": ["coffee","litcoffee"]
+  },
+  "text/css": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "compressible": true,
+    "extensions": ["css"]
+  },
+  "text/csv": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["csv"]
+  },
+  "text/csv-schema": {
+    "source": "iana"
+  },
+  "text/directory": {
+    "source": "iana"
+  },
+  "text/dns": {
+    "source": "iana"
+  },
+  "text/ecmascript": {
+    "source": "iana"
+  },
+  "text/encaprtp": {
+    "source": "iana"
+  },
+  "text/enriched": {
+    "source": "iana"
+  },
+  "text/fwdred": {
+    "source": "iana"
+  },
+  "text/grammar-ref-list": {
+    "source": "iana"
+  },
+  "text/html": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["html","htm","shtml"]
+  },
+  "text/jade": {
+    "extensions": ["jade"]
+  },
+  "text/javascript": {
+    "source": "iana",
+    "compressible": true
+  },
+  "text/jcr-cnd": {
+    "source": "iana"
+  },
+  "text/jsx": {
+    "compressible": true,
+    "extensions": ["jsx"]
+  },
+  "text/less": {
+    "extensions": ["less"]
+  },
+  "text/markdown": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["markdown","md"]
+  },
+  "text/mathml": {
+    "source": "nginx",
+    "extensions": ["mml"]
+  },
+  "text/mizar": {
+    "source": "iana"
+  },
+  "text/n3": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["n3"]
+  },
+  "text/parameters": {
+    "source": "iana"
+  },
+  "text/parityfec": {
+    "source": "iana"
+  },
+  "text/plain": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["txt","text","conf","def","list","log","in","ini"]
+  },
+  "text/provenance-notation": {
+    "source": "iana"
+  },
+  "text/prs.fallenstein.rst": {
+    "source": "iana"
+  },
+  "text/prs.lines.tag": {
+    "source": "iana",
+    "extensions": ["dsc"]
+  },
+  "text/prs.prop.logic": {
+    "source": "iana"
+  },
+  "text/raptorfec": {
+    "source": "iana"
+  },
+  "text/red": {
+    "source": "iana"
+  },
+  "text/rfc822-headers": {
+    "source": "iana"
+  },
+  "text/richtext": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rtx"]
+  },
+  "text/rtf": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["rtf"]
+  },
+  "text/rtp-enc-aescm128": {
+    "source": "iana"
+  },
+  "text/rtploopback": {
+    "source": "iana"
+  },
+  "text/rtx": {
+    "source": "iana"
+  },
+  "text/sgml": {
+    "source": "iana",
+    "extensions": ["sgml","sgm"]
+  },
+  "text/shex": {
+    "extensions": ["shex"]
+  },
+  "text/slim": {
+    "extensions": ["slim","slm"]
+  },
+  "text/strings": {
+    "source": "iana"
+  },
+  "text/stylus": {
+    "extensions": ["stylus","styl"]
+  },
+  "text/t140": {
+    "source": "iana"
+  },
+  "text/tab-separated-values": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["tsv"]
+  },
+  "text/troff": {
+    "source": "iana",
+    "extensions": ["t","tr","roff","man","me","ms"]
+  },
+  "text/turtle": {
+    "source": "iana",
+    "charset": "UTF-8",
+    "extensions": ["ttl"]
+  },
+  "text/ulpfec": {
+    "source": "iana"
+  },
+  "text/uri-list": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["uri","uris","urls"]
+  },
+  "text/vcard": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["vcard"]
+  },
+  "text/vnd.a": {
+    "source": "iana"
+  },
+  "text/vnd.abc": {
+    "source": "iana"
+  },
+  "text/vnd.ascii-art": {
+    "source": "iana"
+  },
+  "text/vnd.curl": {
+    "source": "iana",
+    "extensions": ["curl"]
+  },
+  "text/vnd.curl.dcurl": {
+    "source": "apache",
+    "extensions": ["dcurl"]
+  },
+  "text/vnd.curl.mcurl": {
+    "source": "apache",
+    "extensions": ["mcurl"]
+  },
+  "text/vnd.curl.scurl": {
+    "source": "apache",
+    "extensions": ["scurl"]
+  },
+  "text/vnd.debian.copyright": {
+    "source": "iana"
+  },
+  "text/vnd.dmclientscript": {
+    "source": "iana"
+  },
+  "text/vnd.dvb.subtitle": {
+    "source": "iana",
+    "extensions": ["sub"]
+  },
+  "text/vnd.esmertec.theme-descriptor": {
+    "source": "iana"
+  },
+  "text/vnd.fly": {
+    "source": "iana",
+    "extensions": ["fly"]
+  },
+  "text/vnd.fmi.flexstor": {
+    "source": "iana",
+    "extensions": ["flx"]
+  },
+  "text/vnd.gml": {
+    "source": "iana"
+  },
+  "text/vnd.graphviz": {
+    "source": "iana",
+    "extensions": ["gv"]
+  },
+  "text/vnd.hgl": {
+    "source": "iana"
+  },
+  "text/vnd.in3d.3dml": {
+    "source": "iana",
+    "extensions": ["3dml"]
+  },
+  "text/vnd.in3d.spot": {
+    "source": "iana",
+    "extensions": ["spot"]
+  },
+  "text/vnd.iptc.newsml": {
+    "source": "iana"
+  },
+  "text/vnd.iptc.nitf": {
+    "source": "iana"
+  },
+  "text/vnd.latex-z": {
+    "source": "iana"
+  },
+  "text/vnd.motorola.reflex": {
+    "source": "iana"
+  },
+  "text/vnd.ms-mediapackage": {
+    "source": "iana"
+  },
+  "text/vnd.net2phone.commcenter.command": {
+    "source": "iana"
+  },
+  "text/vnd.radisys.msml-basic-layout": {
+    "source": "iana"
+  },
+  "text/vnd.si.uricatalogue": {
+    "source": "iana"
+  },
+  "text/vnd.sun.j2me.app-descriptor": {
+    "source": "iana",
+    "extensions": ["jad"]
+  },
+  "text/vnd.trolltech.linguist": {
+    "source": "iana"
+  },
+  "text/vnd.wap.si": {
+    "source": "iana"
+  },
+  "text/vnd.wap.sl": {
+    "source": "iana"
+  },
+  "text/vnd.wap.wml": {
+    "source": "iana",
+    "extensions": ["wml"]
+  },
+  "text/vnd.wap.wmlscript": {
+    "source": "iana",
+    "extensions": ["wmls"]
+  },
+  "text/vtt": {
+    "charset": "UTF-8",
+    "compressible": true,
+    "extensions": ["vtt"]
+  },
+  "text/x-asm": {
+    "source": "apache",
+    "extensions": ["s","asm"]
+  },
+  "text/x-c": {
+    "source": "apache",
+    "extensions": ["c","cc","cxx","cpp","h","hh","dic"]
+  },
+  "text/x-component": {
+    "source": "nginx",
+    "extensions": ["htc"]
+  },
+  "text/x-fortran": {
+    "source": "apache",
+    "extensions": ["f","for","f77","f90"]
+  },
+  "text/x-gwt-rpc": {
+    "compressible": true
+  },
+  "text/x-handlebars-template": {
+    "extensions": ["hbs"]
+  },
+  "text/x-java-source": {
+    "source": "apache",
+    "extensions": ["java"]
+  },
+  "text/x-jquery-tmpl": {
+    "compressible": true
+  },
+  "text/x-lua": {
+    "extensions": ["lua"]
+  },
+  "text/x-markdown": {
+    "compressible": true,
+    "extensions": ["mkd"]
+  },
+  "text/x-nfo": {
+    "source": "apache",
+    "extensions": ["nfo"]
+  },
+  "text/x-opml": {
+    "source": "apache",
+    "extensions": ["opml"]
+  },
+  "text/x-org": {
+    "compressible": true,
+    "extensions": ["org"]
+  },
+  "text/x-pascal": {
+    "source": "apache",
+    "extensions": ["p","pas"]
+  },
+  "text/x-processing": {
+    "compressible": true,
+    "extensions": ["pde"]
+  },
+  "text/x-sass": {
+    "extensions": ["sass"]
+  },
+  "text/x-scss": {
+    "extensions": ["scss"]
+  },
+  "text/x-setext": {
+    "source": "apache",
+    "extensions": ["etx"]
+  },
+  "text/x-sfv": {
+    "source": "apache",
+    "extensions": ["sfv"]
+  },
+  "text/x-suse-ymp": {
+    "compressible": true,
+    "extensions": ["ymp"]
+  },
+  "text/x-uuencode": {
+    "source": "apache",
+    "extensions": ["uu"]
+  },
+  "text/x-vcalendar": {
+    "source": "apache",
+    "extensions": ["vcs"]
+  },
+  "text/x-vcard": {
+    "source": "apache",
+    "extensions": ["vcf"]
+  },
+  "text/xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xml"]
+  },
+  "text/xml-external-parsed-entity": {
+    "source": "iana"
+  },
+  "text/yaml": {
+    "extensions": ["yaml","yml"]
+  },
+  "video/1d-interleaved-parityfec": {
+    "source": "iana"
+  },
+  "video/3gpp": {
+    "source": "iana",
+    "extensions": ["3gp","3gpp"]
+  },
+  "video/3gpp-tt": {
+    "source": "iana"
+  },
+  "video/3gpp2": {
+    "source": "iana",
+    "extensions": ["3g2"]
+  },
+  "video/bmpeg": {
+    "source": "iana"
+  },
+  "video/bt656": {
+    "source": "iana"
+  },
+  "video/celb": {
+    "source": "iana"
+  },
+  "video/dv": {
+    "source": "iana"
+  },
+  "video/encaprtp": {
+    "source": "iana"
+  },
+  "video/h261": {
+    "source": "iana",
+    "extensions": ["h261"]
+  },
+  "video/h263": {
+    "source": "iana",
+    "extensions": ["h263"]
+  },
+  "video/h263-1998": {
+    "source": "iana"
+  },
+  "video/h263-2000": {
+    "source": "iana"
+  },
+  "video/h264": {
+    "source": "iana",
+    "extensions": ["h264"]
+  },
+  "video/h264-rcdo": {
+    "source": "iana"
+  },
+  "video/h264-svc": {
+    "source": "iana"
+  },
+  "video/h265": {
+    "source": "iana"
+  },
+  "video/iso.segment": {
+    "source": "iana"
+  },
+  "video/jpeg": {
+    "source": "iana",
+    "extensions": ["jpgv"]
+  },
+  "video/jpeg2000": {
+    "source": "iana"
+  },
+  "video/jpm": {
+    "source": "apache",
+    "extensions": ["jpm","jpgm"]
+  },
+  "video/mj2": {
+    "source": "iana",
+    "extensions": ["mj2","mjp2"]
+  },
+  "video/mp1s": {
+    "source": "iana"
+  },
+  "video/mp2p": {
+    "source": "iana"
+  },
+  "video/mp2t": {
+    "source": "iana",
+    "extensions": ["ts"]
+  },
+  "video/mp4": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["mp4","mp4v","mpg4"]
+  },
+  "video/mp4v-es": {
+    "source": "iana"
+  },
+  "video/mpeg": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["mpeg","mpg","mpe","m1v","m2v"]
+  },
+  "video/mpeg4-generic": {
+    "source": "iana"
+  },
+  "video/mpv": {
+    "source": "iana"
+  },
+  "video/nv": {
+    "source": "iana"
+  },
+  "video/ogg": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["ogv"]
+  },
+  "video/parityfec": {
+    "source": "iana"
+  },
+  "video/pointer": {
+    "source": "iana"
+  },
+  "video/quicktime": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["qt","mov"]
+  },
+  "video/raptorfec": {
+    "source": "iana"
+  },
+  "video/raw": {
+    "source": "iana"
+  },
+  "video/rtp-enc-aescm128": {
+    "source": "iana"
+  },
+  "video/rtploopback": {
+    "source": "iana"
+  },
+  "video/rtx": {
+    "source": "iana"
+  },
+  "video/smpte291": {
+    "source": "iana"
+  },
+  "video/smpte292m": {
+    "source": "iana"
+  },
+  "video/ulpfec": {
+    "source": "iana"
+  },
+  "video/vc1": {
+    "source": "iana"
+  },
+  "video/vnd.cctv": {
+    "source": "iana"
+  },
+  "video/vnd.dece.hd": {
+    "source": "iana",
+    "extensions": ["uvh","uvvh"]
+  },
+  "video/vnd.dece.mobile": {
+{
+  "name": "@babel/code-frame",
+  "version": "7.12.13",
+  "description": "Generate errors that contain a code frame that point to source locations.",
+  "author": "Sebastian McKenzie <sebmck@gmail.com>",
+  "homepage": "https://babel.dev/docs/en/next/babel-code-frame",
+  "bugs": "https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-code-frame"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@babel/highlight": "^7.12.13"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.0.0",
+    "chalk": "^2.0.0",
+    "strip-ansi": "^4.0.0"
+  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           {
+  "name": "@babel/code-frame",
+  "version": "7.12.13",
+  "description": "Generate errors that contain a code frame that point to source locations.",
+  "author": "Sebastian McKenzie <sebmck@gmail.com>",
+  "homepage": "https://babel.dev/docs/en/next/babel-code-frame",
+  "bugs": "https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-code-frame"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@babel/highlight": "^7.12.13"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.0.0",
+    "chalk": "^2.0.0",
+    "strip-ansi": "^4.0.0"
+  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           exports = module.exports = SemVer
+
+var debug
+/* istanbul ignore next */
+if (typeof process === 'object' &&
+    process.env &&
+    process.env.NODE_DEBUG &&
+    /\bsemver\b/i.test(process.env.NODE_DEBUG)) {
+  debug = function () {
+    var args = Array.prototype.slice.call(arguments, 0)
+    args.unshift('SEMVER')
+    console.log.apply(console, args)
+  }
+} else {
+  debug = function () {}
+}
+
+// Note: this is the semver.org version of the spec that it implements
+// Not necessarily the package version of this code.
+exports.SEMVER_SPEC_VERSION = '2.0.0'
+
+var MAX_LENGTH = 256
+var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER ||
+  /* istanbul ignore next */ 9007199254740991
+
+// Max safe segment length for coercion.
+var MAX_SAFE_COMPONENT_LENGTH = 16
+
+// The actual regexps go on exports.re
+var re = exports.re = []
+var src = exports.src = []
+var t = exports.tokens = {}
+var R = 0
+
+function tok (n) {
+  t[n] = R++
+}
+
+// The following Regular Expressions can be used for tokenizing,
+// validating, and parsing SemVer version strings.
+
+// ## Numeric Identifier
+// A single `0`, or a non-zero digit followed by zero or more digits.
+
+tok('NUMERICIDENTIFIER')
+src[t.NUMERICIDENTIFIER] = '0|[1-9]\\d*'
+tok('NUMERICIDENTIFIERLOOSE')
+src[t.NUMERICIDENTIFIERLOOSE] = '[0-9]+'
+
+// ## Non-numeric Identifier
+// Zero or more digits, followed by a letter or hyphen, and then zero or
+// more letters, digits, or hyphens.
+
+tok('NONNUMERICIDENTIFIER')
+src[t.NONNUMERICIDENTIFIER] = '\\d*[a-zA-Z-][a-zA-Z0-9-]*'
+
+// ## Main Version
+// Three dot-separated numeric identifiers.
+
+tok('MAINVERSION')
+src[t.MAINVERSION] = '(' + src[t.NUMERICIDENTIFIER] + ')\\.' +
+                   '(' + src[t.NUMERICIDENTIFIER] + ')\\.' +
+                   '(' + src[t.NUMERICIDENTIFIER] + ')'
+
+tok('MAINVERSIONLOOSE')
+src[t.MAINVERSIONLOOSE] = '(' + src[t.NUMERICIDENTIFIERLOOSE] + ')\\.' +
+                        '(' + src[t.NUMERICIDENTIFIERLOOSE] + ')\\.' +
+                        '(' + src[t.NUMERICIDENTIFIERLOOSE] + ')'
+
+// ## Pre-release Version Identifier
+// A numeric identifier, or a non-numeric identifier.
+
+tok('PRERELEASEIDENTIFIER')
+src[t.PRERELEASEIDENTIFIER] = '(?:' + src[t.NUMERICIDENTIFIER] +
+                            '|' + src[t.NONNUMERICIDENTIFIER] + ')'
+
+tok('PRERELEASEIDENTIFIERLOOSE')
+src[t.PRERELEASEIDENTIFIERLOOSE] = '(?:' + src[t.NUMERICIDENTIFIERLOOSE] +
+                                 '|' + src[t.NONNUMERICIDENTIFIER] + ')'
+
+// ## Pre-release Version
+// Hyphen, followed by one or more dot-separated pre-release version
+// identifiers.
+
+tok('PRERELEASE')
+src[t.PRERELEASE] = '(?:-(' + src[t.PRERELEASEIDENTIFIER] +
+                  '(?:\\.' + src[t.PRERELEASEIDENTIFIER] + ')*))'
+
+tok('PRERELEASELOOSE')
+src[t.PRERELEASELOOSE] = '(?:-?(' + src[t.PRERELEASEIDENTIFIERLOOSE] +
+                       '(?:\\.' + src[t.PRERELEASEIDENTIFIERLOOSE] + ')*))'
+
+// ## Build Metadata Identifier
+// Any combination of digits, letters, or hyphens.
+
+tok('BUILDIDENTIFIER')
+src[t.BUILDIDENTIFIER] = '[0-9A-Za-z-]+'
+
+// ## Build Metadata
+// Plus sign, followed by one or more period-separated build metadata
+// identifiers.
+
+tok('BUILD')
+src[t.BUILD] = '(?:\\+(' + src[t.BUILDIDENTIFIER] +
+             '(?:\\.' + src[t.BUILDIDENTIFIER] + ')*))'
+
+// ## Full Version String
+// A main version, followed optionally by a pre-release version and
+// build metadata.
+
+// Note that the only major, minor, patch, and pre-release sections of
+// the version string are capturing groups.  The build metadata is not a
+// capturing group, because it should not ever be used in version
+// comparison.
+
+tok('FULL')
+tok('FULLPLAIN')
+src[t.FULLPLAIN] = 'v?' + src[t.MAINVERSION] +
+                  src[t.PRERELEASE] + '?' +
+                  src[t.BUILD] + '?'
+
+src[t.FULL] = '^' + src[t.FULLPLAIN] + '$'
+
+// like full, but allows v1.2.3 and =1.2.3, which people do sometimes.
+// also, 1.0.0alpha1 (prerelease without the hyphen) which is pretty
+// common in the npm registry.
+tok('LOOSEPLAIN')
+src[t.LOOSEPLAIN] = '[v=\\s]*' + src[t.MAINVERSIONLOOSE] +
+                  src[t.PRERELEASELOOSE] + '?' +
+                  src[t.BUILD] + '?'
+
+tok('LOOSE')
+src[t.LOOSE] = '^' + src[t.LOOSEPLAIN] + '$'
+
+tok('GTLT')
+src[t.GTLT] = '((?:<|>)?=?)'
+
+// Something like "2.*" or "1.2.x".
+// Note that "x.x" is a valid xRange identifer, meaning "any version"
+// Only the first item is strictly required.
+tok('XRANGEIDENTIFIERLOOSE')
+src[t.XRANGEIDENTIFIERLOOSE] = src[t.NUMERICIDENTIFIERLOOSE] + '|x|X|\\*'
+tok('XRANGEIDENTIFIER')
+src[t.XRANGEIDENTIFIER] = src[t.NUMERICIDENTIFIER] + '|x|X|\\*'
+
+tok('XRANGEPLAIN')
+src[t.XRANGEPLAIN] = '[v=\\s]*(' + src[t.XRANGEIDENTIFIER] + ')' +
+                   '(?:\\.(' + src[t.XRANGEIDENTIFIER] + ')' +
+                   '(?:\\.(' + src[t.XRANGEIDENTIFIER] + ')' +
+                   '(?:' + src[t.PRERELEASE] + ')?' +
+                   src[t.BUILD] + '?' +
+                   ')?)?'
+
+tok('XRANGEPLAINLOOSE')
+src[t.XRANGEPLAINLOOSE] = '[v=\\s]*(' + src[t.XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:\\.(' + src[t.XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:\\.(' + src[t.XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:' + src[t.PRERELEASELOOSE] + ')?' +
+                        src[t.BUILD] + '?' +
+                        ')?)?'
+
+tok('XRANGE')
+src[t.XRANGE] = '^' + src[t.GTLT] + '\\s*' + src[t.XRANGEPLAIN] + '$'
+tok('XRANGELOOSE')
+src[t.XRANGELOOSE] = '^' + src[t.GTLT] + '\\s*' + src[t.XRANGEPLAINLOOSE] + '$'
+
+// Coercion.
+// Extract anything that could conceivably be a part of a valid semver
+tok('COERCE')
+src[t.COERCE] = '(^|[^\\d])' +
+              '(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '})' +
+              '(?:\\.(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '}))?' +
+              '(?:\\.(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '}))?' +
+              '(?:$|[^\\d])'
+tok('COERCERTL')
+re[t.COERCERTL] = new RegExp(src[t.COERCE], 'g')
+
+// Tilde ranges.
+// Meaning is "reasonably at or greater than"
+tok('LONETILDE')
+src[t.LONETILDE] = '(?:~>?)'
+
+tok('TILDETRIM')
+src[t.TILDETRIM] = '(\\s*)' + src[t.LONETILDE] + '\\s+'
+re[t.TILDETRIM] = new RegExp(src[t.TILDETRIM], 'g')
+var tildeTrimReplace = '$1~'
+
+tok('TILDE')
+src[t.TILDE] = '^' + src[t.LONETILDE] + src[t.XRANGEPLAIN] + '$'
+tok('TILDELOOSE')
+src[t.TILDELOOSE] = '^' + src[t.LONETILDE] + src[t.XRANGEPLAINLOOSE] + '$'
+
+// Caret ranges.
+// Meaning is "at least and backwards compatible with"
+tok('LONECARET')
+src[t.LONECARET] = '(?:\\^)'
+
+tok('CARETTRIM')
+src[t.CARETTRIM] = '(\\s*)' + src[t.LONECARET] + '\\s+'
+re[t.CARETTRIM] = new RegExp(src[t.CARETTRIM], 'g')
+var caretTrimReplace = '$1^'
+
+tok('CARET')
+src[t.CARET] = '^' + src[t.LONECARET] + src[t.XRANGEPLAIN] + '$'
+tok('CARETLOOSE')
+src[t.CARETLOOSE] = '^' + src[t.LONECARET] + src[t.XRANGEPLAINLOOSE] + '$'
+
+// A simple gt/lt/eq thing, or just "" to indicate "any version"
+tok('COMPARATORLOOSE')
+src[t.COMPARATORLOOSE] = '^' + src[t.GTLT] + '\\s*(' + src[t.LOOSEPLAIN] + ')$|^$'
+tok('COMPARATOR')
+src[t.COMPARATOR] = '^' + src[t.GTLT] + '\\s*(' + src[t.FULLPLAIN] + ')$|^$'
+
+// An expression to strip any whitespace between the gtlt and the thing
+// it modifies, so that `> 1.2.3` ==> `>1.2.3`
+tok('COMPARATORTRIM')
+src[t.COMPARATORTRIM] = '(\\s*)' + src[t.GTLT] +
+                      '\\s*(' + src[t.LOOSEPLAIN] + '|' + src[t.XRANGEPLAIN] + ')'
+
+// this one has to use the /g flag
+re[t.COMPARATORTRIM] = new RegExp(src[t.COMPARATORTRIM], 'g')
+var comparatorTrimReplace = '$1$2$3'
+
+// Something like `1.2.3 - 1.2.4`
+// Note that these all use the loose form, because they'll be
+// checked against either the strict or loose comparator form
+// later.
+tok('HYPHENRANGE')
+src[t.HYPHENRANGE] = '^\\s*(' + src[t.XRANGEPLAIN] + ')' +
+                   '\\s+-\\s+' +
+                   '(' + src[t.XRANGEPLAIN] + ')' +
+                   '\\s*$'
+
+tok('HYPHENRANGELOOSE')
+src[t.HYPHENRANGELOOSE] = '^\\s*(' + src[t.XRANGEPLAINLOOSE] + ')' +
+                        '\\s+-\\s+' +
+                        '(' + src[t.XRANGEPLAINLOOSE] + ')' +
+                        '\\s*$'
+
+// Star ranges basically just allow anything at all.
+tok('STAR')
+src[t.STAR] = '(<|>)?=?\\s*\\*'
+
+// Compile to actual regexp objects.
+// All are flag-free, unless"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _path = require("./path");
+
+var t = require("@babel/types");
+
+class TraversalContext {
+  constructor(scope, opts, state, parentPath) {
+    this.queue = null;
+    this.priorityQueue = null;
+    this.parentPath = parentPath;
+    this.scope = scope;
+    this.state = state;
+    this.opts = opts;
+  }
+
+  shouldVisit(node) {
+    const opts = this.opts;
+    if (opts.enter || opts.exit) return true;
+    if (opts[node.type]) return true;
+    const keys = t.VISITOR_KEYS[node.type];
+    if (!(keys != null && keys.length)) return false;
+
+    for (const key of keys) {
+      if (node[key]) return true;
+    }
+
+    return false;
+  }
+
+  create(node, obj, key, listKey) {
+    return _path.default.get({
+      parentPath: this.parentPath,
+      parent: node,
+      container: obj,
+      key: key,
+      listKey
+    });
+  }
+
+  maybeQueue(path, notPriority) {
+    if (this.queue) {
+      if (notPriority) {
+        this.queue.push(path);
+      } else {
+        this.priorityQueue.push(path);
+      }
+    }
+  }
+
+  visitMultiple(container, parent, listKey) {
+    if (container.length === 0) return false;
+    const queue = [];
+
+    for (let key = 0; key < container.length; key++) {
+      const node = container[key];
+
+      if (node && this.shouldVisit(node)) {
+        queue.push(this.create(parent, container, key, listKey));
+      }
+    }
+
+    return this.visitQueue(queue);
+  }
+
+  visitSingle(node, key) {
+    if (this.shouldVisit(node[key])) {
+      return this.visitQueue([this.create(node, node, key)]);
+    } else {
+      return false;
+    }
+  }
+
+  visitQueue(queue) {
+    this.queue = queue;
+    this.priorityQueue = [];
+    const visited = new WeakSet();
+    let stop = false;
+
+    for (const path of queue) {
+      path.resync();
+
+      if (path.contexts.length === 0 || path.contexts[path.contexts.length - 1] !== this) {
+        path.pushContext(this);
+      }
+
+      if (path.key === null) continue;
+      const {
+        node
+      } = path;
+      if (visited.has(node)) continue;
+      if (node) visited.add(node);
+
+      if (path.visit()) {
+        stop = true;
+        break;
+      }
+
+      if (this.priorityQueue.length) {
+        stop = this.visitQueue(this.priorityQueue);
+        this.priorityQueue = [];
+        this.queue = queue;
+        if (stop) break;
+      }
+    }
+
+    for (const path of queue) {
+      path.popContext();
+    }
+
+    this.queue = null;
+    return stop;
+  }
+
+  visit(node, key) {
+    const nodes = node[key];
+    if (!nodes) return false;
+
+    if (Array.isArray(nodes)) {
+      return this.visitMultiple(nodes, node, key);
+    } else {
+      return this.visitSingle(node, key);
+    }
+  }
+
+}
+
+exports.default = TraversalContext;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                var parse = require('../');
+var test = require('tape');
+
+test('-', function (t) {
+    t.plan(5);
+    t.deepEqual(parse([ '-n', '-' ]), { n: '-', _: [] });
+    t.deepEqual(parse([ '-' ]), { _: [ '-' ] });
+    t.deepEqual(parse([ '-f-' ]), { f: '-', _: [] });
+    t.deepEqual(
+        parse([ '-b', '-' ], { boolean: 'b' }),
+        { b: true, _: [ '-' ] }
+    );
+    t.deepEqual(
+        parse([ '-s', '-' ], { string: 's' }),
+        { s: '-', _: [] }
+    );
+});
+
+test('-a -- b', function (t) {
+    t.plan(3);
+    t.deepEqual(parse([ '-a', '--', 'b' ]), { a: true, _: [ 'b' ] });
+    t.deepEqual(parse([ '--a', '--', 'b' ]), { a: true, _: [ 'b' ] });
+    t.deepEqual(parse([ '--a', '--', 'b' ]), { a: true, _: [ 'b' ] });
+});
+
+test('move arguments after the -- into their own `--` array', function(t) {
+    t.plan(1);
+    t.deepEqual(
+        parse([ '--name', 'John', 'before', '--', 'after' ], { '--': true }),
+        { name: 'John', _: [ 'before' ], '--': [ 'after' ] });
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.program = exports.expression = exports.statement = exports.statements = exports.smart = void 0;
+
+var t = require("@babel/types");
+
+function makeStatementFormatter(fn) {
+  return {
+    code: str => `/* @babel/template */;\n${str}`,
+    validate: () => {},
+    unwrap: ast => {
+      return fn(ast.program.body.slice(1));
+    }
+  };
+}
+
+const smart = makeStatementFormatter(body => {
+  if (body.length > 1) {
+    return body;
+  } else {
+    return body[0];
+  }
+});
+exports.smart = smart;
+const statements = makeStatementFormatter(body => body);
+exports.statements = statements;
+const statement = makeStatementFormatter(body => {
+  if (body.length === 0) {
+    throw new Error("Found nothing to return.");
+  }
+
+  if (body.length > 1) {
+    throw new Error("Found multiple statements but wanted one");
+  }
+
+  return body[0];
+});
+exports.statement = statement;
+const expression = {
+  code: str => `(\n${str}\n)`,
+  validate: ast => {
+    if (ast.program.body.length > 1) {
+      throw new Error("Found multiple statements but wanted one");
+    }
+
+    if (expression.unwrap(ast).start === 0) {
+      throw new Error("Parse result included parens.");
+    }
+  },
+  unwrap: ({
+    program
+  }) => {
+    const [stmt] = program.body;
+    t.assertExpressionStatement(stmt);
+    return stmt.expression;
+  }
+};
+exports.expression = expression;
+const program = {
+  code: str => str,
+  validate: () => {},
+  unwrap: ast => ast.program
+};
+exports.program = program;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "isIdentifierName", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierName;
+  }
+});
+Object.defineProperty(exports, "isIdentifierChar", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierChar;
+  }
+});
+Object.defineProperty(exports, "isIdentifierStart", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierStart;
+  }
+});
+Object.defineProperty(exports, "isReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictBindOnlyReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictBindOnlyReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictBindReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictBindReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictReservedWord;
+  }
+});
+Object.defineProperty(exports, "isKeyword", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isKeyword;
+  }
+});
+
+var _identifier = require("./identifier");
+
+var _keyword = require("./keyword");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {
+  "name": "@babel/helper-replace-supers",
+  "version": "7.14.5",
+  "description": "Helper function to replace supers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-helper-replace-supers"
+  },
+  "homepage": "https://babel.dev/docs/en/next/babel-helper-replace-supers",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./lib/index.js",
+  "dependencies": {
+    "@babel/helper-member-expression-to-functions": "^7.14.5",
+    "@babel/helper-optimise-call-expression": "^7.14.5",
+    "@babel/traverse": "^7.14.5",
+    "@babel/types": "^7.14.5"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  },
+  "author": "The Babel Team (https://babel.dev/team)"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+  "name": "@babel/helper-optimise-call-expression",
+  "version": "7.14.5",
+  "description": "Helper function to optimise call expression",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-helper-optimise-call-expression"
+  },
+  "homepage": "https://babel.dev/docs/en/next/babel-helper-optimise-call-expression",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./lib/index.js",
+  "dependencies": {
+    "@babel/types": "^7.14.5"
+  },
+  "devDependencies": {
+    "@babel/generator": "7.14.5",
+    "@babel/parser": "7.14.5"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  },
+  "author": "The Babel Team (https://babel.dev/team)"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "isIdentifierName", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierName;
+  }
+});
+Object.defineProperty(exports, "isIdentifierChar", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierChar;
+  }
+});
+Object.defineProperty(exports, "isIdentifierStart", {
+  enumerable: true,
+  get: function () {
+    return _identifier.isIdentifierStart;
+  }
+});
+Object.defineProperty(exports, "isReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictBindOnlyReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictBindOnlyReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictBindReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictBindReservedWord;
+  }
+});
+Object.defineProperty(exports, "isStrictReservedWord", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isStrictReservedWord;
+  }
+});
+Object.defineProperty(exports, "isKeyword", {
+  enumerable: true,
+  get: function () {
+    return _keyword.isKeyword;
+  }
+});
+
+var _identifier = require("./identifier");
+
+var _keyword = require("./keyword");                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      e <= 90) return true;
+  if (code < 97) return code === 95;
+  if (code <= 122) return true;
+
+  if (code <= 0xffff) {
+    return code >= 0xaa && nonASCIIidentifierStart.test(String.fromCharCode(code));
+  }
+
+  return isInAstralSet(code, astralIdentifierStartCodes);
+}
+function isIdentifierChar(code) {
+  if (code < 48) return code === 36;
+  if (code < 58) return true;
+  if (code < 65) return false;
+  if (code <= 90) return true;
+  if (code < 97) return code === 95;
+  if (code <= 122) return true;
+
+  if (code <= 0xffff) {
+    return code >= 0xaa && nonASCIIidentifier.test(String.fromCharCode(code));
+  }
+
+  return isInAstralSet(code, astralIdentifierStartCodes) || isInAstralSet(code, astralIdentifierCodes);
+}
+
+const reservedWords = {
+  keyword: ["break", "case", "catch", "continue", "debugger", "default", "do", "else", "finally", "for", "function", "if", "return", "switch", "throw", "try", "var", "const", "while", "with", "new", "this", "super", "class", "extends", "export", "import", "null", "true", "false", "in", "instanceof", "typeof", "void", "delete"],
+  strict: ["implements", "interface", "let", "package", "private", "protected", "public", "static", "yield"],
+  strictBind: ["eval", "arguments"]
+};
+const keywords$1 = new Set(reservedWords.keyword);
+const reservedWordsStrictSet = new Set(reservedWords.strict);
+const reservedWordsStrictBindSet = new Set(reservedWords.strictBind);
+function isReservedWord(word, inModule) {
+  return inModule && word === "await" || word === "enum";
+}
+function isStrictReservedWord(word, inModule) {
+  return isReservedWord(word, inModule) || reservedWordsStrictSet.has(word);
+}
+function isStrictBindOnlyReservedWord(word) {
+  return reservedWordsStrictBindSet.has(word);
+}
+function isStrictBindReservedWord(word, inModule) {
+  return isStrictReservedWord(word, inModule) || isStrictBindOnlyReservedWord(word);
+}
+function isKeyword(word) {
+  return keywords$1.has(word);
+}
+
+const keywordRelationalOperator = /^in(stanceof)?$/;
+function isIteratorStart(current, next) {
+  return current === 64 && next === 64;
+}
+
+const reservedTypes = new Set(["_", "any", "bool", "boolean", "empty", "extends", "false", "interface", "mixed", "null", "number", "static", "string", "true", "typeof", "void"]);
+const FlowErrors = Object.freeze({
+  AmbiguousConditionalArrow: "Ambiguous expression: wrap the arrow functions in parentheses to disambiguate.",
+  AmbiguousDeclareModuleKind: "Found both `declare module.exports` and `declare export` in the same module. Modules can only have 1 since they are either an ES module or they are a CommonJS module",
+  AssignReservedType: "Cannot overwrite reserved type %0",
+  DeclareClassElement: "The `declare` modifier can only appear on class fields.",
+  DeclareClassFieldInitializer: "Initializers are not allowed in fields with the `declare` modifier.",
+  DuplicateDeclareModuleExports: "Duplicate `declare module.exports` statement",
+  EnumBooleanMemberNotInitialized: "Boolean enum members need to be initialized. Use either `%0 = true,` or `%0 = false,` in enum `%1`.",
+  EnumDuplicateMemberName: "Enum member names need to be unique, but the name `%0` has already been used before in enum `%1`.",
+  EnumInconsistentMemberValues: "Enum `%0` has inconsistent member initializers. Either use no initializers, or consistently use literals (either booleans, numbers, or strings) for all member initializers.",
+  EnumInvalidExplicitType: "Enum type `%1` is not valid. Use one of `boolean`, `number`, `string`, or `symbol` in enum `%0`.",
+  EnumInvalidExplicitTypeUnknownSupplied: "Supplied enum type is not valid. Use one of `boolean`, `number`, `string`, or `symbol` in enum `%0`.",
+  EnumInvalidMemberInitializerPrimaryType: "Enum `%0` has type `%2`, so the initializer of `%1` needs to be a %2 literal.",
+  EnumInvalidMemberInitializerSymbolType: "Symbol enum members cannot be initialized. Use `%1,` in enum `%0`.",
+  EnumInvalidMemberInitializerUnknownType: "The enum member initializer for `%1` needs to be a literal (either a boolean, number, or string) in enum `%0`.",
+  EnumInvalidMemberName: "Enum member names cannot start with lowercase 'a' through 'z'. Instead of using `%0`, consider using `%1`, in enum `%2`.",
+  EnumNumberMemberNotInitialized: "Number enum members need to be initialized, e.g. `%1 = 1` in enum `%0`.",
+  EnumStringMemberInconsistentlyInitailized: "String enum members need to consistently either all use initializers, or use no initializers, in enum `%0`.",
+  ImportTypeShorthandOnlyInPureImport: "The `type` and `typeof` keywords on named imports can only be used on regular `import` statements. It cannot be used with `import type` or `import typeof` statements",
+  InexactInsideExact: "Explicit inexact syntax cannot appear inside an explicit exact object type",
+  InexactInsideNonObject: "Explicit inexact syntax cannot appear in class or interface definitions",
+  InexactVariance: "Explicit inexact syntax cannot have variance",
+  InvalidNonTypeImportInDeclareModule: "Imports within a `declare module` body must always be `import type` or `import typeof`",
+  MissingTypeParamDefault: "Type parameter declaration needs a default, since a preceding type parameter declaration has a default.",
+  NestedDeclareModule: "`declare module` cannot be used inside another `declare module`",
+  NestedFlowComment: "Cannot have a flow comment inside another flow comment",
+  OptionalBindingPattern: "A binding pattern parameter cannot be optional in an implementation signature.",
+  SpreadVariance: "Spread properties cannot have variance",
+  TypeBeforeInitializer: "Type annotations must come before default assignments, e.g. instead of `age = 25: number` use `age: number = 25`",
+  TypeCastInPattern: "The type cast expression is expected to be wrapped with parenthesis",
+  UnexpectedExplicitInexactInObject: "Explicit inexact syntax must appear at the end of an inexact object",
+  UnexpectedReservedType: "Unexpected reserved type %0",
+  UnexpectedReservedUnderscore: "`_` is only allowed as a type argument to call or new",
+  UnexpectedSpaceBetweenModuloChecks: "Spaces between `%` and `checks` are not allowed here.",
+  UnexpectedSpreadType: "Spread operator cannot appear in class or interface definitions",
+  UnexpectedSubtractionOperand: 'Unexpected token, expected "number" or "bigint"',
+  UnexpectedTokenAfterTypeParameter: "Expected an arrow function after this type parameter declaration",
+  UnsupportedDeclareExportKind: "`declare export %0` is not supported. Use `%1` instead",
+  UnsupportedStatementInDeclareModule: "Only declares and type imports are allowed inside declare module",
+  UnterminatedFlowComment: "Unterminated flow-comment"
+});
+
+function isEsModuleType(bodyElement) {
+  return bodyElement.type === "DeclareExportAllDeclaration" || bodyElement.type === "DeclareExportDeclaration" && (!bodyElement.declaration || bodyElement.declaration.type !== "TypeAlias" && bodyElement.declaration.type !== "InterfaceDeclaration");
+}
+
+function hasTypeImportKind(node) {
+  return node.importKind === "type" || node.importKind === "typeof";
+}
+
+function isMaybeDefaultImport(state) {
+  return (state.type === types.name || !!state.type.keyword) && state.value !== "from";
+}
+
+const exportSuggestions = {
+  const: "declare export var",
+  let: "declare export var",
+  type: "export type",
+  interface: "export interface"
+};
+
+function partition(list, test) {
+  const list1 = [];
+  const list2 = [];
+
+  for (let i = 0; i < list.length; i++) {
+    (test(list[i], i, list) ? list1 : list2).push(list[i]);
+  }
+
+  return [list1, list2];
+}
+
+const FLOW_PRAGMA_REGEX = /\*?\s*@((?:no)?flow)\b/;
+var flow = (superClass => class extends superClass {
+  constructor(options, input) {
+    super(options, input);
+    this.flowPragma = undefined;
+  }
+
+  shouldParseTypes() {
+    return this.getPluginOption("flow", "all") || this.flowPragma === "flow";
+  }
+
+  shouldParseEnums() {
+    return !!this.getPluginOption("flow", "enums");
+  }
+
+  finishToken(type, val) {
+    if (type !== types.string && type !== types.semi && type !== types.interpreterDirective) {
+      if (this.flowPragma === undefined) {
+        this.flowPragma = null;
+      }
+    }
+
+    return super.finishToken(type, val);
+  }
+
+  addComment(comment) {
+    if (this.flowPragma === undefined) {
+      const matches = FLOW_PRAGMA_REGEX.exec(comment.value);
+
+      if (!matches) ; else if (matches[1] === "flow") {
+        this.flowPragma = "flow";
+      } else if (matches[1] === "noflow") {
+        this.flowPragma = "noflow";
+      } else {
+        throw new Error("Unexpected flow pragma");
+      }
+    }
+
+    return super.addComment(comment);
+  }
+
+  flowParseTypeInitialiser(tok) {
+    const oldInType = this.state.inType;
+    this.state.inType = true;
+    this.expect(tok || types.colon);
+    const type = this.flowParseType();
+    this.state.inType = oldInType;
+    return type;
+  }
+
+  flowParsePredicate() {
+    const node = this.startNode();
+    const moduloLoc = this.state.startLoc;
+    const moduloPos = this.state.start;
+    this.expect(types.modulo);
+    const checksLoc = this.state.startLoc;
+    this.expectContextual("checks");
+
+    if (moduloLoc.line !== checksLoc.line || moduloLoc.column !== checksLoc.column - 1) {
+      this.raise(moduloPos, FlowErrors.UnexpectedSpaceBetweenModuloChecks);
+    }
+
+    if (this.eat(types.parenL)) {
+      node.value = this.parseExpression();
+      this.expect(types.parenR);
+      return this.finishNode(node, "DeclaredPredicate");
+    } else {
+      return this.finishNode(node, "InferredPredicate");
+    }
+  }
+
+  flowParseTypeAndPredicateInitialiser() {
+    const oldInType = this.state.inType;
+    this.state.inType = true;
+    this.expect(types.colon);
+    let type = null;
+    let predicate = null;
+
+    if (this.match(types.modulo)) {
+      this.state.inType = oldInType;
+      predicate = this.flowParsePredicate();
+    } else {
+      type = this.flowParseType();
+      this.state.inType = oldInType;
+
+      if (this.match(types.modulo)) {
+        predicate = this.flowParsePredicate();
+      }
+    }
+
+    return [type, predicate];
+  }
+
+  flowParseDeclareClass(node) {
+    this.next();
+    this.flowParseInterfaceish(node, true);
+    return this.finishNode(node, "DeclareClass");
+  }
+
+  flowParseDeclareFunction(node) {
+    this.next();
+    const id = node.id = this.parseIdentifier();
+    const typeNode = this.startNode();
+    const typeContainer = this.startNode();
+
+    if (this.isRelational("<")) {
+      typeNode.typeParameters = this.flowParseTypeParameterDeclaration();
+    } else {
+      typeNode.typeParameters = null;
+    }
+
+    this.expect(types.parenL);
+    const tmp = this.flowParseFunctionTypeParams();
+    typeNode.params = tmp.params;
+    typeNode.rest = tmp.rest;
+    this.expect(types.parenR);
+    [typeNode.returnType, node.predicate] = this.flowParseTypeAndPredicateInitialiser();
+    typeContainer.typeAnnotation = this.finishNode(typeNode, "FunctionTypeAnnotation");
+    id.typeAnnotation = this.finishNode(typeContainer, "TypeAnnotation");
+    this.resetEndLocation(id);
+    this.semicolon();
+    return this.finishNode(node, "DeclareFunction");
+  }
+
+  flowParseDeclare(node, insideModule) {
+    if (this.match(types._class)) {
+      return this.flowParseDeclareClass(node);
+    } else if (this.match(types._function)) {
+      return this.flowParseDeclareFunction(node);
+    } else if (this.match(types._var)) {
+      return this.flowParseDeclareVariable(node);
+    } else if (this.eatContextual("module")) {
+      if (this.match(types.dot)) {
+        return this.flowParseDeclareModuleExports(node);
+      } else {
+        if (insideModule) {
+          this.raise(this.state.lastTokStart, FlowErrors.NestedDeclareModule);
+        }
+
+        return this.flowParseDeclareModule(node);
+      }
+    } else if (this.isContextual("type")) {
+      return this.flowParseDeclareTypeAlias(node);
+    } else if (this.isContextual("opaque")) {
+      return this.flowParseDeclareOpaqueType(node);
+    } else if (this.isContextual("interface")) {
+      return this.flowParseDeclareInterface(node);
+    } else if (this.match(types._export)) {
+      return this.flowParseDeclareExportDeclaration(node, insideModule);
+    } else {
+      throw this.unexpected();
+    }
+  }
+
+  flowParseDeclareVariable(node) {
+    this.next();
+    node.id = this.flowParseTypeAnnotatableIdentifier(true);
+    this.scope.declareName(node.id.name, BIND_VAR, node.id.start);
+    this.semicolon();
+    return this.finishNode(node, "DeclareVariable");
+  }
+
+  flowParseDeclareModule(node) {
+    this.scope.enter(SCOPE_OTHER);
+
+    if (this.match(types.string)) {
+      node.id = this.parseExprAtom();
+    } else {
+      node.id = this.parseIdentifier();
+    }
+
+    const bodyNode = node.body = this.startNode();
+    const body = bodyNode.body = [];
+    this.expect(types.braceL);
+
+    while (!this.match(types.braceR)) {
+      let bodyNode = this.startNode();
+
+      if (this.match(types._import)) {
+        this.next();
+
+        if (!this.isContextual("type") && !this.match(types._typeof)) {
+          this.raise(this.state.lastTokStart, FlowErrors.InvalidNonTypeImportInDeclareModule);
+        }
+
+        this.parseImport(bodyNode);
+      } else {
+        this.expectContextual("declare", FlowErrors.UnsupportedStatementInDeclareModule);
+        bodyNode = this.flowParseDeclare(bodyNode, true);
+      }
+
+      body.push(bodyNode);
+    }
+
+    this.scope.exit();
+    this.expect(types.braceR);
+    this.finishNode(bodyNode, "BlockStatement");
+    let kind = null;
+    let hasModuleExport = false;
+    body.forEach(bodyElement => {
+      if (isEsModuleType(bodyElement)) {
+        if (kind === "CommonJS") {
+          this.raise(bodyElement.start, FlowErrors.AmbiguousDeclareModuleKind);
+        }
+
+        kind = "ES";
+      } else if (bodyElement.type === "DeclareModuleExports") {
+        if (hasModuleExport) {
+          this.raise(bodyElement.start, FlowErrors.DuplicateDeclareModuleExports);
+        }
+
+        if (kind === "ES") {
+          this.raise(bodyElement.start, FlowErrors.AmbiguousDeclareModuleKind);
+        }
+
+        kind = "CommonJS";
+        hasModuleExport = true;
+      }
+    });
+    node.kind = kind || "CommonJS";
+    return this.finishNode(node, "DeclareModule");
+  }
+
+  flowParseDeclareExportDeclaration(node, insideModule) {
+    this.expect(types._export);
+
+    if (this.eat(types._default)) {
+      if (this.match(types._function) || this.match(types._class)) {
+        node.declaration = this.flowParseDeclare(this.startNode());
+      } else {
+        node.declaration = this.flowParseType();
+        this.semicolon();
+      }
+
+      node.default = true;
+      return this.finishNode(node, "DeclareExportDeclaration");
+    } else {
+      if (this.match(types._const) || this.isLet() || (this.isContextual("type") || this.isContextual("interface")) && !insideModule) {
+        const label = this.state.value;
+        const suggestion = exportSuggestions[label];
+        throw this.raise(this.state.start, FlowErrors.UnsupportedDeclareExportKind, label, suggestion);
+      }
+
+      if (this.match(types._var) || this.match(types._function) || this.match(types._class) || this.isContextual("opaque")) {
+          node.declaration = this.flowParseDeclare(this.startNode());
+          node.default = false;
+          return this.finishNode(node, "DeclareExportDeclaration");
+        } else if (this.match(types.star) || this.match(types.braceL) || this.isContextual("interface") || this.isContextual("type") || this.isContextual("opaque")) {
+          node = this.parseExport(node);
+
+          if (node.type === "ExportNamedDeclaration") {
+            node.type = "ExportDeclaration";
+            node.default = false;
+            delete node.exportKind;
+         

@@ -1,0 +1,1431 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v2.0.3](https://github.com/inspect-js/is-map/compare/v2.0.2...v2.0.3) - 2024-03-08
+
+### Commits
+
+- [actions] reuse common workflows [`ce10d0f`](https://github.com/inspect-js/is-map/commit/ce10d0f82fcec150b5d283202c1988887d618895)
+- [meta] use `npmignore` to autogenerate an npmignore file [`e07e23a`](https://github.com/inspect-js/is-map/commit/e07e23affca99f469937dade44abc02e05a26739)
+- add types [`cd13cfb`](https://github.com/inspect-js/is-map/commit/cd13cfb54647def94a0df9a276a92298891f7bdd)
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`1e055f9`](https://github.com/inspect-js/is-map/commit/1e055f9ea79c6c7cb6f8182e644c08ae167d358b)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `object-inspect`, `safe-publish-latest`, `tape` [`12d125e`](https://github.com/inspect-js/is-map/commit/12d125ef5bd4d6cf0468f406bf3dd3b873aa3af9)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `es5-shim`, `object-inspect`, `tape` [`adfb18e`](https://github.com/inspect-js/is-map/commit/adfb18ee26fa3ecadfdb16657a5423dda4248ca3)
+- [actions] remove redundant finisher [`c5511b7`](https://github.com/inspect-js/is-map/commit/c5511b79c739a08f7da40b9cae2391d10b4b613c)
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `es6-shim`, `npmignore`, `object-inspect`, `tape` [`b2c7d67`](https://github.com/inspect-js/is-map/commit/b2c7d674d2e78f5fb67a7e69b83ae177255fb8da)
+- [actions] update rebase action to use reusable workflow [`bbad644`](https://github.com/inspect-js/is-map/commit/bbad64428c5b777070ed86130669211ec1645714)
+- [actions] update codecov uploader [`8f57f98`](https://github.com/inspect-js/is-map/commit/8f57f98d3e3897fa82e87a155f05b7fdb174c222)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `auto-changelog`, `es5-shim`, `object-inspect`, `tape` [`d330ff4`](https://github.com/inspect-js/is-map/commit/d330ff4cbdbbce8402da928cab040e2c85126506)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `object-inspect`, `tape` [`454e31c`](https://github.com/inspect-js/is-map/commit/454e31ccecaa2ac78c7397afe2b0101576ad5b11)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `es5-shim`, `tape` [`b43283d`](https://github.com/inspect-js/is-map/commit/b43283dcd906d2024d2b78448bf8b679922d791b)
+- [readme] add actions and codecov badges [`0fc119e`](https://github.com/inspect-js/is-map/commit/0fc119ed01da39b3444478f7912447f6f298339f)
+- [Dev Deps] update `eslint`, `object-inspect` [`e2311f8`](https://github.com/inspect-js/is-map/commit/e2311f8984f2e2efda5011b4636275bfa7b17e8d)
+- [meta] add missing `engines.node` [`9bddaf2`](https://github.com/inspect-js/is-map/commit/9bddaf20a47fc5f359d171c8a7d43ac667d4680d)
+- [meta] use `prepublishOnly` script for npm 7+ [`d3b7661`](https://github.com/inspect-js/is-map/commit/d3b76613fcd34381a1ccdf17f4ab6e3e892dfc5f)
+- [Dev Deps] update `safe-publish-latest` [`00d7b69`](https://github.com/inspect-js/is-map/commit/00d7b69c315b9404b49c8d0ca85774f739f25a61)
+- [meta] add `sideEffects` flag [`bab4457`](https://github.com/inspect-js/is-map/commit/bab445707d11d590f2650f43b58bf9fa8dd664d1)
+
+## [v2.0.2](https://github.com/inspect-js/is-map/compare/v2.0.1...v2.0.2) - 2020-12-13
+
+### Commits
+
+- [Tests] migrate tests to Github Actions [`349a036`](https://github.com/inspect-js/is-map/commit/349a0362a744d024937a4356134389cbebf0c1a7)
+- [meta] do not publish github action workflow files [`f473ae7`](https://github.com/inspect-js/is-map/commit/f473ae777d15c5d247002f5aaa52ed4ada3a5dd4)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `es6-shim`, `object-inspect`, `tape` [`12dbda3`](https://github.com/inspect-js/is-map/commit/12dbda37a97c0dab0a3874a6cff086cd44f1c94c)
+- [Tests] run `nyc` on all tests; use `tape` runner; add `core-js` tests [`b280737`](https://github.com/inspect-js/is-map/commit/b280737c513588fef4b88c16328627744c8ab946)
+- [actions] add "Allow Edits" workflow [`d8dcf17`](https://github.com/inspect-js/is-map/commit/d8dcf17dd6b1cc09b8de369aa87188f469297b7c)
+- [readme] remove travis badge [`eab86f9`](https://github.com/inspect-js/is-map/commit/eab86f94cca4941861784e5eb8b7ca05e847e0b5)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape` [`9c87af5`](https://github.com/inspect-js/is-map/commit/9c87af5008a4ff79bffc3a6de55bf2d65979db6d)
+- [actions] switch Automatic Rease workflow to `pull_request_tarbget` event [`71647b8`](https://github.com/inspect-js/is-map/commit/71647b805066ecbc096d5742fd69046d22f2b5c4)
+- [Dev Deps] update `es5-shim`, `tape` [`3a91230`](https://github.com/inspect-js/is-map/commit/3a912305d7d836e8d6e4f80e9047e3beff8ea887)
+- [Dev Deps] update `auto-changelog`; add `aud` [`d3cd3da`](https://github.com/inspect-js/is-map/commit/d3cd3da9008756a02c2b26b45292c477bf9594a9)
+- [Tests] only audit prod deps [`83ef327`](https://github.com/inspect-js/is-map/commit/83ef327c62d54a48193bf95ed8cb6c4dff0a2035)
+- [meta] normalize line endings [`81a9eec`](https://github.com/inspect-js/is-map/commit/81a9eec713f8e309fa1f0ffb7e4b154c359b367b)
+
+## [v2.0.1](https://github.com/inspect-js/is-map/compare/v2.0.0...v2.0.1) - 2019-12-17
+
+### Fixed
+
+- [Refactor] avoid top-level return, because babel and webpack are broken [`#5`](https://github.com/inspect-js/is-map/issues/5) [`#4`](https://github.com/inspect-js/is-map/issues/4) [`#3`](https://github.com/inspect-js/is-map/issues/3) [`#78`](https://github.com/inspect-js/node-deep-equal/issues/78) [`#7`](https://github.com/es-shims/Promise.allSettled/issues/7) [`#12`](https://github.com/airbnb/js-shims/issues/12)
+
+### Commits
+
+- [actions] add automatic rebasing / merge commit blocking [`743f29f`](https://github.com/inspect-js/is-map/commit/743f29fc527b4a8a56a7045ad3d56ecfc798b1a3)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape` [`8ced854`](https://github.com/inspect-js/is-map/commit/8ced854c842c86cb126b86618cb4f90ef6a04f2b)
+
+## [v2.0.0](https://github.com/inspect-js/is-map/compare/v1.0.1...v2.0.0) - 2019-11-12
+
+### Commits
+
+- Initial commit [`38592bc`](https://github.com/inspect-js/is-map/commit/38592bcb928d97b244cca6cee91142a44bcf5ab1)
+- Tests [`ca54632`](https://github.com/inspect-js/is-map/commit/ca546326943385052e8b5a04377f1f8b110b7306)
+- readme [`9ad8bb6`](https://github.com/inspect-js/is-map/commit/9ad8bb6bc2fb295ada21e1cd901c89aa55acad37)
+- implementation [`03e1dbc`](https://github.com/inspect-js/is-map/commit/03e1dbc64eb09e6caba919c9ae5662992f0a9b52)
+- npm init [`d05ce8b`](https://github.com/inspect-js/is-map/commit/d05ce8b0ad797c97ed23a7730a9e211e5fe0fe92)
+- [meta] add `funding` field; create `FUNDING.yml` [`2d56b4e`](https://github.com/inspect-js/is-map/commit/2d56b4e2a44e6eb4557d9d192a863c92b68c6597)
+- [meta] add `safe-publish-latest`, `auto-changelog` [`2ebecb5`](https://github.com/inspect-js/is-map/commit/2ebecb5a3fe5fa682d5d04d1cd87f4d88ba22ec9)
+- [Tests] add `npm run lint` [`ddc3e32`](https://github.com/inspect-js/is-map/commit/ddc3e320c3d181b9111dd3a86df486604710e08c)
+- [Tests] use shared travis-ci configs [`69f6d9c`](https://github.com/inspect-js/is-map/commit/69f6d9c52a06dda27419eb41572b8db6009f6d49)
+- Only apps should have lockfiles [`408cccd`](https://github.com/inspect-js/is-map/commit/408cccdc824c017547573d816b2201e9cfb9a292)
+- [Tests] add `npx aud` in `posttest` [`5eadb02`](https://github.com/inspect-js/is-map/commit/5eadb02075754732df3532bc2e98ca6307c46537)
+
+## [v1.0.1](https://github.com/inspect-js/is-map/compare/v1.0.0...v1.0.1) - 2015-07-02
+
+### Commits
+
+- small tweaks [`2bd7622`](https://github.com/inspect-js/is-map/commit/2bd762263930d4f72eedd3a54678e1692062d53f)
+- Add `related` section to readme [`3231e74`](https://github.com/inspect-js/is-map/commit/3231e748fbf1d4d7d1662b8a559e73cc1e69468b)
+- Update license info in `readme.md` [`3a03b38`](https://github.com/inspect-js/is-map/commit/3a03b387b798d5eda09965dcf63e0c9fb9c7ddac)
+- editorconfig: indent yml using 2 spaces [`d724177`](https://github.com/inspect-js/is-map/commit/d724177b7eb103174cd9ca1dce4a914e3dfdb1cd)
+
+## v1.0.0 - 2015-02-18
+
+### Commits
+
+- init [`73b9f38`](https://github.com/inspect-js/is-map/commit/73b9f38e3d3c0435e639a7e054714d71b6ddae9b)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          # is-date-object <sup>[![Version Badge][2]][1]</sup>
+
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
+[![dependency status][5]][6]
+[![dev dependency status][7]][8]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
+
+[![npm badge][11]][1]
+
+Is this value a JS Date object? This module works cross-realm/iframe, and despite ES6 @@toStringTag.
+
+## Example
+
+```js
+var isDate = require('is-date-object');
+var assert = require('assert');
+
+assert.notOk(isDate(undefined));
+assert.notOk(isDate(null));
+assert.notOk(isDate(false));
+assert.notOk(isDate(true));
+assert.notOk(isDate(42));
+assert.notOk(isDate('foo'));
+assert.notOk(isDate(function () {}));
+assert.notOk(isDate([]));
+assert.notOk(isDate({}));
+assert.notOk(isDate(/a/g));
+assert.notOk(isDate(new RegExp('a', 'g')));
+
+assert.ok(isDate(new Date()));
+```
+
+## Tests
+Simply clone the repo, `npm install`, and run `npm test`
+
+[1]: https://npmjs.org/package/is-date-object
+[2]: https://versionbadg.es/inspect-js/is-date-object.svg
+[5]: https://david-dm.org/inspect-js/is-date-object.svg
+[6]: https://david-dm.org/inspect-js/is-date-object
+[7]: https://david-dm.org/inspect-js/is-date-object/dev-status.svg
+[8]: https://david-dm.org/inspect-js/is-date-object#info=devDependencies
+[11]: https://nodei.co/npm/is-date-object.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/is-date-object.svg
+[license-url]: LICENSE
+[downloads-image]: https://img.shields.io/npm/dm/is-date-object.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=is-date-object
+[codecov-image]: https://codecov.io/gh/inspect-js/is-date-object/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/inspect-js/is-date-object/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-js/is-date-object
+[actions-url]: https://github.com/inspect-js/is-date-object/actions
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    # Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v2.0.3](https://github.com/inspect-js/is-set/compare/v2.0.2...v2.0.3) - 2024-03-08
+
+### Commits
+
+- [actions] reuse common workflows [`9d26ac6`](https://github.com/inspect-js/is-set/commit/9d26ac673752d89ba855a50616d36f09d49d6113)
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`3c91325`](https://github.com/inspect-js/is-set/commit/3c91325782b9dac5a602e150cd007e51029930f9)
+- add types [`8fcc646`](https://github.com/inspect-js/is-set/commit/8fcc646ba3befa5448f987c7c12e0863443c9533)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `object-inspect`, `safe-publish-latest`, `tape` [`91caa24`](https://github.com/inspect-js/is-set/commit/91caa24511234e8f105f4534b681abdb2139b650)
+- [readme] update URLs [`130e57b`](https://github.com/inspect-js/is-set/commit/130e57bc4d6386bd500d6886b9f094dd201cb88b)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `es5-shim`, `object-inspect`, `tape` [`4d75ee2`](https://github.com/inspect-js/is-set/commit/4d75ee27c0351999ba3093d519c12dc8bc0ff0ee)
+- [actions] remove redundant finisher [`052fdce`](https://github.com/inspect-js/is-set/commit/052fdce2ee22fe49186c4d848063600f0c3f968d)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `auto-changelog`, `core-js`, `es5-shim`, `object-inspect`, `safe-publish-latest`, `tape` [`eb31797`](https://github.com/inspect-js/is-set/commit/eb317975ea6240cc2dc043db9e4a837b00f82ffc)
+- [actions] update rebase action to use reusable workflow [`8c478ba`](https://github.com/inspect-js/is-set/commit/8c478ba28881beb9f07650e409f6ef7df4a92455)
+- [actions] update codecov uploader [`a0dac6b`](https://github.com/inspect-js/is-set/commit/a0dac6b9abb0c5a3eff6849cca4ba7f1c0c8dc17)
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `es6-shim`, `object-inspect`, `tape` [`28d75a3`](https://github.com/inspect-js/is-set/commit/28d75a3ecb22235593b43e32505b90578da0dfab)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `object-inspect`, `tape` [`7b2a4a7`](https://github.com/inspect-js/is-set/commit/7b2a4a75bae0f1a9163a83ac8760f10cfbcdb001)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `es5-shim`, `tape` [`20ce047`](https://github.com/inspect-js/is-set/commit/20ce04714d7be5fbee40c757e2ba7194e248c1a2)
+- [readme] add actions and codecov badges [`e6e1796`](https://github.com/inspect-js/is-set/commit/e6e1796da1700594a3988466762405462f082cda)
+- [meta] add missing `engines.node` [`9ed19af`](https://github.com/inspect-js/is-set/commit/9ed19afb98ad26e29378c2a7f1c82359d5c5a809)
+- [meta] use `prepublishOnly` script for npm 7+ [`618f861`](https://github.com/inspect-js/is-set/commit/618f86128277814075fe56f7a69a272c31a48f85)
+- [readme] remove dead badges [`76e890e`](https://github.com/inspect-js/is-set/commit/76e890ea165c6cb9088604ea010968d5e3e877c6)
+- [meta] add `sideEffects` flag [`e21859b`](https://github.com/inspect-js/is-set/commit/e21859bb58bd5aafb907fe53045ec3bc14d07449)
+
+## [v2.0.2](https://github.com/inspect-js/is-set/compare/v2.0.1...v2.0.2) - 2020-12-13
+
+### Commits
+
+- [Tests] migrate tests to Github Actions [`10a1a86`](https://github.com/inspect-js/is-set/commit/10a1a869d5f76921eed5bb7f1503be6f03eea8a2)
+- [meta] do not publish github action workflow files [`9611423`](https://github.com/inspect-js/is-set/commit/9611423c4a6baa08a38f46ddafcca3ed4ea0ad97)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `es6-shim`, `object-inspect`, `tape` [`7d4d9b3`](https://github.com/inspect-js/is-set/commit/7d4d9b3ce8434a96c238cef62a7ce9ce79bd6079)
+- [Tests] run `nyc` on all tests [`dff5fb6`](https://github.com/inspect-js/is-set/commit/dff5fb6cec206e51c6a7311fdb866bb0a0783b1a)
+- [actions] add "Allow Edits" workflow [`6bed76a`](https://github.com/inspect-js/is-set/commit/6bed76af3119e489e622b3ea30807484dbb7fca9)
+- [readme] remove travis badge [`ee9e740`](https://github.com/inspect-js/is-set/commit/ee9e74012ba35e86a4e92d7165548341d4323755)
+- [Tests] add `core-js` tests [`9ef1b4e`](https://github.com/inspect-js/is-set/commit/9ef1b4ed0e55cec4154189247b6d7f6ad570e2f1)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape` [`5661354`](https://github.com/inspect-js/is-set/commit/5661354f7a9861998257fdacfa9975feae9415b8)
+- [actions] switch Automatic Rebase workflow to `pull_request_target` event [`2cea69e`](https://github.com/inspect-js/is-set/commit/2cea69e16f64d7e706945010e03401a0a66507a3)
+- [Dev Deps] update `es5-shim`, `tape` [`9e24b51`](https://github.com/inspect-js/is-set/commit/9e24b5158a0490c6b94deb31e76b06337eaafce6)
+- [Dev Deps] update `auto-changelog`; add `aud` [`69ae556`](https://github.com/inspect-js/is-set/commit/69ae5561fe2408f301479dfa65dac0255e16952e)
+- Fix typo in README.md, Map -&gt; Set [`5fe826a`](https://github.com/inspect-js/is-set/commit/5fe826a1e11bf810b7174e2dfaf893a5682511d4)
+- [Tests] only audit prod deps [`c7c67f6`](https://github.com/inspect-js/is-set/commit/c7c67f6b1a32b2b24709d733a6681cbe1ec67640)
+- [meta] normalize line endings [`6ef4ebd`](https://github.com/inspect-js/is-set/commit/6ef4ebdf090bdf1f42eb912b6af2cf31df4abaef)
+
+## [v2.0.1](https://github.com/inspect-js/is-set/compare/v2.0.0...v2.0.1) - 2019-12-17
+
+### Fixed
+
+- [Refactor] avoid top-level return, because babel and webpack are broken [`#5`](https://github.com/inspect-js/is-set/issues/5) [`#4`](https://github.com/inspect-js/is-set/issues/4) [`#3`](https://github.com/inspect-js/is-set/issues/3) [`#78`](https://github.com/inspect-js/node-deep-equal/issues/78) [`#7`](https://github.com/es-shims/Promise.allSettled/issues/7) [`#12`](https://github.com/airbnb/js-shims/issues/12)
+
+### Commits
+
+- [actions] add automatic rebasing / merge commit blocking [`db358ba`](https://github.com/inspect-js/is-set/commit/db358ba503aa86fe2d375e188dcdfa7174a070c8)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape` [`13e5083`](https://github.com/inspect-js/is-set/commit/13e50834eacb1c1830feb598da70ca6d0c53d2f7)
+
+## [v2.0.0](https://github.com/inspect-js/is-set/compare/v1.0.0...v2.0.0) - 2019-11-12
+
+### Commits
+
+- Initial commit [`0299bc8`](https://github.com/inspect-js/is-set/commit/0299bc8fce41dce4586ac2f79c73802ad6a72c3d)
+- Tests [`dec24eb`](https://github.com/inspect-js/is-set/commit/dec24eb0b9f57f14be8eedd0e572f94f81572e82)
+- readme [`9b16e7f`](https://github.com/inspect-js/is-set/commit/9b16e7ff417b5c7be9829f22e32249d737bb8f6e)
+- implementation [`3da6156`](https://github.com/inspect-js/is-set/commit/3da6156dae02e71d541bc8a0d3b751734b98e06d)
+- npm init [`89fdc8b`](https://github.com/inspect-js/is-set/commit/89fdc8b3d980f6ca414f71dff2af38ed102321a1)
+- [meta] add `funding` field; create `FUNDING.yml` [`77f2be9`](https://github.com/inspect-js/is-set/commit/77f2be9f281439472f81a0378632bc5eeb25a79b)
+- [meta] add `safe-publish-latest`, `auto-changelog` [`cef1b4c`](https://github.com/inspect-js/is-set/commit/cef1b4cef15c565e76e3d46e66087821c4c437ae)
+- [Tests] add `npm run lint` [`2a8284c`](https://github.com/inspect-js/is-set/commit/2a8284c6d2265ecd5c98bd4a008a82f0b519cd0a)
+- [Tests] use shared travis-ci configs [`d2e342f`](https://github.com/inspect-js/is-set/commit/d2e342f3b8477cc74bcab44297d20d10fcf3718b)
+- Only apps should have lockfiles [`624072b`](https://github.com/inspect-js/is-set/commit/624072b92774aaa6d851837c882181995d88ece8)
+- [Tests] add `npx aud` in `posttest` [`214247c`](https://github.com/inspect-js/is-set/commit/214247c3fcd61b164c18b56524cdc183fc485450)
+
+## v1.0.0 - 2015-02-18
+
+### Commits
+
+- init [`2f11646`](https://github.com/inspect-js/is-set/commit/2f1164617bee9c05c0f7ffae8fca2feed13bade7)
+                                                                                                                                                                                                                                                                                                                                                                                   # is-data-view <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
+
+[![npm badge][npm-badge-png]][package-url]
+
+Is this value a JS DataView? This module works cross-realm/iframe, does not depend on `instanceof` or mutable properties, and despite ES6 Symbol.toStringTag.
+
+## Example
+
+```js
+var isDataView = require('is-data-view');
+var assert = require('assert');
+
+assert.equal(false, isDataView(undefined));
+assert.equal(false, isDataView(null));
+assert.equal(false, isDataView(false));
+assert.equal(false, isDataView(true));
+assert.equal(false, isDataView([]));
+assert.equal(false, isDataView({}));
+assert.equal(false, isDataView(/a/g));
+assert.equal(false, isDataView(new RegExp('a', 'g')));
+assert.equal(false, isDataView(new Date()));
+assert.equal(false, isDataView(42));
+assert.equal(false, isDataView(NaN));
+assert.equal(false, isDataView(Infinity));
+assert.equal(false, isDataView(new Number(42)));
+assert.equal(false, isDataView('foo'));
+assert.equal(false, isDataView(Object('foo')));
+assert.equal(false, isDataView(function () {}));
+assert.equal(false, isDataView(function* () {}));
+assert.equal(false, isDataView(x => x * x));
+assert.equal(false, isDataView([]));
+assert.equal(false, isDataView(new Int8Array()));
+assert.equal(false, isDataView(new Uint8Array()));
+assert.equal(false, isDataView(new Uint8ClampedArray()));
+assert.equal(false, isDataView(new Int16Array()));
+assert.equal(false, isDataView(new Uint16Array()));
+assert.equal(false, isDataView(new Int32Array()));
+assert.equal(false, isDataView(new Uint32Array()));
+assert.equal(false, isDataView(new Float32Array()));
+assert.equal(false, isDataView(new Float64Array()));
+assert.equal(false, isDataView(new BigInt64Array()));
+assert.equal(false, isDataView(new BigUint64Array()));
+
+assert.ok(isDataView(new DataView(new ArrayBuffer(0))));
+```
+
+## Tests
+Simply clone the repo, `npm install`, and run `npm test`
+
+[package-url]: https://npmjs.org/package/is-data-view
+[npm-version-svg]: https://versionbadg.es/inspect-js/is-data-view.svg
+[deps-svg]: https://david-dm.org/inspect-js/is-data-view.svg
+[deps-url]: https://david-dm.org/inspect-js/is-data-view
+[dev-deps-svg]: https://david-dm.org/inspect-js/is-data-view/dev-status.svg
+[dev-deps-url]: https://david-dm.org/inspect-js/is-data-view#info=devDependencies
+[npm-badge-png]: https://nodei.co/npm/is-data-view.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/is-data-view.svg
+[license-url]: LICENSE
+[downloads-image]: https://img.shields.io/npm/dm/is-data-view.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=is-data-view
+[codecov-image]: https://codecov.io/gh/inspect-js/is-data-view/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/inspect-js/is-data-view/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-js/is-data-view
+[actions-url]: https://github.com/inspect-js/is-data-view/actions
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # is-boolean-object <sup>[![Version Badge][2]][1]</sup>
+
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
+[![dependency status][5]][6]
+[![dev dependency status][7]][8]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
+
+[![npm badge][11]][1]
+
+Is this value a JS Boolean? This module works cross-realm/iframe, and despite ES6 @@toStringTag.
+
+## Example
+
+```js
+var isBoolean = require('is-boolean-object');
+var assert = require('assert');
+
+assert.notOk(isBoolean(undefined));
+assert.notOk(isBoolean(null));
+assert.notOk(isBoolean('foo'));
+assert.notOk(isBoolean(function () {}));
+assert.notOk(isBoolean([]));
+assert.notOk(isBoolean({}));
+assert.notOk(isBoolean(/a/g));
+assert.notOk(isBoolean(new RegExp('a', 'g')));
+assert.notOk(isBoolean(new Date()));
+assert.notOk(isBoolean(42));
+assert.notOk(isBoolean(NaN));
+assert.notOk(isBoolean(Infinity));
+
+assert.ok(isBoolean(new Boolean(42)));
+assert.ok(isBoolean(false));
+assert.ok(isBoolean(Object(false)));
+assert.ok(isBoolean(true));
+assert.ok(isBoolean(Object(true)));
+```
+
+## Tests
+Simply clone the repo, `npm install`, and run `npm test`
+
+[1]: https://npmjs.org/package/is-boolean-object
+[2]: https://versionbadg.es/inspect-js/is-boolean-object.svg
+[5]: https://david-dm.org/inspect-js/is-boolean-object.svg
+[6]: https://david-dm.org/inspect-js/is-boolean-object
+[7]: https://david-dm.org/inspect-js/is-boolean-object/dev-status.svg
+[8]: https://david-dm.org/inspect-js/is-boolean-object#info=devDependencies
+[11]: https://nodei.co/npm/is-boolean-object.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/is-boolean-object.svg
+[license-url]: LICENSE
+[downloads-image]: https://img.shields.io/npm/dm/is-boolean-object.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=is-boolean-object
+[codecov-image]: https://codecov.io/gh/inspect-js/is-boolean-object/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/inspect-js/is-boolean-object/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-js/is-boolean-object
+[actions-url]: https://github.com/inspect-js/is-boolean-object/actions
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "use strict";
+
+// Generated data for sbcs codec. Don't edit manually. Regenerate using generation/gen-sbcs.js script.
+module.exports = {
+  "437": "cp437",
+  "737": "cp737",
+  "775": "cp775",
+  "850": "cp850",
+  "852": "cp852",
+  "855": "cp855",
+  "856": "cp856",
+  "857": "cp857",
+  "858": "cp858",
+  "860": "cp860",
+  "861": "cp861",
+  "862": "cp862",
+  "863": "cp863",
+  "864": "cp864",
+  "865": "cp865",
+  "866": "cp866",
+  "869": "cp869",
+  "874": "windows874",
+  "922": "cp922",
+  "1046": "cp1046",
+  "1124": "cp1124",
+  "1125": "cp1125",
+  "1129": "cp1129",
+  "1133": "cp1133",
+  "1161": "cp1161",
+  "1162": "cp1162",
+  "1163": "cp1163",
+  "1250": "windows1250",
+  "1251": "windows1251",
+  "1252": "windows1252",
+  "1253": "windows1253",
+  "1254": "windows1254",
+  "1255": "windows1255",
+  "1256": "windows1256",
+  "1257": "windows1257",
+  "1258": "windows1258",
+  "28591": "iso88591",
+  "28592": "iso88592",
+  "28593": "iso88593",
+  "28594": "iso88594",
+  "28595": "iso88595",
+  "28596": "iso88596",
+  "28597": "iso88597",
+  "28598": "iso88598",
+  "28599": "iso88599",
+  "28600": "iso885910",
+  "28601": "iso885911",
+  "28603": "iso885913",
+  "28604": "iso885914",
+  "28605": "iso885915",
+  "28606": "iso885916",
+  "windows874": {
+    "type": "_sbcs",
+    "chars": "€����…�����������‘’“”•–—�������� กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุู����฿เแโใไๅๆ็่้๊๋์ํ๎๏๐๑๒๓๔๕๖๗๘๙๚๛����"
+  },
+  "win874": "windows874",
+  "cp874": "windows874",
+  "windows1250": {
+    "type": "_sbcs",
+    "chars": "€�‚�„…†‡�‰Š‹ŚŤŽŹ�‘’“”•–—�™š›śťžź ˇ˘Ł¤Ą¦§¨©Ş«¬­®Ż°±˛ł´µ¶·¸ąş»Ľ˝ľżŔÁÂĂÄĹĆÇČÉĘËĚÍÎĎĐŃŇÓÔŐÖ×ŘŮÚŰÜÝŢßŕáâăäĺćçčéęëěíîďđńňóôőö÷řůúűüýţ˙"
+  },
+  "win1250": "windows1250",
+  "cp1250": "windows1250",
+  "windows1251": {
+    "type": "_sbcs",
+    "chars": "ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–—�™љ›њќћџ ЎўЈ¤Ґ¦§Ё©Є«¬­®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя"
+  },
+  "win1251": "windows1251",
+  "cp1251": "windows1251",
+  "windows1252": {
+    "type": "_sbcs",
+    "chars": "€�‚ƒ„…†‡ˆ‰Š‹Œ�Ž��‘’“”•–—˜™š›œ�žŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+  },
+  "win1252": "windows1252",
+  "cp1252": "windows1252",
+  "windows1253": {
+    "type": "_sbcs",
+    "chars": "€�‚ƒ„…†‡�‰�‹�����‘’“”•–—�™�›���� ΅Ά£¤¥¦§¨©�«¬­®―°±²³΄µ¶·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ�ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ�"
+  },
+  "win1253": "windows1253",
+  "cp1253": "windows1253",
+  "windows1254": {
+    "type": "_sbcs",
+    "chars": "€�‚ƒ„…†‡ˆ‰Š‹Œ����‘’“”•–—˜™š›œ��Ÿ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ"
+  },
+  "win1254": "windows1254",
+  "cp1254": "windows1254",
+  "windows1255": {
+    "type": "_sbcs",
+    "chars": "€�‚ƒ„…†‡ˆ‰�‹�����‘’“”•–—˜™�›���� ¡¢£₪¥¦§¨©×«¬­®¯°±²³´µ¶·¸¹÷»¼½¾¿ְֱֲֳִֵֶַָֹֺֻּֽ־ֿ׀ׁׂ׃װױײ׳״�������אבגדהוזחטיךכלםמןנסעףפץצקרשת��‎‏�"
+  },
+  "win1255": "windows1255",
+  "cp1255": "windows1255",
+  "windows1256": {
+    "type": "_sbcs",
+    "chars": "€پ‚ƒ„…†‡ˆ‰ٹ‹Œچژڈگ‘’“”•–—ک™ڑ›œ‌‍ں ،¢£¤¥¦§¨©ھ«¬­®¯°±²³´µ¶·¸¹؛»¼½¾؟ہءآأؤإئابةتثجحخدذرزسشصض×طظعغـفقكàلâمنهوçèéêëىيîïًٌٍَôُِ÷ّùْûü‎‏ے"
+  },
+  "win1256": "windows1256",
+  "cp1256": "windows1256",
+  "windows1257": {
+    "type": "_sbcs",
+    "chars": "€�‚�„…†‡�‰�‹�¨ˇ¸�‘’“”•–—�™�›�¯˛� �¢£¤�¦§Ø©Ŗ«¬­®Æ°±²³´µ¶·ø¹ŗ»¼½¾æĄĮĀĆÄÅĘĒČÉŹĖĢĶĪĻŠŃŅÓŌÕÖ×ŲŁŚŪÜŻŽßąįāćäåęēčéźėģķīļšńņóōõö÷ųłśūüżž˙"
+  },
+  "win1257": "windows1257",
+  "cp1257": "windows1257",
+  "windows1258": {
+    "type": "_sbcs",
+    "chars": "€�‚ƒ„…†‡ˆ‰�‹Œ����‘’“”•–—˜™�›œ��Ÿ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂĂÄÅÆÇÈÉÊË̀ÍÎÏĐÑ̉ÓÔƠÖ×ØÙÚÛÜỮßàáâăäåæçèéêë́íîïđṇ̃óôơö÷øùúûüư₫ÿ"
+  },
+  "win1258": "windows1258",
+  "cp1258": "windows1258",
+  "iso88591": {
+    "type": "_sbcs",
+    "chars": " ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+  },
+  "cp28591": "iso88591",
+  "iso88592": {
+    "type": "_sbcs",
+    "chars": " Ą˘Ł¤ĽŚ§¨ŠŞŤŹ­ŽŻ°ą˛ł´ľśˇ¸šşťź˝žżŔÁÂĂÄĹĆÇČÉĘËĚÍÎĎĐŃŇÓÔŐÖ×ŘŮÚŰÜÝŢßŕáâăäĺćçčéęëěíîďđńňóôőö÷řůúűüýţ˙"
+  },
+  "cp28592": "iso88592",
+  "iso88593": {
+    "type": "_sbcs",
+    "chars": " Ħ˘£¤�Ĥ§¨İŞĞĴ­�Ż°ħ²³´µĥ·¸ışğĵ½�żÀÁÂ�ÄĊĈÇÈÉÊËÌÍÎÏ�ÑÒÓÔĠÖ×ĜÙÚÛÜŬŜßàáâ�äċĉçèéêëìíîï�ñòóôġö÷ĝùúûüŭŝ˙"
+  },
+  "cp28593": "iso88593",
+  "iso88594": {
+    "type": "_sbcs",
+    "chars": " ĄĸŖ¤ĨĻ§¨ŠĒĢŦ­Ž¯°ą˛ŗ´ĩļˇ¸šēģŧŊžŋĀÁÂÃÄÅÆĮČÉĘËĖÍÎĪĐŅŌĶÔÕÖ×ØŲÚÛÜŨŪßāáâãäåæįčéęëėíîīđņōķôõö÷øųúûüũū˙"
+  },
+  "cp28594": "iso88594",
+  "iso88595": {
+    "type": "_sbcs",
+    "chars": " ЁЂЃЄЅІЇЈЉЊЋЌ­ЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя№ёђѓєѕіїјљњћќ§ўџ"
+  },
+  "cp28595": "iso88595",
+  "iso88596": {
+    "type": "_sbcs",
+    "chars": " ���¤�������،­�������������؛���؟�ءآأؤإئابةتثجحخدذرزسشصضطظعغ�����ـفقكلمنهوىيًٌٍَُِّْ�������������"
+  },
+  "cp28596": "iso88596",
+  "iso88597": {
+    "type": "_sbcs",
+    "chars": " ‘’£€₯¦§¨©ͺ«¬­�―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ�ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ�"
+  },
+  "cp28597": "iso88597",
+  "iso88598": {
+    "type": "_sbcs",
+    "chars": " �¢£¤¥¦§¨©×«¬­®¯°±²³´µ¶·¸¹÷»¼½¾��������������������������������‗אבגדהוזחטיךכלםמןנסעףפץצקרשת��‎‏�"
+  },
+  "cp28598": "iso88598",
+  "iso88599": {
+    "type": "_sbcs",
+    "chars": "'use strict'
+var validate = require('aproba')
+var renderTemplate = require('./render-template.js')
+var wideTruncate = require('./wide-truncate')
+var stringWidth = require('string-width')
+
+module.exports = function (theme, width, completed) {
+  validate('ONN', [theme, width, completed])
+  if (completed < 0) completed = 0
+  if (completed > 1) completed = 1
+  if (width <= 0) return ''
+  var sofar = Math.round(width * completed)
+  var rest = width - sofar
+  var template = [
+    {type: 'complete', value: repeat(theme.complete, sofar), length: sofar},
+    {type: 'remaining', value: repeat(theme.remaining, rest), length: rest}
+  ]
+  return renderTemplate(width, template, theme)
+}
+
+// lodash's way of repeating
+function repeat (string, width) {
+  var result = ''
+  var n = width
+  do {
+    if (n % 2) {
+      result += string
+    }
+    n = Math.floor(n / 2)
+    /*eslint no-self-assign: 0*/
+    string += string
+  } while (n && stringWidth(result) < width)
+
+  return wideTruncate(result, width)
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <p align="center">
+  <img alt="npm formidable package logo" src="https://raw.githubusercontent.com/node-formidable/formidable/master/logo.png" />
+</p>
+
+# formidable [![npm version][npmv-img]][npmv-url] [![MIT license][license-img]][license-url] [![Libera Manifesto][libera-manifesto-img]][libera-manifesto-url]
+
+> A Node.js module for parsing form data, especially file uploads.
+
+### Important Notes
+
+For more info, check the [CHANGELOG](https://github.com/node-formidable/formidable/blob/master/CHANGELOG.md) on the master branch.
+
+#### v1 is deprecated
+
+All `v1` versions are deprecated in NPM for over 2 years. You can find it at `formidable@v1` or `formidable@legacy` on NPM, and on [v1-legacy branch][v1branch] on GitHub.  
+We highly recommend to use `v2` or `v3`. Both are already in use by many, especially `v2` which was on `formidable@canary` for 2 years.
+
+- **Status: Not Maintained!**
+- We won't provide support or accept reports on that version.
+- **No Backporting:** bugfixes, security fixes, or new features WILL NOT happen!
+- Please move to at least **v2**! 
+- Try with installing `formidable@v2` and if still have the problem - report!
+
+---
+
+#### v2 is the new `latest`
+The `v2` will be simultaneously on two places for some time - `formidable@latest` and `formidable@v2`.
+The source code be available **only** on [v2 branch][v2branch].
+If you want to use v2, it's recommended to use the v2 dist-tag `formidable@v2`. 
+
+**Main Differences from v1:**
+- Better organization and modernized code, requiring newer Node.js versions (>= v10).
+- A lot of bugfixes, closed issues, merged or closed PRs.
+- **Backward compatible to v1!** Should not have problems, the major version bump is just for ensurance.
+- Better docs, new features (plugins, parsers, options) and optimizations.
+
+---
+
+#### v3 - ESModules, Promises, Monorepo structure
+We recommend to use `formidable@v3`, as it uses more modern Node.js Streams, has support for Promises and more stuff.
+You can see more info and track some ideas on [issue#635](https://github.com/node-formidable/formidable/issues/635).
+
+- The source code can be found on the [master branch](https://github.com/node-formidable/formidable) on GitHub.
+- It will be published on `formidable@latest` after some time.
+- Dropping older Node.js versions, requiring higher than v12-v14.
+- Dropping v1 compatibility.
+- Rewritten to ESModules, more optimizations.
+- Moving to monorepo structure, more plugins & helper utils.
+
+[v1branch]: https://github.com/node-formidable/formidable/tree/v1-legacy
+[v2branch]: https://github.com/node-formidable/formidable/tree/v2
+[v3branch]: https://github.com/node-formidable/formidable/tree/v3
+
+---
+
+[![Code style][codestyle-img]][codestyle-url]
+[![codecoverage][codecov-img]][codecov-url]
+[![linux build status][linux-build-img]][build-url]
+[![windows build status][windows-build-img]][build-url]
+[![macos build status][macos-build-img]][build-url]
+
+If you have any _how-to_ kind of questions, please read the [Contributing
+Guide][contributing-url] and [Code of Conduct][code_of_conduct-url]
+documents.<br /> For bugs reports and feature requests, [please create an
+issue][open-issue-url] or ping [@tunnckoCore](https://twitter.com/tunnckoCore)
+at Twitter.
+
+[![Conventional Commits][ccommits-img]][ccommits-url]
+[![Minimum Required Nodejs][nodejs-img]][npmv-url]
+[![Tidelift Subcsription][tidelift-img]][tidelift-url]
+[![Buy me a Kofi][kofi-img]][kofi-url]
+[![Renovate App Status][renovateapp-img]][renovateapp-url]
+[![Make A Pull Request][prs-welcome-img]][prs-welcome-url]
+
+This project is [semantically versioned](https://semver.org) and available as
+part of the [Tidelift Subscription][tidelift-url] for professional grade
+assurances, enhanced support and security.
+[Learn more.](https://tidelift.com/subscription/pkg/npm-formidable?utm_source=npm-formidable&utm_medium=referral&utm_campaign=enterprise)
+
+_The maintainers of `formidable` and thousands of other packages are working
+with Tidelift to deliver commercial support and maintenance for the Open Source
+dependencies you use to build your applications. Save time, reduce risk, and
+improve code health, while paying the maintainers of the exact dependencies you
+use._
+
+[![][npm-weekly-img]][npmv-url] [![][npm-monthly-img]][npmv-url]
+[![][npm-yearly-img]][npmv-url] [![][npm-alltime-img]][npmv-url]
+
+## v1 status: not maintained!
+
+## Project Status: Maintained
+
+This module was initially developed by
+[**@felixge**](https://github.com/felixge) for
+[Transloadit](http://transloadit.com/), a service focused on uploading and
+encoding images and videos. It has been battle-tested against hundreds of GBs of
+file uploads from a large variety of clients and is considered production-ready
+and is used in production for years.
+
+Currently, we are few maintainers trying to deal with it. :) More contributors
+are always welcome! :heart: Jump on
+[issue #412](https://github.com/felixge/node-formidable/issues/412) which is
+closed, but if you are interested we can discuss it and add you after strict
+rules, like enabling Two-Factor Auth in your npm and GitHub accounts.
+
+## Features
+
+* Fast (~500mb/sec), non-buffering multipart parser
+* Automatically writing file uploads to disk
+* Low memory footprint
+* Graceful error handling
+* Very high test coverage
+
+## Installation
+
+```sh
+npm install formidable@v1
+npm install formidable@v2
+npm install formidable@v3
+```
+
+This is a low-level package, and if you're using a high-level framework it may already be included. However, [Express v4](http://expressjs.com) does not include any multipart handling, nor does [body-parser](https://github.com/expressjs/body-parser).
+
+Note: Formidable requires [gently](http://github.com/felixge/node-gently) to run the unit tests, but you won't need it for just using the library.
+
+## Example
+
+Parse an incoming file upload.
+```javascript
+var formidable = require('formidable'),
+    http = require('http'),
+    util = require('util');
+
+http.createServer(function(req, res) {
+  if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
+    // parse a file upload
+    var form = new formidable.IncomingForm();
+
+    form.parse(req, function(err, fields, files) {
+      res.writeHead(200, {'content-type': 'text/plain'});
+      res.write('received upload:\n\n');
+      res.end(util.inspect({fields: fields, files: files}));
+    });
+
+    return;
+  }
+
+  // show a file upload form
+  res.writeHead(200, {'content-type': 'text/html'});
+  res.end(
+    '<form action="/upload" enctype="multipart/form-data" method="post">'+
+    '<input type="text" name="title"><br>'+
+    '<input type="file" name="upload" multiple="multiple"><br>'+
+    '<input type="submit" value="Upload">'+
+    '</form>'
+  );
+}).listen(8080);
+```
+## API
+
+### Formidable.IncomingForm
+```javascript
+var form = new formidable.IncomingForm()
+```
+Creates a new incoming form.
+
+```javascript
+form.encoding = 'utf-8';
+```
+Sets encoding for incoming form fields.
+
+```javascript
+form.uploadDir = "/my/dir";
+```
+Sets the directory for placing file uploads in. You can move them later on using
+`fs.rename()`. The default is `os.tmpdir()`.
+
+```javascript
+form.keepExtensions = false;
+```
+If you want the files written to `form.uploadDir` to include the extensions of the original files, set this property to `true`.
+
+```javascript
+form.type
+```
+Either 'multipart' or 'urlencoded' depending on the incoming request.
+
+```javascript
+form.maxFieldsSize = 20 * 1024 * 1024;
+```
+Limits the amount of memory all fields together (except files) can allocate in bytes.
+If this value is exceeded, an `'error'` event is emitted. The default
+size is 20MB.
+
+```javascript
+form.maxFileSize = 200 * 1024 * 1024;
+```
+Limits the size of uploaded file.
+If this value is exceeded, an `'error'` event is emitted. The default
+size is 200MB.
+
+```javascript
+form.maxFields = 1000;
+```
+Limits the number of fields that the querystring parser will decode. Defaults
+to 1000 (0 for unlimited).
+
+```javascript
+form.hash = false;
+```
+If you want checksums calculated for incoming files, set this to either `'sha1'` or `'md5'`.
+
+```javascript
+form.multiples = false;
+```
+If this option is enabled, when you call `form.parse`, the `files` argument will contain arrays of files for inputs which submit multiple files using the HTML5 `multiple` attribute.
+
+```javascript
+form.bytesReceived
+```
+The amount of bytes received for this form so far.
+
+```javascript
+form.bytesExpected
+```
+The expected number of bytes in this form.
+
+```javascript
+form.parse(request, [cb]);
+```
+Parses an incoming node.js `request` containing form data. If `cb` is provided, all fields and files are collected and passed to the callback:
+
+
+```javascript
+form.parse(req, function(err, fields, files) {
+  // ...
+});
+
+form.onPart(part);
+```
+You may overwrite this method if you are interested in directly accessing the multipart stream. Doing so will disable any `'field'` / `'file'` events  processing which would occur otherwise, making you fully responsible for handling the processing.
+
+```javascript
+form.onPart = function(part) {
+  part.addListener('data', function() {
+    // ...
+  });
+}
+```
+If you want to use formidable to only handle certain parts for you, you can do so:
+```javascript
+form.onPart = function(part) {
+  if (!part.filename) {
+    // let formidable handle all non-file parts
+    form.handlePart(part);
+  }
+}
+```
+Check the code in this method for further inspiration.
+
+
+### Formidable.File
+```javascript
+file.size = 0
+```
+The size of the uploaded file in bytes. If the file is still being uploaded (see `'fileBegin'` event), this property says how many bytes of the file have been written to disk yet.
+```javascript
+file.path = null
+```
+The path this file is being written to. You can modify this in the `'fileBegin'` event in
+case you are unhappy with the way formidable generates a temporary path for your files.
+```javascript
+file.name = null
+```
+The name this file had according to the uploading client.
+```javascript
+file.type = null
+```
+The mime type of this file, according to the uploading client.
+```javascript
+file.lastModifiedDate = null
+```
+A date object (or `null`) containing the time this file was last written to. Mostly
+here for compatibility with the [W3C File API Draft](http://dev.w3.org/2006/webapi/FileAPI/).
+```javascript
+file.hash = null
+```
+If hash calculation was set, you can read the hex digest out of this var.
+
+#### Formidable.File#toJSON()
+
+  This method returns a JSON-representation of the file, allowing you to
+  `JSON.stringify()` the file which is useful for logging and responding
+  to requests.
+
+### Events
+
+
+#### 'progress'
+
+Emitted after each incoming chunk of data that has been parsed. Can be used to roll your own progress bar.
+
+```javascript
+form.on('progress', function(bytesReceived, bytesExpected) {
+});
+```
+
+
+
+#### 'field'
+
+Emitted whenever a field / value pair has been received.
+
+```javascript
+form.on('field', function(name, value) {
+});
+```
+
+#### 'fileBegin'
+
+Emitted whenever a new file is detected in the upload stream. Use this event if
+you want to stream the file to somewhere else while buffering the upload on
+the file system.
+
+```javascript
+form.on('fileBegin', function(name, file) {
+});
+```
+
+#### 'file'
+
+Emitted whenever a field / file pair has been received. `file` is an instance of `File`.
+
+```javascript
+form.on('file', function(name, file) {
+});
+```
+
+#### 'error'
+
+Emitted when there is an error processing the incoming form. A request that experiences an error is automatically paused, you will have to manually call `request.resume()` if you want the request to continue firing `'data'` events.
+
+```javascript
+form.on('error', function(err) {
+});
+```
+
+#### 'aborted'
+
+
+Emitted when the request was aborted by the user. Right now this can be due to a 'timeout' or 'close' event on the socket. After this event is emitted, an `error` event will follow. In the future there will be a separate 'timeout' event (needs a change in the node core).
+```javascript
+form.on('aborted', function() {
+});
+```
+
+##### 'end'
+```javascript
+form.on('end', function() {
+});
+```
+Emitted when the entire request has been received, and all contained files have finished flushing to disk. This is a great place for you to send your response.
+
+
+
+## Changelog
+
+[./CHANGELOG.md](./CHANGELOG.md)
+
+## Credits
+
+- [multipart-parser](http://github.com/FooBarWidget/multipart-parser): a C++
+  parser based on formidable
+- [Ryan Dahl](http://twitter.com/ryah) for his work on
+  [http-parser](http://github.com/ry/http-parser) which heavily inspired the
+  initial `multipart_parser.js`.
+
+From [Felix blog post](https://felixge.de/2013/03/11/the-pull-request-hack/):
+
+- [Sven Lito](https://github.com/svnlto) for fixing bugs and merging patches
+- [egirshov](https://github.com/egirshov) for contributing many improvements to the node-formidable multipart parser
+- [Andrew Kelley](https://github.com/superjoe30) for also helping with fixing bugs and making improvements
+- [Mike Frey](https://github.com/mikefrey) for contributing JSON support
+
+
+## Contributing
+
+If the documentation is unclear or has a typo, please click on the page's `Edit`
+button (pencil icon) and suggest a correction. If you would like to help us fix
+a bug or add a new feature, please check our [Contributing
+Guide][contributing-url]. Pull requests are welcome!
+
+
+## License
+
+Formidable is licensed under the [MIT License][license-url].
+
+<!-- badges -->
+<!-- prettier-ignore-start -->
+
+[codestyle-url]: https://github.com/airbnb/javascript
+[codestyle-img]: https://badgen.net/badge/code%20style/airbnb%20%2B%20prettier/ff5a5f?icon=airbnb&cache=300
+[codecov-url]: https://codecov.io/gh/node-formidable/formidable
+[codecov-img]: https://badgen.net/codecov/c/github/node-formidable/formidable/master?icon=codecov
+[npmv-canary-img]: https://badgen.net/npm/v/formidable/canary?icon=npm
+[npmv-dev-img]: https://badgen.net/npm/v/formidable/dev?icon=npm
+[npmv-img]: https://badgen.net/npm/v/formidable?icon=npm
+[npmv-url]: https://npmjs.com/package/formidable
+[license-img]: https://badgen.net/npm/license/formidable
+[license-url]: https://github.com/node-formidable/formidable/blob/master/LICENSE
+[chat-img]: https://badgen.net/badge/chat/on%20gitter/46BC99?icon=gitter
+[chat-url]: https://gitter.im/node-formidable/Lobby
+[libera-manifesto-url]: https://liberamanifesto.com
+[libera-manifesto-img]: https://badgen.net/badge/libera/manifesto/grey
+[renovateapp-url]: https://renovatebot.com
+[renovateapp-img]: https://badgen.net/badge/renovate/enabled/green?cache=300
+[prs-welcome-img]: https://badgen.net/badge/PRs/welcome/green?cache=300
+[prs-welcome-url]: http://makeapullrequest.com
+[twitter-url]: https://twitter.com/tunnckoCore
+[twitter-img]: https://badgen.net/twitter/follow/tunnckoCore?icon=twitter&color=1da1f2&cache=300
+
+[npm-weekly-img]: https://badgen.net/npm/dw/formidable?icon=npm&cache=300
+[npm-monthly-img]: https://badgen.net/npm/dm/formidable?icon=npm&cache=300
+[npm-yearly-img]: https://badgen.net/npm/dy/formidable?icon=npm&cache=300
+[npm-alltime-img]: https://badgen.net/npm/dt/formidable?icon=npm&cache=300&label=total%20downloads
+
+[nodejs-img]: https://badgen.net/badge/node/>=%2010.13/green?cache=300
+
+[ccommits-url]: https://conventionalcommits.org/
+[ccommits-img]: https://badgen.net/badge/conventional%20commits/v1.0.0/green?cache=300
+
+[contributing-url]: https://github.com/node-formidable/.github/blob/master/CONTRIBUTING.md
+[code_of_conduct-url]: https://github.com/node-formidable/.github/blob/master/CODE_OF_CONDUCT.md
+
+[open-issue-url]: https://github.com/node-formidable/formidable/issues/new
+
+[tidelift-url]: https://tidelift.com/subscription/pkg/npm-formidable?utm_source=npm-formidable&utm_medium=referral&utm_campaign=enterprise
+[tidelift-img]: https://badgen.net/badge/tidelift/subscription/4B5168?labelColor=F6914D
+
+[kofi-url]: https://ko-fi.com/tunnckoCore/commissions
+[kofi-img]: https://badgen.net/badge/ko-fi/support/29abe0c2?cache=300&icon=https://rawcdn.githack.com/tunnckoCore/badgen-icons/f8264c6414e0bec449dd86f2241d50a9b89a1203/icons/kofi.svg
+
+[linux-build-img]: https://badgen.net/github/checks/node-formidable/formidable/master/ubuntu?cache=300&label=linux%20build&icon=github
+[macos-build-img]: https://badgen.net/github/checks/node-formidable/formidable/master/macos?cache=300&label=macos%20build&icon=github
+[windows-build-img]: https://badgen.net//github/checks/node-formidable/formidable/master/windows?cache'use strict';
+
+const path = require('path');
+const which = require('which');
+const pathKey = require('path-key')();
+
+function resolveCommandAttempt(parsed, withoutPathExt) {
+    const cwd = process.cwd();
+    const hasCustomCwd = parsed.options.cwd != null;
+
+    // If a custom `cwd` was specified, we need to change the process cwd
+    // because `which` will do stat calls but does not support a custom cwd
+    if (hasCustomCwd) {
+        try {
+            process.chdir(parsed.options.cwd);
+        } catch (err) {
+            /* Empty */
+        }
+    }
+
+    let resolved;
+
+    try {
+        resolved = which.sync(parsed.command, {
+            path: (parsed.options.env || process.env)[pathKey],
+            pathExt: withoutPathExt ? path.delimiter : undefined,
+        });
+    } catch (e) {
+        /* Empty */
+    } finally {
+        process.chdir(cwd);
+    }
+
+    // If we successfully resolved, ensure that an absolute path is returned
+    // Note that when a custom `cwd` was used, we need to resolve to an absolute path based on it
+    if (resolved) {
+        resolved = path.resolve(hasCustomCwd ? parsed.options.cwd : '', resolved);
+    }
+
+    return resolved;
+}
+
+function resolveCommand(parsed) {
+    return resolveCommandAttempt(parsed) || resolveCommandAttempt(parsed, true);
+}
+
+module.exports = resolveCommand;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 /*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+"use strict";
+
+const asyncLib = require("neo-async");
+const path = require("path");
+
+const {
+	Tapable,
+	AsyncSeriesWaterfallHook,
+	SyncWaterfallHook
+} = require("tapable");
+const ContextModule = require("./ContextModule");
+const ContextElementDependency = require("./dependencies/ContextElementDependency");
+
+/** @typedef {import("./Module")} Module */
+
+const EMPTY_RESOLVE_OPTIONS = {};
+
+module.exports = class ContextModuleFactory extends Tapable {
+	constructor(resolverFactory) {
+		super();
+		this.hooks = {
+			/** @type {AsyncSeriesWaterfallHook<TODO>} */
+			beforeResolve: new AsyncSeriesWaterfallHook(["data"]),
+			/** @type {AsyncSeriesWaterfallHook<TODO>} */
+			afterResolve: new AsyncSeriesWaterfallHook(["data"]),
+			/** @type {SyncWaterfallHook<string[]>} */
+			contextModuleFiles: new SyncWaterfallHook(["files"]),
+			/** @type {SyncWaterfallHook<TODO[]>} */
+			alternatives: new AsyncSeriesWaterfallHook(["modules"])
+		};
+		this._pluginCompat.tap("ContextModuleFactory", options => {
+			switch (options.name) {
+				case "before-resolve":
+				case "after-resolve":
+				case "alternatives":
+					options.async = true;
+					break;
+			}
+		});
+		this.resolverFactory = resolverFactory;
+	}
+
+	create(data, callback) {
+		const context = data.context;
+		const dependencies = data.dependencies;
+		const resolveOptions = data.resolveOptions;
+		const dependency = dependencies[0];
+		this.hooks.beforeResolve.callAsync(
+			Object.assign(
+				{
+					context: context,
+					dependencies: dependencies,
+					resolveOptions
+				},
+				dependency.options
+			),
+			(err, beforeResolveResult) => {
+				if (err) return callback(err);
+
+				// Ignored
+				if (!beforeResolveResult) return callback();
+
+				const context = beforeResolveResult.context;
+				const request = beforeResolveResult.request;
+				const resolveOptions = beforeResolveResult.resolveOptions;
+
+				let loaders,
+					resource,
+					loadersPrefix = "";
+				const idx = request.lastIndexOf("!");
+				if (idx >= 0) {
+					let loadersRequest = request.substr(0, idx + 1);
+					let i;
+					for (
+						i = 0;
+						i < loadersRequest.length && loadersRequest[i] === "!";
+						i++
+					) {
+						loadersPrefix += "!";
+					}
+					loadersRequest = loadersRequest
+						.substr(i)
+						.replace(/!+$/, "")
+						.replace(/!!+/g, "!");
+					if (loadersRequest === "") {
+						loaders = [];
+					} else {
+						loaders = loadersRequest.split("!");
+					}
+					resource = request.substr(idx + 1);
+				} else {
+					loaders = [];
+					resource = request;
+				}
+
+				const contextResolver = this.resolverFactory.get(
+					"context",
+					resolveOptions || EMPTY_RESOLVE_OPTIONS
+				);
+				const loaderResolver = this.resolverFactory.get(
+					"loader",
+					EMPTY_RESOLVE_OPTIONS
+				);
+
+				asyncLib.parallel(
+					[
+						callback => {
+							contextResolver.resolve(
+								{},
+								context,
+								resource,
+								{},
+								(err, result) => {
+									if (err) return callback(err);
+									callback(null, result);
+								}
+							);
+						},
+						callback => {
+							asyncLib.map(
+								loaders,
+								(loader, callback) => {
+									loaderResolver.resolve(
+										{},
+										context,
+										loader,
+										{},
+										(err, result) => {
+											if (err) return callback(err);
+											callback(null, result);
+										}
+									);
+								},
+								callback
+							);
+						}
+					],
+					(err, result) => {
+						if (err) return callback(err);
+
+						this.hooks.afterResolve.callAsync(
+							Object.assign(
+								{
+									addon:
+										loadersPrefix +
+										result[1].join("!") +
+										(result[1].length > 0 ? "!" : ""),
+									resource: result[0],
+									resolveDependencies: this.resolveDependencies.bind(this)
+								},
+								beforeResolveResult
+							),
+							(err, result) => {
+								if (err) return callback(err);
+
+								// Ignored
+								if (!result) return callback();
+
+								return callback(
+									null,
+									new ContextModule(result.resolveDependencies{
+  "name": "wrap-ansi",
+  "version": "2.1.0",
+  "description": "Wordwrap a string with ANSI escape codes",
+  "license": "MIT",
+  "repository": "chalk/wrap-ansi",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
+  },
+  "maintainers": [
+    "Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)",
+    "Joshua Appelman <jappelman@xebia.com> (jbnicolai.com)",
+    "JD Ballard <i.am.qix@gmail.com> (github.com/qix-)",
+    "Benjamin Coe <ben@npmjs.com> (github.com/bcoe)"
+  ],
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "xo && nyc ava",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "wrap",
+    "break",
+    "wordwrap",
+    "wordbreak",
+    "linewrap",
+    "ansi",
+    "styles",
+    "color",
+    "colour",
+    "colors",
+    "terminal",
+    "console",
+    "cli",
+    "string",
+    "tty",
+    "escape",
+    "formatting",
+    "rgb",
+    "256",
+    "shell",
+    "xterm",
+    "log",
+    "logging",
+    "command-line",
+    "text"
+  ],
+  "dependencies": {
+    "string-width": "^1.0.1",
+    "strip-ansi": "^3.0.1"
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "chalk": "^1.1.0",
+    "coveralls": "^2.11.4",
+    "has-ansi": "^2.0.0",
+    "nyc": "^6.2.1",
+    "strip-ansi": "^3.0.0",
+    "xo": "*"
+  }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         turn this._content.substring(t,n)}return this._content},e.prototype.update=function(e,t){this._content=e.text,this._version=t,this._lineOffsets=void 0},e.prototype.getLineOffsets=function(){if(void 0===this._lineOffsets){for(var e=[],t=this._content,n=!0,i=0;i<t.length;i++){n&&(e.push(i),n=!1);var r=t.charAt(i);n="\r"===r||"\n"===r,"\r"===r&&i+1<t.length&&"\n"===t.charAt(i+1)&&i++}n&&t.length>0&&e.push(t.length),this._lineOffsets=e}return this._lineOffsets},e.prototype.positionAt=function(e){e=Math.max(Math.min(e,this._content.length),0);var t=this.getLineOffsets(),i=0,r=t.length;if(0===r)return n.create(0,e);for(;i<r;){var a=Math.floor((i+r)/2);t[a]>e?r=a:i=a+1}var o=i-1;return n.create(o,e-t[o])},e.prototype.offsetAt=function(e){var t=this.getLineOffsets();if(e.line>=t.length)return this._content.length;if(e.line<0)return 0;var n=t[e.line],i=e.line+1<t.length?t[e.line+1]:this._content.length;return Math.max(Math.min(n+e.character,i),n)},Object.defineProperty(e.prototype,"lineCount",{get:function(){return this.getLineOffsets().length},enumerable:!0,configurable:!0}),e}();!function(e){var t=Object.prototype.toString;e.defined=function(e){return void 0!==e},e.undefined=function(e){return void 0===e},e.boolean=function(e){return!0===e||!1===e},e.string=function(e){return"[object String]"===t.call(e)},e.number=function(e){return"[object Number]"===t.call(e)},e.func=function(e){return"[object Function]"===t.call(e)},e.objectLiteral=function(e){return null!==e&&"object"==typeof e},e.typedArray=function(e,t){return Array.isArray(e)&&e.every(t)}}(y||(y={}))})),define("vscode-languageserver-types",["vscode-languageserver-types/main"],(function(e){return e})),function(e){if("object"==typeof module&&"object"==typeof module.exports){var t=e(require,exports);void 0!==t&&(module.exports=t)}else"function"==typeof define&&define.amd&&define("vscode-html-languageservice/htmlLanguageTypes",["require","exports","vscode-languageserver-types"],e)}((function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=e("vscode-languageserver-types");!function(e){e[e.StartCommentTag=0]="StartCommentTag",e[e.Comment=1]="Comment",e[e.EndCommentTag=2]="EndCommentTag",e[e.StartTagOpen=3]="StartTagOpen",e[e.StartTagClose=4]="StartTagClose",e[e.StartTagSelfClose=5]="StartTagSelfClose",e[e.StartTag=6]="StartTag",e[e.EndTagOpen=7]="EndTagOpen",e[e.EndTagClose=8]="EndTagClose",e[e.EndTag=9]="EndTag",e[e.DelimiterAssign=10]="DelimiterAssign",e[e.AttributeName=11]="AttributeName",e[e.AttributeValue=12]="AttributeValue",e[e.StartDoctypeTag=13]="StartDoctypeTag",e[e.Doctype=14]="Doctype",e[e.EndDoctypeTag=15]="EndDoctypeTag",e[e.Content=16]="Content",e[e.Whitespace=17]="Whitespace",e[e.Unknown=18]="Unknown",e[e.Script=19]="Script",e[e.Styles=20]="Styles",e[e.EOS=21]="EOS"}(t.TokenType||(t.TokenType={})),function(e){e[e.WithinContent=0]="WithinContent",e[e.AfterOpeningStartTag=1]="AfterOpeningStartTag",e[e.AfterOpeningEndTag=2]="AfterOpeningEndTag",e[e.WithinDoctype=3]="WithinDoctype",e[e.WithinTag=4]="WithinTag",e[e.WithinEndTag=5]="WithinEndTag",e[e.WithinComment=6]="WithinComment",e[e.WithinScriptContent=7]="WithinScriptContent",e[e.WithinStyleContent=8]="WithinStyleContent",e[e.AfterAttributeName=9]="AfterAttributeName",e[e.BeforeAttributeValue=10]="BeforeAttributeValue"}(t.ScannerState||(t.ScannerState={})),function(e){e.LATEST={textDocument:{completion:{completionItem:{documentationFormat:[n.MarkupKind.Markdown,n.MarkupKind.PlainText]}},hover:{contentFormat:[n.MarkupKind.Markdown,n.MarkupKind.PlainText]}}}}(t.ClientCapabilities||(t.ClientCapabilities={}))})),function(e){if("object"==typeof module&&"object"==typeof module.exports){var t=e(require,exports);void 0!==t&&(module.exports=t)}else"function"==typeof define&&define.amd&&define("vscode-html-languageservice/parser/htmlScanner",["require","exports","vscode-nls","../htmlLanguageTypes"],e)}((function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=e("vscode-nls"),i=e("../htmlLanguageTypes"),r=n.loadMessageBundle(),a=function(){function e(e,t){this.source=e,this.len=e.length,this.position=t}return e.prototype.eos=function(){return this.len<=this.position},e.prototype.getSource=function(){return this.source},e.prototype.pos=function(){return this.position},e.prototype.goBackTo=function(e){this.position=e},e.prototype.goBack=function(e){this.position-=e},e.prototype.advance=function(e){this.position+=e},e.prototype.goToEnd=function(){this.position=this.source.length},e.prototype.nextChar=function(){return this.source.charCodeAt(this.position++)||0},e.prototype.peekChar=function(e){return void 0===e&&(e=0),this.source.charCodeAt(this.position+e)||0},e.prototype.advanceIfChar=function(e){return e===this.source.charCodeAt(this.position)&&(this.position++,!0)},e.prototype.advanceIfChars=function(e){var t;if(this.position+e.length>this.source.length)return!1;for(t=0;t<e.length;t++)if(this.source.charCodeAt(this.position+t)!==e[t])return!1;return this.advance(t),!0},e.prototype.advanceIfRegExp=function(e){var t=this.source.substr(this.position).match(e);return t?(this.position=this.position+t.index+t[0].length,t[0]):""},e.prototype.advanceUntilRegExp=function(e){var t=this.source.substr(this.position).match(e);return t?(this.position=this.position+t.index,t[0]):(this.goToEnd(),"")},e.prototype.advanceUntilChar=function(e){for(;this.position<this.source.length;){if(this.source.charCodeAt(this.position)===e)return!0;this.advance(1)}return!1},e.prototype.advanceUntilChars=function(e){for(;this.position+e.length<=this.source.length;){for(var t=0;t<e.length&&this.source.charCodeAt(this.position+t)===e[t];t++);if(t===e.length)return!0;this.advance(1)}return this.goToEnd(),!1},e.prototype.skipWhitespace=function(){return this.advanceWhileChar((function(e){return e===b||e===_||e===m||e===g||e===f}))>0},e.prototype.advanceWhileChar=function(e){for(var t=this.position;this.position<this.len&&e(this.source.charCodeAt(this.position));)this.position++;return this.position-t},e}(),o="!".charCodeAt(0),s="-".charCodeAt(0),l="<".charCodeAt(0),c=">".charCodeAt(0),d="/".charCodeAt(0),h="=".charCodeAt(0),u='"'.charCodeAt(0),p="'".charCodeAt(0),m="\n".charCodeAt(0),f="\r".charCodeAt(0),g="\f".charCodeAt(0),b=" ".charCodeAt(0),_="\t".charCodeAt(0),v={"text/x-handlebars-template":!0};t.createScanner=function(e,t,n){void 0===t&&(t=0),void 0===n&&(n=i.ScannerState.WithinContent);var m,f,g,b,_,w=new a(e,t),y=n,T=0,k=i.TokenType.Unknown;function S(){return w.advanceIfRegExp(/^[_:\w][_:\w-.\d]*/).toLowerCase()}function x(e,t,n){return k=t,T=e,m=n,t}return{scan:function(){var e=w.pos(),t=y,n=function e(){var t,n=w.pos();if(w.eos())return x(n,i.TokenType.EOS);switch(y){case i.ScannerState.WithinComment:return w.advanceIfChars([s,s,c])?(y=i.ScannerState.WithinContent,x(n,i.TokenType.EndCommentTag)):(w.advanceUntilChars([s,s,c]),x(n,i.TokenType.Comment));case i.ScannerState.WithinDoctype:return w.advanceIfChar(c)?(y=i.ScannerState.WithinContent,x(n,i.TokenType.EndDoctypeTag)):(w.advanceUntilChar(c),x(n,i.TokenType.Doctype));case i.ScannerState.WithinContent:if(w.advanceIfChar(l)){if(!w.eos()&&w.peekChar()===o){if(w.advanceIfChars([o,s,s]))return y=i.ScannerState.WithinComment,x(n,i.TokenType.StartCommentTag);if(w.advanceIfRegExp(/^!doctype/i))return y=i.ScannerState.WithinDoctype,x(n,i.TokenType.StartDoctypeTag)}return w.advanceIfChar(d)?(y=i.ScannerState.AfterOpeningEndTag,x(n,i.TokenType.EndTagOpen)):(y=i.ScannerState.AfterOpeningStartTag,x(n,i.TokenType.StartTagOpen))}return w.advanceUntilChar(l),x(n,i.TokenType.Content);case i.ScannerState.AfterOpeningEndTag:return S().length>0?(y=i.ScannerState.WithinEndTag,x(n,i.TokenType.EndTag)):w.skipWhitespace()?x(n,i.TokenType.Whitespace,r("error.unexpectedWhitespace","Tag name must directly follow the open bracket.")):(y=i.ScannerState.WithinEndTag,w.advanceUntilChar(c),n<w.pos()?x(n,i.TokenType.Unknown,r("error.endTagNameExpected","End tag name expected.")):e());case i.ScannerState.WithinEndTag:if(w.skipWhitespace())return x(n,i.TokenType.Whitespace);if(w.advanceIfChar(c))return y=i.ScannerState.WithinContent,x(n,i.TokenType.EndTagClose);t=r("error.tagNameExpected","Closing bracket expected.");break;case i.ScannerState.AfterOpeningStartTag:return g=S(),_=void 0,b=void 0,g.length>0?(f=!1,y=i.ScannerState.WithinTag,x(n,i.TokenType.StartTag)):w.skipWhitespace()?x(n,i.TokenType.Whitespace,r("error.unexpectedWhitespace","Tag name must directly follow the open bracket.")):(y=i.ScannerState.WithinTag,w.advanceUntilChar(c),n<w.pos()?x(n,i.TokenType.Unknown,r("error.startTagNameExpected","Start tag name expected.")):e());case i.ScannerState.WithinTag:return w.skipWhitespace()?(f=!0,x(n,i.TokenType.Whitespace)):f&&(b=w.advanceIfRegExp(/^[^\s"'>/=\x00-\x0F\x7F\x80-\x9F]*/).toLowerCase()).length>0?(y=i.ScannerState.AfterAttributeName,f=!1,x(n,i.TokenType.AttributeName)):w.advanceIfChars([d,c])?(y=i.ScannerState.WithinContent,x(n,i.TokenType.StartTagSelfClose)):w.advanceIfChar(c)?(y="script"===g?_&&v[_]?i.ScannerState.WithinContent:i.ScannerState.WithinScriptContent:"style"===g?i.ScannerState.WithinStyleContent:i.ScannerState.WithinContent,x(n,i.TokenType.StartTagClose)):(w.advance(1),x(n,i.TokenType.Unknown,r("error.unexpectedCharacterInTag","Unexpected character in tag.")));case i.ScannerState.AfterAttributeName:return w.skipWhitespace()?(f=!0,x(n,i.TokenType.Whitespace)):w.advanceIfChar(h)?(y=i.ScannerState.BeforeAttributeValue,x(n,i.TokenType.DelimiterAssign)):(y=i.ScannerState.WithinTag,e());case i.ScannerState.BeforeAttributeValue:if(w.skipWhitespace())return x(n,i.TokenType.Whitespace);var a=w.advanceIfRegExp(/^[^\s"'`=<>]+/);if(a.length>0)return w.peekChar()===c&&w.peekChar(-1)===d&&(w.goBack(1),a=a.substr(0,a.length-1)),"type"===b&&(_=a),y=i.ScannerState.WithinTag,f=!1,x(n,i.TokenType.AttributeValue);var m=w.peekChar();return m===p||m===u?(w.advance(1),w.advanceUntilChar(m)&&w.advance(1),"type"===b&&(_=w.getSource().substring(n+1,w.pos()-1)),y=i.ScannerState.WithinTag,f=!1,x(n,i.TokenType.AttributeValue)):(y=i.ScannerState.WithinTag,f=!1,e());case i.ScannerState.WithinScriptContent:for(var T=1;!w.eos();){var k=w.advanceIfRegExp(/<!--|-->|<\/?script\s*\/?>?/i);if(0===k.length)return w.goToEnd(),x(n,i.TokenType.Script);if("\x3c!--"===k)1===T&&(T=2);else if("--\x3e"===k)T=1;else if("/"!==k[1])2===T&&(T=3);else{if(3!==T){w.goBack(k.length);break}T=2}}return y=i.ScannerState.WithinContent,n<w.pos()?x(n,i.TokenType.Script):e();case i.ScannerState.WithinStyleContent:return w.advanceUntilRegExp(/<\/style/i),y=i.ScannerState.WithinContent,n<w.pos()?x(n,i.TokenType.Styles):e()}return w.advance(1),y=i.ScannerState.WithinContent,x(n,i.TokenType.Unknown,t)}();return n!==i.TokenType.EOS&&e===w.pos()?(console.log("Scanner.scan has not advanced at offset "+e+", state before: "+t+" after: "+y),w.advance(1),x(e,i.TokenType.Unknown)):n},getTokenType:function(){return k},getTokenOffset:function(){return T},getTokenLength:function(){return w.pos()-T},getTokenEnd:function(){return w.pos()},getTokenText:function(){return w.getSource().substring(T,w.pos())},getScannerState:function(){return y},getTokenError:function(){return m}}}})),function(e){if("object"==typeof module&&"object"==typeof module.exports){var t=e(require,exports);void 0!==t&&(module.exports=t)}else"function"==typeof define&&define.amd&&define("vscode-html-languageservice/utils/arrays",["require","exports"],e)}((function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.findFirst=function(e,t){var n=0,i=e.length;if(0===i)return 0;for(;n<i;){var r=Math.floor((n+i)/2);t(e[r])?i=r:n=r+1}return n},t.binarySearch=function(e,t,n){for(var i=0,r=e.length-1;i<=r;){var a=(i+r)/2|0,o=n(e[a],t);if(o<0)i=a+1;else{if(!(o>0))return a;r=a-1}}return-(i+1)}})),function(e){if("object"==typeof module&&"object"==typeof module.exports){var t=e(require,exports);void 0!==t&&(module.exports=t)}else"function"==typeof define&&define.amd&&define("vscode-html-languageservice/languageFacts/fact",["require","exports","../utils/arrays"],e)}((function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=e("../utils/arrays");t.VOID_ELEMENTS=["area","base","br","col","embed","hr","img","input","keygen","link","menuitem","meta","param","source","track","wbr"],t.isVoidElement=function(e){return!!e&&n.binarySearch(t.VOID_ELEMENTS,e.toLowerCase(),(function(e,t){return e.localeCompare(t)}))>=0}})),function(e){if("object"==typeof module&&"object"==typeof module.exports){var t=e(require,exports);void 0!==t&&(module.exports=t)}else"function"==typeof define&&define.amd&&define("vscode-html-languageservice/parser/htmlParser",["require","exports","./htmlScanner","../utils/arrays","../htmlLanguageTypes","../languageFacts/fact"],e)}((function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=e("./htmlScanner"),i=e("../utils/arrays"),r=e("../htmlLanguageTypes"),a=e("../languageFacts/fact"),o=function(){function e(e,t,n,i){this.start=e,this.end=t,this.children=n,this.parent=i,this.closed=!1}return Object.defineProperty(e.prototype,"attributeNames",{get:function(){return this.attributes?Object.keys(this.attributes):[]},enumerable:!0,configurable:!0}),e.prototype.isSameTag=function(e){return this.tag&&e&&this.tag.length===e.length&&this.tag.toLowerCase()===e},Object.defineProperty(e.prototype,"firstChild",{get:function(){return this.children[0]},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"lastChild",{get:function(){return this.children.length?this.children[this.children.length-1]:void 0},enumerable:!0,configurable:!0}),e.prototype.findNodeBefore=function(e){var t=i.findFirst(this.children,(function(t){return e<=t.start}))-1;if(t>=0){var n=this.children[t];if(e>n.start){if(e<n.end)return n.findNodeBefore(e);var r=n.lastChild;return r&&r.end===n.end?n.findNodeBefore(e):n}}return this},e.prototype.findNodeAt=function(e){var t=i.findFirst(this.children,(function(t){return e<=t.start}))-1;if(t>=0){var n=this.children[t];if(e>n.start&&e<=n.end)return n.findNodeAt(e)}return this},e}();t.Node=o,t.parse=function(e){for(var t=n.createScanner(e),i=new o(0,e.length,[],void 0),s=i,l=-1,c=null,d=null,h=t.scan();h!==r.TokenType.EOS;){switch(h){case r.TokenType.StartTagOpen:var u=new o(t.getTokenOffset(),e.length,[],s);s.children.push(u),s=u;break;case r.TokenType.StartTag:s.tag=t.getTokenText();break;case r.TokenType.StartTagClose:s.end=t.getTokenEnd(),s.startTagEnd=t.getTokenEnd(),s.tag&&a.isVoidElement(s.tag)&&s.parent&&(s.closed=!0,s=s.parent);break;case r.TokenType.StartTagSelfClose:s.parent&&(s.closed=!0,s.end=t.getTokenEnd(),s.startTagEnd=t.getTokenEnd(),s=s.parent);break;case r.TokenType.EndTagOpen:l=t.getTokenOffset(),c=null;break;case r.TokenType.EndTag:c=t.getTokenText().toLowerCase();break;case r.TokenType.EndTagClose:if(c){for(var p=s;!p.isSameTag(c)&&p.parent;)p=p.parent;if(p.parent){for(;s!==p;)s.end=l,s.closed=!1,s=s.parent;s.closed=!0,s.endTagStart=l,s.end=t.getTokenEnd(),s=s.parent}}break;case r.TokenType.AttributeName:d=t.getTokenText(),(m=s.attributes)||(s.attributes=m={}),m[d]=null;break;case r.TokenType.AttributeValue:var m,f=t.getTokenText();(m=s.attributes)&&d&&(m[d]=f,d=null)}h=t.scan()}for(;s.parent;)s.end=e.length,s.closed=!1,s=s.parent;return{roots:i.children,findNodeBefore:i.findNodeBefore.bind(i),findNodeAt:i.findNodeAt.bind(i)}}})),function(e){if("object"==typeof module&&"object"==typeof module.exports){var t=e(require,exports);void 0!==t&&(module.exports=t)}else"function"==typeof define&&define.amd&&define("vscode-html-languageservice/parser/htmlEntities",["require","exports"],e)}((function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.entities={"Aacute;":"Á",Aacute:"Á","aacute;":"á",aacute:"á","Abreve;":"Ă","abreve;":"ă","ac;":"∾","acd;":"∿","acE;":"∾̳","Acirc;":"Â",Acirc:"Â","acirc;":"â",acirc:"â","acute;":"´",acute:"´","Acy;":"А","acy;":"а","AElig;":"Æ",AElig:"Æ","aelig;":"æ",aelig:"æ","af;":"⁡","Afr;":"𝔄","afr;":"𝔞","Agrave;":"À",Agrave:"À","agrave;":"à",agrave:"à","alefsym;":"ℵ","aleph;":"ℵ","Alpha;":"Α","alpha;":"α","Amacr;":"Ā","amacr;":"ā","amalg;":"⨿","AMP;":"&",AMP:"&","amp;":"&",amp:"&","And;":"⩓","and;":"∧","andand;":"⩕","andd;":"⩜","andslope;":"⩘","andv;":"⩚","ang;":"∠","ange;":"⦤","angle;":"∠","angmsd;":"∡","angmsdestern Frisian (the Netherlands), and Bengali (Bangladesh, India, and other regions).",
+    "annualReport.2021.accessSouthAfrica": "Zero-rated Scratch in South Africa",
+    "annualReport.2021.accessSouthAfricaText": "To improve the Scratch experience for young people in regions with low or no internet connectivity, we partnered with the National Education Collaboration Trust (NECT) of South Africa to host a zero-rated page for downloading Scratch. Downloads on zero-rated pages do not use up any data bandwidth, reducing a barrier to accessing Scratch due to data limits and costs. Just two months after its April 2021 launch, the page had more than 1300 visitors.",
+    "annualReport.2021.accessSnapshot": "Snapshots",
+    "annualReport.2021.communityTitle": "Samfélag",
+    "annualReport.2021.communityIntro": "In 2021, the Scratch community continued to experience rapid growth as even more young people around the world created and connected alongside their peers. We also continued to develop partnerships with community members to improve the Scratch experience for our diverse community of users.",
+    "annualReport.2021.communityScratchConference": "Scratch Ráðstefna",
+    "annualReport.2021.communityScratchConferenceText1": "In July, educators in our global community came together to celebrate creative coding at the Scratch Conference. This free, virtual event was led by our collaborators at MIT’s Lifelong Kindergarten Group. The conference brought together {more_bold}, who spent the day connecting, collaborating, and learning from one another, even as COVID kept us apart.",
+    "annualReport.2021.communityScratchConferenceText1More": "more than 1,500 educators and Scratch enthusiasts",
+    "annualReport.2021.communityVolunteerTranslators": "Volunteer Translators",
+    "annualReport.2021.communityVolunteerTranslatorsText": "Since Scratch was launched in 2007, we have been committed to supporting our users worldwide. Our language translation volunteers work closely with the Scratch Team to help translate and localize our platform and resources for the diverse communities that we serve.",
+    "annualReport.2021.communityVolunteerTranslatorsText2": "Thousands of translators have volunteered their time to translate Scratch into 74 languages and counting, and there are currently more than one thousand translators signed up to translate Scratch and ScratchJr. We’re grateful to our volunteers for helping us reach more Scratchers around the world!",
+    "annualReport.2021.communityScratchCommunity": "The Scratch Community in 2021",
+    "annualReport.2021.communityScratchCommunityIntro": "In 2021, more than 113 million projects were created on the Scratch site – almost a 39% increase from 2020 – and more than one million new studios were created! Throughout the year, the Scratch Team hosted numerous studios to celebrate important events and encourage Scratchers to participate in the online community.",
+    "annualReport.2021.yearInReview": "Year in Review",
+    "annualReport.2021.yearInReviewText": "2021 was a remarkable year in the online community. The Community Team highlighted and developed opportunities for young people to express their ideas and become engaged in positive ways, and incredible movements sprung up from Scratchers themselves. Here’s a look back at some of the highlights of the year:",
+    "annualReport.2021.yearInReviewCard1Date": "Janúar",
+    "annualReport.2021.yearInReviewCard1Title": "Poetic Cafe",
+    "annualReport.2021.yearInReviewCard1Text": "We “opened” our very first Poetic Cafe where Scratchers were invited to write, share, or collaborate on poems to share with the community.",
+    "annualReport.2021.yearInReviewCard2Date": "Febrúar",
+    "annualReport.2021.yearInReviewCard2Title": "Black History Month Studio",
+    "annualReport.2021.yearInReviewCard2Text": "Scratchers shared interactive artwork, created poems, animated music videos, and more to celebrate influential people and events in Black history.",
+    "annualReport.2021.yearInReviewCard3Date": "Apríl",
+    "annualReport.2021.yearInReviewCard3Title": "April Fool’s Day",
+    "annualReport.2021.yearInReviewCard3Text": "Scratchers were asked to imagine the “Secret life” of the Scratch Cat and went on a treasure hunt for fun and silly things hidden around the Scratch website.",
+    "annualReport.2021.yearInReviewCard4Date": "Maí",
+    "annualReport.2021.yearInReviewCard4Title": "Scratch Week",
+    "annualReport.2021.yearInReviewCard4Text": "Scratchers around the world shared more than 3,500 projects responding to themed prompts like “Cooking With Scratch” and “Ridiculous Inventions” to celebrate Scratch's birthday.",
+    "annualReport.2021.yearInReviewCard5Date": "Júní",
+    "annualReport.2021.yearInReviewCard5Title": "Pride Month",
+    "annualReport.2021.yearInReviewCard5Text": "Scratchers created projects using all the colors of the rainbow to celebrate the LGBTQ+ community in the Pride Month studio.",
+    "annualReport.2021.yearInReviewCard6Date": "Ágúst",
+    "annualReport.2021.yearInReviewCard6Title": "Scratch Camp",
+    "annualReport.2021.yearInReviewCard6Text": "During this annual three-week long event, Scratchers created more than 7,000 projects that moved and grooved, showcased creative do-it-yourself (DIY) ideas, and shared their discoveries about the natural world around them.",
+    "annualReport.2021.yearInReviewCard7Date": "Október",
+    "annualReport.2021.yearInReviewCard7Title": "Scratchtober",
+    "annualReport.2021.yearInReviewCard7Text": "For two weeks, Scratchers created projects showcasing their interpretations of daily prompts in the Scratchtober studio. More than 3,500 projects were created around single-word themes like underwater, celebration, and creatures.",
+    "annualReport.2021.yearInReviewCard8Date": "Desember",
+    "annualReport.2021.yearInReviewCard8Title": "CSEdWeek",
+    "annualReport.2021.yearInReviewCard8Text": "Computer Science Education Week (CSEdWeek) occurred from December 6-12 to celebrate computer science around the world. Scratch participated in the week by encouraging community members to check out tutorials, studios, and a live event hosted in partnership with Makey Makey!",
+    "annualReport.2021.yearInReviewCard9Date": "Desember",
+    "annualReport.2021.yearInReviewCard9Title": "2021: A Scratch Year in Review Studio",
+    "annualReport.2021.yearInReviewCard9Text": "In 2021, Scratchers learned new skills, connected with friends around the world, and found creative ways to express themselves. More than 1,000 Scratchers shared their favorite Scratch memories and what Scratch meant to them in the 2021: A Scratch Year in Review studio.",
+    "annualReport.2021.communityScratchLabTitle": "Scratch Lab",
+    "annualReport.2021.communityScratchLabText": "With the launch of Scratch Lab in February, we’ve opened the doors of our development process directly to Scratchers around the world.",
+    "annualReport.2021.communityScratchLabText2": "Before we decide if we should introduce new blocks to the Scratch coding editor, it’s crucial to see the creative, innovative, and surprising ways Scratchers interact with them. Scratch Lab is a sandbox where everyone can try out these new features and, most importantly, share their thoughts and ideas directly with us.",
+    "annualReport.2021.communityScratchLabText3": "Over 500,000 Scratchers explored the Scratch Lab site in 2021, and they submitted more than 37,000 pieces of feedback.",
+    "annualReport.2021.communityScratchLabText4": "This feedback has been invaluable as we evaluate and develop Animated Text blocks, Face Sensing blocks, and more potential new features.",
+    "annualReport.2021.ytData1": "100,000",
+    "annualReport.2021.ytData1Sub": "áskrifendur",
+    "annualReport.2021.ytData2": "9 million",
+    "annualReport.2021.ytData2Sub": "views on videos",
+    "annualReport.2021.ytData3Top": "viewers in",
+    "annualReport.2021.ytData3": "178",
+    "annualReport.2021.ytData3Sub": "countries",
+    "annualReport.2021.communitySnapshot2Title": "The Scratch Team on YouTube",
+    "annualReport.2021.communitySnapshot2Text": "The Scratch Team YouTube channel reached 100,000 subscribers in 2021— a nearly 500 percent increase from 2020! As students, educators, and families evolved in response to the pandemic, we knew we had to create resources that were reactive to their needs.",
+    "annualReport.2021.communitySnapshot2Text2": "These resources include a series of comprehensive Scratch tutorials that guide users through designing stories, games, and animations on Scratch. In 2021, these videos garnered nearly nine million views from viewers in 178 countries.",
+    "annualReport.2021.tutorial1": "How to Make an 'About Me'",
+    "annualReport.2021.tutorial2": "How to Make a Clicker Game",
+    "annualReport.2021.tutorial3": "How to Make a Mouse Trail",
+    "annualReport.2021.FounderMessageTitle": "A Message from Our Founder",
+    "annualReport.2021.FounderMessageSubTitle": "Support and Inspiration from a Founding Partner",
+    "annualReport.2021.FounderMessageText1": "As you read through this annual report, you’ll learn about many ways that Scratch is expanding creative computing opportunities for millions of young people around the world, especially those from marginalized communities. This global impact is possible because of the tireless work of the growing team of engineers, designers, educators, community moderators, and others at the Scratch Foundation.",
+    "annualReport.2021.FounderMessageText2": "To continue to grow our efforts and impact, we rely on the generous financial support of an incredible collection of companies, foundations, and individual donors who are aligned with our mission and vision. Here, I want to highlight the support and inspiration we’ve received from one of our Founding Partners: the LEGO Foundation.",
+    "annualReport.2021.FounderMessageText3": "My research group at the MIT Media Lab started collaborating with the LEGO company and LEGO Foundation more than 30 years ago. LEGO funding helped support our early work on Scratch, leading up to the public launch of Scratch in 2007. Then, when Scratch spun out of MIT into the Scratch Foundation in 2019, the LEGO Foundation provided important funding for the new organization, with a five-year $10 million grant to “support transformative educational change by developing and promoting playful, creative approaches to coding...in diverse economic and cultural contexts.” When the pandemic hit, the LEGO Foundation stepped up with an additional $5 million grant in 2021, to ensure that the Scratch Foundation could meet the needs of children and educators disrupted by the pandemic.",
+    "annualReport.2021.FounderMessageText4": "But the LEGO-Scratch connection goes far beyond financial support. The Scratch approach of creating animated stories and games by snapping together graphical programming blocks was inspired, in part, by the way children build LEGO houses and castles by snapping together plastic LEGO bricks. Scratch and LEGO also share the same project-based educational philosophy, encouraging children to iteratively refine their projects by trying out an idea, seeing what happens, then making revisions and trying again.",
+    "annualReport.2021.FounderMessageText5": "I’ve always loved the LEGO slogan “Joy of Building, Pride of Creation.” The LEGO Foundation’s deep partnership with the Scratch Foundation is helping to bring “Joy of Building, Pride of Creation” to children’s digital activities. The partnership serves as a model of how organizations with shared ideas and values can work together to catalyze transformational change in learning and education. As the Scratch Foundation continues to build its network of partners and supporters, I look forward to connecting with other organizations to expand creative computing opportunities for children around the world.",
+    "annualReport.2021.FounderTitle": "Founder, Scratch Foundation",
+    "annualReport.2021.lookingForward": "Looking Forward",
+    "annualReport.2021.lookingForwardText1": "In 2021, we outlined a Strategic Framework guiding our major priorities for the next 4 years. We’re focused on these major areas:",
+    "annualReport.2021.lookingForwardText2": "We would like to extend a huge thank you to the LEGO Foundation, whose generous COVID Recovery Grant will enable us to carry out this crucial work. We can’t wait to share more with you about the exciting projects we have planned, including updates to the Scratch experience for schools, updates to ScratchJr, and more.",
+    "annualReport.2021.LookingForward1": "Strengthening the Scratch Platform and Community Infrastructure",
+    "annualReport.2021.LookingForward2": "Expanding Pathways to Creative Learning",
+    "annualReport.2021.LookingForward3": "Building Organizational Capacity and Ensuring Fiscal Sustainability",
+    "annualReport.2021.supportersTitle": "Thank You to Our Supporters",
+    "annualReport.2021.supportersIntro": "Thank you to our generous supporters. Your contribution helps us expand creative learning opportunities for children of all ages, from all backgrounds, around the globe.",
+    "annualReport.2021.ourSupporters": "Our Supporters",
+    "annualReport.2021.ourSupportersText": "We want to thank all Scratch supporters who, throughout the years, have helped us amazing learning experiences for millions of young people around the world. The following list is based on giving to Scratch Foundation from January 1, 2021 to December 31, 2021.",
+    "annualReport.2021.supportersFoundingTitle": "Founding Partners — $10,000,000+",
+    "annualReport.2021.supportersFoundingText": "We are especially grateful to our Founding Partners who have each provided at least $10,000,000 in cumulative support, since the start of Scratch in 2003.",
+    "annualReport.2021.supportersCatPartnersTitle": "Scratch Cat Partners — $1,000,000+",
+    "annualReport.2021.supportersCreativityTitle": "Creativity Circle — $250,000+",
+    "annualReport.2021.supportersCollaborationTitle": "Collaboration Circle — $100,000+",
+    "annualReport.2021.supportersImaginationTitle": "Imagination Circle — $50,000+",
+    "annualReport.2021.supportersInspirationTitle": "Inspiration Circle — $20,000+",
+    "annualReport.2021.supportersExplorationTitle": "Exploration Circle — $5,000+",
+    "annualReport.2021.supportersPlayTitle": "Play Circle — $1,000+",
+    "annualReport.2021.supportersInKindTitle": "In-Kind Supporters",
+    "annualReport.2021.leadershipTitle": "Our Team",
+    "annualReport.2021.leadershipBoard": "Board of Directors",
+    "annualReport.2021.leadershipChair": "Chair",
+    "annualReport.2021.leadershipProfessor": "Professor of Learning Research",
+    "annualReport.2021.leadershipViceChair": "Vice-Chair",
+    "annualReport.2021.leadershipCoFounder": "Co-Founder and Co-Chairman",
+    "annualReport.2021.leadershipBoardMember": "Board Member",
+    "annualReport.2021.leadershipPresidentCEO": "President and CEO",
+    "annualReport.2021.leadershipFormerPresident": "Former President",
+    "annualReport.2021.leadershipFounderCEO": "Founder and CEO",
+    "annualReport.2021.leadershipFormerChairCEO": "Former CEO and Chairwoman",
+    "annualReport.2021.leadershipBoardSecretaryTreasurer": "Board Secretary & Treasurer",
+    "annualReport.2021.leadershipBoardSecretary": "Board Secretary",
+    "annualReport.2021.leadershipBoardTreasurer": "Board Treasurer",
+    "annualReport.2021.leadershipScratchTeam": "2021 Scratch Team",
+    "annualReport.2021.leadershipED": "Executive Director",
+    "annualReport.2021.teamThankYou": "Thank you to Mitch Resnick, Natalie Rusk, Rupal Jain, and other collaborators at the Lifelong Kindergarten Group at the MIT Media Lab for your tireless support of Scratch.",
+    "annualReport.2021.donateTitle": "Support Us",
+    "annualReport.2021.donateMessage": "Your support enables us to create inspiring, creative, and memorable learning experiences for kids everywhere, especially those who have been systemically excluded from creative coding opportunities. Make a gift to Scratch today to help us keep our servers running, maintain our growing global community, and make creative coding possible for kids in every country around the world.",
+    "annualReport.2021.donateMessage2": <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Gradients</title>
+    <script type="text/javascript" src="../../dist/paper-full.js"></script>
+    <script type="text/paperscript" canvas="canvas">
+        project.importSVG(document.getElementById('svg'));
+    </script>
+</head>
+<body>
+    <svg id="svg" x="0" y="0" width="300" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
+      <linearGradient x1="45" y1="345" x2="255" y2="555" gradientUnits="userSpaceOnUse" id="gradient-2">
+        <stop offset="0" stop-color="rgb(255, 255, 0)" stop-opacity="0"></stop>
+        <stop offset="0.5" stop-color="rgb(255, 0, 0)"></stop>
+        <stop offset="1" stop-color="rgb(0, 0, 0)"></stop>
+      </linearGradient>
+      <radialGradient cx="150" cy="150" r="120" gradientUnits="userSpaceOnUse" id="gradient-1">
+        <stop offset="0" stop-color="rgb(255, 255, 0)" stop-opacity="0"></stop>
+        <stop offset="0.5" stop-color="rgb(255, 0, 0)"></stop>
+        <stop offset="1" stop-color="rgb(0, 0, 0)"></stop>
+      </radialGradient>
+      <g fill="none" stroke="rgb(0, 0, 0)" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0">
+        <circle cx="150" cy="150" r="120" fill="url(#gradient-1)"></circle>
+        <rect x="45" y="345" width="210" height="210" transform="rotate(45,150,450)" fill="url(#gradient-2)"></rect>
+      </g>
+    </svg>
+    <canvas id="canvas" width="300" height="600"></canvas>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        var test = require('tape');
+var concat = require('concat-stream');
+var staticModule = require('../');
+var fs = require('fs');
+var path = require('path');
+
+test('nested object', function (t) {
+    t.plan(3);
+    
+    var expected = [ 12, 555 ];
+    var sm = staticModule({
+        beep: {
+            x: { y: { z: 4 } },
+            f: { g: { h: function (n) { return n * 111 } } }
+        }
+    });
+    readStream('source.js').pipe(sm).pipe(concat(function (body) {
+        Function(['console'],body)({ log: log });
+        t.equal(
+            body.toString('utf8'),
+            '\nconsole.log(4 * 3);\nconsole.log(555);\n'
+        );
+        function log (msg) { t.equal(msg, expected.shift()) }
+    }));
+});
+
+function readStream (file) {
+    return fs.createReadStream(path.join(__dirname, 'nested', file));
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   module.exports={C:{"40":0.01262,"41":0.00315,"43":0.00631,"47":0.01262,"48":0.01262,"49":0.00315,"50":0.00315,"51":0.00631,"52":0.07254,"56":0.00946,"62":0.00315,"65":0.00315,"67":0.00946,"68":0.00315,"72":0.01262,"77":0.00631,"78":0.01262,"80":0.00631,"81":0.00631,"82":0.00315,"83":0.00631,"84":0.00946,"85":0.00631,"86":0.00315,"87":0.00631,"88":0.00946,"89":0.02839,"90":0.04416,"91":0.03154,"92":0.02208,"93":0.47941,"94":2.78498,"95":0.24601,_:"2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 42 44 45 46 53 54 55 57 58 59 60 61 63 64 66 69 70 71 73 74 75 76 79 96 3.5 3.6"},D:{"11":0.01577,"29":0.00315,"38":0.00631,"43":0.00315,"44":0.01577,"49":0.05362,"50":0.00631,"55":0.00315,"56":0.00946,"61":0.02208,"62":0.00315,"63":0.00631,"64":0.01262,"65":0.00315,"69":0.01892,"70":0.00631,"71":0.00946,"72":0.01262,"73":0.01577,"74":0.00946,"75":0.00315,"76":0.00631,"77":0.00631,"78":0.00631,"79":0.03785,"80":0.14193,"81":0.01892,"83":0.02839,"84":0.03469,"85":0.02839,"86":0.09462,"87":0.2744,"88":0.03154,"89":0.03785,"90":0.03154,"91":0.06623,"92":0.09777,"93":0.10408,"94":0.36271,"95":10.37666,"96":6.53193,"97":0.05046,"98":0.00946,_:"4 5 6 7 8 9 10 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 30 31 32 33 34 35 36 37 39 40 41 42 45 46 47 48 51 52 53 54 57 58 59 60 66 67 68 99"},F:{"36":0.00631,"68":0.00315,"79":0.02523,"80":0.41317,"81":0.17347,_:"9 11 12 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 60 62 63 64 65 66 67 69 70 71 72 73 74 75 76 77 78 9.5-9.6 10.5 10.6 11.1 11.5 11.6 12.1","10.0-10.1":0},B:{"12":0.00946,"16":0.00315,"18":0.01892,"84":0.00631,"89":0.00631,"91":0.00315,"92":0.00946,"93":0.00631,"94":0.01892,"95":0.84843,"96":0.36902,_:"13 14 15 17 79 80 81 83 85 86 87 88 90"},E:{"4":0,"13":0.00631,"14":0.01892,"15":0.03469,_:"0 5 6 7 8 9 10 11 12 3.1 3.2 5.1 6.1 7.1 9.1 10.1 11.1"

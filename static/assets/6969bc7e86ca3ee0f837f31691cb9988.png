@@ -1,0 +1,1651 @@
+<img align="right" alt="Ajv logo" width="160" src="http://epoberezkin.github.io/ajv/images/ajv_logo.png">
+
+# Ajv: Another JSON Schema Validator
+
+The fastest JSON Schema validator for Node.js and browser. Supports draft-04/06/07.
+
+
+[![Build Status](https://travis-ci.org/epoberezkin/ajv.svg?branch=master)](https://travis-ci.org/epoberezkin/ajv)
+[![npm](https://img.shields.io/npm/v/ajv.svg)](https://www.npmjs.com/package/ajv)
+[![npm downloads](https://img.shields.io/npm/dm/ajv.svg)](https://www.npmjs.com/package/ajv)
+[![Coverage Status](https://coveralls.io/repos/epoberezkin/ajv/badge.svg?branch=master&service=github)](https://coveralls.io/github/epoberezkin/ajv?branch=master)
+[![Greenkeeper badge](https://badges.greenkeeper.io/epoberezkin/ajv.svg)](https://greenkeeper.io/)
+[![Gitter](https://img.shields.io/gitter/room/ajv-validator/ajv.svg)](https://gitter.im/ajv-validator/ajv)
+
+
+## Using version 6
+
+[JSON Schema draft-07](http://json-schema.org/latest/json-schema-validation.html) is published.
+
+[Ajv version 6.0.0](https://github.com/epoberezkin/ajv/releases/tag/v6.0.0) that supports draft-07 is released. It may require either migrating your schemas or updating your code (to continue using draft-04 and v5 schemas, draft-06 schemas will be supported without changes).
+
+__Please note__: To use Ajv with draft-06 schemas you need to explicitly add the meta-schema to the validator instance:
+
+```javascript
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+```
+
+To use Ajv with draft-04 schemas in addition to explicitly adding meta-schema you also need to use option schemaId:
+
+```javascript
+var ajv = new Ajv({schemaId: 'id'});
+// If you want to use both draft-04 and draft-06/07 schemas:
+// var ajv = new Ajv({schemaId: 'auto'});
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
+```
+
+
+## Contents
+
+- [Performance](#performance)
+- [Features](#features)
+- [Getting started](#getting-started)
+- [Frequently Asked Questions](https://github.com/epoberezkin/ajv/blob/master/FAQ.md)
+- [Using in browser](#using-in-browser)
+- [Command line interface](#command-line-interface)
+- Validation
+  - [Keywords](#validation-keywords)
+  - [Annotation keywords](#annotation-keywords)
+  - [Formats](#formats)
+  - [Combining schemas with $ref](#ref)
+  - [$data reference](#data-reference)
+  - NEW: [$merge and $patch keywords](#merge-and-patch-keywords)
+  - [Defining custom keywords](#defining-custom-keywords)
+  - [Asynchronous schema compilation](#asynchronous-schema-compilation)
+  - [Asynchronous validation](#asynchronous-validation)
+- Modifying data during validation
+  - [Filtering data](#filtering-data)
+  - [Assigning defaults](#assigning-defaults)
+  - [Coercing data types](#coercing-data-types)
+- API
+  - [Methods](#api)
+  - [Options](#options)
+  - [Validation errors](#validation-errors)
+- [Plugins](#plugins)
+- [Related packages](#related-packages)
+- [Packages using Ajv](#some-packages-using-ajv)
+- [Tests, Contributing, History, License](#tests)
+
+
+## Performance
+
+Ajv generates code using [doT templates](https://github.com/olado/doT) to turn JSON Schemas into super-fast validation functions that are efficient for v8 optimization.
+
+Currently Ajv is the fastest and the most standard compliant validator according to these benchmarks:
+
+- [json-schema-benchmark](https://github.com/ebdrup/json-schema-benchmark) - 50% faster than the second place
+- [jsck benchmark](https://github.com/pandastrike/jsck#benchmarks) - 20-190% faster
+- [z-schema benchmark](https://rawgit.com/zaggino/z-schema/master/benchmark/results.html)
+- [themis benchmark](https://cdn.rawgit.com/playlyfe/themis/master/benchmark/results.html)
+
+
+Performance of different validators by [json-schema-benchmark](https://github.com/ebdrup/json-schema-benchmark):
+
+[![performance](https://chart.googleapis.com/chart?chxt=x,y&cht=bhs&chco=76A4FB&chls=2.0&chbh=32,4,1&chs=600x416&chxl=-1:|djv|ajv|json-schema-validator-generator|jsen|is-my-json-valid|themis|z-schema|jsck|skeemas|json-schema-library|tv4&chd=t:100,98,72.1,66.8,50.1,15.1,6.1,3.8,1.2,0.7,0.2)](https://github.com/ebdrup/json-schema-benchmark/blob/master/README.md#performance)
+
+
+## Features
+
+- Ajv implements full JSON Schema [draft-06/07](http://json-schema.org/) and draft-04 standards:
+  - all validation keywords (see [JSON Schema validation keywords](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md))
+  - full support of remote refs (remote schemas have to be added with `addSchema` or compiled to be available)
+  - support of circular references between schemas
+  - correct string lengths for strings with unicode pairs (can be turned off)
+  - [formats](#formats) defined by JSON Schema draft-07 standard and custom formats (can be turned off)
+  - [validates schemas against meta-schema](#api-validateschema)
+- supports [browsers](#using-in-browser) and Node.js 0.10-8.x
+- [asynchronous loading](#asynchronous-schema-compilation) of referenced schemas during compilation
+- "All errors" validation mode with [option allErrors](#options)
+- [error messages with parameters](#validation-errors) describing error reasons to allow creating custom error messages
+- i18n error messages support with [ajv-i18n](https://github.com/epoberezkin/ajv-i18n) package
+- [filtering data](#filtering-data) from additional properties
+- [assigning defaults](#assigning-defaults) to missing properties and items
+- [coercing data](#coercing-data-types) to the types specified in `type` keywords
+- [custom keywords](#defining-custom-keywords)
+- draft-06/07 keywords `const`, `contains`, `propertyNames` and `if/then/else`
+- draft-06 boolean schemas (`true`/`false` as a schema to always pass/fail).
+- keywords `switch`, `patternRequired`, `formatMaximum` / `formatMinimum` and `formatExclusiveMaximum` / `formatExclusiveMinimum` from [JSON Schema extension proposals](https://github.com/json-schema/json-schema/wiki/v5-Proposals) with [ajv-keywords](https://github.com/epoberezkin/ajv-keywords) package
+- [$data reference](#data-reference) to use values from the validated data as values for the schema keywords
+- [asynchronous validation](#asynchronous-validation) of custom formats and keywords
+
+Currently Ajv is the only validator that passes all the tests from [JSON Schema Test Suite](https://github.com/json-schema/JSON-Schema-Test-Suite) (according to [json-schema-benchmark](https://github.com/ebdrup/json-schema-benchmark), apart from the test that requires that `1.0` is not an integer that is impossible to satisfy in JavaScript).
+
+
+## Install
+
+```
+npm install ajv
+```
+
+
+## <a name="usage"></a>Getting started
+
+Try it in the Node.js REPL: https://tonicdev.com/npm/ajv
+
+
+The fastest validation call:
+
+```javascript
+var Ajv = require('ajv');
+var ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+var validate = ajv.compile(schema);
+var valid = validate(data);
+if (!valid) console.log(validate.errors);
+```
+
+or with less code
+
+```javascript
+// ...
+var valid = ajv.validate(schema, data);
+if (!valid) console.log(ajv.errors);
+// ...
+```
+
+or
+
+```javascript
+// ...
+var valid = ajv.addSchema(schema, 'mySchema')
+               .validate('mySchema', data);
+if (!valid) console.log(ajv.errorsText());
+// ...
+```
+
+See [API](#api) and [Options](#options) for more details.
+
+Ajv compiles schemas to functions and caches them in all cases (using schema serialized with [fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify) or a custom function as a key), so that the next time the same schema is used (not necessarily the same object instance) it won't be compiled again.
+
+The best performance is achieved when using compiled functions returned by `compile` or `getSchema` methods (there is no additional function call).
+
+__Please note__: every time a validation function or `ajv.validate` are called `errors` property is overwritten. You need to copy `errors` array reference to another variable if you want to use it later (e.g., in the callback). See [Validation errors](#validation-errors)
+
+
+## Using in browser
+
+You can require Ajv directly from the code you browserify - in this case Ajv will be a part of your bundle.
+
+If you need to use Ajv in several bundles you can create a separate UMD bundle using `npm run bundle` script (thanks to [siddo420](https://github.com/siddo420)).
+
+Then you need to load Ajv in the browser:
+```html
+<script src="ajv.min.js"></script>
+```
+
+This bundle can be used with different module systems; it creates global `Ajv` if no module system is found.
+
+The browser bundle is available on [cdnjs](https://cdnjs.com/libraries/ajv).
+
+Ajv is tested with these browsers:
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/epoberezkin.svg)](https://saucelabs.com/u/epoberezkin)
+
+__Please note__: some frameworks, e.g. Dojo, may redefine global require in such way that is not compatible with CommonJS module format. In such case Ajv bundle has to be loaded before the framework and then you can use global Ajv (see issue [#234](https://github.com/epoberezkin/ajv/issues/234)).
+
+
+## Command line interface
+
+CLI is available as a separate npm package [ajv-cli](https://github.com/jessedc/ajv-cli). It supports:
+
+- compiling JSON Schemas to test their validity
+- BETA: generating standalone module exporting a validation function to be used without Ajv (using [ajv-pack](https://github.com/epoberezkin/ajv-pack))
+- migrate schemas to draft-07 (using [json-schema-migrate](https://github.com/epoberezkin/json-schema-migrate))
+- validating data file(s) against JSON Schema
+- testing expected validity of data against JSON Schema
+- referenced schemas
+- custom meta-schemas
+- files in JSON and JavaScript format
+- all Ajv options
+- reporting changes in data after validation in [JSON-patch](https://tools.ietf.org/html/rfc6902) format
+
+
+## Validation keywords
+
+Ajv supports all validation keywords from draft-07 of JSON Schema standard:
+
+- [type](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#type)
+- [for numbers](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-numbers) - maximum, minimum, exclusiveMaximum, exclusiveMinimum, multipleOf
+- [for strings](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-strings) - maxLength, minLength, pattern, format
+- [for arrays](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-arrays) - maxItems, minItems, uniqueItems, items, additionalItems, [contains](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#contains)
+- [for objects](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-objects) - maxProperties, minProperties, required, properties, patternProperties, additionalProperties, dependencies, [propertyNames](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#propertynames)
+- [for all types](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-all-types) - enum, [const](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#const)
+- [compound keywords](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#compound-keywords) - not, oneOf, anyOf, allOf, [if/then/else](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#ifthenelse)
+
+With [ajv-keywords](https://github.com/epoberezkin/ajv-keywords) package Ajv also supports validation keywords from [JSON Schema extension proposals](https://github.com/json-schema/json-schema/wiki/v5-Proposals) for JSON Schema standard:
+
+- [patternRequired](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#patternrequired-proposed) - like `required` but with patterns that some property should match.
+- [formatMaximum, formatMinimum, formatExclusiveMaximum, formatExclusiveMinimum](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#formatmaximum--formatminimum-and-exclusiveformatmaximum--exclusiveformatminimum-proposed) - setting limits for date, time, etc.
+
+See [JSON Schema validation keywords](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md) for more details.
+
+
+## Annotation keywords
+
+JSON Schema specification defines several annotation keywords that describe schema itself but do not perform any validation.
+
+- `title` and `description`: information about the data represented by that schema
+- `$comment` (NEW in draft-07): information for developers. WiThe MIT License (MIT)
+
+Copyright (c) Feross Aboukhadijeh
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # ms
+
+[![Build Status](https://travis-ci.org/zeit/ms.svg?branch=master)](https://travis-ci.org/zeit/ms)
+[![Slack Channel](http://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
+
+Use this package to easily convert various time formats to milliseconds.
+
+## Examples
+
+```js
+ms('2 days')  // 172800000
+ms('1d')      // 86400000
+ms('10h')     // 36000000
+ms('2.5 hrs') // 9000000
+ms('2h')      // 7200000
+ms('1m')      // 60000
+ms('5s')      // 5000
+ms('1y')      // 31557600000
+ms('100')     // 100
+```
+
+### Convert from milliseconds
+
+```js
+ms(60000)             // "1m"
+ms(2 * 60000)         // "2m"
+ms(ms('10 hours'))    // "10h"
+```
+
+### Time format written-out
+
+```js
+ms(60000, { long: true })             // "1 minute"
+ms(2 * 60000, { long: true })         // "2 minutes"
+ms(ms('10 hours'), { long: true })    // "10 hours"
+```
+
+## Features
+
+- Works both in [node](https://nodejs.org) and in the browser.
+- If a number is supplied to `ms`, a string with a unit is returned.
+- If a string that contains the number is supplied, it returns it as a number (e.g.: it returns `100` for `'100'`).
+- If you pass a string with a number and a valid unit, the number of equivalent ms is returned.
+
+## Caught a bug?
+
+1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
+2. Link the package to the global module directory: `npm link`
+3. Within the module you want to test your local development instance of ms, just link it to the dependencies: `npm link ms`. Instead of the default one from npm, node will now use your clone of ms!
+
+As always, you can run the tests using: `npm test`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       /vnd.hbci": {
+    "source": "iana",
+    "extensions": ["hbci"]
+  },
+  "application/vnd.hc+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hcl-bireports": {
+    "source": "iana"
+  },
+  "application/vnd.hdt": {
+    "source": "iana"
+  },
+  "application/vnd.heroku+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hhe.lesson-player": {
+    "source": "iana",
+    "extensions": ["les"]
+  },
+  "application/vnd.hp-hpgl": {
+    "source": "iana",
+    "extensions": ["hpgl"]
+  },
+  "application/vnd.hp-hpid": {
+    "source": "iana",
+    "extensions": ["hpid"]
+  },
+  "application/vnd.hp-hps": {
+    "source": "iana",
+    "extensions": ["hps"]
+  },
+  "application/vnd.hp-jlyt": {
+    "source": "iana",
+    "extensions": ["jlt"]
+  },
+  "application/vnd.hp-pcl": {
+    "source": "iana",
+    "extensions": ["pcl"]
+  },
+  "application/vnd.hp-pclxl": {
+    "source": "iana",
+    "extensions": ["pclxl"]
+  },
+  "application/vnd.httphone": {
+    "source": "iana"
+  },
+  "application/vnd.hydrostatix.sof-data": {
+    "source": "iana",
+    "extensions": ["sfd-hdstx"]
+  },
+  "application/vnd.hyper+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hyper-item+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hyperdrive+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.hzn-3d-crossword": {
+    "source": "iana"
+  },
+  "application/vnd.ibm.afplinedata": {
+    "source": "iana"
+  },
+  "application/vnd.ibm.electronic-media": {
+    "source": "iana"
+  },
+  "application/vnd.ibm.minipay": {
+    "source": "iana",
+    "extensions": ["mpy"]
+  },
+  "application/vnd.ibm.modcap": {
+    "source": "iana",
+    "extensions": ["afp","listafp","list3820"]
+  },
+  "application/vnd.ibm.rights-management": {
+    "source": "iana",
+    "extensions": ["irm"]
+  },
+  "application/vnd.ibm.secure-container": {
+    "source": "iana",
+    "extensions": ["sc"]
+  },
+  "application/vnd.iccprofile": {
+    "source": "iana",
+    "extensions": ["icc","icm"]
+  },
+  "application/vnd.ieee.1905": {
+    "source": "iana"
+  },
+  "application/vnd.igloader": {
+    "source": "iana",
+    "extensions": ["igl"]
+  },
+  "application/vnd.imagemeter.folder+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/vnd.imagemeter.image+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/vnd.immervision-ivp": {
+    "source": "iana",
+    "extensions": ["ivp"]
+  },
+  "application/vnd.immervision-ivu": {
+    "source": "iana",
+    "extensions": ["ivu"]
+  },
+  "application/vnd.ims.imsccv1p1": {
+    "source": "iana"
+  },
+  "application/vnd.ims.imsccv1p2": {
+    "source": "iana"
+  },
+  "application/vnd.ims.imsccv1p3": {
+    "source": "iana"
+  },
+  "application/vnd.ims.lis.v2.result+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolconsumerprofile+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolproxy+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolproxy.id+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolsettings+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ims.lti.v2.toolsettings.simple+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.informedcontrol.rms+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.informix-visionary": {
+    "source": "iana"
+  },
+  "application/vnd.infotech.project": {
+    "source": "iana"
+  },
+  "application/vnd.infotech.project+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.innopath.wamp.notification": {
+    "source": "iana"
+  },
+  "application/vnd.insors.igm": {
+    "source": "iana",
+    "extensions": ["igm"]
+  },
+  "application/vnd.intercon.formnet": {
+    "source": "iana",
+    "extensions": ["xpw","xpx"]
+  },
+  "application/vnd.intergeo": {
+    "source": "iana",
+    "extensions": ["i2g"]
+  },
+  "application/vnd.intertrust.digibox": {
+    "source": "iana"
+  },
+  "application/vnd.intertrust.nncp": {
+    "source": "iana"
+  },
+  "application/vnd.intu.qbo": {
+    "source": "iana",
+    "extensions": ["qbo"]
+  },
+  "application/vnd.intu.qfx": {
+    "source": "iana",
+    "extensions": ["qfx"]
+  },
+  "application/vnd.iptc.g2.catalogitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.conceptitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.knowledgeitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.newsitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.newsmessage+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.packageitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.iptc.g2.planningitem+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ipunplugged.rcprofile": {
+    "source": "iana",
+    "extensions": ["rcprofile"]
+  },
+  "application/vnd.irepository.package+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["irp"]
+  },
+  "application/vnd.is-xpr": {
+    "source": "iana",
+    "extensions": ["xpr"]
+  },
+  "application/vnd.isac.fcs": {
+    "source": "iana",
+    "extensions": ["fcs"]
+  },
+  "application/vnd.iso11783-10+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/vnd.jam": {
+    "source": "iana",
+    "extensions": ["jam"]
+  },
+  "application/vnd.japannet-directory-service": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-jpnstore-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-payment-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-registration": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-registration-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-setstore-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-verification": {
+    "source": "iana"
+  },
+  "application/vnd.japannet-verification-wakeup": {
+    "source": "iana"
+  },
+  "application/vnd.jcp.javame.midlet-rms": {
+    "source": "iana",
+    "extensions": ["rms"]
+  },
+  "application/vnd.jisp": {
+    "source": "iana",
+    "extensions": ["jisp"]
+  },
+  "application/vnd.joost.joda-archive": {
+    "source": "iana",
+    "extensions": ["joda"]
+  },
+  "application/vnd.jsk.isdn-ngn": {
+    "source": "iana"
+  },
+  "application/vnd.kahootz": {
+    "source": "iana",
+    "extensions": ["ktz","ktr"]
+  },
+  "application/vnd.kde.karbon": {
+    "source": "iana",
+    "extensions": ["karbon"]
+  },
+  "application/vnd.kde.kchart": {
+    "source": "iana",
+    "extensions": ["chrt"]
+  },
+  "application/vnd.kde.kformula": {
+    "source": "iana",
+    "extensions": ["kfo"]
+  },
+  "application/vnd.kde.kivio": {
+    "source": "iana",
+    "extensions": ["flw"]
+  },
+  "application/vnd.kde.kontour": {
+    "source": "iana",
+    "extensions": ["kon"]
+  },
+  "application/vnd.kde.kpresenter": {
+    "source": "iana",
+    "extensions": ["kpr","kpt"]
+  },
+  "application/vnd.kde.kspread": {
+    "source": "iana",
+    "extensions": ["ksp"]
+  },
+  "application/vnd.kde.kword": {
+    "source": "iana",
+    "extensions": ["kwd","kwt"]
+  },
+  "application/vnd.kenameaapp": {
+    "source": "iana",
+    "extensions": ["htke"]
+  },
+  "application/vnd.kidspiration": {
+    "source": "iana",
+    "extensions": ["kia"]
+  },
+  "application/vnd.kinar": {
+    "source": "iana",
+    "extensions": ["kne","knp"]
+  },
+  "application/vnd.koan": {
+    "source": "iana",
+    "extensions": ["skp","skd","skt","skm"]
+  },
+  "application/vnd.kodak-descriptor": {
+    "source": "iana",
+    "extensions": ["sse"]
+  },
+  "application/vnd.las": {
+    "source": "iana"
+  },
+  "application/vnd.las.las+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.las.las+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["lasxml"]
+  },
+  "application/vnd.laszip": {
+    "source": "iana"
+  },
+  "application/vnd.leap+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.liberty-request+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.llamagraphics.life-balance.desktop": {
+    "source": "iana",
+    "extensions": ["lbd"]
+  },
+  "application/vnd.llamagraphics.life-balance.exchange+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["lbe"]
+  },
+  "application/vnd.logipipe.circuit+zip": {
+    "source": "iana",
+    "compressible": false
+  },
+  "application/vnd.loom": {
+    "source": "iana"
+  },
+  "application/vnd.lotus-1-2-3": {
+    "source": "iana",
+    "extensions": ["123"]
+  },
+  "application/vnd.lotus-approach": {
+    "source": "iana",
+    "extensions": ["apr"]
+  },
+  "application/vnd.lotus-freelance": {
+    "source": "iana",
+    "extensions": ["pre"]
+  },
+  "application/vnd.lotus-notes": {
+    "source": "iana",
+    "extensions": ["nsf"]
+  },
+  "application/vnd.lotus-organizer": {
+    "source": "iana",
+    "extensions": ["org"]
+  },
+  "application/vnd.lotus-screencam": {
+    "source": "iana",
+    "extensions": ["scm"]
+  },
+  "application/vnd.lotus-wordpro": {
+    "source": "iana",
+    "extensions": ["lwp"]
+  },
+  "application/vnd.macports.portpkg": {
+    "source": "iana",
+    "extensions": ["portpkg"]
+  },
+  "application/vnd.mapbox-vector-tile": {
+    "source": "iana"
+  },
+  "application/vnd.marlin.drm.actiontoken+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.marlin.drm.conftoken+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.marlin.drm.license+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.marlin.drm.mdcf": {
+    "source": "iana"
+  },
+  "application/vnd.mason+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.maxmind.maxmind-db": {
+    "source": "iana"
+  },
+  "application/vnd.mcd": {
+    "source": "iana",
+    "extensions": ["mcd"]
+  },
+  "application/vnd.medcalcdata": {
+    "source": "iana",
+    "extensions": ["mc1"]
+  },
+  "application/vnd.mediastation.cdkey": {
+    "source": "iana",
+    "extensions": ["cdkey"]
+  },
+  "application/vnd.meridian-slingshot": {
+    "source": "iana"
+  },
+  "application/vnd.mfer": {
+    "source": "iana",
+    "extensions": ["mwf"]
+  },
+  "application/vnd.mfmp": {
+    "source": "iana",
+    "extensions": ["mfm"]
+  },
+  "application/vnd.micro+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.micrografx.flo": {
+    "source": "iana",
+    "extensions": ["flo"]
+  },
+  "application/vnd.micrografx.igx": {
+    "source": "iana",
+    "extensions": ["igx"]
+  },
+  "application/vnd.microsoft.portable-executable": {
+    "source": "iana"
+  },
+  "application/vnd.microsoft.windows.thumbnail-cache": {
+    "source": "iana"
+  },
+  "application/vnd.miele+json": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.mif": {
+    "source": "iana",
+    "extensions": ["mif"]
+  },
+  "application/vnd.minisoft-hp3000-save": {
+    "source": "iana"
+  },
+  "application/vnd.mitsubishi.misty-guard.trustweb": {
+    "source": "iana"
+  },
+  "application/vnd.mobius.daf": {
+    "source": "iana",
+    "extensions": ["daf"]
+  },
+  "application/vnd.mobius.dis": {
+    "source": "iana",
+    "extensions": ["dis"]
+  },
+  "application/vnd.mobius.mbk": {
+    "source": "iana",
+    "extensions": ["mbk"]
+  },
+  "application/vnd.mobius.mqy": {
+    "source": "iana",
+    "extensions": ["mqy"]
+  },
+  "application/vnd.mobius.msl": {
+    "source": "iana",
+    "extensions": ["msl"]
+  },
+  "application/vnd.mobius.plc": {
+    "source": "iana",
+    "extensions": ["plc"]
+  },
+  "application/vnd.mobius.txf": {
+    "source": "iana",
+    "extensions": ["txf"]
+  },
+  "application/vnd.mophun.application": {
+    "source": "iana",
+    "extensions": ["mpn"]
+  },
+  "application/vnd.mophun.certificate": {
+    "source": "iana",
+    "extensions": ["mpc"]
+  },
+  "application/vnd.motorola.flexsuite": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.adsi": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.fis": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.gotap": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.kmr": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.ttc": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.flexsuite.wem": {
+    "source": "iana"
+  },
+  "application/vnd.motorola.iprm": {
+    "source": "iana"
+  },
+  "application/vnd.mozilla.xul+xml": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["xul"]
+  },
+  "application/vnd.ms-3mfdocument": {
+    "source": "iana"
+  },
+  "application/vnd.ms-artgalry": {
+    "source": "iana",
+    "extensions": ["cil"]
+  },
+  "application/vnd.ms-asf": {
+    "source": "iana"
+  },
+  "application/vnd.ms-cab-compressed": {
+    "source": "iana",
+    "extensions": ["cab"]
+  },
+  "application/vnd.ms-color.iccprofile": {
+    "source": "apache"
+  },
+  "application/vnd.ms-excel": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["xls","xlm","xla","xlc","xlt","xlw"]
+  },
+  "application/vnd.ms-excel.addin.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["xlam"]
+  },
+  "application/vnd.ms-excel.sheet.binary.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["xlsb"]
+  },
+  "application/vnd.ms-excel.sheet.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["xlsm"]
+  },
+  "application/vnd.ms-excel.template.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["xltm"]
+  },
+  "application/vnd.ms-fontobject": {
+    "source": "iana",
+    "compressible": true,
+    "extensions": ["eot"]
+  },
+  "application/vnd.ms-htmlhelp": {
+    "source": "iana",
+    "extensions": ["chm"]
+  },
+  "application/vnd.ms-ims": {
+    "source": "iana",
+    "extensions": ["ims"]
+  },
+  "application/vnd.ms-lrm": {
+    "source": "iana",
+    "extensions": ["lrm"]
+  },
+  "application/vnd.ms-office.activex+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ms-officetheme": {
+    "source": "iana",
+    "extensions": ["thmx"]
+  },
+  "application/vnd.ms-opentype": {
+    "source": "apache",
+    "compressible": true
+  },
+  "application/vnd.ms-outlook": {
+    "compressible": false,
+    "extensions": ["msg"]
+  },
+  "application/vnd.ms-package.obfuscated-opentype": {
+    "source": "apache"
+  },
+  "application/vnd.ms-pki.seccat": {
+    "source": "apache",
+    "extensions": ["cat"]
+  },
+  "application/vnd.ms-pki.stl": {
+    "source": "apache",
+    "extensions": ["stl"]
+  },
+  "application/vnd.ms-playready.initiator+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ms-powerpoint": {
+    "source": "iana",
+    "compressible": false,
+    "extensions": ["ppt","pps","pot"]
+  },
+  "application/vnd.ms-powerpoint.addin.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["ppam"]
+  },
+  "application/vnd.ms-powerpoint.presentation.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["pptm"]
+  },
+  "application/vnd.ms-powerpoint.slide.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["sldm"]
+  },
+  "application/vnd.ms-powerpoint.slideshow.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["ppsm"]
+  },
+  "application/vnd.ms-powerpoint.template.macroenabled.12": {
+    "source": "iana",
+    "extensions": ["potm"]
+  },
+  "application/vnd.ms-printdevicecapabilities+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ms-printing.printticket+xml": {
+    "source": "apache",
+    "compressible": true
+  },
+  "application/vnd.ms-printschematicket+xml": {
+    "source": "iana",
+    "compressible": true
+  },
+  "application/vnd.ms-project": {
+    "source": "iana",
+    "extensions": ["mpp","mpt"]
+  },
+  "application/vnd.ms-tnef": {
+    "source": "iana"
+  },
+  "application/vnd.ms-windows.devicepairing": {
+    "source": "iana"
+  },
+  "application/vnd.ms-windows.nwprinting.oob": {
+    "source": "iana"
+  },
+  "application/vnd.ms-windows.printerpairing": {
+    "source": "iana"
+  },
+  "application/vnd.ms-windows.wsd.oob": {
+    "source": "iana"
+  },
+  "application/vnd.ms-wmdrm.lic-chlg-req": {
+    "source": "iana"
+  },
+ 'use strict'
+
+/**
+ * Expose `arrayFlatten`.
+ */
+module.exports = arrayFlatten
+
+/**
+ * Recursive flatten function with depth.
+ *
+ * @param  {Array}  array
+ * @param  {Array}  result
+ * @param  {Number} depth
+ * @return {Array}
+ */
+function flattenWithDepth (array, result, depth) {
+  for (var i = 0; i < array.length; i++) {
+    var value = array[i]
+
+    if (depth > 0 && Array.isArray(value)) {
+      flattenWithDepth(value, result, depth - 1)
+    } else {
+      result.push(value)
+    }
+  }
+
+  return result
+}
+
+/**
+ * Recursive flatten function. Omitting depth is slightly faster.
+ *
+ * @param  {Array} array
+ * @param  {Array} result
+ * @return {Array}
+ */
+function flattenForever (array, result) {
+  for (var i = 0; i < array.length; i++) {
+    var value = array[i]
+
+    if (Array.isArray(value)) {
+      flattenForever(value, result)
+    } else {
+      result.push(value)
+    }
+  }
+
+  return result
+}
+
+/**
+ * Flatten an array, with the ability to define a depth.
+ *
+ * @param  {Array}  array
+ * @param  {Number} depth
+ * @return {Array}
+ */
+function arrayFlatten (array, depth) {
+  if (depth == null) {
+    return flattenForever(array, [])
+  }
+
+  return flattenWithDepth(array, [], depth)
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     'use strict';
+
+var cp = require('child_process');
+var parse = require('./lib/parse');
+var enoent = require('./lib/enoent');
+
+var cpSpawnSync = cp.spawnSync;
+
+function spawn(command, args, options) {
+    var parsed;
+    var spawned;
+
+    // Parse the arguments
+    parsed = parse(command, args, options);
+
+    // Spawn the child process
+    spawned = cp.spawn(parsed.command, parsed.args, parsed.options);
+
+    // Hook into child process "exit" event to emit an error if the command
+    // does not exists, see: https://github.com/IndigoUnited/node-cross-spawn/issues/16
+    enoent.hookChildProcess(spawned, parsed);
+
+    return spawned;
+}
+
+function spawnSync(command, args, options) {
+    var parsed;
+    var result;
+
+    if (!cpSpawnSync) {
+        try {
+            cpSpawnSync = require('spawn-sync');  // eslint-disable-line global-require
+        } catch (ex) {
+            throw new Error(
+                'In order to use spawnSync on node 0.10 or older, you must ' +
+                'install spawn-sync:\n\n' +
+                '  npm install spawn-sync --save'
+            );
+        }
+    }
+
+    // Parse the arguments
+    parsed = parse(command, args, options);
+
+    // Spawn the child process
+    result = cpSpawnSync(parsed.command, parsed.args, parsed.options);
+
+    // Analyze if the command does not exists, see: https://github.com/IndigoUnited/node-cross-spawn/issues/16
+    result.error = result.error || enoent.verifyENOENTSync(result.status, parsed);
+
+    return result;
+}
+
+module.exports = spawn;
+module.exports.spawn = spawn;
+module.exports.sync = spawnSync;
+
+module.exports._parse = parse;
+module.exports._enoent = enoent;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   # ansi-regex [![Build Status](https://travis-ci.org/chalk/ansi-regex.svg?branch=master)](https://travis-ci.org/chalk/ansi-regex)
+
+> Regular expression for matching [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code)
+
+
+## Install
+
+```
+$ npm install ansi-regex
+```
+
+
+## Usage
+
+```js
+const ansiRegex = require('ansi-regex');
+
+ansiRegex().test('\u001B[4mcake\u001B[0m');
+//=> true
+
+ansiRegex().test('cake');
+//=> false
+
+'\u001B[4mcake\u001B[0m'.match(ansiRegex());
+//=> ['\u001B[4m', '\u001B[0m']
+```
+
+
+## FAQ
+
+### Why do you test for codes not in the ECMA 48 standard?
+
+Some of the codes we run as a test are codes that we acquired finding various lists of non-standard or manufacturer specific codes. We test for both standard and non-standard codes, as most of them follow the same or similar format and can be safely matched in strings without the risk of removing actual string content. There are a few non-standard control codes that do not follow the traditional format (i.e. they end in numbers) thus forcing us to exclude them from the test because we cannot reliably match them.
+
+On the historical side, those ECMA standards were established in the early 90's whereas the VT100, for example, was designed in the mid/late 70's. At that point in time, control codes were still pretty ungoverned and engineers used them for a multitude of things, namely to activate hardware ports that may have been proprietary. Somewhere else you see a similar 'anarchy' of codes is in the x86 architecture for processors; there are a ton of "interrupts" that can mean different things on certain brands of processors, most of which have been phased out.
+
+
+## Maintainers
+
+- [Sindre Sorhus](https://github.com/sindresorhus)
+- [Josh Junon](https://github.com/qix-)
+
+
+## License
+
+MIT
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      // @flow
+'use strict'
+var parse = require('format-message-parse')
+var interpret = require('format-message-interpret')
+var plurals = require('format-message-interpret/plurals')
+var lookupClosestLocale = require('lookup-closest-locale')
+var origFormats = require('format-message-formats')
+
+/*::
+import type { Types } from 'format-message-interpret'
+type Locale = string
+type Locales = Locale | Locale[]
+type Message = string | {|
+  id?: string,
+  default: string,
+  description?: string
+|}
+type Translations = { [string]: ?{ [string]: string | Translation } }
+type Translation = {
+  message: string,
+  format?: (args?: Object) => string,
+  toParts?: (args?: Object) => any[],
+}
+type Replacement = ?string | (string, string, locales?: Locales) => ?string
+type GenerateId = (string) => string
+type MissingTranslation = 'ignore' | 'warning' | 'error'
+type FormatObject = { [string]: * }
+type Options = {
+  locale?: Locales,
+  translations?: ?Translations,
+  generateId?: GenerateId,
+  missingReplacement?: Replacement,
+  missingTranslation?: MissingTranslation,
+  formats?: {
+    number?: FormatObject,
+    date?: FormatObject,
+    time?: FormatObject
+  },
+  types?: Types
+}
+type Setup = {|
+  locale: Locales,
+  translations: Translations,
+  generateId: GenerateId,
+  missingReplacement: Replacement,
+  missingTranslation: MissingTranslation,
+  formats: {
+    number: FormatObject,
+    date: FormatObject,
+    time: FormatObject
+  },
+  types: Types
+|}
+type FormatMessage = {
+  (msg: Message, args?: Object, locales?: Locales): string,
+  rich (msg: Message, args?: Object, locales?: Locales): any[],
+  setup (opt?: Options): Setup,
+  number (value: number, style?: string, locales?: Locales): string,
+  date (value: number | Date, style?: string, locales?: Locales): string,
+  time (value: number | Date, style?: string, locales?: Locales): string,
+  select (value: any, options: Object): any,
+  custom (placeholder: any[], locales: Locales, value: any, args: Object): any,
+  plural (value: number, offset: any, options: any, locale: any): any,
+  selectordinal (value: number, offset: any, options: any, locale: any): any,
+  namespace (): FormatMessage
+}
+*/
+
+function assign/*:: <T: Object> */ (target/*: T */, source/*: Object */) {
+  Object.keys(source).forEach(function (key) { target[key] = source[key] })
+  return target
+}
+
+function namespace ()/*: FormatMessage */ {
+  var formats = assign({}, origFormats)
+  var currentLocales/*: Locales */ = 'en'
+  var translations/*: Translations */ = {}
+  var generateId/*: GenerateId */ = function (pattern) { return pattern }
+  var missingReplacement/*: Replacement */ = null
+  var missingTranslation/*: MissingTranslation */ = 'warning'
+  var types/*: Types */ = {}
+
+  function formatMessage (msg/*: Message */, args/*:: ?: Object */, locales/*:: ?: Locales */) {
+    var pattern = typeof msg === 'string' ? msg : msg.default
+    var id = (typeof msg === 'object' && msg.id) || generateId(pattern)
+    var translated = translate(pattern, id, locales || currentLocales)
+    var format = translated.format || (
+      translated.format = interpret(parse(translated.message), locales || currentLocales, types)
+    )
+    return format(args)
+  }
+
+  formatMessage.rich = function rich (msg/*: Message */, args/*:: ?: Object */, locales/*:: ?: Locales */) {
+    var pattern = typeof msg === 'string' ? msg : msg.default
+    var id = (typeof msg === 'object' && msg.id) || generateId(pattern)
+    var translated = translate(pattern, id, locales || currentLocales)
+    var format = translated.toParts || (
+      translated.toParts = interpret.toParts(parse(pattern, { tagsType: tagsType }), locales || currentLocales, types)
+    )
+    return format(args)
+  }
+
+  var tagsType = '<>'
+  function richType (node/*: any[] */, locales/*: Locales */) {
+    var style = node[2]
+    return function (fn, args) {
+      var props = typeof style === 'object' ? mapObject(style, args) : style
+      return typeof fn === 'function' ? fn(props) : fn
+    }
+  }
+  types[tagsType] = richType
+
+  function mapObject (object/* { [string]: (args?: Object) => any } */, args/*: ?Object */'use strict';
+
+var traverse = module.exports = function (schema, opts, cb) {
+  // Legacy support for v0.3.1 and earlier.
+  if (typeof opts == 'function') {
+    cb = opts;
+    opts = {};
+  }
+
+  cb = opts.cb || cb;
+  var pre = (typeof cb == 'function') ? cb : cb.pre || function() {};
+  var post = cb.post || function() {};
+
+  _traverse(opts, pre, post, schema, '', schema);
+};
+
+
+traverse.keywords = {
+  additionalItems: true,
+  items: true,
+  contains: true,
+  additionalProperties: true,
+  propertyNames: true,
+  not: true
+};
+
+traverse.arrayKeywords = {
+  items: true,
+  allOf: true,
+  anyOf: true,
+  oneOf: true
+};
+
+traverse.propsKeywords = {
+  definitions: true,
+  properties: true,
+  patternProperties: true,
+  dependencies: true
+};
+
+traverse.skipKeywords = {
+  default: true,
+  enum: true,
+  const: true,
+  required: true,
+  maximum: true,
+  minimum: true,
+  exclusiveMaximum: true,
+  exclusiveMinimum: true,
+  multipleOf: true,
+  maxLength: true,
+  minLength: true,
+  pattern: true,
+  format: true,
+  maxItems: true,
+  minItems: true,
+  uniqueItems: true,
+  maxProperties: true,
+  minProperties: true
+};
+
+
+function _traverse(opts, pre, post, schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
+  if (schema && typeof schema == 'object' && !Array.isArray(schema)) {
+    pre(schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex);
+    for (var key in schema) {
+      var sch = schema[key];
+      if (Array.isArray(sch)) {
+        if (key in traverse.arrayKeywords) {
+          for (var i=0; i<sch.length; i++)
+            _traverse(opts, pre, post, sch[i], jsonPtr + '/' + key + '/' + i, rootSchema, jsonPtr, key, schema, i);
+        }
+      } else if (key in traverse.propsKeywords) {
+        if (sch && typeof sch == 'object') {
+          for (var prop in sch)
+            _traverse(opts, pre, post, sch[prop], jsonPtr + '/' + key + '/' + escapeJsonPtr(prop), rootSchema, jsonPtr, key, schema, prop);
+        }
+      } else if (key in traverse.keywords || (opts.allKeys && !(key in traverse.skipKeywords))) {
+        _traverse(opts, pre, post, sch, jsonPtr + '/' + key, rootSchema, jsonPtr, key, schema);
+      }
+    }
+    post(schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex);
+  }
+}
+
+
+function escapeJsonPtr(str) {
+  return str.replace(/~/g, '~0').replace(/\//g, '~1');
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           // @flow
+'use strict'
+
+/*:: export type Rule = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other' */
+var zero = 'zero', one = 'one', two = 'two', few = 'few', many = 'many', other = 'other'
+var f = [
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return 0 <= n && n <= 1 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var n = +s
+    return i === 0 || n === 1 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 0 ? zero
+      : n === 1 ? one
+      : n === 2 ? two
+      : 3 <= n % 100 && n % 100 <= 10 ? few
+      : 11 <= n % 100 && n % 100 <= 99 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    return i === 1 && v === 0 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n % 10 === 1 && n % 100 !== 11 ? one
+      : (2 <= n % 10 && n % 10 <= 4) && (n % 100 < 12 || 14 < n % 100) ? few
+      : n % 10 === 0 || (5 <= n % 10 && n % 10 <= 9) || (11 <= n % 100 && n % 100 <= 14) ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n % 10 === 1 && (n % 100 !== 11 && n % 100 !== 71 && n % 100 !== 91) ? one
+      : n % 10 === 2 && (n % 100 !== 12 && n % 100 !== 72 && n % 100 !== 92) ? two
+      : ((3 <= n % 10 && n % 10 <= 4) || n % 10 === 9) && ((n % 100 < 10 || 19 < n % 100) && (n % 100 < 70 || 79 < n % 100) && (n % 100 < 90 || 99 < n % 100)) ? few
+      : n !== 0 && n % 1000000 === 0 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    var f = +(s + '.').split('.')[1]
+    return v === 0 && i % 10 === 1 && i % 100 !== 11 || f % 10 === 1 && f % 100 !== 11 ? one
+      : v === 0 && (2 <= i % 10 && i % 10 <= 4) && (i % 100 < 12 || 14 < i % 100) || (2 <= f % 10 && f % 10 <= 4) && (f % 100 < 12 || 14 < f % 100) ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    return i === 1 && v === 0 ? one
+      : (2 <= i && i <= 4) && v === 0 ? few
+      : v !== 0 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 0 ? zero
+      : n === 1 ? one
+      : n === 2 ? two
+      : n === 3 ? few
+      : n === 6 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var t = +('' + s).replace(/^[^.]*.?|0+$/g, '')
+    var n = +s
+    return n === 1 || t !== 0 && (i === 0 || i === 1) ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    var f = +(s + '.').split('.')[1]
+    return v === 0 && i % 100 === 1 || f % 100 === 1 ? one
+      : v === 0 && i % 100 === 2 || f % 100 === 2 ? two
+      : v === 0 && (3 <= i % 100 && i % 100 <= 4) || (3 <= f % 100 && f % 100 <= 4) ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    return i === 0 || i === 1 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    var f = +(s + '.').split('.')[1]
+    return v === 0 && (i === 1 || i === 2 || i === 3) || v === 0 && (i % 10 !== 4 && i % 10 !== 6 && i % 10 !== 9) || v !== 0 && (f % 10 !== 4 && f % 10 !== 6 && f % 10 !== 9) ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 ? one
+      : n === 2 ? two
+      : 3 <= n && n <= 6 ? few
+      : 7 <= n && n <= 10 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 || n === 11 ? one
+      : n === 2 || n === 12 ? two
+      : ((3 <= n && n <= 10) || (13 <= n && n <= 19)) ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    return v === 0 && i % 10 === 1 ? one
+      : v === 0 && i % 10 === 2 ? two
+      : v === 0 && (i % 100 === 0 || i % 100 === 20 || i % 100 === 40 || i % 100 === 60 || i % 100 === 80) ? few
+      : v !== 0 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    var n = +s
+    return i === 1 && v === 0 ? one
+      : i === 2 && v === 0 ? two
+      : v === 0 && (n < 0 || 10 < n) && n % 10 === 0 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var t = +('' + s).replace(/^[^.]*.?|0+$/g, '')
+    return t === 0 && i % 10 === 1 && i % 100 !== 11 || t !== 0 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 ? one
+      : n === 2 ? two
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 0 ? zero
+      : n === 1 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var n = +s
+    return n === 0 ? zero
+      : (i === 0 || i === 1) && n !== 0 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var f = +(s + '.').split('.')[1]
+    var n = +s
+    return n % 10 === 1 && (n % 100 < 11 || 19 < n % 100) ? one
+      : (2 <= n % 10 && n % 10 <= 9) && (n % 100 < 11 || 19 < n % 100) ? few
+      : f !== 0 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var v = (s + '.').split('.')[1].length
+    var f = +(s + '.').split('.')[1]
+    var n = +s
+    return n % 10 === 0 || (11 <= n % 100 && n % 100 <= 19) || v === 2 && (11 <= f % 100 && f % 100 <= 19) ? zero
+      : n % 10 === 1 && n % 100 !== 11 || v === 2 && f % 10 === 1 && f % 100 !== 11 || v !== 2 && f % 10 === 1 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    var f = +(s + '.').split('.')[1]
+    return v === 0 && i % 10 === 1 && i % 100 !== 11 || f % 10 === 1 && f % 100 !== 11 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    var n = +s
+    return i === 1 && v === 0 ? one
+      : v !== 0 || n === 0 || n !== 1 && (1 <= n % 100 && n % 100 <= 19) ? few
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var n = +s
+    return n === 1 ? one
+      : n === 0 || (2 <= n % 100 && n % 100 <= 10) ? few
+      : 11 <= n % 100 && n % 100 <= 19 ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    return i === 1 && v === 0 ? one
+      : v === 0 && (2 <= i % 10 && i % 10 <= 4) && (i % 100 < 12 || 14 < i % 100) ? few
+      : v === 0 && i !== 1 && (0 <= i % 10 && i % 10 <= 1) || v === 0 && (5 <= i % 10 && i % 10 <= 9) || v === 0 && (12 <= i % 100 && i % 100 <= 14) ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    return 0 <= i && i <= 1 ? one
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var v = (s + '.').split('.')[1].length
+    return v === 0 && i % 10 === 1 && i % 100 !== 11 ? one
+      : v === 0 && (2 <= i % 10 && i % 10 <= 4) && (i % 100 < 12 || 14 < i % 100) ? few
+      : v === 0 && i % 10 === 0 || v === 0 && (5 <= i % 10 && i % 10 <= 9) || v === 0 && (11 <= i % 100 && i % 100 <= 14) ? many
+      : other
+  },
+  function (s/*: string | number */)/*: Rule */ {
+    var i = Math.floor(Math.abs(+s))
+    var n = +s
+    return i === 0 || n === 1 ? one
+      : 2 <= n && n <= 10 ? few
+      : other
+  },
+  function (s# ms
+
+[![Build Status](https://travis-ci.org/zeit/ms.svg?branch=master)](https://travis-ci.org/zeit/ms)
+[![Slack Channel](http://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
+
+Use this package to easily convert various time formats to milliseconds.
+
+## Examples
+
+```js
+ms('2 days')  // 172800000
+ms('1d')      // 86400000
+ms('10h')     // 36000000
+ms('2.5 hrs') // 9000000
+ms('2h')      // 7200000
+ms('1m')      // 60000
+ms('5s')      // 5000
+ms('1y')      // 31557600000
+ms('100')     // 100
+```
+
+### Convert from milliseconds
+
+```js
+ms(60000)             // "1m"
+ms(2 * 60000)         // "2m"
+ms(ms('10 hours'))    // "10h"
+```
+
+### Time format written-out
+
+```js
+ms(60000, { long: true })             // "1 minute"
+ms(2 * 60000, { long: true })         // "2 minutes"
+ms(ms('10 hours'), { long: true })    // "10 hours"
+```
+
+## Features
+
+- Works both in [node](https://nodejs.org) and in the browser.
+- If a number is supplied to `ms`, a string with a unit is returned.
+- If a string that contains the number is supplied, it returns it as a number (e.g.: it returns `100` for `'100'`).
+- If you pass a string with a number and a valid unit, the number of equivalent ms is returned.
+
+## Caught a bug?
+
+1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
+2. Link the package to the global module directory: `npm link`
+3. Within the module you want to test your local development instance of ms, just link it to the dependencies: `npm link ms`. Instead of the default one from npm, node will now use your clone of ms!
+
+As always, you can run the tests using: `npm test`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               

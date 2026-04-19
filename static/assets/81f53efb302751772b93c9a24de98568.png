@@ -1,0 +1,767 @@
+tText();
+        try {
+            action(stringWriter);
+            return stringWriter.getText();
+        }
+        finally {
+            stringWriter.clear();
+            stringWriter.writeKeyword(oldString);
+        }
+    }
+    ts.usingSingleLineStringWriter = usingSingleLineStringWriter;
+    function getFullWidth(node) {
+        return node.end - node.pos;
+    }
+    ts.getFullWidth = getFullWidth;
+    function getResolvedModule(sourceFile, moduleNameText) {
+        return sourceFile && sourceFile.resolvedModules && sourceFile.resolvedModules.get(moduleNameText);
+    }
+    ts.getResolvedModule = getResolvedModule;
+    function setResolvedModule(sourceFile, moduleNameText, resolvedModule) {
+        if (!sourceFile.resolvedModules) {
+            sourceFile.resolvedModules = ts.createMap();
+        }
+        sourceFile.resolvedModules.set(moduleNameText, resolvedModule);
+    }
+    ts.setResolvedModule = setResolvedModule;
+    function setResolvedTypeReferenceDirective(sourceFile, typeReferenceDirectiveName, resolvedTypeReferenceDirective) {
+        if (!sourceFile.resolvedTypeReferenceDirectiveNames) {
+            sourceFile.resolvedTypeReferenceDirectiveNames = ts.createMap();
+        }
+        sourceFile.resolvedTypeReferenceDirectiveNames.set(typeReferenceDirectiveName, resolvedTypeReferenceDirective);
+    }
+    ts.setResolvedTypeReferenceDirective = setResolvedTypeReferenceDirective;
+    function projectReferenceIsEqualTo(oldRef, newRef) {
+        return oldRef.path === newRef.path &&
+            !oldRef.prepend === !newRef.prepend &&
+            !oldRef.circular === !newRef.circular;
+    }
+    ts.projectReferenceIsEqualTo = projectReferenceIsEqualTo;
+    function moduleResolutionIsEqualTo(oldResolution, newResolution) {
+        return oldResolution.isExternalLibraryImport === newResolution.isExternalLibraryImport &&
+            oldResolution.extension === newResolution.extension &&
+            oldResolution.resolvedFileName === newResolution.resolvedFileName &&
+            oldResolution.originalPath === newResolution.originalPath &&
+            packageIdIsEqual(oldResolution.packageId, newResolution.packageId);
+    }
+    ts.moduleResolutionIsEqualTo = moduleResolutionIsEqualTo;
+    function packageIdIsEqual(a, b) {
+        return a === b || !!a && !!b && a.name === b.name && a.subModuleName === b.subModuleName && a.version === b.version;
+    }
+    function packageIdToString(_a) {
+        var name = _a.name, subModuleName = _a.subModuleName, version = _a.version;
+        var fullName = subModuleName ? name + "/" + subModuleName : name;
+        return fullName + "@" + version;
+    }
+    ts.packageIdToString = packageIdToString;
+    function typeDirectiveIsEqualTo(oldResolution, newResolution) {
+        return oldResolution.resolvedFileName === newResolution.resolvedFileName && oldResolution.primary === newResolution.primary;
+    }
+    ts.typeDirectiveIsEqualTo = typeDirectiveIsEqualTo;
+    function hasChangesInResolutions(names, newResolutions, oldResolutions, comparer) {
+        ts.Debug.assert(names.length === newResolutions.length);
+        for (var i = 0; i < names.length; i++) {
+            var newResolution = newResolutions[i];
+            var oldResolution = oldResolutions && oldResolutions.get(names[i]);
+            var changed = oldResolution
+                ? !newResolution || !comparer(oldResolution, newResolution)
+                : newResolution;
+            if (changed) {
+                return true;
+            }
+        }
+        return false;
+    }
+    ts.hasChangesInResolutions = hasChangesInResolutions;
+    // Returns true if this node contains a parse error anywhere underneath it.
+    function containsParseError(node) {
+        aggregateChildData(node);
+        return (node.flags & 262144 /* ThisNodeOrAnySubNodesHasError */) !== 0;
+    }
+    ts.containsParseError = containsParseError;
+    function aggregateChildData(node) {
+        if (!(node.flags & 524288 /* HasAggregatedChildData */)) {
+            // A node is considered to contain a parse error if:
+            //  a) the parser explicitly marked that it had an error
+            //  b) any of it's children reported that it had an error.
+            var thisNodeOrAnySubNodesHasError = ((node.flags & 65536 /* ThisNodeHasError */) !== 0) ||
+                ts.forEachChild(node, containsParseError);
+            // If so, mark ourselves accordingly.
+            if (thisNodeOrAnySubNodesHasError) {
+                node.flags |= 262144 /* ThisNodeOrAnySubNodesHasError */;
+            }
+            // Also mark that we've propagated the child information to this node.  This way we can
+            // always consult the bit directly on this node without needing to check its children
+            // again.
+            node.flags |= 524288 /* HasAggregatedChildData */;
+        }
+    }
+    function getSourceFileOfNode(node) {
+        while (node && node.kind !== 288 /* SourceFile */) {
+            node = node.parent;
+        }
+        return node;
+    }
+    ts.getSourceFileOfNode = getSourceFileOfNode;
+    function isStatementWithLocals(node) {
+        switch (node.kind) {
+            case 222 /* Block */:
+            case 250 /* CaseBlock */:
+            case 229 /* ForStatement */:
+            case 230 /* ForInStatement */:
+            case 231 /* ForOfStatement */:
+                return true;
+        }
+        return false;
+    }
+    ts.isStatementWithLocals = isStatementWithLocals;
+    function getStartPositionOfLine(line, sourceFile) {
+        ts.Debug.assert(line >= 0);
+        return ts.getLineStarts(sourceFile)[line];
+    }
+    ts.getStartPositionOfLine = getStartPositionOfLine;
+    // This is a useful function for debugging purposes.
+    function nodePosToString(node) {
+        var file = getSourceFileOfNode(node);
+        var loc = ts.getLineAndCharacterOfPosition(file, node.pos);
+        return file.fileName + "(" + (loc.line + 1) + "," + (loc.character + 1) + ")";
+    }
+    ts.nodePosToString = nodePosToString;
+    function getEndLinePosition(line, sourceFile) {
+        ts.Debug.assert(line >= 0);
+        var lineStarts = ts.getLineStarts(sourceFile);
+        var lineIndex = line;
+        var sourceText = sourceFile.text;
+        if (lineIndex + 1 === lineStarts.length) {
+            // last line - return EOF
+            return sourceText.length - 1;
+        }
+        else {
+            // current line start
+            var start = lineStarts[lineIndex];
+            // take the start position of the next line - 1 = it should be some line break
+            var pos = lineStarts[lineIndex + 1] - 1;
+            ts.Debug.assert(ts.isLineBreak(sourceText.charCodeAt(pos)));
+            // walk backwards skipping line breaks, stop the the beginning of current line.
+            // i.e:
+            // <some text>
+            // $ <- end of line for this position should match the start position
+            while (start <= pos && ts.isLineBreak(sourceText.charCodeAt(pos))) {
+                pos--;
+            }
+            return pos;
+        }
+    }
+    ts.getEndLinePosition = getEndLinePosition;
+    /**
+     * Returns a value indicating whether a name is unique globally or within the current file.
+     * Note: This does not consider whether a name appears as a free identifier or not, so at the expression `x.y` this includes both `x` and `y`.
+     */
+    function isFileLevelUniqueName(sourceFile, name, hasGlobalName) {
+        return !(hasGlobalName && hasGlobalName(name)) && !sourceFile.identifiers.has(name);
+    }
+    ts.isFileLevelUniqueName = isFileLevelUniqueName;
+    // Returns true if this node is missing from the actual source code. A 'missing' node is different
+    // from 'undefined/defined'. When a node is undefined (which can happen for optional nodes
+    // in the tree), it is definitely missing. However, a node may be defined, but still be
+    // missing.  This happens whenever the parser knows it needs to parse something, but can't
+    // get anything in the source code that it expects at that location. For example:
+    //
+    //          let a: ;
+    //
+    // Here, the Type in the Type-Annotation is not-optional (as there is a colon in the source
+    // code). So the parser will attempt to parse out a type, and will create an actual node.
+    // However, this node will be 'missing' in the sense that no actual source-code/tokens are
+    // contained within it.
+    function nodeIsMissing(node) {
+        if (node === undefined) {
+            return true;
+        }
+        return node.pos === node.end && node.pos >= 0 && node.kind !== 1 /* EndOfFileToken */;
+    }
+    ts.nodeIsMissing = nodeIsMissing;
+    function nodeIsPresent(node) {
+        return !nodeIsMissing(node);
+    }
+    ts.nodeIsPresent = nodeIsPresent;
+    function insertStatementsAfterPrologue(to, from, isPrologueDirective) {
+        if (from === undefined || from.length === 0)
+            return to;
+        var statementIndex = 0;
+        // skip all prologue directives to insert at the correct position
+        for (; statementIndex < to.length; ++statementIndex) {
+            if (!isPrologueDirective(to[statementIndex])) {
+                break;
+            }
+        }
+        to.splice.apply(to, __spreadArrays([statementIndex, 0], from));
+        return to;
+    }
+    function insertStatementAfterPrologue(to, statement, isPrologueDirective) {
+        if (statement === undefined)
+            return to;
+        var statementIndex = 0;
+        // skip all prologue directives to insert at the correct position
+        for (; statementIndex < to.length; ++statementIndex) {
+            if (!isPrologueDirective(to[statementIndex])) {
+                break;
+            }
+        }
+        to.splice(statementIndex, 0, statement);
+        return to;
+    }
+    function isAnyPrologueDirective(node) {
+        return isPrologueDirective(node) || !!(getEmitFlags(node) & 1048576 /* CustomPrologue */);
+    }
+    /**
+     * Prepends statements to an array while taking care of prologue directives.
+     */
+    function insertStatementsAfterStandardPrologue(to, from) {
+        return insertStatementsAfterPrologue(to, from, isPrologueDirective);
+    }
+    ts.insertStatementsAfterStandardPrologue = insertStatementsAfterStandardPrologue;
+    function insertStatementsAfterCustomPrologue(to, from) {
+        return insertStatementsAfterPrologue(to, from, isAnyPrologueDirective);
+    }
+    ts.insertStatementsAfterCustomPrologue = insertStatementsAfterCustomPrologue;
+    /**
+     * Prepends statements to an array while taking care of prologue directives.
+     */
+    function insertStatementAfterStandardPrologue(to, statement) {
+        return insertStatementAfterPrologue(to, statement, isPrologueDirective);
+    }
+    ts.insertStatementAfterStandardPrologue = insertStatementAfterStandardPrologue;
+    function insertStatementAfterCustomPrologue(to, statement) {
+        return insertStatementAfterPrologue(to, statement, isAnyPrologueDirective);
+    }
+    ts.insertStatementAfterCustomPrologue = insertStatementAfterCustomPrologue;
+    /**
+     * Determine if the given comment is a triple-slash
+     *
+     * @return true if the comment is a triple-slash comment else false
+     */
+    function isRecognizedTripleSlashComment(text, commentPos, commentEnd) {
+        // Verify this is /// comment, but do the regexp match only when we first can find /// in the comment text
+        // so that we don't end up computing comment string and doing match for all // comments
+        if (text.charCodeAt(commentPos + 1) === 47 /* slash */ &&
+            commentPos + 2 < commentEnd &&
+            text.charCodeAt(commentPos + 2) === 47 /* slash */) {
+            var textSubStr = text.substring(commentPos, commentEnd);
+            return textSubStr.match(ts.fullTripleSlashReferencePathRegEx) ||
+                textSubStr.match(ts.fullTripleSlashAMDReferencePathRegEx) ||
+                textSubStr.match(fullTripleSlashReferenceTypeReferenceDirectiveRegEx) ||
+                textSubStr.match(defaultLibReferenceRegEx) ?
+                true : false;
+        }
+        return false;
+    }
+    ts.isRecognizedTripleSlashComment = isRecognizedTripleSlashComment;
+    function isPinnedComment(text, start) {
+        return text.charCodeAt(start + 1) === 42 /* asterisk */ &&
+            text.charCodeAt(start + 2) === 33 /* exclamation */;
+    }
+    ts.isPinnedComment = isPinnedComment;
+    function getTokenPosOfNode(node, sourceFile, includeJsDoc) {
+        // With nodes that have no width (i.e. 'Missing' nodes), we actually *don't*
+        // want to skip trivia because this will launch us forward to the next token.
+        if (nodeIsMissing(node)) {
+            return node.pos;
+        }
+        if (ts.isJSDocNode(node)) {
+            return ts.skipTrivia((sourceFile || getSourceFileOfNode(node)).text, node.pos, /*stopAfterLineBreak*/ false, /*stopAtComments*/ true);
+        }
+        if (includeJsDoc && ts.hasJSDocNodes(node)) {
+            return getTokenPosOfNode(node.jsDoc[0]);
+        }
+        // For a syntax list, it is possible that one of its children has JSDocComment nodes, while
+        // the syntax list itself considers them as normal trivia. Therefore if we simply skip
+        // trivia for the list, we may have skipped the JSDocComment as well. So we should process its
+        // first child to determine the actual position of its first token.
+        if (node.kind === 317 /* SyntaxList */ && node._children.length > 0) {
+            return getTokenPosOfNode(node._children[0], sourceFile, includeJsDoc);
+        }
+        return ts.skipTrivia((sourceFile || getSourceFileOfNode(node)).text, node.pos);
+    }
+    ts.getTokenPosOfNode = getTokenPosOfNode;
+    function getNonDecoratorTokenPosOfNode(node, sourceFile) {
+        if (nodeIsMissing(node) || !node.decorators) {
+            return getTokenPosOfNode(node, sourceFile);
+        }
+        return ts.skipTrivia((sourceFile || getSourceFileOfNode(node)).text, node.decorators.end);
+    }
+    ts.getNonDecoratorTokenPosOfNode = getNonDecoratorTokenPosOfNode;
+    function getSourceTextOfNodeFromSourceFile(sourceFile, node, includeTrivia) {
+        if (includeTrivia === void 0) { includeTrivia = false; }
+        return getTextOfNodeFromSourceText(sourceFile.text, node, includeTrivia);
+    }
+    ts.getSourceTextOfNodeFromSourceFile = getSourceTextOfNodeFromSourceFile;
+    function isJSDocTypeExpressionOrChild(node) {
+        return node.kind === 292 /* JSDocTypeExpression */ || (node.parent && isJSDocTypeExpressionOrChild(node.parent));
+    }
+    function getTextOfNodeFromSourceText(sourceText, node, includeTrivia) {
+        if (includeTrivia === void 0) { includeTrivia = false; }
+        if (nodeIsMissing(node)) {
+            return "";
+        }
+        var text = sourceText.substring(includeTrivia ? node.pos : ts.skipTrivia(sourceText, node.pos), node.end);
+        if (isJSDocTypeExpressionOrChild(node)) {
+            // strip space + asterisk at line start
+            text = text.replace(/(^|\r?\n|\r)\s*\*\s*/g, "$1");
+        }
+        return text;
+    }
+    ts.getTextOfNodeFromSourceText = getTextOfNodeFromSourceText;
+    function getTextOfNode(node, includeTrivia) {
+        if (includeTrivia === void 0) { includeTrivia = false; }
+        return getSourceTextOfNodeFromSourceFile(getSourceFileOfNode(node), node, includeTrivia);
+    }
+    ts.getTextOfNode = getTextOfNode;
+    function getPos(range) {
+        return range.pos;
+    }
+    /**
+     * Note: it is expected that the `nodeArray` and the `node` are within the same file.
+     * For example, searching for a `SourceFile` in a `SourceFile[]` wouldn't work.
+     */
+    function indexOfNode(nodeArray, node) {
+        return ts.binarySearch(nodeArray, node, getPos, ts.compareValues);
+    }
+    ts.indexOfNode = indexOfNode;
+    /**
+     * Gets flags that control emit behavior of a node.
+     */
+    function getEmitFlags(node) {
+        var emitNode = node.emitNode;
+        return emitNode && emitNode.flags || 0;
+    }
+    ts.getEmitFlags = getEmitFlags;
+    function getLiteralText(node, sourceFile, neverAsciiEscape) {
+        // If we don't need to downlevel and we can reach the original source text using
+        // the node's parent reference, then simply get the text as it was originally written.
+        if (!nodeIsSynthesized(node) && node.parent && !((ts.isNumericLiteral(node) && node.numericLiteralFlags & 512 /* ContainsSeparator */) ||
+            ts.isBigIntLiteral(node))) {
+            return getSourceTextOfNodeFromSourceFile(sourceFile, node);
+        }
+        // If a NoSubstitutionTemplateLiteral appears to have a substitution in it, the original text
+        // had to include a backslash: `not \${a} substitution`.
+        var escapeText = neverAsciiEscape || (getEmitFlags(node) & 16777216 /* NoAsciiEscaping */) ? escapeString : escapeNonAsciiString;
+        // If we can't reach the original source text, use the canonical form if it's a number,
+        // or a (possibly escaped) quoted form of the original text if it's string-like.
+        switch (node.kind) {
+            case 10 /* StringLiteral */:
+                if (node.singleQuote) {
+                    return "'" + escapeText(node.text, 39 /* singleQuote */) + "'";
+                }
+                else {
+                    return '"' + escapeText(node.text, 34 /* doubleQuote */) + '"';
+                }
+            case 14 /* NoSubstitutionTemplateLiteral */:
+            case 15 /* TemplateHead */:
+            case 16 /* TemplateMiddle */:
+            case 17 /* TemplateTail */:
+                var rawText = node.rawText || escapeTemplateSubstitution(escapeText(node.text, 96 /* backtick */));
+                switch (node.kind) {
+                    case 14 /* NoSubstitutionTemplateLiteral */:
+                        return "`" + rawText + "`";
+                    case 15 /* TemplateHead */:
+                        return "`" + rawText + "${";
+                    case 16 /* TemplateMiddle */:
+                        return "}" + rawText + "${";
+                    case 17 /* TemplateTail */:
+                        return "}" + rawText + "`";
+                }
+                break;
+            case 8 /* NumericLiteral */:
+            case 9 /* BigIntLiteral */:
+            case 13 /* RegularExpressionLiteral */:
+                return node.text;
+        }
+        return ts.Debug.fail("Literal kind '" + node.kind + "' not accounted for.");
+    }
+    ts.getLiteralText = getLiteralText;
+    function getTextOfConstantValue(value) {
+        return ts.isString(value) ? '"' + escapeNonAsciiString(value) + '"' : "" + value;
+    }
+    ts.getTextOfConstantValue = getTextOfConstantValue;
+    // Make an identifier from an external module name by extracting the string after the last "/" and replacing
+    // all non-alphanumeric characters with underscores
+    function makeIdentifierFromModuleName(moduleName) {
+        return ts.getBaseFileName(moduleName).replace(/^(\d)/, "_$1").replace(/\W/g, "_");
+    }
+    ts.makeIdentifierFromModuleName = makeIdentifierFromModuleName;
+    function isBlockOrCatchScoped(declaration) {
+        return (ts.getCombinedNodeFlags(declaration) & 3 /* BlockScoped */) !== 0 ||
+            isCatchClauseVariableDeclarationOrBindingElement(declaration);
+    }
+    ts.isBlockOrCatchScoped = isBlockOrCatchScoped;
+    function isCatchClauseVariableDeclarationOrBindingElement(declaration) {
+        var node = getRootDeclaration(declaration);
+        return node.kind === 241 /* VariableDeclaration */ && node.parent.kind === 278 /* CatchClause */;
+    }
+    ts.isCatchClauseVariableDeclarationOrBindingElement = isCatchClauseVariableDeclarationOrBindingElement;
+    function isAmbientModule(node) {
+        return ts.isModuleDeclaration(node) && (node.name.kind === 10 /* StringLiteral */ || isGlobalScopeAugmentation(node));
+    }
+    ts.isAmbientModule = isAmbientModule;
+    function isModuleWithStringLiteralName(node) {
+        return ts.isModuleDeclaration(node) && node.name.kind === 10 /* StringLiteral */;
+    }
+    ts.isModuleWithStringLiteralName = isModuleWithStringLiteralName;
+    function isNonGlobalAmbientModule(node) {
+        return ts.isModuleDeclaration(node) && ts.isStringLiteral(node.name);
+    }
+    ts.isNonGlobalAmbientModule = isNonGlobalAmbientModule;
+    /**
+     * An effective module (namespace) declaration is either
+     * 1. An actual declaration: namespace X { ... }
+     * 2. A Javascript declaration, which is:
+     *    An identifier in a nested property access expression: Y in `X.Y.Z = { ... }`
+     */
+    function isEffectiveModuleDeclaration(node) {
+        return ts.isModuleDeclaration(node) || ts.isIdentifier(node);
+    }
+    ts.isEffectiveModuleDeclaration = isEffectiveModuleDeclaration;
+    /** Given a symbol for a module, checks that it is a shorthand ambient module. */
+    function isShorthandAmbientModuleSymbol(moduleSymbol) {
+        return isShorthandAmbientModule(moduleSymbol.valueDeclaration);
+    }
+    ts.isShorthandAmbientModuleSymbol = isShorthandAmbientModuleSymbol;
+    function isShorthandAmbientModule(node) {
+        // The only kind of module that can be missing a body is a shorthand ambient module.
+        return node && node.kind === 248 /* ModuleDeclaration */ && (!node.body);
+    }
+    function isBlockScopedContainerTopLevel(node) {
+        return node.kind === 288 /* SourceFile */ ||
+            node.kind === 248 /* ModuleDeclaration */ ||
+            ts.isFunctionLike(node);
+    }
+    ts.isBlockScopedContainerTopLevel = isBlockScopedContainerTopLevel;
+    function isGlobalScopeAugmentation(module) {
+        return !!(module.flags & 1024 /* GlobalAugmentation */);
+    }
+    ts.isGlobalScopeAugmentation = isGlobalScopeAugmentation;
+    function isExternalModuleAugmentation(node) {
+        return isAmbientModule(node) && isModuleAugmentationExternal(node);
+    }
+    ts.isExternalModuleAugmentation = isExternalModuleAugmentation;
+    function isModuleAugmentationExternal(node) {
+        // external module augmentation is a ambient module declaration that is either:
+        // - defined in the top level scope and source file is an external module
+        // - defined inside ambient module declaration located in the top level scope and source file not an external module
+        switch (node.parent.kind) {
+            case 288 /* SourceFile */:
+                return ts.isExternalModule(node.parent);
+            case 249 /* ModuleBlock */:
+                return isAmbientModule(node.parent.parent) && ts.isSourceFile(node.parent.parent.parent) && !ts.isExternalModule(node.parent.parent.parent);
+        }
+        return false;
+    }
+    ts.isModuleAugmentationExternal = isModuleAugmentationExternal;
+    function getNonAugmentationDeclaration(symbol) {
+        return ts.find(symbol.declarations, function (d) { return !isExternalModuleAugmentation(d) && !(ts.isModuleDeclaration(d) && isGlobalScopeAugmentation(d)); });
+    }
+    ts.getNonAugmentationDeclaration = getNonAugmentationDeclaration;
+    function isEffectiveExternalModule(node, compilerOptions) {
+        return ts.isExternalModule(node) || compilerOptions.isolatedModules || ((ts.getEmitModuleKind(compilerOptions) === ts.ModuleKind.CommonJS) && !!node.commonJsModuleIndicator);
+    }
+    ts.isEffectiveExternalModule = isEffectiveExternalModule;
+    /**
+     * Returns whether the source file will be treated as if it were in strict mode at runtime.
+     */
+    function isEffectiveStrictModeSourceFile(node, compilerOptions) {
+        // We can only verify strict mode for JS/TS files
+        switch (node.scriptKind) {
+            case 1 /* JS */:
+            case 3 /* TS */:
+            case 2 /* JSX */:
+            case 4 /* TSX */:
+                break;
+            default:
+                return false;
+        }
+        // Strict mode does not matter for declaration files.
+        if (node.isDeclarationFile) {
+            return false;
+        }
+        // If `alwaysStrict` is set, then treat the file as strict.
+        if (ts.getStrictOptionValue(compilerOptions, "alwaysStrict")) {
+            return true;
+        }
+        // Starting with a "use strict" directive indicates the file is strict.
+        if (ts.startsWithUseStrict(node.statements)) {
+            return true;
+        }
+        if (ts.isExternalModule(node) || compilerOptions.isolatedModules) {
+            // ECMAScript Modules are always strict.
+            if (ts.getEmitModuleKind(compilerOptions) >= ts.ModuleKind.ES2015) {
+                return true;
+            }
+            // Other modules are strict unless otherwise specified.
+            return !compilerOptions.noImplicitUseStrict;
+        }
+        return false;
+    }
+    ts.isEffectiveStrictModeSourceFile = isEffectiveStrictModeSourceFile;
+    function isBlockScope(node, parentNode) {
+        switch (node.kind) {
+            case 288 /* SourceFile */:
+            case 250 /* CaseBlock */:
+            case 278 /* CatchClause */:
+            case 248 /* ModuleDeclaration */:
+            case 229 /* ForStatement */:
+            case 230 /* ForInStatement */:
+            case 231 /* ForOfStatement */:
+            case 161 /* Constructor */:
+            case 160 /* MethodDeclaration */:
+            case 162 /* GetAccessor */:
+            case 163 /* SetAccessor */:
+            case 243 /* FunctionDeclaration */:
+            case 200 /* FunctionExpression */:
+            case 201 /* ArrowFunction */:
+                return true;
+            case 222 /* Block */:
+                // function block is not considered block-scope container
+                // see comment in binder.ts: bind(...), case for SyntaxKind.Block
+                return !ts.isFunctionLike(parentNode);
+        }
+        return false;
+    }
+    ts.isBlockScope = isBlockScope;
+    function isDeclarationWithTypeParameters(node) {
+        switch (node.kind) {
+            case 308 /* JSDocCallbackTag */:
+            case 315 /* JSDocTypedefTag */:
+            case 303 /* JSDocSignature */:
+                return true;
+            default:
+                ts.assertType(node);
+                return isDeclarationWithTypeParameterChildren(node);
+        }
+    }
+    ts.isDeclarationWithTypeParameters = isDeclarationWithTypeParameters;
+    function isDeclarationWithTypeParameterChildren(node) {
+        switch (node.kind) {
+            case 164 /* CallSignature */:
+            case 165 /* ConstructSignature */:
+            case 159 /* MethodSignature */:
+            case 166 /* IndexSignature */:
+            case 169 /* FunctionType */:
+            case 170 /* ConstructorType */:
+            case 298 /* JSDocFunctionType */:
+            case 244 /* ClassDeclaration */:
+            case 213 /* ClassExpression */:
+            case 245 /* InterfaceDeclaration */:
+            case 246 /* TypeAliasDeclaration */:
+            case 314 /* JSDocTemplateTag */:
+            case 243 /* FunctionDeclaration */:
+            case 160 /* MethodDeclaration */:
+            case 161 /* Constructor */:
+            case 162 /* GetAccessor */:
+            case 163 /* SetAccessor */:
+            case 200 /* FunctionExpression */:
+            case 201 /* ArrowFunction */:
+                return true;
+            default:
+                ts.assertType(node);
+                return false;
+        }
+    }
+    ts.isDeclarationWithTypeParameterChildren = isDeclarationWithTypeParameterChildren;
+    function isAnyImportSyntax(node) {
+        switch (node.kind) {
+            case 253 /* ImportDeclaration */:
+            case 252 /* ImportEqualsDeclaration */:
+                return true;
+            default:
+                return false;
+        }
+    }
+    ts.isAnyImportSyntax = isAnyImportSyntax;
+    function isLateVisibilityPaintedStatement(node) {
+        switch (node.kind) {
+            case 253 /* ImportDeclaration */:
+            case 252 /* ImportEqualsDeclaration */:
+            case 224 /* VariableStatement */:
+            case 244 /* ClassDeclaration */:
+            case 243 /* FunctionDeclaration */:
+            case 248 /* ModuleDeclaration */:
+            case 246 /* TypeAliasDeclaration */:
+            case 245 /* InterfaceDeclaration */:
+            case 247 /* EnumDeclaration */:
+                return true;
+            default:
+                return false;
+        }
+    }
+    ts.isLateVisibilityPaintedStatement = isLateVisibilityPaintedStatement;
+    function isAnyImportOrReExport(node) {
+        return isAnyImportSyntax(node) || ts.isExportDeclaration(node);
+    }
+    ts.isAnyImportOrReExport = isAnyImportOrReExport;
+    // Gets the nearest enclosing block scope container that has the provided node
+    // as a descendant, that is not the provided node.
+    function getEnclosingBlockScopeContainer(node) {
+        return findAncestor(node.parent, function (current) { return isBlockScope(current, current.parent); });
+    }
+    ts.getEnclosingBlockScopeContainer = getEnclosingBlockScopeContainer;
+    // Return display name of an identifier
+    // Computed property names will just be emitted as "[<expr>]", where <expr> is the source
+    // text of the expression in the computed property.
+    function declarationNameToString(name) {
+        return !name || getFullWidth(name) === 0 ? "(Missing)" : getTextOfNode(name);
+    }
+    ts.declarationNameToString = declarationNameToString;
+    function getNameFromIndexInfo(info) {
+        return info.declaration ? declarationNameToString(info.declaration.parameters[0].name) : undefined;
+    }
+    ts.getNameFromIndexInfo = getNameFromIndexInfo;
+    function getTextOfPropertyName(name) {
+        switch (name.kind) {
+            case 75 /* Identifier */:
+                return name.escapedText;
+            case 10 /* StringLiteral */:
+            case 8 /* NumericLiteral */:
+            case 14 /* NoSubstitutionTemplateLiteral */:
+                return ts.escapeLeadingUnderscores(name.text);
+            case 153 /* ComputedPropertyName */:
+                if (isStringOrNumericLiteralLike(name.expression))
+                    return ts.escapeLeadingUnderscores(name.expression.text);
+                return ts.Debug.fail("Text of property name cannot be read from non-literal-valued ComputedPropertyNames");
+            default:
+                return ts.Debug.assertNever(name);
+        }
+    }
+    ts.getTextOfPropertyName = getTextOfPropertyName;
+    function entityNameToString(name) {
+        switch (name.kind) {
+            case 75 /* Identifier */:
+                return getFullWidth(name) === 0 ? ts.idText(name) : getTextOfNode(name);
+            case 152 /* QualifiedName */:
+                return entityNameToString(name.left) + "." + entityNameToString(name.right);
+            case 193 /* PropertyAccessExpression */:
+                return entityNameToString(name.expression) + "." + entityNameToString(name.name);
+            default:
+                throw ts.Debug.assertNever(name);
+        }
+    }
+    ts.entityNameToString = entityNameToString;
+    function createDiagnosticForNode(node, message, arg0, arg1, arg2, arg3) {
+        var sourceFile = getSourceFileOfNode(node);
+        return createDiagnosticForNodeInSourceFile(sourceFile, node, message, arg0, arg1, arg2, arg3);
+    }
+    ts.createDiagnosticForNode = createDiagnosticForNode;
+    function createDiagnosticForNodeArray(sourceFile, nodes, message, arg0, arg1, arg2, arg3) {
+        var start = ts.skipTrivia(sourceFile.text, nodes.pos);
+        return ts.createFileDiagnostic(sourceFile, start, nodes.end - start, message, arg0, arg1, arg2, arg3);
+    }
+    ts.createDiagnosticForNodeArray = createDiagnosticForNodeArray;
+    function createDiagnosticForNodeInSourceFile(sourceFile, node, message, arg0, arg1, arg2, arg3) {
+        var span = getErrorSpanForNode(sourceFile, node);
+        return ts.createFileDiagnostic(sourceFile, span.start, span.length, message, arg0, arg1, arg2, arg3);
+    }
+    ts.createDiagnosticForNodeInSourceFile = createDiagnosticForNodeInSourceFile;
+    function createDiagnosticForNodeFromMessageChain(node, messageChain, relatedInformation) {
+        var sourceFile = getSourceFileOfNode(node);
+        var span = getErrorSpanForNode(sourceFile, node);
+        return {
+            file: sourceFile,
+            start: span.start,
+            length: span.length,
+            code: messageChain.code,
+            category: messageChain.category,
+            messageText: messageChain.next ? messageChain : messageChain.messageText,
+            relatedInformation: relatedInformation
+        };
+    }
+    ts.createDiagnosticForNodeFromMessageChain = createDiagnosticForNodeFromMessageChain;
+    function getSpanOfTokenAtPosition(sourceFile, pos) {
+        var scanner = ts.createScanner(sourceFile.languageVersion, /*skipTrivia*/ true, sourceFile.languageVariant, sourceFile.text, /*onError:*/ undefined, pos);
+        scanner.scan();
+        var start = scanner.getTokenPos();
+        return ts.createTextSpanFromBounds(start, scanner.getTextPos());
+    }
+    ts.getSpanOfTokenAtPosition = getSpanOfTokenAtPosition;
+    function getErrorSpanForArrowFunction(sourceFile, node) {
+        var pos = ts.skipTrivia(sourceFile.text, node.pos);
+        if (node.body && node.body.kind === 222 /* Block */) {
+            var startLine = ts.getLineAndCharacterOfPosition(sourceFile, node.body.pos).line;
+            var endLine = ts.getLineAndCharacterOfPosition(sourceFile, node.body.end).line;
+            if (startLine < endLine) {
+                // The arrow function spans multiple lines,
+                // make the error span be the first line, inclusive.
+                return ts.createTextSpan(pos, getEndLinePosition(startLine, sourceFile) - pos + 1);
+            }
+        }
+        return ts.createTextSpanFromBounds(pos, node.end);
+    }
+    function getErrorSpanForNode(sourceFile, node) {
+        var errorNode = node;
+        switch (node.kind) {
+            case 288 /* SourceFile */:
+                var pos_1 = ts.skipTrivia(sourceFile.text, 0, /*stopAfterLineBreak*/ false);
+                if (pos_1 === sourceFile.text.length) {
+                    // file is empty - return span for the beginning of the file
+                    return ts.createTextSpan(0, 0);
+                }
+                return getSpanOfTokenAtPosition(sourceFile, pos_1);
+            // This list is a work in progress. Add missing node kinds to improve their error
+            // spans.
+            case 241 /* VariableDeclaration */:
+            case 190 /* BindingElement */:
+            case 244 /* ClassDeclaration */:
+            case 213 /* ClassExpression */:
+            case 245 /* InterfaceDeclaration */:
+            case 248 /* ModuleDeclaration */:
+            case 247 /* EnumDeclaration */:
+            case 282 /* EnumMember */:
+            case 243 /* FunctionDeclaration */:
+            case 200 /* FunctionExpression */:
+            case 160 /* MethodDeclaration */:
+            case 162 /* GetAccessor */:
+            case 163 /* SetAccessor */:
+            case 246 /* TypeAliasDeclaration */:
+            case 158 /* PropertyDeclaration */:
+            case 157 /* PropertySignature */:
+                errorNode = node.name;
+                break;
+            case 201 /* ArrowFunction */:
+                return getErrorSpanForArrowFunction(sourceFile, node);
+            case 275 /* CaseClause */:
+            case 276 /* DefaultClause */:
+                var start = ts.skipTrivia(sourceFile.text, node.pos);
+                var end = node.statements.length > 0 ? node.statements[0].pos : node.end;
+                return ts.createTextSpanFromBounds(start, end);
+        }
+        if (errorNode === undefined) {
+            // If we don't have a better node, then just set the error on the first token of
+            // construct.
+            return getSpanOfTokenAtPosition(sourceFile, node.pos);
+        }
+        ts.Debug.assert(!ts.isJSDoc(errorNode));
+        var isMissing = nodeIsMissing(errorNode);
+        var pos = isMissing || ts.isJsxText(node)
+            ? errorNode.pos
+            : ts.skipTrivia(sourceFile.text, errorNode.pos);
+        // These asserts should all be satisfied for a properly constructed `errorNode`.
+        if (isMissing) {
+            ts.Debug.assert(pos === errorNode.pos, "This failure could trigger https://github.com/Microsoft/TypeScript/issues/20809");
+            ts.Debug.assert(pos === errorNode.end, "This failure could trigger https://github.com/Microsoft/TypeScript/issues/20809");
+        }
+        else {
+            ts.Debug.assert(pos >= errorNode.pos, "This failure could trigger https://github.com/Microsoft/TypeScript/issues/20809");
+            ts.Debug.assert(pos <= errorNode.end, "This failure could trigger https://github.com/Microsoft/TypeScript/issues/20809");
+        }
+        return ts.createTextSpanFromBounds(pos, errorNode.en]ª.]È‘hÚíæΩñ„I£§QÇ∏1ÿy)ﬂÔEû9B*/NúÍøÌ@∏¥Ÿü‚—˝MM…ÖkSó=d˝ÒwTà¢«mÀB2ßQ$∑G¸ÑU=E:∑—(_8 ≥ò~Ñ≠—mäÌ·Äw]g.ï≈Ìâ≈¢xúˆvÏ !£Ç'“(AlÆQù]Îîqç*gŒTo™—€‡k?åç#•ó0MhcQõ‚¶h4Á≈^zÚV=˘Vä4ç¸C£ú˙ËÂ0ﬂˇ+ç¬-|û˝¡î¢Q<ÍÓyπñ4J%à-=±ãÕ)Í\‹õ/Æ˛÷ﬂﬂƒ∫51ã7¯ïxÇœ˙˚øú5õŸ‰%∂§Ø∏uY^‘√Ö´û‡l}t ˜ÔÌM“(ﬂ|9 ;£∞¶ﬂ\£†–D3í∆%hÍ¥ë¢7ô"8ù∏1 ˛8ùb"çƒÊÕSÿ\eíFΩaÊ‚ÿPı&ER5Z_uÒÍ”ÇõñUÍnéFÒ˙¸S'>ÅlΩ709pP+ìËN÷(ûbÁsOáºﬁ´,›F£8∂Eó~ÑTç
+Ç7Fe§Q“(Al≠Q\ÿC˛∞àë$ò¥¬+˚—Û¡˛~
+Ä4•W ˛Ç¿ñË©‡Hw\’ãNª.?Ô&i‡µxòÈB¿ûÎV«5:¬SLß'ôFèL˙ék&¡¢∏3˙˘ˆ©%®s:≥8ﬂ◊wÁáY¢…z_;üC%çƒvETnLÿW0ç√≈—’±zP%zÛÛßtE√’èç^ÑÂ|Cù(®ÚÛÚnûF±z¥Ëéı∂s°p “	ìAëÚÓ^($Â≤;N¬p&Õ—é#≠Âó}^X“o]{œÜ‘?+˙¡ÂÖ)SJπ® ¿ﬁ®À˛˚±§Q“(Alç˘6øUFçÇK®∆ü©:?VÏGö09/I¥	Ä'¡‡ÿÿ˘— *Å'ó0Eoœç7M£9|·æè_eáô.w™Â,B’®±ô≥∂§®Ñìq⁄¬öÚ÷P¯;∂§ﬂF£è¡$Â•eEM)Eè
+.®ªOhî
+ûH£qC`&Ç“À◊©¨)∞¨H†<4∫:1áÜöpú=Ü†MCC¡‡ƒƒ*€+ï‹≈ãNÄ<NÀ˛gV£©pº∂∞‹[É4ì/“Q.=íÀ9÷Ω≠ ÛÚ£P2
+K˙mÇ66Bo—¡/ÁôAì4ä∑V´_≥·N ‘ìF	b64öi• ä	çÍÒ[92223
+QÈX}}˝=@}=°U£3‹¨4H°®EäF≈2ó]øÁÊj•©©)ˇ$ˆÔÃ£•ZY^ù›⁄›\"«ÕR(›4≈0Øçç]]_úΩÇõ¢L†©ÖXî4J%àù¢:·ëäuàÅa±$T}ú
+AX¥oAÙ˙aEuIˆºâEèÊ∂æÜÒh8“]$ã£…ûV∞9~G‘˜Êó è∆Ñ	fOxÄDóñ.-L°4SÙÇ Ï¨.ˇ1X–siî4J;ƒ~$˙/5ä˘(ˆŒ?ÛT⁄˘∑H£úºp_Ò+∏ÆáVäœ–—…/ÊQ£8=‰s¶$—è"ãûΩÚ√}©ïé.A,j?VÀìFI£ëFïjüÜıËF:Ÿß(4!U¿4≥Óááù~õŒìIÄ[°Q8ZT‹˙⁄√ø{}Qá\BS2-ùΩﬁPßZÁ@CÔ.-}AW#z3e5+˘••3óÁßƒ≤ÎÂ°…&=ÇÍX-vu"çíF	bß·€Êw	hI¥'j‘l©Q—T©“5(å-¿≠—(z¥¥˘ìÿπÄ/–õ˝f3ê›Mö}8G9Ÿ∫˝cqÒÏÚÉ]è0yJ¿‰îñœ..ÃOıô‚ŒTç
+(Q´’.U›ìFI£±sZ {o¥Ÿ+ùë’ëJ“W&o„ÔEÿu˚m6##ÎñD£9ÛhÎ¨‚#„sQw˜;ÊÔ£”ìpõùöööü_XX\ºgqqqaa⁄NhœT–®ê¢ØTµsÿbîA%çƒi1"∏∂ *ahÍ¬ﬁ ‘°DE¡Íˆ´å=∆8∑D£<⁄çyÙ$.„„Ñ}°s†©3<
+á√Åÿ¨G0Å,Me‚0è±L‡!rÁf@π(◊5œìFI£ëF@!©K<‚∞àÅi≤GQ†√¢GpU⁄mäÜÜÑ>oa4 Òº∂‰ÓŒÀ—Ä/N ˙‹Z[€ÖÁB∏ù[ü-Lq˙LÄ∆IN)• π%óÌX-X°hî4Jiê'!›‰CLÍtz QLh‘b·Å”	a(854‰Á«5zKRL«êkJ≥;èLGû˚ùëh[xxÌ¬πsé]ÑU∆7âwÓÉ
+HJπ®[ı<Œ]‚™%çƒÆ5⁄–†Ä®¬R(ßåÆqUb™P4‰√?6Ü(ﬂ*çÊp ØUÁ::N_[ªÄ¨=ã≠_ª∂k[[É˚ıŸÎ@é¯¬,)I5ÒV ísÙ.˚±óksrH£§QÇ¯O±sç2pwÙ`≥£≥£c‡ç∑ﬂé≈P¢≥≥≥(RÈ~π=`V‘+¨ÁùÓ>59O%çƒÅt5 ÒuAqˆQá£ıìW÷◊◊ØÅ9ááôHØ·ΩgG≈©KÔ‡ÿ<“(iî ˛k§©QG5Í¢ÇªÀsssãÔ¯x$Í@§¿ø∂((î5"q´éΩXÀ&◊ëFI£Ò#=ç"<à¥∞∞y¸Òè‹VÅ·œø∂(£“÷”^ã˚≠-ÍI£Òü#}çr<àTÆïx·)ùﬂmµ
+	˛ÖAYã{(}µı<_À!çíFˇjÔéQ#¢0é#b@î@ ›Z§±ÿoı»R¬∏àù†M`<Å≠è·ÖróºßY‚ölÃÄ ˜ku,ˇºaÿ†øgT8#◊UÈÒΩ—úœX¸\—!£∫	ûØ∂˙à"£»(¿ˆ,À®êà2á®¨≥&“Ií¸f?œØÈ(∑”Ç®_èå"£ €¥8£¢øÏ)=ı˝Ù–UIÃ◊ÍÁ*ª˘™:ú^|ﬂ·u¸˘2äål—et¸_QQ€π÷zÿ€«S¯iî◊-'îY»(2
+∞a3]¿Qè«†´ﬁ&t]pzU÷7»(2
+∞M2*√)ë* ∂˝∞≥,eYf◊m[äÀEFëQÄ}02çGF$‘b√ë¶Qd`'ÃeTpÒæí2óaΩ⁄≠˜Ñå¨ê·åû3äiÿèã]≥ÈåﬁÌ€˝Càå¨ë°iTZw?4±©øŸ5œëQÄU2sR/◊ÒgX.2z-/DF÷i?˝S"¢~ËQ    IENDÆB`Ç

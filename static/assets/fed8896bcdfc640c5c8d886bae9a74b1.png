@@ -1,0 +1,1195 @@
+);
+          dump([value], "i32 value");
+          args.push(t.numberLiteralFromRaw(value));
+        }
+
+        if (instruction.object === "u32") {
+          var valueu32 = readU32();
+          var _value = valueu32.value;
+          eatBytes(valueu32.nextIndex);
+          dump([_value], "u32 value");
+          args.push(t.numberLiteralFromRaw(_value));
+        }
+
+        if (instruction.object === "i64") {
+          var value64 = read64();
+          var _value2 = value64.value;
+          eatBytes(value64.nextIndex);
+          dump([Number(_value2.toString())], "i64 value");
+          var high = _value2.high,
+              low = _value2.low;
+          var _node = {
+            type: "LongNumberLiteral",
+            value: {
+              high: high,
+              low: low
+            }
+          };
+          args.push(_node);
+        }
+
+        if (instruction.object === "u64") {
+          var valueu64 = readU64();
+          var _value3 = valueu64.value;
+          eatBytes(valueu64.nextIndex);
+          dump([Number(_value3.toString())], "u64 value");
+          var _high = _value3.high,
+              _low = _value3.low;
+          var _node2 = {
+            type: "LongNumberLiteral",
+            value: {
+              high: _high,
+              low: _low
+            }
+          };
+          args.push(_node2);
+        }
+
+        if (instruction.object === "f32") {
+          var valuef32 = readF32();
+          var _value4 = valuef32.value;
+          eatBytes(valuef32.nextIndex);
+          dump([_value4], "f32 value");
+          args.push( // $FlowIgnore
+          t.floatLiteral(_value4, valuef32.nan, valuef32.inf, String(_value4)));
+        }
+
+        if (instruction.object === "f64") {
+          var valuef64 = readF64();
+          var _value5 = valuef64.value;
+          eatBytes(valuef64.nextIndex);
+          dump([_value5], "f64 value");
+          args.push( // $FlowIgnore
+          t.floatLiteral(_value5, valuef64.nan, valuef64.inf, String(_value5)));
+        }
+      } else {
+        for (var _i3 = 0; _i3 < instruction.numberOfArgs; _i3++) {
+          var u32 = readU32();
+          eatBytes(u32.nextIndex);
+          dump([u32.value], "argument " + _i3);
+          args.push(t.numberLiteralFromRaw(u32.value));
+        }
+      }
+
+      if (instructionAlreadyCreated === false) {
+        if (typeof instruction.object === "string") {
+          var _node3 = function () {
+            var endLoc = getPosition();
+            return t.withLoc(t.objectInstruction(instruction.name, instruction.object, args), endLoc, _startLoc6);
+          }();
+
+          code.push(_node3);
+        } else {
+          var _node4 = function () {
+            var endLoc = getPosition();
+            return t.withLoc(t.instruction(instruction.name, args), endLoc, _startLoc6);
+          }();
+
+          code.push(_node4);
+        }
+      }
+    }
+  } // https://webassembly.github.io/spec/core/binary/types.html#limits
+
+
+  function parseLimits() {
+    var limitType = readByte();
+    eatBytes(1);
+    dump([limitType], "limit type");
+    var min, max;
+
+    if (limitType === 0x01 || limitType === 0x03 // shared limits
+    ) {
+        var u32min = readU32();
+        min = parseInt(u32min.value);
+        eatBytes(u32min.nextIndex);
+        dump([min], "min");
+        var u32max = readU32();
+        max = parseInt(u32max.value);
+        eatBytes(u32max.nextIndex);
+        dump([max], "max");
+      }
+
+    if (limitType === 0x00) {
+      var _u32min = readU32();
+
+      min = parseInt(_u32min.value);
+      eatBytes(_u32min.nextIndex);
+      dump([min], "min");
+    }
+
+    return t.limit(min, max);
+  } // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
+
+
+  function parseTableType(index) {
+    var name = t.withRaw(t.identifier(getUniqueName("table")), String(index));
+    var elementTypeByte = readByte();
+    eatBytes(1);
+    dump([elementTypeByte], "element type");
+    var elementType = _helperWasmBytecode.default.tableTypes[elementTypeByte];
+
+    if (typeof elementType === "undefined") {
+      throw new _helperApiError.CompileError("Unknown element type in table: " + toHex(elementType));
+    }
+
+    var limits = parseLimits();
+    return t.table(elementType, limits, name);
+  } // https://webassembly.github.io/spec/binary/types.html#global-types
+
+
+  function parseGlobalType() {
+    var valtypeByte = readByte();
+    eatBytes(1);
+    var type = _helperWasmBytecode.default.valtypes[valtypeByte];
+    dump([valtypeByte], type);
+
+    if (typeof type === "undefined") {
+      throw new _helperApiError.CompileError("Unknown valtype: " + toHex(valtypeByte));
+    }
+
+    var globalTypeByte = readByte();
+    eatBytes(1);
+    var globalType = _helperWasmBytecode.default.globalTypes[globalTypeByte];
+    dump([globalTypeByte], "global type (".concat(globalType, ")"));
+
+    if (typeof globalType === "undefined") {
+      throw new _helperApiError.CompileError("Invalid mutability: " + toHex(globalTypeByte));
+    }
+
+    return t.globalType(type, globalType);
+  } // function parseNameModule() {
+  //   const lenu32 = readVaruint32();
+  //   eatBytes(lenu32.nextIndex);
+  //   console.log("len", lenu32);
+  //   const strlen = lenu32.value;
+  //   dump([strlen], "string length");
+  //   const bytes = readBytes(strlen);
+  //   eatBytes(strlen);
+  //   const value = utf8.decode(bytes);
+  //   return [t.moduleNameMetadata(value)];
+  // }
+  // this section contains an array of function names and indices
+
+
+  function parseNameSectionFunctions() {
+    var functionNames = [];
+    var numberOfFunctionsu32 = readU32();
+    var numbeOfFunctions = numberOfFunctionsu32.value;
+    eatBytes(numberOfFunctionsu32.nextIndex);
+
+    for (var i = 0; i < numbeOfFunctions; i++) {
+      var indexu32 = readU32();
+      var index = indexu32.value;
+      eatBytes(indexu32.nextIndex);
+      var name = readUTF8String();
+      eatBytes(name.nextIndex);
+      functionNames.push(t.functionNameMetadata(name.value, index));
+    }
+
+    return functionNames;
+  }
+
+  function parseNameSectionLocals() {
+    var localNames = [];
+    var numbeOfFunctionsu32 = readU32();
+    var numbeOfFunctions = numbeOfFunctionsu32.value;
+    eatBytes(numbeOfFunctionsu32.nextIndex);
+
+    for (var i = 0; i < numbeOfFunctions; i++) {
+      var functionIndexu32 = readU32();
+      var functionIndex = functionIndexu32.value;
+      eatBytes(functionIndexu32.nextIndex);
+      var numLocalsu32 = readU32();
+      var numLocals = numLocalsu32.value;
+      eatBytes(numLocalsu32.nextIndex);
+
+      for (var _i4 = 0; _i4 < numLocals; _i4++) {
+        var localIndexu32 = readU32();
+        var localIndex = localIndexu32.value;
+        eatBytes(localIndexu32.nextIndex);
+        var name = readUTF8String();
+        eatBytes(name.nextIndex);
+        localNames.push(t.localNameMetadata(name.value, localIndex, functionIndex));
+      }
+    }
+
+    return localNames;
+  } // this is a custom section used for name resolution
+  // https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#name-section
+
+
+  function parseNameSection(remainingBytes) {
+    var nameMetadata = [];
+    var initialOffset = offset;
+
+    while (offset - initialOffset < remainingBytes) {
+      // name_type
+      var sectionTypeByte = readVaruint7();
+      eatBytes(sectionTypeByte.nextIndex); // name_payload_len
+
+      var subSectionSizeInBytesu32 = readVaruint32();
+      eatBytes(subSectionSizeInBytesu32.nextIndex);
+
+      switch (sectionTypeByte.value) {
+        // case 0: {
+        // TODO(sven): re-enable that
+        // Current status: it seems that when we decode the module's name
+        // no name_payload_len is used.
+        //
+        // See https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#name-section
+        //
+        // nameMetadata.push(...parseNameModule());
+        // break;
+        // }
+        case 1:
+          {
+            nameMetadata.push.apply(nameMetadata, _toConsumableArray(parseNameSectionFunctions()));
+            break;
+          }
+
+        case 2:
+          {
+            nameMetadata.push.apply(nameMetadata, _toConsumableArray(parseNameSectionLocals()));
+            break;
+          }
+
+        default:
+          {
+            // skip unknowntokTypes.name && this.tok.value !== "from") {
+      elt = this.startNode();
+      elt.local = this.parseIdent();
+      this.finishNode(elt, "ImportDefaultSpecifier");
+      this.eat(__acorn.tokTypes.comma);
+    }
+    node.specifiers = this.parseImportSpecifierList();
+    node.source = this.eatContextual("from") && this.tok.type === __acorn.tokTypes.string ? this.parseExprAtom() : this.dummyString();
+    if (elt) { node.specifiers.unshift(elt); }
+  }
+  this.semicolon();
+  return this.finishNode(node, "ImportDeclaration")
+};
+
+lp$1.parseImportSpecifierList = function() {
+  var this$1 = this;
+
+  var elts = [];
+  if (this.tok.type === __acorn.tokTypes.star) {
+    var elt = this.startNode();
+    this.next();
+    elt.local = this.eatContextual("as") ? this.parseIdent() : this.dummyIdent();
+    elts.push(this.finishNode(elt, "ImportNamespaceSpecifier"));
+  } else {
+    var indent = this.curIndent, line = this.curLineStart, continuedLine = this.nextLineStart;
+    this.pushCx();
+    this.eat(__acorn.tokTypes.braceL);
+    if (this.curLineStart > continuedLine) { continuedLine = this.curLineStart; }
+    while (!this.closes(__acorn.tokTypes.braceR, indent + (this.curLineStart <= continuedLine ? 1 : 0), line)) {
+      var elt$1 = this$1.startNode();
+      if (this$1.eat(__acorn.tokTypes.star)) {
+        elt$1.local = this$1.eatContextual("as") ? this$1.parseIdent() : this$1.dummyIdent();
+        this$1.finishNode(elt$1, "ImportNamespaceSpecifier");
+      } else {
+        if (this$1.isContextual("from")) { break }
+        elt$1.imported = this$1.parseIdent();
+        if (isDummy(elt$1.imported)) { break }
+        elt$1.local = this$1.eatContextual("as") ? this$1.parseIdent() : elt$1.imported;
+        this$1.finishNode(elt$1, "ImportSpecifier");
+      }
+      elts.push(elt$1);
+      this$1.eat(__acorn.tokTypes.comma);
+    }
+    this.eat(__acorn.tokTypes.braceR);
+    this.popCx();
+  }
+  return elts
+};
+
+lp$1.parseExportSpecifierList = function() {
+  var this$1 = this;
+
+  var elts = [];
+  var indent = this.curIndent, line = this.curLineStart, continuedLine = this.nextLineStart;
+  this.pushCx();
+  this.eat(__acorn.tokTypes.braceL);
+  if (this.curLineStart > continuedLine) { continuedLine = this.curLineStart; }
+  while (!this.closes(__acorn.tokTypes.braceR, indent + (this.curLineStart <= continuedLine ? 1 : 0), line)) {
+    if (this$1.isContextual("from")) { break }
+    var elt = this$1.startNode();
+    elt.local = this$1.parseIdent();
+    if (isDummy(elt.local)) { break }
+    elt.exported = this$1.eatContextual("as") ? this$1.parseIdent() : elt.local;
+    this$1.finishNode(elt, "ExportSpecifier");
+    elts.push(elt);
+    this$1.eat(__acorn.tokTypes.comma);
+  }
+  this.eat(__acorn.tokTypes.braceR);
+  this.popCx();
+  return elts
+};
+
+var lp$2 = LooseParser.prototype;
+
+lp$2.checkLVal = function(expr) {
+  if (!expr) { return expr }
+  switch (expr.type) {
+  case "Identifier":
+  case "MemberExpression":
+    return expr
+
+  case "ParenthesizedExpression":
+    expr.expression = this.checkLVal(expr.expression);
+    return expr
+
+  default:
+    return this.dummyIdent()
+  }
+};
+
+lp$2.parseExpression = function(noIn) {
+  var this$1 = this;
+
+  var start = this.storeCurrentPos();
+  var expr = this.parseMaybeAssign(noIn);
+  if (this.tok.type === __acorn.tokTypes.comma) {
+    var node = this.startNodeAt(start);
+    node.expressions = [expr];
+    while (this.eat(__acorn.tokTypes.comma)) { node.expressions.push(this$1.parseMaybeAssign(noIn)); }
+    return this.finishNode(node, "SequenceExpression")
+  }
+  return expr
+};
+
+lp$2.parseParenExpression = function() {
+  this.pushCx();
+  this.expect(__acorn.tokTypes.parenL);
+  var val = this.parseExpression();
+  this.popCx();
+  this.expect(__acorn.tokTypes.parenR);
+  return val
+};
+
+lp$2.parseMaybeAssign = function(noIn) {
+  if (this.toks.isContextual("yield")) {
+    var node = this.startNode();
+    this.next();
+    if (this.semicolon() || this.canInsertSemicolon() || (this.tok.type !== __acorn.tokTypes.star && !this.tok.type.startsExpr)) {
+      node.delegate = false;
+      node.argument = null;
+    } else {
+      node.delegate = this.eat(__acorn.tokTypes.star);
+      node.argument = this.parseMaybeAssign();
+    }
+    return this.finishNode(node, "YieldExpression")
+  }
+
+  var start = this.storeCurrentPos();
+  var left = this.parseMaybeConditional(noIn);
+  if (this.tok.type.isAssign) {
+    var node$1 = this.startNodeAt(start);
+    node$1.operator = this.tok.value;
+    node$1.left = this.tok.type === __acorn.tokTypes.eq ? this.toAssignable(left) : this.checkLVal(left);
+    this.next();
+    node$1.right = this.parseMaybeAssign(noIn);
+    return this.finishNode(node$1, "AssignmentExpression")
+  }
+  return left
+};
+
+lp$2.parseMaybeConditional = function(noIn) {
+  var start = this.storeCurrentPos();
+  var expr = this.parseExprOps(noIn);
+  if (this.eat(__acorn.tokTypes.question)) {
+    var node = this.startNodeAt(start);
+    node.test = expr;
+    node.consequent = this.parseMaybeAssign();
+    node.alternate = this.expect(__acorn.tokTypes.colon) ? this.parseMaybeAssign(noIn) : this.dummyIdent();
+    return this.finishNode(node, "ConditionalExpression")
+  }
+  return expr
+};
+
+lp$2.parseExprOps = function(noIn) {
+  var start = this.storeCurrentPos();
+  var indent = this.curIndent, line = this.curLineStart;
+  return this.parseExprOp(this.parseMaybeUnary(false), start, -1, noIn, indent, line)
+};
+
+lp$2.parseExprOp = function(left, start, minPrec, noIn, indent, line) {
+  if (this.curLineStart !== line && this.curIndent < indent && this.tokenStartsLine()) { return left }
+  var prec = this.tok.type.binop;
+  if (prec != null && (!noIn || this.tok.type !== __acorn.tokTypes._in)) {
+    if (prec > minPrec) {
+      var node = this.startNodeAt(start);
+      node.left = left;
+      node.operator = this.tok.value;
+      this.next();
+      if (this.curLineStart !== line && this.curIndent < indent && this.tokenStartsLine()) {
+        node.right = this.dummyIdent();
+      } else {
+        var rightStart = this.storeCurrentPos();
+        node.right = this.parseExprOp(this.parseMaybeUnary(false), rightStart, prec, noIn, indent, line);
+      }
+      this.finishNode(node, /&&|\|\|/.test(node.operator) ? "LogicalExpression" : "BinaryExpression");
+      return this.parseExprOp(node, start, minPrec, noIn, indent, line)
+    }
+  }
+  return left
+};
+
+lp$2.parseMaybeUnary = function(sawUnary) {
+  var this$1 = this;
+
+  var start = this.storeCurrentPos(), expr;
+  if (this.options.ecmaVersion >= 8 && this.toks.isContextual("await") &&
+    (this.inAsync || (!this.inFunction && this.options.allowAwaitOutsideFunction))
+  ) {
+    expr = this.parseAwait();
+    sawUnary = true;
+  } else if (this.tok.type.prefix) {
+    var node = this.startNode(), update = this.tok.type === __acorn.tokTypes.incDec;
+    if (!update) { sawUnary = true; }
+    node.operator = this.tok.value;
+    node.prefix = true;
+    this.next();
+    node.argument = this.parseMaybeUnary(true);
+    if (update) { node.argument = this.checkLVal(node.argument); }
+    expr = this.finishNode(node, update ? "UpdateExpression" : "UnaryExpression");
+  } else if (this.tok.type === __acorn.tokTypes.ellipsis) {
+    var node$1 = this.startNode();
+    this.next();
+    node$1.argument = this.parseMaybeUnary(sawUnary);
+    expr = this.finishNode(node$1, "SpreadElement");
+  } else {
+    expr = this.parseExprSubscripts();
+    while (this.tok.type.postfix && !this.canInsertSemicolon()) {
+      var node$2 = this$1.startNodeAt(start);
+      node$2.operator = this$1.tok.value;
+      node$2.prefix = false;
+      node$2.argument = this$1.checkLVal(expr);
+      this$1.next();
+      expr = this$1.finishNode(node$2, "UpdateExpression");
+    }
+  }
+
+  if (!sawUnary && this.eat(__acorn.tokTypes.starstar)) {
+    var node$3 = this.startNodeAt(start);
+    node$3.operator = "**";
+    node$3.left = expr;
+    node$3.right = this.parseMaybeUnary(false);
+    return this.finishNode(node$3, "BinaryExpression")
+  }
+
+  return expr
+};
+
+lp$2.parseExprSubscripts = function() {
+  var start = this.storeCurrentPos();
+  return this.parseSubscripts(this.parseExprAtom(), start, false, this.curIndent, this.curLineStart)
+};
+
+lp$2.parseSubscripts = function(base, start, noCalls, startIndent, line) {
+  var this$1 = this;
+
+  for (;;) {
+    if (this$1.curLineStart !== line && this$1.curIndent <= startIndent && this$1.tokenStartsLine()) {
+      if (this$1.tok.type === __acorn.tokTypes.dot && this$1.curIndent === startIndent)
+        { --startIndent; }
+      else
+        { return base }
+    }
+
+    var maybeAsyncArrow = base.type === "Identifier" && base.name === "async" && !this$1.canInsertSemicolon();
+
+    if (this$1.eat(__acorn.tokTypes.dot)) {
+      var node = this$1.startNodeAt(start);
+      node.object = base;
+      if (this$1.curLineStart !== line && this$1.curIndent <= startIndent && this$1.tokenStartsLine())
+        { node.property = this$1.dummyIdent(); }
+      else
+        { node.property = this$1.parsePropertyAccessor() || this$1.dummyIdent(); }
+      node.computed = false;
+      base = this$1.finishNode(node, "MemberExpression");
+    } else if (this$1.tok.type === __acorn.tokTypes.bracketL) {
+      this$1.pushCx();
+      this$1.next();
+      var node$1 = this$1.startNodeAt(start);
+      node$1.object = base;
+      node$1.property = this$1.parseExpression();
+      node$1.computed = true;
+      this$1.popCx();
+      this$1.expect(__acorn.tokTypes.bracketR);
+      base = this$1.finishNode(node$1, "MemberExpression");
+    } else if (!noCalls && this$1.tok.type === __acorn.tokTypes.parenL) {
+      var exprList = this$1.parseExprList(__acorn.tokTypes.parenR);
+      if (maybeAsyncArrow && this$1.eat(__acorn.tokTypes.arrow))
+        { return this$1.parseArrowExpression(this$1.startNodeAt(start), exprList, true) }
+      var node$2 = this$1.startNodeAt(start);
+      node$2.callee = base;
+      node$2.arguments = exprList;
+      base = this$1.finishNode(node$2, "CallExpression");
+    } else if (this$1.tok.type === __acorn.tokTypes.backQuote) {
+      var node$3 = this$1.startNodeAt(start);
+      node$3.tag = base;
+      node$3.quasi = this$1.parseTemplate();
+      base = this$1.finishNode(node$3, "TaggedTemplateExpression");
+    } else {
+      return base
+    }
+  }
+};
+
+lp$2.parseExprAtom = function() {
+  var node;
+  switch (this.tok.type) {
+  case __acorn.tokTypes._this:
+  case __acorn.tokTypes._super:
+    var type = this.tok.type === __acorn.tokTypes._this ? "ThisExpression" : "Super";
+    node = this.startNode();
+    this.next();
+    return this.finishNode(node, type)
+
+  case __acorn.tokTypes.name:
+    var start = this.storeCurrentPos();
+    var id = this.parseIdent();
+    var isAsync = false;
+    if (id.name === "async" && !this.canInsertSemicolon()) {
+      if (this.eat(__acorn.tokTypes._function))
+        { return this.parseFunction(this.startNodeAt(start), false, true) }
+      if (this.tok.type === __acorn.tokTypes.name) {
+        id = this.parseIdent();
+        isAsync = true;
+      }
+    }
+    return this.eat(__acorn.tokTypes.arrow) ? this.parseArrowExpression(this.startNodeAt(start), [id], isAsync) : id
+
+  case __acorn.tokTypes.regexp:
+    node = this.startNode();
+    var val = this.tok.value;
+    node.regex = {pattern: val.pattern, flags: val.flags};
+    node.value = val.value;
+    node.raw = this.input.slice(this.tok.start, this.tok.end);
+    this.next();
+    return this.finishNode(node, "Literal")
+
+  case __acorn.tokTypes.num: case __acorn.tokTypes.string:
+    node = this.startNode();
+    node.value = this.tok.value;
+    node.raw = this.input.slice(this.tok.start, this.tok.end);
+    this.next();
+    return this.finishNode(node, "Literal")
+
+  case __acorn.tokTypes._null: case __acorn.tokTypes._true: case __acorn.tokTypes._false:
+    node = this.startNode();
+    node.value = this.tok.type === __acorn.tokTypes._null ? null : this.tok.type === __acorn.tokTypes._true;
+    node.raw = this.tok.type.keyword;
+    this.next();
+    return this.finishNode(node, "Literal")
+
+  case __acorn.tokTypes.parenL:
+    var parenStart = this.storeCurrentPos();
+    this.next();
+    var inner = this.parseExpression();
+    this.expect(__acorn.tokTypes.parenR);
+    if (this.eat(__acorn.tokTypes.arrow)) {
+      // (a,)=>a // SequenceExpression makes dummy in the last hole. Drop the dummy.
+      var params = inner.expressions || [inner];
+      if (params.length && isDummy(params[params.length - 1]))
+        { params.pop(); }
+      return this.parseArrowExpression(this.startNodeAt(parenStart), params)
+    }
+    if (this.options.preserveParens) {
+      var par = this.startNodeAt(parenStart);
+      par.expression = inner;
+      inner = this.finishNode(par, "ParenthesizedExpression");
+    }
+    return inner
+
+  case __acorn.tokTypes.bracketL:
+    node = this.startNode();
+    node.elements = this.parseExprList(__acorn.tokTypes.bracketR, true);
+    return this.finishNode(node, "ArrayExpression")
+
+  case __acorn.tokTypes.braceL:
+    return this.parseObj()
+
+  case __acorn.tokTypes._class:
+    return this.parseClass(false)
+
+  case __acorn.tokTypes._function:
+    node = this.startNode();
+    this.next();
+    return this.parseFunction(node, false)
+
+  case __acorn.tokTypes._new:
+    return this.parseNew()
+
+  case __acorn.tokTypes.backQuote:
+    return this.parseTemplate()
+
+  default:
+    return this.dummyIdent()
+  }
+};
+
+lp$2.parseNew = function() {
+  var node = this.startNode(), startIndent = this.curIndent, line = this.curLineStart;
+  var meta = this.parseIdent(true);
+  if (this.options.ecmaVersion >= 6 && this.eat(__acorn.tokTypes.dot)) {
+    node.meta = meta;
+    node.property = this.parseIdent(true);
+    return this.finishNode(node, "MetaProperty")
+  }
+  var start = this.storeCurrentPos();
+  node.callee = this.parseSubscripts(this.parseExprAtom(), start, true, startIndent, line);
+  if (this.tok.type === __acorn.tokTypes.parenL) {
+    node.arguments = this.parseExprList(__acorn.tokTypes.parenR);
+  } else {
+    node.arguments = [];
+  }
+  return this.finishNode(node, "NewExpression")
+};
+
+lp$2.parseTemplateElement = function() {
+  var elem = this.startNode();
+
+  // The loose parser accepts invalid unicode escapes even in untagged templates.
+  if (this.tok.type === __acorn.tokTypes.invalidTemplate) {
+    elem.value = {
+      raw: this.tok.value,
+      cooked: null
+    };
+  } else {
+    elem.value = {
+      raw: this.input.slice(this.tok.start, this.tok.end).replace(/\r\n?/g, "\n"),
+      cooked: this.tok.value
+    };
+  }
+  this.next();
+  elem.tail = this.tok.type === __acorn.tokTypes.backQuote;
+  return this.finishNode(elem, "TemplateElement")
+};
+
+lp$2.parseTemplate = function() {
+  var this$1 = this;
+
+  var node = this.startNode();
+  this.next();
+  node.expressions = [];
+  var curElt = this.parseTemplateElement();
+  node.quasis = [curElt];
+  while (!curElt.tail) {
+    this$1.next();
+    node.expressions.push(this$1.parseExpression());
+    if (this$1.expect(__acorn.tokTypes.braceR)) {
+      curElt = this$1.parseTemplateElement();
+    } else {
+      curElt = this$1.startNode();
+      curElt.value = {cooked: "", raw: ""};
+      curElt.tail = true;
+      this$1.finishNode(curElt, "TemplateElement");
+    }
+    node.quasis.push(curElt);
+  }
+  this.expect(__acorn.tokTypes.backQuote);
+  return this.finishNode(node, "TemplateLiteral")
+};
+
+lp$2.parseObj = function() {
+  var this$1 = this;
+
+  var node = this.startNode();
+  node.properties = [];
+  this.pushCx();
+  var indent = this.curIndent + 1, line = this.curLineStart;
+  this.eat(__acorn.tokTypes.braceL);
+  if (this.curIndent + 1 < indent) { indent = this.curIndent; line = this.curLineStart; }
+  while (!this.closes(__acorn.tokTypes.braceR, indent, line)) {
+    var prop = this$1.startNode(), isGenerator = (void 0), isAsync = (void 0), start = (void 0);
+    if (this$1.options.ecmaVersion >= 9 && this$1.eat(__acorn.tokTypes.ellipsis)) {
+      prop.argument = this$1.parseMaybeAssign();
+      node.properties.push(this$1.finishNode(prop, "SpreadElement"));
+      this$1.eat(__acorn.tokTypes.comma);
+      continue
+    }
+    if (this$1.options.ecmaVersion >= 6) {
+      start = this$1.storeCurrentPos();
+      prop.method = false;
+      prop.shorthand = false;
+      isGenerator = this$1.eat(__acorn.tokTypes.star);
+    }
+    this$1.parsePropertyName(prop);
+    if (this$1.toks.isAsyncProp(prop)) {
+      isAsync = true;
+      isGenerator = this$1.options.ecmaVersion >= 9 && this$1.eat(__acorn.tokTypes.star);
+      function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function findParent(_ref, cb) {
+  var parentPath = _ref.parentPath;
+
+  if (parentPath == null) {
+    throw new Error("node is root");
+  }
+
+  var currentPath = parentPath;
+
+  while (cb(currentPath) !== false) {
+    // Hit the root node, stop
+    // $FlowIgnore
+    if (currentPath.parentPath == null) {
+      return null;
+    } // $FlowIgnore
+
+
+    currentPath = currentPath.parentPath;
+  }
+
+  return currentPath.node;
+}
+
+function insertBefore(context, newNode) {
+  return insert(context, newNode);
+}
+
+function insertAfter(context, newNode) {
+  return insert(context, newNode, 1);
+}
+
+function insert(_ref2, newNode) {
+  var node = _ref2.node,
+      inList = _ref2.inList,
+      parentPath = _ref2.parentPath,
+      parentKey = _ref2.parentKey;
+  var indexOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+  if (!inList) {
+    throw new Error('inList' + " error: " + ("insert can only be used for nodes that are within lists" || "unknown"));
+  }
+
+  if (!(parentPath != null)) {
+    throw new Error('parentPath != null' + " error: " + ("Can not remove root node" || "unknown"));
+  }
+
+  // $FlowIgnore
+  var parentList = parentPath.node[parentKey];
+  var indexInList = parentList.findIndex(function (n) {
+    return n === node;
+  });
+  parentList.splice(indexInList + indexOffset, 0, newNode);
+}
+
+function remove(_ref3) {
+  var node = _ref3.node,
+      parentKey = _ref3.parentKey,
+      parentPath = _ref3.parentPath;
+
+  if (!(parentPath != null)) {
+    throw new Error('parentPath != null' + " error: " + ("Can not remove root node" || "unknown"));
+  }
+
+  // $FlowIgnore
+  var parentNode = parentPath.node; // $FlowIgnore
+
+  var parentProperty = parentNode[parentKey];
+
+  if (Array.isArray(parentProperty)) {
+    // $FlowIgnore
+    parentNode[parentKey] = parentProperty.filter(function (n) {
+      return n !== node;
+    });
+  } else {
+    // $FlowIgnore
+    delete parentNode[parentKey];
+  }
+
+  node._deleted = true;
+}
+
+function stop(context) {
+  context.shouldStop = true;
+}
+
+function replaceWith(context, newNode) {
+  // $FlowIgnore
+  var parentNode = context.parentPath.node; // $FlowIgnore
+
+  var parentProperty = parentNode[context.parentKey];
+
+  if (Array.isArray(parentProperty)) {
+    var indexInList = parentProperty.findIndex(function (n) {
+      return n === context.node;
+    });
+    parentProperty.splice(indexInList, 1, newNode);
+  } else {
+    // $FlowIgnore
+    parentNode[context.parentKey] = newNode;
+  }
+
+  context.node._deleted = true;
+  context.node = newNode;
+} // bind the context to the first argument of node operations
+
+
+function bindNodeOperations(operations, context) {
+  var keys = Object.keys(operations);
+  var boundOperations = {};
+  keys.forEach(function (key) {
+    boundOperations[key] = operations[key].bind(null, context);
+  });
+  return boundOperations;
+}
+
+function createPathOperations(context) {
+  // $FlowIgnore
+  return bindNodeOperations({
+    findParent: findParent,
+    replaceWith: replaceWith,
+    remove: remove,
+    insertBefore: insertBefore,
+    insertAfter: insertAfter,
+    stop: stop
+  }, context);
+}
+
+export function createPath(context) {
+  var path = _extends({}, context); // $FlowIgnore
+
+
+  Object.assign(path, createPathOperations(path)); // $FlowIgnore
+
+  return path;
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    'use strict';
+
+var schema = {
+  additionalItems: subschema('additionalItems'),
+  items: subschema('items'),
+  contains: subschema('contains'),
+  additionalProperties: subschema('additionalProperties'),
+  propertyNames: subschema('propertyNames'),
+  not: subschema('not'),
+  allOf: [
+    subschema('allOf_0'),
+    subschema('allOf_1'),
+    {
+      items: [
+        subschema('items_0'),
+        subschema('items_1'),
+      ]
+    }
+  ],
+  anyOf: [
+    subschema('anyOf_0'),
+    subschema('anyOf_1'),
+  ],
+  oneOf: [
+    subschema('oneOf_0'),
+    subschema('oneOf_1'),
+  ],
+  definitions: {
+    foo: subschema('definitions_foo'),
+    bar: subschema('definitions_bar'),
+  },
+  properties: {
+    foo: subschema('properties_foo'),
+    bar: subschema('properties_bar'),
+  },
+  patternProperties: {
+    foo: subschema('patternProperties_foo'),
+    bar: subschema('patternProperties_bar'),
+  },
+  dependencies: {
+    foo: subschema('dependencies_foo'),
+    bar: subschema('dependencies_bar'),
+  },
+  required: ['foo', 'bar']
+};
+
+
+function subschema(keyword) {
+  var sch = {
+    properties: {},
+    additionalProperties: false,
+    additionalItems: false,
+    anyOf: [
+      {format: 'email'},
+      {format: 'hostname'}
+    ]
+  };
+  sch.properties['foo_' + keyword] = {title: 'foo'};
+  sch.properties['bar_' + keyword] = {title: 'bar'};
+  return sch;
+}
+
+
+module.exports = {
+  schema: schema,
+
+  // schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex
+  expectedCalls: [[schema, '', schema, undefined, undefined, undefined, undefined]]
+    .concat(expectedCalls('additionalItems'))
+    .concat(expectedCalls('items'))
+    .concat(expectedCalls('contains'))
+    .concat(expectedCalls('additionalProperties'))
+    .concat(expectedCalls('propertyNames'))
+    .concat(expectedCalls('not'))
+    .concat(expectedCallsChild('allOf', 0))
+    .concat(expectedCallsChild('allOf', 1))
+    .concat([
+      [schema.allOf[2], '/allOf/2', schema, '', 'allOf', schema, 2],
+      [schema.allOf[2].items[0], '/allOf/2/items/0', schema, '/allOf/2', 'items', schema.allOf[2], 0],
+      [schema.allOf[2].items[0].properties.foo_items_0, '/allOf/2/items/0/properties/foo_items_0', schema, '/allOf/2/items/0', 'properties', schema.allOf[2].items[0], 'foo_items_0'],
+      [schema.allOf[2].items[0].properties.bar_items_0, '/allOf/2/items/0/properties/bar_items_0', schema, '/allOf/2/items/0', 'properties', schema.allOf[2].items[0], 'bar_items_0'],
+      [schema.allOf[2].items[0].anyOf[0], '/allOf/2/items/0/anyOf/0', schema, '/allOf/2/items/0', 'anyOf', schema.allOf[2].items[0], 0],
+      [schema.allOf[2].items[0].anyOf[1], '/allOf/2/items/0/anyOf/1', schema, '/allOf/2/items/0', 'anyOf', schema.allOf[2].items[0], 1],
+
+      [schema.allOf[2].items[1], '/allOf/2/items/1', schema, '/allOf/2', 'items', schema.allOf[2], 1],
+      [schema.allOf[2].items[1].properties.foo_items_1, '/allOf/2/items/1/properties/foo_items_1', schema, '/allOf/2/items/1', 'properties', schema.allOf[2].items[1], 'foo_items_1'],
+      [schema.allOf[2].items[1].properties.bar_items_1, '/allOf/2/items/1/properties/bar_items_1', schema, '/allOf/2/items/1', 'properties', schema.allOf[2].items[1], 'bar_items_1'],
+      [schema.allOf[2].items[1].anyOf[0], '/allOf/2/items/1/anyOf/0', schema, '/allOf/2/items/1', 'anyOf', schema.allOf[2].items[1], 0],
+      [schema.allOf[2].items[1].anyOf[1], '/allOf/2/items/1/anyOf/1', schema, '/allOf/2/items/1', 'anyOf', schema.allOf[2].items[1], 1]
+    ])
+    .concat(expectedCallsChild('anyOf', 0))
+    .concat(expectedCallsChild('anyOf', 1))
+    .concat(expectedCallsChild('oneOf', 0))
+    .concat(expectedCallsChild('oneOf', 1))
+    .concat(expectedCallsChild('definitions', 'foo'))
+    .concat(expectedCallsChild('definitions', 'bar'))
+    .concat(expectedCallsChild('properties', 'foo'))
+    .concat(expectedCallsChild('properties', 'bar'))
+    .concat(expectedCallsChild('patternProperties', 'foo'))
+    .concat(expectedCallsChild('patternProperties', 'bar'))
+    .concat(expectedCallsChild('dependencies', 'foo'))
+    .concat(expectedCallsChild('dependencies', 'bar'))
+};
+
+
+fu/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+"use strict";
+
+const concord = require("./concord");
+const DescriptionFileUtils = require("./DescriptionFileUtils");
+const forEachBail = require("./forEachBail");
+
+module.exports = class ConcordExtensionsPlugin {
+	constructor(source, options, target) {
+		this.source = source;
+		this.options = options;
+		this.target = target;
+	}
+
+	apply(resolver) {
+		const target = resolver.ensureHook(this.target);
+		resolver
+			.getHook(this.source)
+			.tapAsync(
+				"ConcordExtensionsPlugin",
+				(request, resolveContext, callback) => {
+					const concordField = DescriptionFileUtils.getField(
+						request.descriptionFileData,
+						"concord"
+					);
+					if (!concordField) return callback();
+					const extensions = concord.getExtensions(
+						request.context,
+						concordField
+					);
+					if (!extensions) return callback();
+					forEachBail(
+						extensions,
+						(appending, callback) => {
+							const obj = Object.assign({}, request, {
+								path: request.path + appending,
+								relativePath:
+									request.relativePath && request.relativePath + appending
+							});
+							resolver.doResolve(
+								target,
+								obj,
+								"concord extension: " + appending,
+								resolveContext,
+								callback
+							);
+						},
+						(err, result) => {
+							if (err) return callback(err);
+
+							// Don't allow other processing
+							if (result === undefined) return callback(null, null);
+							callback(null, result);
+						}
+					);
+				}
+			);
+	}
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               /*
+  Copyright (C) 2015 Yusuke Suzuki <utatane.tea@gmail.com>
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+"use strict";
+
+const READ = 0x1;
+const WRITE = 0x2;
+const RW = READ | WRITE;
+
+/**
+ * A Reference represents a single occurrence of an identifier in code.
+ * @class Reference
+ */
+class Reference {
+    constructor(ident, scope, flag, writeExpr, maybeImplicitGlobal, partial, init) {
+
+        /**
+         * Identifier syntax node.
+         * @member {espreeIdentifier} Reference#identifier
+         */
+        this.identifier = ident;
+
+        /**
+         * Reference to the enclosing Scope.
+         * @member {Scope} Reference#from
+         */
+        this.from = scope;
+
+        /**
+         * Whether the reference comes from a dynamic scope (such as 'eval',
+         * 'with', etc.), and may be trapped by dynamic scopes.
+         * @member {boolean} Reference#tainted
+         */
+        this.tainted = false;
+
+        /**
+         * The variable this reference is resolved with.
+         * @member {Variable} Reference#resolved
+         */
+        this.resolved = null;
+
+        /**
+         * The read-write mode of the reference. (Value is one of {@link
+         * Reference.READ}, {@link Reference.RW}, {@link Reference.WRITE}).
+         * @member {number} Reference#flag
+         * @private
+         */
+        this.flag = flag;
+        if (this.isWrite()) {
+
+            /**
+             * If reference is writeable, this is the tree being written to it.
+             * @member {espreeNode} Reference#writeExpr
+             */
+            this.writeExpr = writeExpr;
+
+            /**
+             * Whether the Reference might refer to a partial value of writeExpr.
+             * @member {boolean} Reference#partial
+             */
+            this.partial = partial;
+
+            /**
+             * Whether the Reference is to write of initialization.
+             * @member {boolean} Reference#init
+             */
+            this.init = init;
+        }
+        this.__maybeImplicitGlobal = maybeImplicitGlobal;
+    }
+
+    /**
+     * Whether the reference is static.
+     * @method Reference#isStatic
+     * @returns {boolean} static
+     */
+    isStatic() {
+        return !this.tainted && this.resolved && this.resolved.scope.isStatic();
+    }
+
+    /**
+     * Whether the reference is writeable.
+     * @method Reference#isWrite
+     * @returns {boolean} write
+     */
+    isWrite() {
+        return !!(this.flag & Reference.WRITE);
+    }
+
+    /**
+     * Whether the reference is readable.
+     * @method Reference#isRead
+     * @returns {boolean} read
+     */
+    isRead() {
+        return !!(this.flag & Reference.READ);
+    }
+
+    /**
+     * Whether the reference is read-only.
+     * @method Reference#isReadOnly
+     * @returns {boolean} read only
+     */
+    isReadOnly() {
+        return this.flag === Reference.READ;
+    }
+
+    /**
+     * Whether the reference is write-only.
+     * @method Reference#isWriteOnly
+     * @returns {boolean} write only
+     */
+    isWriteOnly() {
+        return this.flag === Reference.WRITE;
+    }
+
+    /**
+     * Whether the reference is read-write.
+     * @method Reference#isReadWrite
+     * @returns {boolean} read write
+     */
+    isReadWrite() {
+        return this.flag === Reference.RW;
+    }
+}
+
+/**
+ * @constant Reference.READ
+ * @private
+ */
+Reference.READ = READ;
+
+/**
+ * @constant Reference.WRITE
+ * @private
+ */
+Reference.WRITE = WRITE;
+
+/**
+ * @constant Reference.RW
+ * @private
+ */
+Reference.RW = RW;
+
+module.exports = Reference;
+
+/* vim: set sw=4 ts=4 et tw=80 : */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  

@@ -1,0 +1,1482 @@
+ar $data = 'data' + ($dataLvl || '');
+  var $valid = 'valid' + $lvl;
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $currentBaseId = $it.baseId,
+    $prevValid = 'prevValid' + $lvl,
+    $passingSchemas = 'passingSchemas' + $lvl;
+  out += 'var ' + ($errs) + ' = errors , ' + ($prevValid) + ' = false , ' + ($valid) + ' = false , ' + ($passingSchemas) + ' = null; ';
+  var $wasComposite = it.compositeRule;
+  it.compositeRule = $it.compositeRule = true;
+  var arr1 = $schema;
+  if (arr1) {
+    var $sch, $i = -1,
+      l1 = arr1.length - 1;
+    while ($i < l1) {
+      $sch = arr1[$i += 1];
+      if ((it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all))) {
+        $it.schema = $sch;
+        $it.schemaPath = $schemaPath + '[' + $i + ']';
+        $it.errSchemaPath = $errSchemaPath + '/' + $i;
+        out += '  ' + (it.validate($it)) + ' ';
+        $it.baseId = $currentBaseId;
+      } else {
+        out += ' var ' + ($nextValid) + ' = true; ';
+      }
+      if ($i) {
+        out += ' if (' + ($nextValid) + ' && ' + ($prevValid) + ') { ' + ($valid) + ' = false; ' + ($passingSchemas) + ' = [' + ($passingSchemas) + ', ' + ($i) + ']; } else { ';
+        $closingBraces += '}';
+      }
+      out += ' if (' + ($nextValid) + ') { ' + ($valid) + ' = ' + ($prevValid) + ' = true; ' + ($passingSchemas) + ' = ' + ($i) + '; }';
+    }
+  }
+  it.compositeRule = $it.compositeRule = $wasComposite;
+  out += '' + ($closingBraces) + 'if (!' + ($valid) + ') {   var err =   '; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('oneOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { passingSchemas: ' + ($passingSchemas) + ' } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should match exactly one schema in oneOf\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema: validate.schema' + ($schemaPath) + ' , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError(vErrors); ';
+    } else {
+      out += ' validate.errors = vErrors; return false; ';
+    }
+  }
+  out += '} else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; }';
+  if (it.opts.allErrors) {
+    out += ' } ';
+  }
+  return out;
+}
+
+},{}],32:[function(require,module,exports){
+'use strict';
+module.exports = function generate_pattern(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $isData = it.opts.$data && $schema && $schema.$data,
+    $schemaValue;
+  if ($isData) {
+    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    $schemaValue = 'schema' + $lvl;
+  } else {
+    $schemaValue = $schema;
+  }
+  var $regexp = $isData ? '(new RegExp(' + $schemaValue + '))' : it.usePattern($schema);
+  out += 'if ( ';
+  if ($isData) {
+    out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'string\') || ';
+  }
+  out += ' !' + ($regexp) + '.test(' + ($data) + ') ) {   ';
+  var $$outStack = $$outStack || [];
+  $$outStack.push(out);
+  out = ''; /* istanbul ignore else */
+  if (it.createErrors !== false) {
+    out += ' { keyword: \'' + ('pattern') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { pattern:  ';
+    if ($isData) {
+      out += '' + ($schemaValue);
+    } else {
+      out += '' + (it.util.toQuotedString($schema));
+    }
+    out += '  } ';
+    if (it.opts.messages !== false) {
+      out += ' , message: \'should match pattern "';
+      if ($isData) {
+        out += '\' + ' + ($schemaValue) + ' + \'';
+      } else {
+        out += '' + (it.util.escapeQuotes($schema));
+      }
+      out += '"\' ';
+    }
+    if (it.opts.verbose) {
+      out += ' , schema:  ';
+      if ($isData) {
+        out += 'validate.schema' + ($schemaPath);
+      } else {
+        out += '' + (it.util.toQuotedString($schema));
+      }
+      out += '         , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+    }
+    out += ' } ';
+  } else {
+    out += ' {} ';
+  }
+  var __err = out;
+  out = $$outStack.pop();
+  if (!it.compositeRule && $breakOnError) {
+    /* istanbul ignore if */
+    if (it.async) {
+      out += ' throw new ValidationError([' + (__err) + ']); ';
+    } else {
+      out += ' validate.errors = [' + (__err) + ']; return false; ';
+    }
+  } else {
+    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+  }
+  out += '} ';
+  if ($breakOnError) {
+    out += ' else { ';
+  }
+  return out;
+}
+
+},{}],33:[function(require,module,exports){
+'use strict';
+module.exports = function generate_properties(it, $keyword, $ruleType) {
+  var out = ' ';
+  var $lvl = it.level;
+  var $dataLvl = it.dataLevel;
+  var $schema = it.schema[$keyword];
+  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  var $breakOnError = !it.opts.allErrors;
+  var $data = 'data' + ($dataLvl || '');
+  var $errs = 'errs__' + $lvl;
+  var $it = it.util.copy(it);
+  var $closingBraces = '';
+  $it.level++;
+  var $nextValid = 'valid' + $it.level;
+  var $key = 'key' + $lvl,
+    $idx = 'idx' + $lvl,
+    $dataNxt = $it.dataLevel = it.dataLevel + 1,
+    $nextData = 'data' + $dataNxt,
+    $dataProperties = 'dataProperties' + $lvl;
+  var $schemaKeys = Object.keys($schema || {}).filter(notProto),
+    $pProperties = it.schema.patternProperties || {},
+    $pPropertyKeys = Object.keys($pProperties).filter(notProto),
+    $aProperties = it.schema.additionalProperties,
+    $someProperties = $schemaKeys.length || $pPropertyKeys.length,
+    $noAdditional = $aProperties === false,
+    $additionalIsSchema = typeof $aProperties == 'object' && Object.keys($aProperties).length,
+    $removeAdditional = it.opts.removeAdditional,
+    $checkAdditional = $noAdditional || $additionalIsSchema || $removeAdditional,
+    $ownProperties = it.opts.ownProperties,
+    $currentBaseId = it.baseId;
+  var $required = it.schema.required;
+  if ($required && !(it.opts.$data && $required.$data) && $required.length < it.opts.loopRequired) {
+    var $requiredHash = it.util.toHash($required);
+  }
+
+  function notProto(p) {
+    return p !== '__proto__';
+  }
+  out += 'var ' + ($errs) + ' = errors;var ' + ($nextValid) + ' = true;';
+  if ($ownProperties) {
+    out += ' var ' + ($dataProperties) + ' = undefined;';
+  }
+  if ($checkAdditional) {
+    if ($ownProperties) {
+      out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (var ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { var ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
+    } else {
+      out += ' for (var ' + ($key) + ' in ' + ($data) + ') { ';
+    }
+    if ($someProperties) {
+      out += ' var isAdditional' + ($lvl) + ' = !(false ';
+      if ($schemaKeys.length) {
+        if ($schemaKeys.length > 8) {
+          out += ' || validate.schema' + ($schemaPath) + '.hasOwnProperty(' + ($key) + ') ';
+        } else {
+          var arr1 = $schemaKeys;
+          if (arr1) {
+            var $propertyKey, i1 = -1,
+              l1 = arr1.length - 1;
+            while (i1 < l1) {
+              $propertyKey = arr1[i1 += 1];
+              out += ' || ' + ($key) + ' == ' + (it.util.toQuotedString($propertyKey)) + ' ';
+            }
+          }
+        }
+      }
+      if ($pPropertyKeys.length) {
+        var arr2 = $pPropertyKeys;
+        if (arr2) {
+          var $pProperty, $i = -1,
+            l2 = arr2.length - 1;
+          while ($i < l2) {
+            $pProperty = arr2[$i += 1];
+            out += ' || ' + (it.usePattern($pProperty)) + '.test(' + ($key) + ') ';
+          }
+        }
+      }
+      out += ' ); if (isAdditional' + ($lvl) + ') { ';
+    }
+    if ($removeAdditional == 'all') {
+      out += ' delete ' + ($data) + '[' + ($key) + ']; ';
+    } else {
+      var $currentErrorPath = it.errorPath;
+      var $additionalProperty = '\' + ' + $key + ' + \'';
+      if (it.opts._errorDataPathProperty) {
+        it.errorPath = it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+      }
+      if ($noAdditional) {
+        if ($removeAdditional) {
+          out += ' delete ' + ($data) + '[' + ($key) + ']; ';
+        } else {
+          out += ' ' + ($nextValid) + ' = false; ';
+          var $currErrSchemaPath = $errSchemaPath;
+          $errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          var $$outStack = $$outStack || [];
+          $$outStack.push(out);
+          out = ''; /* istanbul ignore else */
+          if (it.createErrors !== false) {
+            out += ' { keyword: \'' + ('additionalProperties') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { additionalProperty: \'' + ($additionalProperty) + '\' } ';
+            if (it.opts.messages !== false) {
+              out += ' , message: \'';
+              if (it.opts._errorDataPathProperty) {
+                out += 'is an invalid additional property';
+              } else {
+                out += 'should NOT have additional properties';
+              }
+              out += '\' ';
+            }
+            if (it.opts.verbose) {
+              out += ' , schema: false , parentSchema: validate.schema' + (it.schemaPath) + ' , data: ' + ($data) + ' ';
+            }
+            out += ' } ';
+          } else {
+            out += ' {} ';
+          }
+          var __err = out;
+          out = $$outStack.pop();
+          if (!it.compositeRule && $breakOnError) {
+            /* istanbul ignore if */
+            if (it.async) {
+              out += ' throw new ValidationError([' + (__err) + ']); ';
+            } else {
+              out += ' validate.errors = [' + (__err) + ']; return false; ';
+            }
+          } else {
+            out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          }
+          $errSchemaPath = $currErrSchemaPath;
+          if ($breakOnError) {
+            out += ' break; ';
+          }
+        }
+      } else if ($additionalIsSchema) {
+        if ($removeAdditional == 'failing') {
+          out += ' var ' + ($errs) + ' = errors;  ';
+          var $wasComposite = it.compositeRule;
+          it.compositeRule = $it.compositeRule = true;
+          $it.schema = $aProperties;
+          $it.schemaPath = it.schemaPath + '.additionalProperties';
+          $it.errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+          var $passData = $data + '[' + $key + ']';
+          $it.dataPathArr[$dataNxt] = $key;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          out += ' if (!' + ($nextValid) + ') { errors = ' + ($errs) + '; if (validate.errors !== null) { if (errors) validate.errors.length = errors; else validate.errors = null; } delete ' + ($data) + '[' + ($key) + ']; }  ';
+          it.compositeRule = $it.compositeRule = $wasComposite;
+        } else {
+          $it.schema = $aProperties;
+          $it.schemaPath = it.schemaPath + '.additionalProperties';
+          $it.errSchemaPath = it.errSchemaPath + '/additionalProperties';
+          $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
+          var $passData = $data + '[' + $key + ']';
+          $it.dataPathArr[$dataNxt] = $key;
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          } else {
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+          }
+          if ($breakOnError) {
+            out += ' if (!' + ($nextValid) + ') break; ';
+          }
+        }
+      }
+      it.errorPath = $currentErrorPath;
+    }
+    if ($someProperties) {
+      out += ' } ';
+    }
+    out += ' }  ';
+    if ($breakOnError) {
+      out += ' if (' + ($nextValid) + ') { ';
+      $closingBraces += '}';
+    }
+  }
+  var $useDefaults = it.opts.useDefaults && !it.compositeRule;
+  if ($schemaKeys.length) {
+    var arr3 = $schemaKeys;
+    if (arr3) {
+      var $propertyKey, i3 = -1,
+        l3 = arr3.length - 1;
+      while (i3 < l3) {
+        $propertyKey = arr3[i3 += 1];
+        var $sch = $schema[$propertyKey];
+        if ((it.opts.strictKeywords ? (typeof $sch == 'object' && Object.keys($sch).length > 0) || $sch === false : it.util.schemaHasRules($sch, it.RULES.all))) {
+          var $prop = it.util.getProperty($propertyKey),
+            $passData = $data + $prop,
+            $hasDefault = $useDefaults && $sch.default !== undefined;
+          $it.schema = $sch;
+          $it.schemaPath = $schemaPath + $prop;
+          $it.errSchemaPath = $errSchemaPath + '/' + it.util.escapeFragment($propertyKey);
+          $it.errorPath = it.util.getPath(it.errorPath, $propertyKey, it.opts.jsonPointers);
+          $it.dataPathArr[$dataNxt] = it.util.toQuotedString($propertyKey);
+          var $code = it.validate($it);
+          $it.baseId = $currentBaseId;
+          if (it.util.varOccurences($code, $nextData) < 2) {
+            $code = it.util.varReplace($code, $nextData, $passData);
+            var $useData = $passData;
+          } else {
+            var $useData = $nextData;
+            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ';
+          }
+          if ($hasDefault) {
+            out += ' ' + ($code) + ' ';
+          } else {
+            if ($requiredHash && $requiredHash[$propertyKey]) {
+              out += ' if ( ' + ($useData) + ' === undefined ';
+              if ($ownProperties) {
+                out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
+              }
+              out += ') { ' + ($nextValid) + ' = false; ';
+              var $currentErrorPath = it.errorPath,
+                $currErrSchemaPath = $errSchemaPath,
+                $missingProperty = it.util.escapeQuotes($propertyKey);
+              if (it.opts._errorDataPathProperty) {
+                it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
+              }
+              $errSchemaPath = it.errSchemaPath + '/required';
+              var $$outStack = $$outStack || [];
+              $$outStack.push(out);
+              out = ''; /* istanbul ignore else */
+              if (it.createErrors !== false) {
+                out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
+                if (it.opts.messages !== false) {
+                  out += ' , message: \'';
+                  if (it.opts._errorDataPathProperty) {
+                    out += 'is a required property';
+                  } else {
+                    out += 'should have required propert// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS-IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview
+ * Expression evaluation utilities. Expression format is very similar to XPath.
+ *
+ * Expression details:
+ * - Of format A/B/C, which will evaluate getChildNode('A').getChildNode('B').
+ *    getChildNodes('C')|getChildNodeValue('C')|getChildNode('C') depending on
+ *    call
+ * - If expression ends with '/name()', will get the name() of the node
+ *    referenced by the preceding path.
+ * - If expression ends with '/count()', will get the count() of the nodes that
+ *    match the expression referenced by the preceding path.
+ * - If expression ends with '?', the value is OK to evaluate to null. This is
+ *    not enforced by the expression evaluation functions, instead it is
+ *    provided as a flag for client code which may ignore depending on usage
+ * - If expression has [INDEX], will use getChildNodes().getByIndex(INDEX)
+ *
+ */
+
+
+goog.provide('goog.ds.Expr');
+
+goog.require('goog.ds.BasicNodeList');
+goog.require('goog.ds.EmptyNodeList');
+goog.require('goog.string');
+
+
+
+/**
+ * Create a new expression. An expression uses a string expression language, and
+ * from this string and a passed in DataNode can evaluate to a value, DataNode,
+ * or a DataNodeList.
+ *
+ * @param {string=} opt_expr The string expression.
+ * @constructor
+ * @final
+ */
+goog.ds.Expr = function(opt_expr) {
+  if (opt_expr) {
+    this.setSource_(opt_expr);
+  }
+};
+
+
+/**
+ * Set the source expression text & parse
+ *
+ * @param {string} expr The string expression source.
+ * @param {Array=} opt_parts Array of the parts of an expression.
+ * @param {goog.ds.Expr=} opt_childExpr Optional child of this expression,
+ *   passed in as a hint for processing.
+ * @param {goog.ds.Expr=} opt_prevExpr Optional preceding expression
+ *   (i.e. $A/B/C is previous expression to B/C) passed in as a hint for
+ *   processing.
+ * @private
+ */
+goog.ds.Expr.prototype.setSource_ = function(
+    expr, opt_parts, opt_childExpr, opt_prevExpr) {
+  this.src_ = expr;
+
+  if (!opt_childExpr && !opt_prevExpr) {
+    // Check whether it can be empty
+    if (goog.string.endsWith(expr, goog.ds.Expr.String_.CAN_BE_EMPTY)) {
+      this.canBeEmpty_ = true;
+      expr = expr.substring(0, expr.length - 1);
+    }
+
+    // Check whether this is an node function
+    if (goog.string.endsWith(expr, '()')) {
+      if (goog.string.endsWith(expr, goog.ds.Expr.String_.NAME_EXPR) ||
+          goog.string.endsWith(expr, goog.ds.Expr.String_.COUNT_EXPR) ||
+          goog.string.endsWith(expr, goog.ds.Expr.String_.POSITION_EXPR)) {
+        var lastPos = expr.lastIndexOf(goog.ds.Expr.String_.SEPARATOR);
+        if (lastPos != -1) {
+          this.exprFn_ = expr.substring(lastPos + 1);
+          expr = expr.substring(0, lastPos);
+        } else {
+          this.exprFn_ = expr;
+          expr = goog.ds.Expr.String_.CURRENT_NODE_EXPR;
+        }
+        if (this.exprFn_ == goog.ds.Expr.String_.COUNT_EXPR) {
+          this.isCount_ = true;
+        }
+      }
+    }
+  }
+
+  // Split into component parts
+  this.parts_ = opt_parts || expr.split('/');
+  this.size_ = this.parts_.length;
+  this.last_ = this.parts_[this.size_ - 1];
+  this.root_ = this.parts_[0];
+
+  if (this.size_ == 1) {
+    this.rootExpr_ = this;
+    this.isAbsolute_ = goog.string.startsWith(expr, '$');
+  } else {
+    this.rootExpr_ = goog.ds.Expr.createInternal_(this.root_, null, this, null);
+    this.isAbsolute_ = this.rootExpr_.isAbsolute_;
+    this.root_ = this.rootExpr_.root_;
+  }
+
+  if (this.size_ == 1 && !this.isAbsolute_) {
+    // Check whether expression maps to current node, for convenience
+    this.isCurrent_ =
+        (expr == goog.ds.Expr.String_.CURRENT_NODE_EXPR ||
+         expr == goog.ds.Expr.String_.EMPTY_EXPR);
+
+    // Whether this expression is just an attribute (i.e. '@foo')
+    this.isJustAttribute_ =
+        goog.string.startsWith(expr, goog.ds.Expr.String_.ATTRIBUTE_START);
+
+    // Check whether this is a common node expression
+    this.isAllChildNodes_ = expr == goog.ds.Expr.String_.ALL_CHILD_NODES_EXPR;
+    this.isAllAttributes_ = expr == goog.ds.Expr.String_.ALL_ATTRIBUTES_EXPR;
+    this.isAllElements_ = expr == goog.ds.Expr.String_.ALL_ELEMENTS_EXPR;
+  }
+};
+
+
+/**
+ * Get the source data path for the expression
+ * @return {string} The path.
+ */
+goog.ds.Expr.prototype.getSource = function() {
+  return this.src_;
+};
+
+
+/**
+ * Gets the last part of the expression.
+ * @return {?string} Last part of the expression.
+ */
+goog.ds.Expr.prototype.getLast = function() {
+  return this.last_;
+};
+
+
+/**
+ * Gets the parent expression of this expression, or null if this is top level
+ * @return {goog.ds.Expr} The parent.
+ */
+goog.ds.Expr.prototype.getParent = function() {
+  if (!this.parentExprSet_) {
+    if (this.size_ > 1) {
+      this.parentExpr_ = goog.ds.Expr.createInternal_(
+          null, this.parts_.slice(0, this.parts_.length - 1), this, null);
+    }
+    this.parentExprSet_ = true;
+  }
+  return this.parentExpr_;
+};
+
+
+/**
+ * Gets the parent expression of this expression, or null if this is top level
+ * @return {goog.ds.Expr} The parent.
+ */
+goog.ds.Expr.prototype.getNext = function() {
+  if (!this.nextExprSet_) {
+    if (this.size_ > 1) {
+      this.nextExpr_ =
+          goog.ds.Expr.createInternal_(null, this.parts_.slice(1), null, this);
+    }
+    this.nextExprSet_ = true;
+  }
+  return this.nextExpr_;
+};
+
+
+/**
+ * Evaluate an expression on a data node, and return a value
+ * Recursively walks through child nodes to evaluate
+ * TODO(user) Support other expression functions
+ *
+ * @param {goog.ds.DataNode=} opt_ds Optional datasource to evaluate against.
+ *     If not provided, evaluates against DataManager global root.
+ * @return {*} Value of the node, or null if doesn't exist.
+ * @suppress {missingRequire} Cannot depend on goog.ds.DataManager because
+ *     it creates a circular dependency.
+ */
+goog.ds.Expr.prototype.getValue = function(opt_ds) {
+  if (opt_ds == null) {
+    opt_ds = goog.ds.DataManager.getInstance();
+  } else if (this.isAbsolute_) {
+    opt_ds = opt_ds.getDataRoot ? opt_ds.getDataRoot() :
+                                  goog.ds.DataManager.getInstance();
+  }
+
+  if (this.isCount_) {
+    var nodes = this.getNodes(opt_ds);
+    return nodes.getCount();
+  }
+
+  if (this.size_ == 1) {
+    return opt_ds.getChildNodeValue(this.root_);
+  } else if (this.size_ == 0) {
+    return opt_ds.get();
+  }
+
+  var nextDs = opt_ds.getChildNode(this.root_);
+
+  if (nextDs == null) {
+    return null;
+  } else {
+    return this.getNext().getValue(nextDs);
+  }
+};
+
+
+/**
+ * Evaluate an expression on a data node, and return matching nodes
+ * Recursively walks through child nodes to evaluate
+ *
+ * @param {goog.ds.DataNode=} opt_ds Optional datasource to evaluate against.
+ *     If not provided, evaluates against data root.
+ * @param {boolean=} opt_canCreate If true, will try to create new nodes.
+ * @return {goog.ds.DataNodeList} Matching nodes.
+ */
+goog.ds.Expr.prototype.getNodes = function(opt_ds, opt_canCreate) {
+  return /** @type {goog.ds.DataNodeList} */ (
+      this.getNodes_(opt_ds, false, opt_canCreate));
+};
+
+
+/**
+ * Evaluate an expression on a data node, and return the first matching node
+ * Recursively walks through child nodes to evaluate
+ *
+ * @param {goog.ds.DataNode=} opt_ds Optional datasource to evaluate against.
+ *     If not provided, evaluates against DataManager global root.
+ * @param {boolean=} opt_canCreate If true, will try to create new nodes.
+ * @return {goog.ds.DataNode} Matching nodes, or null if doesn't exist.
+ */
+goog.ds.Expr.prototype.getNode = function(opt_ds, opt_canCreate) {
+  return /** @type {goog.ds.DataNode} */ (
+      this.getNodes_(opt_ds, true, opt_canCreate));
+};
+
+
+/**
+ * Evaluate an expression on a data node, and return the first matching node
+ * Recursively walks through child nodes to evaluate
+ *
+ * @param {goog.ds.DataNode=} opt_ds Optional datasource to evaluate against.
+ *     If not provided, evaluates against DataManager global root.
+ * @param {boolean=} opt_selectOne Whether to return single matching DataNode
+ *     or matching nodes in DataNodeList.
+ * @param {boolean=} opt_canCreate If true, will try to create new nodes.
+ * @return {goog.ds.DataNode|goog.ds.DataNodeList} Matching node or nodes,
+ *     depending on value of opt_selectOne.
+ * @private
+ * @suppress {missingRequire} Cannot depend on goog.ds.DataManager because
+ *     it creates a circular dependency.
+ */
+goog.ds.Expr.prototype.getNodes_ = function(
+    opt_ds, opt_selectOne, opt_canCreate) {
+  if (opt_ds == null) {
+    opt_ds = goog.ds.DataManager.getInstance();
+  } else if (this.isAbsolute_) {
+    opt_ds = opt_ds.getDataRoot ? opt_ds.getDataRoot() :
+                                  goog.ds.DataManager.getInstance();
+  }
+
+  if (this.size_ == 0 && opt_selectOne) {
+    return opt_ds;
+  } else if (this.size_ == 0 && !opt_selectOne) {
+    return new goog.ds.BasicNodeList([opt_ds]);
+  } else if (this.size_ == 1) {
+    if (opt_selectOne) {
+      return opt_ds.getChildNode(this.root_, opt_canCreate);
+    } else {
+      var possibleListChild = opt_ds.getChildNode(this.root_);
+      if (possibleListChild && possibleListChild.isList()) {
+        return possibleListChild.getChildNodes();
+      } else {
+        return opt_ds.getChildNodes(this.root_);
+      }
+    }
+  } else {
+    var nextDs = opt_ds.getChildNode(this.root_, opt_canCreate);
+    if (nextDs == null && opt_selectOne) {
+      return null;
+    } else if (nextDs == null && !opt_selectOne) {
+      return new goog.ds.EmptyNodeList();
+    }
+    return this.getNext().getNodes_(nextDs, opt_selectOne, opt_canCreate);
+  }
+};
+
+
+/**
+ * Whether the expression can be null.
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.ds.Expr.prototype.canBeEmpty_ = false;
+
+
+/**
+ * The parsed paths in the expression
+ *
+ * @type {Array<string>}
+ * @private
+ */
+goog.ds.Expr.prototype.parts_ = [];
+
+
+/**
+ * Number of paths in the expression
+ *
+ * @type {?number}
+ * @private
+ */
+goog.ds.Expr.prototype.size_ = null;
+
+
+/**
+ * The root node path in the expression
+ *
+ * @type {string}
+ * @private
+ */
+goog.ds.Expr.prototype.root_;
+
+
+/**
+ * The last path in the expression
+ *
+ * @type {?string}
+ * @private
+ */
+goog.ds.Expr.prototype.last_ = null;
+
+
+/**
+ * Whether the expression evaluates to current node
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.ds.Expr.prototype.isCurrent_ = false;
+
+
+/**
+ * Whether the expression is just an attribute
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.ds.Expr.prototype.isJustAttribute_ = false;
+
+
+/**
+ * Does this expression select all DOM-style child nodes (element and text)
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.ds.Expr.prototype.isAllChildNodes_ = false;
+
+
+/**
+ * Does this expression select all DOM-style attribute nodes (starts with '@')
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.ds.Expr.prototype.isAllAttributes_ = false;
+
+
+/**
+ * Does this expression select all DOM-style element child nodes
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.ds.Expr.prototype.isAllElements_ = false;
+
+
+/**
+ * The function used by this expression
+ *
+ * @type {?string}
+ * @private
+ */
+goog.ds.Expr.prototype.exprFn_ = null;
+
+
+/**
+ * Cached value for the parent expression.
+ * @type {goog.ds.Expr?}
+ * @private
+ */
+goog.ds.Expr.prototype.parentExpr_ = null;
+
+
+/**
+ * Cached value for the next expression.
+ * @type {goog.ds.Expr?}
+ * @private
+ */
+goog.ds.Expr.prototype.nextExpr_ = null;
+
+
+/**
+ * Create an expression from a string, can use cached values
+ *
+ * @param {string} expr The expression string.
+ * @return {goog.ds.Expr} The expression object.
+ */
+goog.ds.Expr.create = function(expr) {
+  var result = goog.ds.Expr.cache_[expr];
+
+  if (result == null) {
+    result = new goog.ds.Expr(expr);
+    goog.ds.Expr.cache_[expr] = result;
+  }
+  return result;
+};
+
+
+/**
+ * Create an expression from a string, can use cached values
+ * Uses hints from related expressions to help in creation
+ *
+ * @param {?string=} opt_expr The string expression source.
+ * @param {Array=} opt_parts Array of the parts of an expression.
+ * @param {goog.ds.Expr=} opt_childExpr Optional child of this expression,
+ *   passed in as a hint for processing.
+ * @param {goog.ds.Expr=} opt_prevExpr Optional preceding expression
+ *   (i.e. $A/B/C is previous expression to B/C) passed in as a hint for
+ *   processing.
+ * @return {goog.ds.Expr} The expression object.
+ * @private
+ */
+goog.ds.Expr.createInternal_ = function(
+    opt_expr, opt_parts, opt_childExpr, opt_prevExpr) {
+  var expr = opt_expr || opt_parts.join('/');
+  var result = goog.ds.Expr.cache_[expr];
+
+  if (result == null) {
+    result = new goog.ds.Expr();
+    result.setSource_(expr, opt_parts, opt_childExpr, opt_prevExpr);
+    goog.ds.Expr.cache_[expr] = result;
+  }
+  return result;
+};
+
+
+/**
+ * Cache of pre-parsed expressions
+ * @private
+ */
+goog.ds.Expr.cache_ = {};
+
+
+/**
+ * Commonly used strings in expressions.
+ * @enum {string}
+ * @private
+ */
+goog.ds.Expr.String_ = {
+  SEPARATOR: '/',
+  CURRENT_NODE_EXPR: '.',
+  EMPTY_EXPR: '',
+  ATTRIBUTE_START: '@',
+  ALL_CHILD_NODES_EXPR: '*|text()',
+  ALL_ATTRIBUTES_EXPR: '@*',
+  ALL_ELEMENTS_EXPR: '*',
+  NAME_EXPR: 'name()',
+  COUNT_EXPR: 'count()',
+  POSITION_EXPR: 'position()',
+  INDEX_START: '[',
+  INDEX_END: ']',
+  CAN_BE_EMPTY: '?'
+};
+
+
+/**
+ * Standard expressions
+ */
+
+
+/**
+ * The current node
+ */
+goog.ds.Expr.CURRENT =
+    goog.ds.Expr.create(goog.ds.Expr.String_.CURRENT_NODE_EXPR);
+
+
+/**
+ * For DOM interop - all DOM child nodes (text + element).
+ * Text nodes have dataName #text
+ */
+goog.ds.Expr.ALL_CHILD_NODES =
+    goog.ds.Expr.create(goog.ds.Expr.String_.ALL_CHILD_NODES_EXPR);
+
+
+/**
+ * For DOM interop - all DOM element child nodes
+ */
+goog.ds.Expr.ALL_ELEMENTS =
+    goog.ds.Expr.create(goog.ds.Expr.String_.ALL_ELEMENTS_EXPR);
+
+
+/**
+ * For DOM interop - all DOM attribute nodes
+ * Attribute nodes have dataName starting with "@"
+ */
+goog.ds.Expr.ALL_ATTRIBUTES =
+    goog.ds.Expr.create(goog.ds.Expr.String_.ALL_ATTRIBUTES_EXPR);
+
+
+/**
+ * Get the dataName of a node
+ */
+goog.ds.Expr.NAME = goog.ds.Expr.create(goog.ds.Expr.String_.NAME_EXPR);
+
+
+/**
+ * Get the count of nodes matching an expression
+ */
+goog.ds.Expr.COUNT = goog.ds.Expr.create(goog.ds.Expr.String_.COUNT_EXPR);
+
+
+/**
+ * Get the position of the "current" node in the current node list
+ * This will only apply for datasources that support the concept of a current
+ * node (none exist yet). This is similar to XPath position() and concept of
+ * current node
+ */
+goog.ds.Expr.POSITION = goog.ds.Expr.create(goog.ds.Expr.String_.POSITION_EXPR);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ct(tokTypes.parenR)
+  return val
+}
+
+lp$2.parseMaybeAssign = function(noIn) {
+  if (this.toks.isContextual("yield")) {
+    var node = this.startNode()
+    this.next()
+    if (this.semicolon() || this.canInsertSemicolon() || (this.tok.type != tokTypes.star && !this.tok.type.startsExpr)) {
+      node.delegate = false
+      node.argument = null
+    } else {
+      node.delegate = this.eat(tokTypes.star)
+      node.argument = this.parseMaybeAssign()
+    }
+    return this.finishNode(node, "YieldExpression")
+  }
+
+  var start = this.storeCurrentPos()
+  var left = this.parseMaybeConditional(noIn)
+  if (this.tok.type.isAssign) {
+    var node$1 = this.startNodeAt(start)
+    node$1.operator = this.tok.value
+    node$1.left = this.tok.type === tokTypes.eq ? this.toAssignable(left) : this.checkLVal(left)
+    this.next()
+    node$1.right = this.parseMaybeAssign(noIn)
+    return this.finishNode(node$1, "AssignmentExpression")
+  }
+  return left
+}
+
+lp$2.parseMaybeConditional = function(noIn) {
+  var start = this.storeCurrentPos()
+  var expr = this.parseExprOps(noIn)
+  if (this.eat(tokTypes.question)) {
+    var node = this.startNodeAt(start)
+    node.test = expr
+    node.consequent = this.parseMaybeAssign()
+    node.alternate = this.expect(tokTypes.colon) ? this.parseMaybeAssign(noIn) : this.dummyIdent()
+    return this.finishNode(node, "ConditionalExpression")
+  }
+  return expr
+}
+
+lp$2.parseExprOps = function(noIn) {
+  var start = this.storeCurrentPos()
+  var indent = this.curIndent, line = this.curLineStart
+  return this.parseExprOp(this.parseMaybeUnary(false), start, -1, noIn, indent, line)
+}
+
+lp$2.parseExprOp = function(left, start, minPrec, noIn, indent, line) {
+  if (this.curLineStart != line && this.curIndent < indent && this.tokenStartsLine()) return left
+  var prec = this.tok.type.binop
+  if (prec != null && (!noIn || this.tok.type !== tokTypes._in)) {
+    if (prec > minPrec) {
+      var node = this.startNodeAt(start)
+      node.left = left
+      node.operator = this.tok.value
+      this.next()
+      if (this.curLineStart != line && this.curIndent < indent && this.tokenStartsLine()) {
+        node.right = this.dummyIdent()
+      } else {
+        var rightStart = this.storeCurrentPos()
+        node.right = this.parseExprOp(this.parseMaybeUnary(false), rightStart, prec, noIn, indent, line)
+      }
+      this.finishNode(node, /&&|\|\|/.test(node.operator) ? "LogicalExpression" : "BinaryExpression")
+      return this.parseExprOp(node, start, minPrec, noIn, indent, line)
+    }
+  }
+  return left
+}
+
+lp$2.parseMaybeUnary = function(sawUnary) {
+  var this$1 = this;
+
+  var start = this.storeCurrentPos(), expr
+  if (this.tok.type.prefix) {
+    var node = this.startNode(), update = this.tok.type === tokTypes.incDec
+    if (!update) sawUnary = true
+    node.operator = this.tok.value
+    node.prefix = true
+    this.next()
+    node.argument = this.parseMaybeUnary(true)
+    if (update) node.argument = this.checkLVal(node.argument)
+    expr = this.finishNode(node, update ? "UpdateExpression" : "UnaryExpression")
+  } else if (this.tok.type === tokTypes.ellipsis) {
+    var node$1 = this.startNode()
+    this.next()
+    node$1.argument = this.parseMaybeUnary(sawUnary)
+    expr = this.finishNode(node$1, "SpreadElement")
+  } else {
+    expr = this.parseExprSubscripts()
+    while (this.tok.type.postfix && !this.canInsertSemicolon()) {
+      var node$2 = this$1.startNodeAt(start)
+      node$2.operator = this$1.tok.value
+      node$2.prefix = false
+      node$2.argument = this$1.checkLVal(expr)
+      this$1.next()
+      expr = this$1.finishNode(node$2, "UpdateExpression")
+    }
+  }
+
+  if (!sawUnary && this.eat(tokTypes.starstar)) {
+    var node$3 = this.startNodeAt(start)
+    node$3.operator = "**"
+    node$3.left = expr
+    node$3.right = this.parseMaybeUnary(false)
+    return this.finishNode(node$3, "BinaryExpression")
+  }
+
+  return expr
+}
+
+lp$2.parseExprSubscripts = function() {
+  var start = this.storeCurrentPos()
+  return this.parseSubscripts(this.parseExprAtom(), start, false, this.curIndent, this.curLineStart)
+}
+
+lp$2.parseSubscripts = function(base, start, noCalls, startIndent, line) {
+  var this$1 = this;
+
+  for (;;) {
+    if (this$1.curLineStart != line && this$1.curIndent <= startIndent && this$1.tokenStartsLine()) {
+      if (this$1.tok.type == tokTypes.dot && this$1.curIndent == startIndent)
+        --startIndent
+      else
+        return base
+    }
+
+    if (this$1.eat(tokTypes.dot)) {
+      var node = this$1.startNodeAt(start)
+      node.object = base
+      if (this$1.curLineStart != line && this$1.curIndent <= startIndent && this$1.tokenStartsLine())
+        node.property = this$1.dummyIdent()
+      else
+        node.property = this$1.parsePropertyAccessor() || this$1.dummyIdent()
+      node.computed = false
+      base = this$1.finishNode(node, "MemberExpression")
+    } else if (this$1.tok.type == tokTypes.bracketL) {
+      this$1.pushCx()
+      this$1.next()
+      var node$1 = this$1.startNodeAt(start)
+      node$1.object = base
+      node$1.property = this$1.parseExpression()
+      node$1.computed = true
+      this$1.popCx()
+      this$1.expect(tokTypes.bracketR)
+      base = this$1.finishNode(node$1, "MemberExpression")
+    } else if (!noCalls && this$1.tok.type == tokTypes.parenL) {
+      var node$2 = this$1.startNodeAt(start)
+      node$2.callee = base
+      node$2.arguments = this$1.parseExprList(tokTypes.parenR)
+      base = this$1.finishNode(node$2, "CallExpression")
+    } else if (this$1.tok.type == tokTypes.backQuote) {
+      var node$3 = this$1.startNodeAt(start)
+      node$3.tag = base
+      node$3.quasi = this$1.parseTemplate()
+      base = this$1.finishNode(node$3, "TaggedTemplateExpression")
+    } else {
+      return base
+    }
+  }
+}
+
+lp$2.parseExprAtom = function() {
+  var node
+  switch (this.tok.type) {
+  case tokTypes._this:
+  case tokTypes._super:
+    var type = this.tok.type === tokTypes._this ? "ThisExpression" : "Super"
+    node = this.startNode()
+    this.next()
+    return this.finishNode(node, type)
+
+  case tokTypes.name:
+    var start = this.storeCurrentPos()
+    var id = this.parseIdent()
+    return this.eat(tokTypes.arrow) ? this.parseArrowExpression(this.startNodeAt(start), [id]) : id
+
+  case tokTypes.regexp:
+    node = this.startNode()
+    var val = this.tok.value
+    node.regex = {pattern: val.pattern, flags: val.flags}
+    node.value = val.value
+    node.raw = this.input.slice(this.tok.start, this.tok.end)
+    this.next()
+    return this.finishNode(node, "Literal")
+
+  case tokTypes.num: case tokTypes.string:
+    node = this.startNode()
+    node.value = this.tok.value
+    node.raw = this.input.slice(this.tok.start, this.tok.end)
+    this.next()
+    return this.finishNode(node, "Literal")
+
+  case tokTypes._null: case tokTypes._true: case tokTypes._false:
+    node = this.startNode()
+    node.value = this.tok.type === tokTypes._null ? null : this.tok.type === tokTypes._true
+    node.raw = this.tok.type.keyword
+    this.next()
+    return this.finishNode(node, "Literal")
+
+  case tokTypes.parenL:
+    var parenStart = this.storeCurrentPos()
+    this.next()
+    var inner = this.parseExpression()
+    this.expect(tokTypes.parenR)
+    if (this.eat(tokTypes.arrow)) {
+      return this.parseArrowExpression(this.startNodeAt(parenStart), inner.expressions || (isDummy(inner) ? [] : [inner]))
+    }
+    if (this.options.preserveParens) {
+      var par = this.startNodeAt(parenStart)
+      par.expression = inner
+      inner = this.finishNode(par, "ParenthesizedExpression")
+    }
+    return inner
+
+  case tokTypes.bracketL:
+    node = this.startNode()
+    node.elements = this.parseExprList(tokTypes.bracketR, true)
+    return this.finishNode(node, "ArrayExpression")
+
+  case tokTypes.braceL:
+    return this.parseObj()
+
+  case tokTypes._class:
+    return this.parseClass()
+
+  case tokTypes._function:
+    node = this.startNode()
+    this.next()
+    return this.parseFunction(node, false)
+
+  case tokTypes._new:
+    return this.parseNew()
+
+  case tokTypes.backQuote:
+    return this.parseTemplate()
+
+  default:
+    return this.dummyIdent()
+  }
+}
+
+lp$2.parseNew = function() {
+  var node = this.startNode(), startIndent = this.curIndent, line = this.curLineStart
+  var meta = this.parseIdent(true)
+  if (this.options.ecmaVersion >= 6 && this.eat(tokTypes.dot)) {
+    node.meta = meta
+    node.property = this.parseIdent(true)
+    return this.finishNode(node, "MetaProperty")
+  }
+  var start = this.storeCurrentPos()
+  node.callee = this.parseSubscripts(this.parseExprAtom(), start, true, startIndent, line)
+  if (this.tok.type == tokTypes.parenL) {
+    node.arguments = this.parseExprList(tokTypes.parenR)
+  } else {
+    node.arguments = []
+  }
+  return this.finishNode(node, "NewExpression")
+}
+
+lp$2.parseTemplateElement = function() {
+  var elem = this.startNode()
+  elem.value = {
+    raw: this.input.slice(this.tok.start, this.tok.end).replace(/\r\n?/g, '\n'),
+    cooked: this.tok.value
+  }
+  this.next()
+  elem.tail = this.tok.type === tokTypes.backQuote
+  return this.finishNode(elem, "TemplateElement")
+}
+
+lp$2.parseTemplate = function() {
+  var this$1 = this;
+
+  var node = this.startNode()
+  this.next()
+  node.expressions = []
+  var curElt = this.parseTemplateElement()
+  node.quasis = [curElt]
+  while (!curElt.tail) {
+    this$1.next()
+    node.expressions.push(this$1.parseExpression())
+    if (this$1.expect(tokTypes.braceR)) {
+      curElt = this$1.parseTemplateElement()
+    } else {
+      curElt = this$1.startNode()
+      curElt.value = {cooked: '', raw: ''}
+      curElt.tail = true
+      this$1.finishNode(curElt, "TemplateElement")
+    }
+    node.quasis.push(curElt)
+  }
+  this.expect(tokTypes.backQuote)
+  return this.finishNode(node, "TemplateLiteral")
+}
+
+lp$2.parseObj = function() {
+  var this$1 = this;
+
+  var node = this.startNode()
+  node.properties = []
+  this.pushCx()
+  var indent = this.curIndent + 1, line = this.curLineStart
+  this.eat(tokTypes.braceL)
+  if (this.curIndent + 1 < indent) { indent = this.curIndent; line = this.curLineStart }
+  while (!this.closes(tokTypes.braceR, indent, line)) {
+    var prop = this$1.startNode(), isGenerator, start
+    if (this$1.options.ecmaVersion >= 6) {
+      start = this$1.storeCurrentPos()
+      prop.method = false
+      prop.shorthand = false
+      isGenerator = this$1.eat(tokTypes.star)
+    }
+    this$1.parsePropertyName(prop)
+    if (isDummy(prop.key)) { if (isDummy(this$1.parseMaybeAssign())) this$1.next(); this$1.eat(tokTypes.comma); continue }
+    if (this$1.eat(tokTypes.colon)) {
+      prop.kind = "init"
+      prop.value = this$1.parseMaybeAssign()
+    } else if (this$1.options.ecmaVersion >= 6 && (this$1.tok.type === tokTypes.parenL || this$1.tok.type === tokTypes.braceL)) {
+      prop.kind = "init"
+      prop.method = true
+      prop.value = this$1.parseMethod(isGenerator)
+    } else if (this$1.options.ecmaVersion >= 5 && prop.key.type === "Identifier" &&
+               !prop.computed && (prop.key.name === "get" || prop.key.name === "set") &&
+               (this$1.tok.type != tokTypes.comma && this$1.tok.type != tokTypes.braceR)) {
+      prop.kind = prop.key.name
+      this$1.parsePropertyName(prop)
+      prop.value = this$1.parseMethod(false)
+    } else {
+      prop.kind = "init"
+      if (this$1.options.ecmaVersion >= 6) {
+        if (this$1.eat(tokTypes.eq)) {
+          var assign = this$1.startNodeAt(start)
+          assign.operator = "="
+          assign.left = prop.key
+          assign.right = this$1.parseMaybeAssign()
+          prop.value = this$1.finishNode(assign, "AssignmentExpression")
+        } else {
+          prop.value = prop.key
+        }
+      } else {
+        prop.value = this$1.dummyIdent()
+      }
+      prop.shorthand = true
+    }
+    node.properties.push(this$1.finishNode(prop, "Property"))
+    this$1.eat(tokTypes.comma)
+  }
+  this.popCx()
+  if (!this.eat(tokTypes.braceR)) {
+    // If there is no closing brace, make the node span to the start
+    // of the next token (this is useful for Tern)
+    this.last.end = this.tok.start
+    if (this.options.locations) this.last.loc.end = this.tok.loc.start
+  }
+  return this.finishNode(node, "ObjectExpression")
+}
+
+lp$2.parsePropertyName = function(prop) {
+  if (this.options.ecmaVersion >= 6) {
+    if (this.eat(tokTypes.bracketL)) {
+      prop.computed = true
+      prop.key = this.parseExpression()
+      this.expect(tokTypes.bracketR)
+      return
+    } else {
+      prop.computed = false
+    }
+  }
+  var key = (this.tok.type === tokTypes.num || this.tok.type === tokTypes.string) ? this.parseExprAtom() : this.parseIdent()
+  prop.key = key || this.dummyIdent()
+}
+
+lp$2.parsePropertyAccessor = function() {
+  if (this.tok.type === tokTypes.name || this.tok.type.keyword) return this.parseIdent()
+}
+
+lp$2.parseIdent = function() {
+  var name = this.tok.type === tokTypes.name ? this.tok.value : this.tok.type.keyword
+  if (!name) return this.dummyIdent()
+  var node = this.startNode()
+  this.next()
+  node.name = name
+  return this.finishNode(node, "Identifier")
+}
+
+lp$2.initFunction = function(node) {
+  node.id = null
+  node.params = []
+  if (this.options.ecmaVersion >= 6) {
+    node.generator = false
+    node.expression = false
+  }
+}
+
+// Convert existing expression atom to assignable pattern
+// if possible.
+
+lp$2.toAssignable = function(node, binding) {
+  var this$1 = this;
+
+  if (!node || node.type == "Identifier" || (node.type == "MemberExpression" && !binding)) {
+    // Okay
+  } else if (node.type == "ParenthesizedExpression") {
+    node.expression = this.toAssignable(node.expression, binding)
+  } else if (this.options.ecmaVersion < 6) {
+    return this.dummyIdent()
+  } else if (node.type == "ObjectExpression") {
+    node.type = "ObjectPattern"
+    var props = node.properties
+    for (var i = 0; i < props.length; i++)
+      props[i].value = this$1.toAssignable(props[i].value, binding)
+  } else if (node.type == "ArrayExpression") {
+    node.type = "ArrayPattern"
+    this.toAssignableList(node.elements, binding)
+  } else if (node.type == "SpreadElement") {
+    node.type = "RestElement"
+    node.argument = this.toAssignable(node.argument, binding)
+  } else if (node.type == "AssignmentExpression") {
+    node.type = "AssignmentPattern"
+    delete node.operator
+  } else {
+    return this.dummyIdent()
+  }
+  return node
+}
+
+lp$2.toAssignableList = function(exprList, binding) {
+  var this$1 = this;
+
+  for (var i = 0; i < exprList.length; i++)
+    exprList[i] = this$1.toAssignable(exprList[i], binding)
+  return exprList
+}
+
+lp$2.parseFunctionParams = function(params) {
+  params = this.parseExprList(tokTypes.parenR)
+  return this.toAssignableList(params, true)
+}
+
+lp$2.parseMethod = function(isGenerator) {
+  var node = this.startNode()
+  this.initFunction(node)
+  node.params = this.parseFunctionParams()
+  node.generator = isGenerator || false
+  node.expression = this.options.ecmaVersion >= 6 && this.tok.type !== tokTypes.braceL
+  node.body = node.expression ? this.parseMaybeAssign() : this.parseBlock()
+  return this.finishNode(node, "FunctionExpression")
+}
+
+lp$2.parseArrowExpression = function(node, params) {
+  this.initFunction(node)
+  node.params = this.toAssignableList(params, true)
+  node.expression = this.tok.type !== tokTypes.braceL
+  node.body = node.expression ? this.parseMaybeAssign() : this.parseBlock()
+  return this.finishNode(node, "ArrowFunctionExpression")
+}
+
+lp$2.parseExprList = function(close, allowEmpty) {
+  var this$1 = this;
+
+  this.pushCx()
+  var indent = this.curIndent, line = this.curLineStart, elts = []
+  this.next() // Opening bracket
+  while (!this.closes(close, indent + 1, line)) {
+    if (this$1.eat(tokTypes.comma)) {
+      elts.push(allowEmpty ? null : this$1.dummyIdent())
+      continue
+    }
+    var elt = this$1.parseMaybeAssign()
+    if (isDummy(elt)) {
+      if (this$1.closes(close, indent, line)) break
+      this$1.next()
+    } else {
+      elts.push(elt)
+    }
+    this$1.eat(tokTypes.comma)
+  }
+  this.popCx()
+  if (!this.eat(close)) {
+    // If there is no closing brace, make the node span to the start
+    // of the next token (this is useful for Tern)
+    this.last.end = this.tok.start
+    if (this.options.locations) this.last.loc.end = this.tok.loc.start
+  }
+  return elts
+}
+
+acorn.defaultOptions.tabSize = 4
+
+function parse_dammit(input, options) {
+  var p = new LooseParser(input, options)
+  p.next()
+  return p.parseTopLevel()
+}
+
+acorn.parse_dammit = parse_dammit
+acorn.LooseNonemptyClassRanges\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-NonemptyClassRangesNoDash\n    private classRanges(): void {\n        let start = this.index\n        while (this.eatClassAtom()) {\n            const left = this._lastIntValue\n            const hyphenStart = this.index\n            if (this.eat(HyphenMinus)) {\n                this.onCharacter(hyphenStart, this.index, HyphenMinus)\n\n                if (this.eatClassAtom()) {\n                    const right = this._lastIntValue\n\n                    if (left === -1 || right === -1) {\n                        if (this.strict) {\n                            this.raise(\"Invalid character class\")\n                        }\n                    } else if (left > right) {\n                        this.raise(\"Range out of order in character class\")\n                    } else {\n                        this.onCharacterClassRange(\n                            start,\n                            this.index,\n                            left,\n                            right,\n                        )\n                    }\n                }\n            }\n\n            start = this.index\n        }\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-ClassAtom\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-ClassAtomNoDash\n    private eatClassAtom(): boolean {\n        const start = this.index\n\n        if (this.eat(ReverseSolidus)) {\n            if (this.eatClassEscape()) {\n                return true\n            }\n            if (this._uFlag) {\n                this.raise(\"Invalid escape\")\n            }\n            this.rewind(start)\n        }\n\n        const cp = this.currentCodePoint\n        if (cp !== -1 && cp !== RightSquareBracket) {\n            this.advance()\n            this._lastIntValue = cp\n            this.onCharacter(start, this.index, cp)\n            return true\n        }\n\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-strict-ClassEscape\n    private eatClassEscape(): boolean {\n        const start = this.index\n\n        if (this.eat(LatinSmallLetterB)) {\n            this._lastIntValue = Backspace\n            this.onCharacter(start - 1, this.index, Backspace)\n            return true\n        }\n\n        if (this._uFlag && this.eat(HyphenMinus)) {\n            this._lastIntValue = HyphenMinus\n            this.onCharacter(start - 1, this.index, HyphenMinus)\n            return true\n        }\n\n        if (!this._uFlag && this.eat(LatinSmallLetterC)) {\n            if (this.eatClassControlLetter()) {\n                this.onCharacter(start - 1, this.index, this._lastIntValue)\n                return true\n            }\n            this.rewind(start)\n        }\n\n        return this.eatCharacterClassEscape() || this.eatCharacterEscape()\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-strict-ClassControlLetter\n    private eatClassControlLetter(): boolean {\n        const cp = this.currentCodePoint\n        if (isDecimalDigit(cp) || cp === LowLine) {\n            this.advance()\n            this._lastIntValue = cp % 0x20\n            return true\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-HexEscapeSequence\n    private eatHexEscapeSequence(): boolean {\n        const start = this.index\n        if (this.eat(LatinSmallLetterX)) {\n            if (this.eatFixedHexDigits(2)) {\n                return true\n            }\n            if (this._uFlag) {\n                this.raise(\"Invalid escape\")\n            }\n            this.rewind(start)\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-DecimalDigits\n    private eatDecimalDigits(): boolean {\n        const start = this.index\n\n        this._lastIntValue = 0\n        while (isDecimalDigit(this.currentCodePoint)) {\n            this._lastIntValue =\n                10 * this._lastIntValue + digitToInt(this.currentCodePoint)\n            this.advance()\n        }\n\n        return this.index !== start\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-HexDigits\n    private eatHexDigits(): boolean {\n        const start = this.index\n        this._lastIntValue = 0\n        while (isHexDigit(this.currentCodePoint)) {\n            this._lastIntValue =\n                16 * this._lastIntValue + digitToInt(this.currentCodePoint)\n            this.advance()\n        }\n        return this.index !== start\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-strict-LegacyOctalEscapeSequence\n    // Allows only 0-377(octal) i.e. 0-255(decimal).\n    private eatLegacyOctalEscapeSequence(): boolean {\n        if (this.eatOctalDigit()) {\n            const n1 = this._lastIntValue\n            if (this.eatOctalDigit()) {\n                const n2 = this._lastIntValue\n                if (n1 <= 3 && this.eatOctalDigit()) {\n                    this._lastIntValue = n1 * 64 + n2 * 8 + this._lastIntValue\n                } else {\n                    this._lastIntValue = n1 * 8 + n2\n                }\n            } else {\n                this._lastIntValue = n1\n            }\n            return true\n        }\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-OctalDigit\n    private eatOctalDigit(): boolean {\n        const cp = this.currentCodePoint\n        if (isOctalDigit(cp)) {\n            this.advance()\n            this._lastIntValue = cp - DigitZero\n            return true\n        }\n        this._lastIntValue = 0\n        return false\n    }\n\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-Hex4Digits\n    // https://www.ecma-international.org/ecma-262/8.0/#prod-HexDigit\n    // And HexDigit HexDigit in https://www.ecma-international.org/ecma-262/8.0/#prod-HexEscapeSequence\n    private eatFixedHexDigits(length: number): boolean {\n        const start = this.index\n        this._lastIntValue = 0\n        for (let i = 0; i < length; ++i) {\n            const cp = this.currentCodePoint\n            if (!isHexDigit(cp)) {\n                this.rewind(start)\n                return false\n            }\n            this._lastIntValue = 16 * this._lastIntValue + digitToInt(cp)\n            this.advance()\n        }\n        return true\n    }\n}\n","import {\n    AlternativeElement,\n    AnyCharacterSet,\n    Assertion,\n    Backreference,\n    CapturingGroup,\n    Character,\n    CharacterClass,\n    CharacterClassRange,\n    Disjunction,\n    Element,\n    EscapeCharacterSet,\n    Flags,\n    Group,\n    RegExpLiteral,\n    LookaroundAssertion,\n    Pattern,\n    QuantifiableElement,\n    Quantifier,\n    UnicodePropertyCharacterSet,\n} from \"./ast\"\nimport { assert, last } from \"./util\"\nimport { RegExpValidator } from \"./validator\"\n\ntype AppendableNode =\n    | Pattern\n    | Disjunction\n    | Group\n    | CapturingGroup\n    | CharacterClass\n    | LookaroundAssertion\n\nconst DummyPattern = {} as Pattern\nconst DummyFlags = {} as Flags\nconst DummyCapturingGroup = {} as CapturingGroup\n\n/**\n * Convert given elements to an alternative.\n * This doesn't clone the array, so the return value is `elements` itself.\n * @param elements Elements to convert.\n */\nfunction elementsToAlternative(\n    elements: Element[],\n    parent: Disjunction,\n): AlternativeElement[] {\n    for (const element of elements) {\n        assert(element.type !== \"Disjunction\")\n        element.parent = parent\n    }\n    return elements as AlternativeElement[]\n}\n\nfunction addAlternativeElement(\n    parent:\n        | Pattern\n        | Disjunction\n        | Group\n        | CapturingGroup\n        | LookaroundAssertion,\n    node:\n        | Group\n        | CapturingGroup\n        | Quantifier\n        | CharacterClass\n        | Assertion\n        | AnyCharacterSet\n        | Backreference,\n): void {\n    if (parent.type === \"Disjunction\") {\n        last(parent.alternatives)!.push(node)\n    } else {\n        parent.elements.push(node)\n    }\n}\n\nfunction addCommonElement(\n    parent: AppendableNode,\n    node: EscapeCharacterSet | UnicodePropertyCharacterSet | Character,\n): void {\n    if (parent.type === \"Disjunction\") {\n        last(parent.alternatives)!.push(node)\n    } else if (parent.type === \"CharacterClass\") {\n        parent.elements.push(node)\n    } else {\n        parent.elements.push(node)\n    }\n}\n\nclass RegExpParserState {\n    readonly strict: boolean\n    readonly ecmaVersion: 5 | 2015 | 2016 | 2017 | 2018\n    private _node: AppendableNode = DummyPattern\n    private _flags: Flags = DummyFlags\n    private _disjunctionStartStack: number[] = []\n    private _backreferences: Backreference[] = []\n    private _capturingGroups: CapturingGroup[] = []\n\n    source: string = \"\"\n\n    constructor(options?: RegExpParser.Options) {\n        this.strict = Boolean(options && options.strict)\n        this.ecmaVersion = (options && options.ecmaVersion) || 2018\n    }\n\n    get pattern(): Pattern {\n        if (this._node.type !== \"Pattern\") {\n            throw new Error(\"UnknownError\")\n        }\n        return this._node\n    }\n\n    get flags(): Flags {\n        if (this._flags.type !== \"Flags\") {\n            throw new Error(\"UnknownError\")\n        }\n        return this._flags\n    }\n\n    onFlags(\n        start: number,\n        end: number,\n        global: boolean,\n        ignoreCase: boolean,\n        multiline: boolean,\n        unicode: boolean,\n        sticky: boolean,\n        dotAll: boolean,\n    ): void {\n        this._flags = {\n            type: \"Flags\",\n            parent: null,\n            start,\n            end,\n            raw: this.source.slice(start, end),\n            global,\n            ignoreCase,\n            multiline,\n            unicode,\n            sticky,\n            dotAll,\n        }\n    }\n\n    onPatternEnter(start: number): void {\n        this._node = {\n            type: \"Pattern\",\n            parent: null,\n            start,\n            end: start,\n            raw: \"\",\n            elements: [],\n        }\n        this._backreferences.length = 0\n        this._capturingGroups.length = 0\n    }\n\n    onPatternLeave(start: number, end: number): void {\n        this._node.end = end\n        this._node.raw = this.source.slice(start, end)\n\n        for (const reference of this._backreferences) {\n            const ref = reference.ref\n            const group =\n                typeof ref === \"number\"\n                    ? this._capturingGroups[ref - 1]\n                    : this._capturingGroups.find(g => g.name === ref)!\n            reference.resolved = group\n            group.references.push(reference)\n        }\n    }\n\n    onDisjunctionEnter(start: number): void {\n        this._disjunctionStartStack.push(start)\n    }\n\n    onDisjunctionLeave(start: number, end: number): void {\n        this._disjunctionStartStack.pop()\n    }\n\n    onAlternativeEnter(start: number, index: number): void {\n        if (index === 0) {\n            return\n        }\n\n        const parentNode = this._node\n        if (\n            parentNode.type === \"Disjunction\" ||\n            parentNode.type === \"CharacterClass\"\n        ) {\n            throw new Error(\"UnknownError\")\n        }\n\n        const prevNode = last(parentNode.elements)\n        if (prevNode != null && prevNode.type === \"Disjunction\") {\n            this._node = prevNode\n            prevNode.alternatives.push([])\n        } else {\n            this._node = {\n                type: \"Disjunction\",\n                parent: parentNode,\n                start: last(this._disjunctionStartStack)!,\n                end: start,\n                raw: \"\",\n                alternatives: [],\n            }\n            const elements = elementsToAlternative(\n                parentNode.elements,\n                this._node,\n            )\n            this._node.alternatives.push(elements, [])\n            parentNode.elements = [this._node]\n        }\n    }\n\n    onAlternativeLeave(start: number, end: number, index: number): void {\n        if (index === 0) {\n            return\n        }\n        this._node.end = end\n        this._node.raw = this.source.slice(this._node.start, end)\n        this._node = this._node.parent as AppendableNode\n    }\n\n    onGroupEnter(start: number): void {\n        const parentNode = this._node\n        if (parentNode.type === \"CharacterClass\") {\n            throw new Error(\"UnknownError\")\n        }\n\n        this._node = {\n            type: \"Group\",\n            parent: parentNode,\n            start,\n            end: start,\n            raw: \"\",\n            elements: [],\n        }\n        addAlternativeElement(parentNode, this._node)\n    }\n\n    onGroupLeave(start: number, end: number): void {\n        this._node.end = end\n        this._node.raw = this.source.slice(start, end)\n        this._node = this._node.parent as AppendableNode\n    }\n\n    onCapturingGroupEnter(start: number, name: string | null): void {\n        const parentNode = this._node\n        if (parentNode.type === \"CharacterClass\") {\n            throw new Error(\"UnknownError\")\n        }\n\n        this._node = {\n            type: \"CapturingGroup\",\n            parent: parentNode,\n            start,\n            end: start,\n            raw: \"\",\n            name,\n            elements: [],\n            references: [],\n        }\n        addAlternativeElement(parentNode, this._node)\n        this._capturingGroups.push(this._node)\n    }\n\n    onCapturingGroupLeave(\n        start: number,\n        end: number,\n        name: string | null,\n    ): void {\n        this._node.end = end\n        this._node.raw = this.source.slice(start, end)\n        this._node = this._node.parent as AppendableNode\n    }\n\n    onQuantifier(\n        start: number,\n        end: number,\n        min: number,\n        max: number,\n        greedy: boolean,\n    ): void {\n        const parentNode = this._node\n        if (parentNode.type === \"CharacterClass\") {\n            throw new Error(\"UnknownError\")\n        }\n\n        // Replace the last element.\n        const elements =\n            parentNode.type === \"Disjunction\"\n                ? last(parentNode.alternatives)!\n                : parentNode.elements\n        const prevNode = elements.pop()!\n        const node: Quantifier = {\n            type: \"Quantifier\",\n            parent: parentNode,\n            start,\n            end,\n            raw: this.source.slice(start, end),\n            min,\n            max,\n            greedy,\n            element: prevNode as QuantifiableElement,\n        }\n        elements.push(node)\n        prevNode.parent = node\n    }\n\n    onLookaroundAssertionEnter(\n        start: number,\n        kind: \"lookahead\" | \"lookbehind\",\n        negate: boolean,\n    ): void {\n        const parentNode = this._node\n        if (parentNode.type === \"CharacterClass\") {\n            throw new Error(\"UnknownError\")\n        }\n\n        this._node = {\n            type: \"Assertion\",\n            parent: parentNode,\n            start,\n            end: start,\n            raw: \"\",\n            kind,\n            negate,\n            elements: [],\n        } as LookaroundAssertion\n        addAlternativeElement(parentNode, this._node)\n    }\n\n    onLookaroundAssertionLeave(\n        start: number,\n        end: number,\n        kind: \"lookahead\" | \"lookbehind\",\n        negate: boolean,\n    ): void {\n        this._node.end = end\n        this._node.raw = this.source.slice(start, end)\n        this._node = this._node.parent as AppendableNode\n    }\n\n    onEdgeAssertion(start: number, end: number, kind: \"start\" | \"end\"): void {\n        const parentNode = this._node\n        if (parentNode.type === \"CharacterClass\") {\n            throw new Error(\"UnknownError\")\n        }\n\n        addAlternativeElement(parentNode, {\n            type: \"Assertion\",\n            parent: parentNode,\n            start,\n            end,\n            raw: this.source.slice(start, end),\n            kind,\n    in(dir, 'expected.stdout');
+                    if (fs.statSync(p)) {
+                        expectedStdout = fs.readFileSync(p, 'utf8');
+                        numTests += 1;
+                    }
+                } catch (e) {}
+
+                var expectedStderr = null;
+                try {
+                    p = path.join(dir, 'expected.stderr');
+                    if (fs.statSync(p)) {
+                        expectedStderr = fs.readFileSync(p, 'utf8');
+                        numTests += 1;
+                    }
+                } catch (e) {}
+
+                test.expect(numTests);
+                exec('bash cmd', {
+                    'cwd': dir
+                }, function (error, stdout, stderr) {
+                    var errmsg = ('\n-- return value:\n' +
+                        (error && error.code) + '\n-- expected stdout:\n' +
+                        expectedStdout + '\n-- stdout:\n' + stdout +
+                        '\n-- stdout diff:\n' +
+                        ansidiff.chars(expectedStdout, stdout));
+                    if (expectedStderr !== null) {
+                        errmsg += '\n-- expected stderr:\n' + expectedStderr;
+                    }
+                    if (stderr !== null) {
+                        errmsg += '\n-- stderr:\n' + stderr;
+                    }
+                    if (expectedStderr !== null) {
+                        errmsg += '\n-- stderr diff:\n' +
+                            ansidiff.chars(expectedStderr, stderr);
+                    }
+
+                    if (expectedExitCode !== null) {
+                        test.equal(expectedExitCode, error && error.code || 0,
+                            '\n\nunexpected exit code' + errmsg);
+                    }
+                    if (expectedStdout !== null) {
+                        test.equal(stdout, expectedStdout,
+                            '\n\nunexpected stdout' + errmsg);
+                    }
+                    if (expectedStderr !== null) {
+                        test.equal(stderr, expectedStderr,
+                            '\n\nunexpected stderr' + errmsg);
+                    }
+                    test.done();
+                });
+            };
+        })(dir);
+    }
+}
+
+exports.test = testCase(data);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        

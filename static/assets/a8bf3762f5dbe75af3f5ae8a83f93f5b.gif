@@ -1,0 +1,2935 @@
+\n          // The injected member will be queued and eventually transformed when visited\n          t.callExpression(t.arrowFunctionExpression([], parentPath.node), []),\n        );\n        return;\n      }\n      parentPath.replaceWith(this.optionalCall(member, parent.arguments));\n      return;\n    }\n\n    // for (MEMBER of ARR)\n    // for (MEMBER in ARR)\n    // { KEY: MEMBER } = OBJ -> { KEY: _destructureSet(MEMBER) } = OBJ\n    // { KEY: MEMBER = _VALUE } = OBJ -> { KEY: _destructureSet(MEMBER) = _VALUE } = OBJ\n    // {...MEMBER} -> {..._destructureSet(MEMBER)}\n    //\n    // [MEMBER] = ARR -> [_destructureSet(MEMBER)] = ARR\n    // [MEMBER = _VALUE] = ARR -> [_destructureSet(MEMBER) = _VALUE] = ARR\n    // [...MEMBER] -> [..._destructureSet(MEMBER)]\n    if (\n      // for (MEMBER of ARR)\n      // for (MEMBER in ARR)\n      parentPath.isForXStatement({ left: node }) ||\n      // { KEY: MEMBER } = OBJ\n      (parentPath.isObjectProperty({ value: node }) &&\n        parentPath.parentPath.isObjectPattern()) ||\n      // { KEY: MEMBER = _VALUE } = OBJ\n      (parentPath.isAssignmentPattern({ left: node }) &&\n        parentPath.parentPath.isObjectProperty({ value: parent }) &&\n        parentPath.parentPath.parentPath.isObjectPattern()) ||\n      // [MEMBER] = ARR\n      parentPath.isArrayPattern() ||\n      // [MEMBER = _VALUE] = ARR\n      (parentPath.isAssignmentPattern({ left: node }) &&\n        parentPath.parentPath.isArrayPattern()) ||\n      // {...MEMBER}\n      // [...MEMBER]\n      parentPath.isRestElement()\n    ) {\n      member.replaceWith(this.destructureSet(member));\n      return;\n    }\n\n    if (parentPath.isTaggedTemplateExpression()) {\n      // MEMBER   ->   _get(MEMBER).bind(this)\n      member.replaceWith(this.boundGet(member));\n    } else {\n      // MEMBER   ->   _get(MEMBER)\n      member.replaceWith(this.get(member));\n    }\n  },\n};\n\n// We do not provide a default traversal visitor\n// Instead, caller passes one, and must call `state.handle` on the members\n// it wishes to be transformed.\n// Additionally, the caller must pass in a state object with at least\n// get, set, and call methods.\n// Optionally, a memoise method may be defined on the state, which will be\n// called when the member is a self-referential update.\nexport default function memberExpressionToFunctions(path, visitor, state) {\n  path.traverse(visitor, {\n    ...handle,\n    ...state,\n    memoiser: new AssignmentMemoiser(),\n  });\n}\n"],"names":["willPathCastToBoolean","path","maybeWrapped","node","parentPath","isLogicalExpression","operator","right","isSequenceExpression","expressions","length","isConditional","test","isUnaryExpression","isLoop","AssignmentMemoiser","constructor","_map","WeakMap","has","key","get","record","value","count","t","assignmentExpression","set","toNonOptional","base","isOptionalMemberExpression","memberExpression","property","computed","isOptionalCallExpression","callee","optional","object","context","scope","maybeGenerateMemoised","replaceWith","callExpression","identifier","arguments","isInDetachedTree","isProgram","container","listKey","parentNode","handle","memoise","member","noDocumentAll","parent","endPath","find","isPattern","arrowFunctionExpression","willEndPathCastToBoolean","rootParentPath","isUpdateExpression","argument","isAssignmentExpression","left","buildCodeFrameError","isDeleteOperation","isPrivateName","startingOptional","Error","type","startingProp","startingNode","baseNeedsMemoised","baseRef","parentIsOptionalCall","parentIsCall","isCallExpression","optionalCall","call","boundGet","regular","current","endParentPath","isMemberExpression","replacementPath","baseMemoised","cloneNode","nonNullishCheck","binaryExpression","nullLiteral","logicalExpression","buildUndefinedNode","nullishCheck","conditionalExpression","booleanLiteral","endParent","optionalCallExpression","optionalMemberExpression","simpleSet","prefix","unaryExpression","numericLiteral","ref","generateUidIdentifierBasedOnNode","push","id","sequenceExpression","operatorTrunc","slice","LOGICAL_OPERATORS","includes","isForXStatement","isObjectProperty","isObjectPattern","isAssignmentPattern","isArrayPattern","isRestElement","destructureSet","isTaggedTemplateExpression","memberExpressionToFunctions","visitor","state","traverse","memoiser"],"mappings":"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
+	"1.7.7": "58.0.3029.110",
+	"1.7.8": "58.0.3029.110",
+	"1.7.9": "58.0.3029.110",
+	"1.7.10": "58.0.3029.110",
+	"1.7.11": "58.0.3029.110",
+	"1.7.12": "58.0.3029.110",
+	"1.7.13": "58.0.3029.110",
+	"1.7.14": "58.0.3029.110",
+	"1.7.15": "58.0.3029.110",
+	"1.7.16": "58.0.3029.110",
+	"1.8.0": "59.0.3071.115",
+	"1.8.1": "59.0.3071.115",
+	"1.8.2-beta.1": "59.0.3071.115",
+	"1.8.2-beta.2": "59.0.3071.115",
+	"1.8.2-beta.3": "59.0.3071.115",
+	"1.8.2-beta.4": "59.0.3071.115",
+	"1.8.2-beta.5": "59.0.3071.115",
+	"1.8.2": "59.0.3071.115",
+	"1.8.3": "59.0.3071.115",
+	"1.8.4": "59.0.3071.115",
+	"1.8.5": "59.0.3071.115",
+	"1.8.6": "59.0.3071.115",
+	"1.8.7": "59.0.3071.115",
+	"1.8.8": "59.0.3071.115",
+	"2.0.0-beta.1": "61.0.3163.100",
+	"2.0.0-beta.2": "61.0.3163.100",
+	"2.0.0-beta.3": "61.0.3163.100",
+	"2.0.0-beta.4": "61.0.3163.100",
+	"2.0.0-beta.5": "61.0.3163.100",
+	"2.0.0-beta.6": "61.0.3163.100",
+	"2.0.0-beta.7": "61.0.3163.100",
+	"2.0.0-beta.8": "61.0.3163.100",
+	"2.0.0": "61.0.3163.100",
+	"2.0.1": "61.0.3163.100",
+	"2.0.2": "61.0.3163.100",
+	"2.0.3": "61.0.3163.100",
+	"2.0.4": "61.0.3163.100",
+	"2.0.5": "61.0.3163.100",
+	"2.0.6": "61.0.3163.100",
+	"2.0.7": "61.0.3163.100",
+	"2.0.8-nightly.20180819": "61.0.3163.100",
+	"2.0.8-nightly.20180820": "61.0.3163.100",
+	"2.0.8": "61.0.3163.100",
+	"2.0.9": "61.0.3163.100",
+	"2.0.10": "61.0.3163.100",
+	"2.0.11": "61.0.3163.100",
+	"2.0.12": "61.0.3163.100",
+	"2.0.13": "61.0.3163.100",
+	"2.0.14": "61.0.3163.100",
+	"2.0.15": "61.0.3163.100",
+	"2.0.16": "61.0.3163.100",
+	"2.0.17": "61.0.3163.100",
+	"2.0.18": "61.0.3163.100",
+	"2.1.0-unsupported.20180809": "61.0.3163.100",
+	"3.0.0-beta.1": "66.0.3359.181",
+	"3.0.0-beta.2": "66.0.3359.181",
+	"3.0.0-beta.3": "66.0.3359.181",
+	"3.0.0-beta.4": "66.0.3359.181",
+	"3.0.0-beta.5": "66.0.3359.181",
+	"3.0.0-beta.6": "66.0.3359.181",
+	"3.0.0-beta.7": "66.0.3359.181",
+	"3.0.0-beta.8": "66.0.3359.181",
+	"3.0.0-beta.9": "66.0.3359.181",
+	"3.0.0-beta.10": "66.0.3359.181",
+	"3.0.0-beta.11": "66.0.3359.181",
+	"3.0.0-beta.12": "66.0.3359.181",
+	"3.0.0-beta.13": "66.0.3359.181",
+	"3.0.0-nightly.20180818": "66.0.3359.181",
+	"3.0.0-nightly.20180821": "66.0.3359.181",
+	"3.0.0-nightly.20180823": "66.0.3359.181",
+	"3.0.0-nightly.20180904": "66.0.3359.181",
+	"3.0.0": "66.0.3359.181",
+	"3.0.1": "66.0.3359.181",
+	"3.0.2": "66.0.3359.181",
+	"3.0.3": "66.0.3359.181",
+	"3.0.4": "66.0.3359.181",
+	"3.0.5": "66.0.3359.181",
+	"3.0.6": "66.0.3359.181",
+	"3.0.7": "66.0.3359.181",
+	"3.0.8": "66.0.3359.181",
+	"3.0.9": "66.0.3359.181",
+	"3.0.10": "66.0.3359.181",
+	"3.0.11": "66.0.3359.181",
+	"3.0.12": "66.0.3359.181",
+	"3.0.13": "66.0.3359.181",
+	"3.0.14": "66.0.3359.181",
+	"3.0.15": "66.0.3359.181",
+	"3.0.16": "66.0.3359.181",
+	"3.1.0-beta.1": "66.0.3359.181",
+	"3.1.0-beta.2": "66.0.3359.181",
+	"3.1.0-beta.3": "66.0.3359.181",
+	"3.1.0-beta.4": "66.0.3359.181",
+	"3.1.0-beta.5": "66.0.3359.181",
+	"3.1.0": "66.0.3359.181",
+	"3.1.1": "66.0.3359.181",
+	"3.1.2": "66.0.3359.181",
+	"3.1.3": "66.0.3359.181",
+	"3.1.4": "66.0.3359.181",
+	"3.1.5": "66.0.3359.181",
+	"3.1.6": "66.0.3359.181",
+	"3.1.7": "66.0.3359.181",
+	"3.1.8": "66.0.3359.181",
+	"3.1.9": "66.0.3359.181",
+	"3.1.10": "66.0.3359.181",
+	"3.1.11": "66.0.3359.181",
+	"3.1.12": "66.0.3359.181",
+	"3.1.13": "66.0.3359.181",
+	"4.0.0-beta.1": "69.0.3497.106",
+	"4.0.0-beta.2": "69.0.3497.106",
+	"4.0.0-beta.3": "69.0.3497.106",
+	"4.0.0-beta.4": "69.0.3497.106",
+	"4.0.0-beta.5": "69.0.3497.106",
+	"4.0.0-beta.6": "69.0.3497.106",
+	"4.0.0-beta.7": "69.0.3497.106",
+	"4.0.0-beta.8": "69.0.3497.106",
+	"4.0.0-beta.9": "69.0.3497.106",
+	"4.0.0-beta.10": "69.0.3497.106",
+	"4.0.0-beta.11": "69.0.3497.106",
+	"4.0.0-nightly.20180817": "66.0.3359.181",
+	"4.0.0-nightly.20180819": "66.0.3359.181",
+	"4.0.0-nightly.20180821": "66.0.3359.181",
+	"4.0.0-nightly.20180929": "67.0.3396.99",
+	"4.0.0-nightly.20181006": "68.0.3440.128",
+	"4.0.0-nightly.20181010": "69.0.3497.106",
+	"4.0.0": "69.0.3497.106",
+	"4.0.1": "69.0.3497.106",
+	"4.0.2": "69.0.3497.106",
+	"4.0.3": "69.0.3497.106",
+	"4.0.4": "69.0.3497.106",
+	"4.0.5": "69.0.3497.106",
+	"4.0.6": "69.0.3497.106",
+	"4.0.7": "69.0.3497.128",
+	"4.0.8": "69.0.3497.128",
+	"4.1.0": "69.0.3497.128",
+	"4.1.1": "69.0.3497.128",
+	"4.1.2": "69.0.3497.128",
+	"4.1.3": "69.0.3497.128",
+	"4.1.4": "69.0.3497.128",
+	"4.1.5": "69.0.3497.128",
+	"4.2.0": "69.0.3497.128",
+	"4.2.1": "69.0.3497.128",
+	"4.2.2": "69.0.3497.128",
+	"4.2.3": "69.0.3497.128",
+	"4.2.4": "69.0.3497.128",
+	"4.2.5": "69.0.3497.128",
+	"4.2.6": "69.0.3497.128",
+	"4.2.7": "69.0.3497.128",
+	"4.2.8": "69.0.3497.128",
+	"4.2.9": "69.0.3497.128",
+	"4.2.10": "69.0.3497.128",
+	"4.2.11": "69.0.3497.128",
+	"4.2.12": "69.0.3497.128",
+	"5.0.0-beta.1": "72.0.3626.52",
+	"5.0.0-beta.2": "72.0.3626.52",
+	"5.0.0-beta.3": "73.0.3683.27",
+	"5.0.0-beta.4": "73.0.3683.54",
+	"5.0.0-beta.5": "73.0.3683.61",
+	"5.0.0-beta.6": "73.0.3683.84",
+	"5.0.0-beta.7": "73.0.3683.94",
+	"5.0.0-beta.8": "73.0.3683.104",
+	"5.0.0-beta.9": "73.0.3683.117",
+	"5.0.0-nightly.20190107": "70.0.3538.110",
+	"5.0.0-nightly.20190121": "71.0.3578.98",
+	"5.0.0-nightly.20190122": "71.0.3578.98",
+	"5.0.0": "73.0.3683.119",
+	"5.0.1": "73.0.3683.121",
+	"5.0.2": "73.0.3683.121",
+	"5.0.3": "73.0.3683.121",
+	"5.0.4": "73.0.3683.121",
+	"5.0.5": "73.0.3683.121",
+	"5.0.6": "73.0.3683.121",
+	"5.0.7": "73.0.3683.121",
+	"5.0.8": "73.0.3683.121",
+	"5.0.9": "73.0.3683.121",
+	"5.0.10": "73.0.3683.121",
+	"5.0.11": "73.0.3683.121",
+	"5.0.12": "73.0.3683.121",
+	"5.0.13": "73.0.3683.121",
+	"6.0.0-beta.1": "76.0.3774.1",
+	"6.0.0-beta.2": "76.0.3783.1",
+	"6.0.0-beta.3": "76.0.3783.1",
+	"6.0.0-beta.4": "76.0.3783.1",
+	"6.0.0-beta.5": "76.0.3805.4",
+	"6.0.0-beta.6": "76.0.3809.3",
+	"6.0.0-beta.7": "76.0.3809.22",
+	"6.0.0-beta.8": "76.0.3809.26",
+	"6.0.0-beta.9": "76.0.3809.26",
+	"6.0.0-beta.10": "76.0.3809.37",
+	"6.0.0-beta.11": "76.0.3809.42",
+	"6.0.0-beta.12": "76.0.3809.54",
+	"6.0.0-beta.13": "76.0.3809.60",
+	"6.0.0-beta.14": "76.0.3809.68",
+	"6.0.0-beta.15": "76.0.3809.74",
+	"6.0.0-nightly.20190212": "72.0.3626.107",
+	"6.0.0-nightly.20190213": "72.0.3626.110",
+	"6.0.0-nightly.20190311": "74.0.3724.8",
+	"6.0.0": "76.0.3809.88",
+	"6.0.1": "76.0.3809.102",
+	"6.0.2": "76.0.3809.110",
+	"6.0.3": "76.0.3809.126",
+	"6.0.4": "76.0.3809.131",
+	"6.0.5": "76.0.3809.136",
+	"6.0.6": "76.0.3809.138",
+	"6.0.7": "76.0.3809.139",
+	"6.0.8": "76.0.3809.146",
+	"6.0.9": "76.0.3809.146",
+	"6.0.10": "76.0.3809.146",
+	"6.0.11": "76.0.3809.146",
+	"6.0.12": "76.0.3809.146",
+	"6.1.0": "76.0.3809.146",
+	"6.1.1": "76.0.3809.146",
+	"6.1.2": "76.0.3809.146",
+	"6.1.3": "76.0.3809.146",
+	"6.1.4": "76.0.3809.146",
+	"6.1.5": "76.0.3809.146",
+	"6.1.6": "76.0.3809.146",
+	"6.1.7": "76.0.3809.146",
+	"6.1.8": "76.0.3809.146",
+	"6.1.9": "76.0.3809.146",
+	"6.1.10": "76.0.3809.146",
+	"6.1.11": "76.0.3809.146",
+	"6.1.12": "76.0.3809.146",
+	"7.0.0-beta.1": "78.0.3866.0",
+	"7.0.0-beta.2": "78.0.3866.0",
+	"7.0.0-beta.3": "78.0.3866.0",
+	"7.0.0-beta.4": "78.0.3896.6",
+	"7.0.0-beta.5": "78.0.3905.1",
+	"7.0.0-beta.6": "78.0.3905.1",
+	"7.0.0-beta.7": "78.0.3905.1",
+	"7.0.0-nightly.20190521": "76.0.3784.0",
+	"7.0.0-nightly.20190529": "76.0.3806.0",
+	"7.0.0-nightly.20190530": "76.0.3806.0",
+	"7.0.0-nightly.20190531": "76.0.3806.0",
+	"7.0.0-nightly.20190602": "76.0.3806.0",
+	"7.0.0-nightly.20190603": "76.0.3806.0",
+	"7.0.0-nightly.20190604": "77.0.3814.0",
+	"7.0.0-nightly.20190605": "77.0.3815.0",
+	"7.0.0-nightly.20190606": "77.0.3815.0",
+	"7.0.0-nightly.20190607": "77.0.3815.0",
+	"7.0.0-nightly.20190608": "77.0.3815.0",
+	"7.0.0-nightly.20190609": "77.0.3815.0",
+	"7.0.0-nightly.20190611": "77.0.3815.0",
+	"7.0.0-nightly.20190612": "77.0.3815.0",
+	"7.0.0-nightly.20190613": "77.0.3815.0",
+	"7.0.0-nightly.20190615": "77.0.3815.0",
+	"7.0.0-nightly.20190616": "77.0.3815.0",
+	"7.0.0-nightly.20190618": "77.0.3815.0",
+	"7.0.0-nightly.20190619": "77.0.3815.0",
+	"7.0.0-nightly.20190622": "77.0.3815.0",
+	"7.0.0-nightly.20190623": "77.0.3815.0",
+	"7.0.0-nightly.20190624": "77.0.3815.0",
+	"7.0.0-nightly.20190627": "77.0.3815.0",
+	"7.0.0-nightly.20190629": "77.0.3815.0",
+	"7.0.0-nightly.20190630": "77.0.3815.0",
+	"7.0.0-nightly.20190701": "77.0.3815.0",
+	"7.0.0-nightly.20190702": "77.0.3815.0",
+	"7.0.0-nightly.20190704": "77.0.3843.0",
+	"7.0.0-nightly.20190705": "77.0.3843.0",
+	"7.0.0-nightly.20190719": "77.0.3848.0",
+	"7.0.0-nightly.20190720": "77.0.3848.0",
+	"7.0.0-nightly.20190721": "77.0.3848.0",
+	"7.0.0-nightly.20190726": "77.0.3864.0",
+	"7.0.0-nightly.20190727": "78.0.3866.0",
+	"7.0.0-nightly.20190728": "78.0.3866.0",
+	"7.0.0-nightly.20190729": "78.0.3866.0",
+	"7.0.0-nightly.20190730": "78.0.3866.0",
+	"7.0.0-nightly.20190731": "78.0.3866.0",
+	"7.0.0": "78.0.3905.1",
+	"7.0.1": "78.0.3904.92",
+	"7.1.0": "78.0.3904.94",
+	"7.1.1": "78.0.3904.99",
+	"7.1.2": "78.0.3904.113",
+	"7.1.3": "78.0.3904.126",
+	"7.1.4": "78.0.3904.130",
+	"7.1.5": "78.0.3904.130",
+	"7.1.6": "78.0.3904.130",
+	"7.1.7": "78.0.3904.130",
+	"7.1.8": "78.0.3904.130",
+	"7.1.9": "78.0.3904.130",
+	"7.1.10": "78.0.3904.130",
+	"7.1.11": "78.0.3904.130",
+	"7.1.12": "78.0.3904.130",
+	"7.1.13": "78.0.3904.130",
+	"7.1.14": "78.0.3904.130",
+	"7.2.0": "78.0.3904.130",
+	"7.2.1": "78.0.3904.130",
+	"7.2.2": "78.0.3904.130",
+	"7.2.3": "78.0.3904.130",
+	"7.2.4": "78.0.3904.130",
+	"7.3.0": "78.0.3904.130",
+	"7.3.1": "78.0.3904.130",
+	"7.3.2": "78.0.3904.130",
+	"7.3.3": "78.0.3904.130",
+	"8.0.0-beta.1": "79.0.3931.0",
+	"8.0.0-beta.2": "79.0.3931.0",
+	"8.0.0-beta.3": "80.0.3955.0",
+	"8.0.0-beta.4": "80.0.3955.0",
+	"8.0.0-beta.5": "80.0.3987.14",
+	"8.0.0-beta.6": "80.0.3987.51",
+	"8.0.0-beta.7": "80.0.3987.59",
+	"8.0.0-beta.8": "80.0.3987.75",
+	"8.0.0-beta.9": "80.0.3987.75",
+	"8.0.0-nightly.20190801": "78.0.3866.0",
+	"8.0.0-nightly.20190802": "78.0.3866.0",
+	"8.0.0-nightly.20190803": "78.0.3871.0",
+	"8.0.0-nightly.20190806": "78.0.3871.0",
+	"8.0.0-nightly.20190807": "78.0.3871.0",
+	"8.0.0-nightly.20190808": "78.0.3871.0",
+	"8.0.0-nightly.20190809": "78.0.3871.0",
+	"8.0.0-nightly.20190810": "78.0.3871.0",
+	"8.0.0-nightly.20190811": "78.0.3871.0",
+	"8.0.0-nightly.20190812": "78.0.3871.0",
+	"8.0.0-nightly.20190813": "78.0.3871.0",
+	"8.0.0-nightly.20190814": "78.0.3871.0",
+	"8.0.0-nightly.20190815": "78.0.3871.0",
+	"8.0.0-nightly.20190816": "78.0.3881.0",
+	"8.0.0-nightly.20190817": "78.0.3881.0",
+	"8.0.0-nightly.20190818": "78.0.3881.0",
+	"8.0.0-nightly.20190819": "78.0.3881.0",
+	"8.0.0-nightly.20190820": "78.0.3881.0",
+	"8.0.0-nightly.20190824": "78.0.3892.0",
+	"8.0.0-nightly.20190825": "78.0.3892.0",
+	"8.0.0-nightly.20190827": "78.0.3892.0",
+	"8.0.0-nightly.20190828": "78.0.3892.0",
+	"8.0.0-nightly.20190830": "78.0.3892.0",
+	"8.0.0-nightly.20190901": "78.0.3892.0",
+	"8.0.0-nightly.20190902": "78.0.3892.0",
+	"8.0.0-nightly.20190907": "78.0.3892.0",
+	"8.0.0-nightly.20190909": "78.0.3892.0",
+	"8.0.0-nightly.20190910": "78.0.3892.0",
+	"8.0.0-nightly.20190911": "78.0.3892.0",
+	"8.0.0-nightly.20190913": "78.0.3892.0",
+	"8.0.0-nightly.20190914": "78.0.3892.0",
+	"8.0.0-nightly.20190915": "78.0.3892.0",
+	"8.0.0-nightly.20190917": "78.0.3892.0",
+	"8.0.0-nightly.20190919": "79.0.3915.0",
+	"8.0.0-nightly.20190920": "79.0.3915.0",
+	"8.0.0-nightly.20190923": "79.0.3919.0",
+	"8.0.0-nightly.20190924": "79.0.3919.0",
+	"8.0.0-nightly.20190926": "79.0.3919.0",
+	"8.0.0-nightly.20190929": "79.0.3919.0",
+	"8.0.0-nightly.20190930": "79.0.3919.0",
+	"8.0.0-nightly.20191001": "79.0.3919.0",
+	"8.0.0-nightly.20191004": "79.0.3919.0",
+	"8.0.0-nightly.20191005": "79.0.3919.0",
+	"8.0.0-nightly.20191006": "79.0.3919.0",
+	"8.0.0-nightly.20191009": "79.0.3919.0",
+	"8.0.0-nightly.20191011": "79.0.3919.0",
+	"8.0.0-nightly.20191012": "79.0.3919.0",
+	"8.0.0-nightly.20191017": "79.0.3919.0",
+	"8.0.0-nightly.20191019": "79.0.3931.0",
+	"8.0.0-nightly.20191020": "79.0.3931.0",
+	"8.0.0-nightly.20191021": "79.0.3931.0",
+	"8.0.0-nightly.20191023": "79.0.3931.0",
+	"8.0.0-nightly.20191101": "80.0.3952.0",
+	"8.0.0-nightly.20191105": "80.0.3952.0",
+	"8.0.0": "80.0.3987.86",
+	"8.0.1": "80.0.3987.86",
+	"8.0.2": "80.0.3987.86",
+	"8.0.3": "80.0.3987.134",
+	"8.1.0": "80.0.3987.137",
+	"8.1.1": "80.0.3987.141",
+	"8.2.0": "80.0.3987.158",
+	"8.2.1": "80.0.3987.163",
+	"8.2.2": "80.0.3987.163",
+	"8.2.3": "80.0.3987.163",
+	"8.2.4": "80.0.3987.165",
+	"8.2.5": "80.0.3987.165",
+	"8.3.0": "80.0.3987.165",
+	"8.3.1": "80.0.3987.165",
+	"8.3.2": "80.0.3987.165",
+	"8.3.3": "80.0.3987.165",
+	"8.3.4": "80.0.3987.165",
+	"8.4.0": "80.0.3987.165",
+	"8.4.1": "80.0.3987.165",
+	"8.5.0": "80.0.3987.165",
+	"8.5.1": "80.0.3987.165",
+	"8.5.2": "80.0.3987.165",
+	"8.5.3": "80.0.3987.163",
+	"8.5.4": "80.0.3987.163",
+	"8.5.5": "80.0.3987.163",
+	"9.0.0-beta.1": "82.0.4048.0",
+	"9.0.0-beta.2": "82.0.4048.0",
+	"9.0.0-beta.3": "82.0.4048.0",
+	"9.0.0-beta.4": "82.0.4048.0",
+	"9.0.0-beta.5": "82.0.4048.0",
+	"9.0.0-beta.6": "82.0.4058.2",
+	"9.0.0-beta.7": "82.0.4058.2",
+	"9.0.0-beta.9": "82.0.4058.2",
+	"9.0.0-beta.10": "82.0.4085.10",
+	"9.0.0-beta.12": "82.0.4085.14",
+	"9.0.0-beta.13": "82.0.4085.14",
+	"9.0.0-beta.14": "82.0.4085.27",
+	"9.0.0-beta.15": "83.0.4102.3",
+	"9.0.0-beta.16": "83.0.4102.3",
+	"9.0.0-beta.17": "83.0.4103.14",
+	"9.0.0-beta.18": "83.0.4103.16",
+	"9.0.0-beta.19": "83.0.4103.24",
+	"9.0.0-beta.20": "83.0.4103.26",
+	"9.0.0-beta.21": "83.0.4103.26",
+	"9.0.0-beta.22": "83.0.4103.34",
+	"9.0.0-beta.23": "83.0.4103.44",
+	"9.0.0-beta.24": "83.0.4103.45",
+	"9.0.0-nightly.20191121": "80.0.3954.0",
+	"9.0.0-nightly.20191122": "80.0.3954.0",
+	"9.0.0-nightly.20191123": "80.0.3954.0",
+	"9.0.0-nightly.20191124": "80.0.3954.0",
+	"9.0.0-nightly.20191129": "80.0.3954.0",
+	"9.0.0-nightly.20191130": "80.0.3954.0",
+	"9.0.0-nightly.20191201": "80.0.3954.0",
+	"9.0.0-nightly.20191202": "80.0.3954.0",
+	"9.0.0-nightly.20191203": "80.0.3954.0",
+	"9.0.0-nightly.20191204": "80.0.3954.0",
+	"9.0.0-nightly.20191210": "80.0.3954.0",
+	"9.0.0-nightly.20191220": "81.0.3994.0",
+	"9.0.0-nightly.20191221": "81.0.3994.0",
+	"9.0.0-nightly.20191222": "81.0.3994.0",
+	"9.0.0-nightly.20191223": "81.0.3994.0",
+	"9.0.0-nightly.20191224": "81.0.3994.0",
+	"9.0.0-nightly.20191225": "81.0.3994.0",
+	"9.0.0-nightly.20191226": "81.0.3994.0",
+	"9.0.0-nightly.20191228": "81.0.3994.0",
+	"9.0.0-nightly.20191229": "81.0.3994.0",
+	"9.0.0-nightly.20191230": "81.0.3994.0",
+	"9.0.0-nightly.20191231": "81.0.3994.0",
+	"9.0.0-nightly.20200101": "81.0.3994.0",
+	"9.0.0-nightly.20200103": "81.0.3994.0",
+	"9.0.0-nightly.20200104": "81.0.3994.0",
+	"9.0.0-nightly.20200105": "81.0.3994.0",
+	"9.0.0-nightly.20200106": "81.0.3994.0",
+	"9.0.0-nightly.20200108": "81.0.3994.0",
+	"9.0.0-nightly.20200109": "81.0.3994.0",
+	"9.0.0-nightly.20200110": "81.0.3994.0",
+	"9.0.0-nightly.20200111": "81.0.3994.0",
+	"9.0.0-nightly.20200113": "81.0.3994.0",
+	"9.0.0-nightly.20200115": "81.0.3994.0",
+	"9.0.0-nightly.20200116": "81.0.3994.0",
+	"9.0.0-nightly.20200117": "81.0.3994.0",
+	"9.0.0-nightly.20200119": "81.0.4030.0",
+	"9.0.0-nightly.20200121": "81.0.4030.0",
+	"9.0.0": "83.0.4103.64",
+	"9.0.1": "83.0.4103.94",
+	"9.0.2": "83.0.4103.94",
+	"9.0.3": "83.0.4103.100",
+	"9.0.4": "83.0.4103.104",
+	"9.0.5": "83.0.4103.119",
+	"9.1.0": "83.0.4103.122",
+	"9.1.1": "83.0.4103.122",
+	"9.1.2": "83.0.4103.122",
+	"9.2.0": "83.0.4103.122",
+	"9.2.1": "83.0.4103.122",
+	"9.3.0": "83.0.4103.122",
+	"9.3.1": "83.0.4103.122",
+	"9.3.2": "83.0.4103.122",
+	"9.3.3": "83.0.4103.122",
+	"9.3.4": "83.0.4103.122",
+	"9.3.5": "83.0.4103.122",
+	"9.4.0": "83.0.4103.122",
+	"9.4.1": "83.0.4103.122",
+	"9.4.2": "83.0.4103.122",
+	"9.4.3": "83.0.4103.122",
+	"9.4.4": "83.0.4103.122",
+	"10.0.0-beta.1": "84.0.4129.0",
+	"10.0.0-beta.2": "84.0.4129.0",
+	"10.0.0-beta.3": "85.0.4161.2",
+	"10.0.0-beta.4": "85.0.4161.2",
+	"10.0.0-beta.8": "85.0.4181.1",
+	"10.0.0-beta.9": "85.0.4181.1",
+	"10.0.0-beta.10": "85.0.4183.19",
+	"10.0.0-beta.11": "85.0.4183.20",
+	"10.0.0-beta.12": "85.0.4183.26",
+	"10.0.0-beta.13": "85.0.4183.39",
+	"10.0.0-beta.14": "85.0.4183.39",
+	"10.0.0-beta.15": "85.0.4183.39",
+	"10.0.0-beta.17": "85.0.4183.39",
+	"10.0.0-beta.19": "85.0.4183.39",
+	"10.0.0-beta.20": "85.0.4183.39",
+	"10.0.0-beta.21": "85.0.4183.39",
+	"10.0.0-beta.23": "85.0.4183.70",
+	"10.0.0-beta.24": "85.0.4183.78",
+	"10.0.0-beta.25": "85.0.4183.80",
+	"10.0.0-nightly.20200209": "82.0.4050.0",
+	"10.0.0-nightly.20200210": "82.0.4050.0",
+	"10.0.0-nightly.20200211": "82.0.4050.0",
+	"10.0.0-nightly.20200216": "82.0.4050.0",
+	"10.0.0-nightly.20200217": "82.0.4050.0",
+	"10.0.0-nightly.20200218": "82.0.4050.0",
+	"10.0.0-nightly.20200221": "82.0.4050.0" they were created above with a flag.
+for (var i = 0; i < R; i++) {
+  debug(i, src[i])
+  if (!re[i]) {
+    re[i] = new RegExp(src[i])
+  }
+}
+
+exports.parse = parse
+function parse (version, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (version instanceof SemVer) {
+    return version
+  }
+
+  if (typeof version !== 'string') {
+    return null
+  }
+
+  if (version.length > MAX_LENGTH) {
+    return null
+  }
+
+  var r = options.loose ? re[t.LOOSE] : re[t.FULL]
+  if (!r.test(version)) {
+    return null
+  }
+
+  try {
+    return new SemVer(version, options)
+  } catch (er) {
+    return null
+  }
+}
+
+exports.valid = valid
+function valid (version, options) {
+  var v = parse(version, options)
+  return v ? v.version : null
+}
+
+exports.clean = clean
+function clean (version, options) {
+  var s = parse(version.trim().replace(/^[=v]+/, ''), options)
+  return s ? s.version : null
+}
+
+exports.SemVer = SemVer
+
+function SemVer (version, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+  if (version instanceof SemVer) {
+    if (version.loose === options.loose) {
+      return version
+    } else {
+      version = version.version
+    }
+  } else if (typeof version !== 'string') {
+    throw new TypeError('Invalid Version: ' + version)
+  }
+
+  if (version.length > MAX_LENGTH) {
+    throw new TypeError('version is longer than ' + MAX_LENGTH + ' characters')
+  }
+
+  if (!(this instanceof SemVer)) {
+    return new SemVer(version, options)
+  }
+
+  debug('SemVer', version, options)
+  this.options = options
+  this.loose = !!options.loose
+
+  var m = version.trim().match(options.loose ? re[t.LOOSE] : re[t.FULL])
+
+  if (!m) {
+    throw new TypeError('Invalid Version: ' + version)
+  }
+
+  this.raw = version
+
+  // these are actually numbers
+  this.major = +m[1]
+  this.minor = +m[2]
+  this.patch = +m[3]
+
+  if (this.major > MAX_SAFE_INTEGER || this.major < 0) {
+    throw new TypeError('Invalid major version')
+  }
+
+  if (this.minor > MAX_SAFE_INTEGER || this.minor < 0) {
+    throw new TypeError('Invalid minor version')
+  }
+
+  if (this.patch > MAX_SAFE_INTEGER || this.patch < 0) {
+    throw new TypeError('Invalid patch version')
+  }
+
+  // numberify any prerelease numeric ids
+  if (!m[4]) {
+    this.prerelease = []
+  } else {
+    this.prerelease = m[4].split('.').map(function (id) {
+      if (/^[0-9]+$/.test(id)) {
+        var num = +id
+        if (num >= 0 && num < MAX_SAFE_INTEGER) {
+          return num
+        }
+      }
+      return id
+    })
+  }
+
+  this.build = m[5] ? m[5].split('.') : []
+  this.format()
+}
+
+SemVer.prototype.format = function () {
+  this.version = this.major + '.' + this.minor + '.' + this.patch
+  if (this.prerelease.length) {
+    this.version += '-' + this.prerelease.join('.')
+  }
+  return this.version
+}
+
+SemVer.prototype.toString = function () {
+  return this.version
+}
+
+SemVer.prototype.compare = function (other) {
+  debug('SemVer.compare', this.version, this.options, other)
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  return this.compareMain(other) || this.comparePre(other)
+}
+
+SemVer.prototype.compareMain = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  return compareIdentifiers(this.major, other.major) ||
+         compareIdentifiers(this.minor, other.minor) ||
+         compareIdentifiers(this.patch, other.patch)
+}
+
+SemVer.prototype.comparePre = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  // NOT having a prerelease is > having one
+  if (this.prerelease.length && !other.prerelease.length) {
+    return -1
+  } else if (!this.prerelease.length && other.prerelease.length) {
+    return 1
+  } else if (!this.prerelease.length && !other.prerelease.length) {
+    return 0
+  }
+
+  var i = 0
+  do {
+    var a = this.prerelease[i]
+    var b = other.prerelease[i]
+    debug('prerelease compare', i, a, b)
+    if (a === undefined && b === undefined) {
+      return 0
+    } else if (b === undefined) {
+      return 1
+    } else if (a === undefined) {
+      return -1
+    } else if (a === b) {
+      continue
+    } else {
+      return compareIdentifiers(a, b)
+    }
+  } while (++i)
+}
+
+SemVer.prototype.compareBuild = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  var i = 0
+  do {
+    var a = this.build[i]
+    var b = other.build[i]
+    debug('prerelease compare', i, a, b)
+    if (a === undefined && b === undefined) {
+      return 0
+    } else if (b === undefined) {
+      return 1
+    } else if (a === undefined) {
+      return -1
+    } else if (a === b) {
+      continue
+    } else {
+      return compareIdentifiers(a, b)
+    }
+  } while (++i)
+}
+
+// preminor will bump the version up to the next minor release, and immediately
+// down to pre-release. premajor and prepatch work the same way.
+SemVer.prototype.inc = function (release, identifier) {
+  switch (release) {
+    case 'premajor':
+      this.prerelease.length = 0
+      this.patch = 0
+      this.minor = 0
+      this.major++
+      this.inc('pre', identifier)
+      break
+    case 'preminor':
+      this.prerelease.length = 0
+      this.patch = 0
+      this.minor++
+      this.inc('pre', identifier)
+      break
+    case 'prepatch':
+      // If this is already a prerelease, it will bump to the next version
+      // drop any prereleases that might already exist, since they are not
+      // relevant at this point.
+      this.prerelease.length = 0
+      this.inc('patch', identifier)
+      this.inc('pre', identifier)
+      break
+    // If the input is a non-prerelease version, this acts the same as
+    // prepatch.
+    case 'prerelease':
+      if (this.prerelease.length === 0) {
+        this.inc('patch', identifier)
+      }
+      this.inc('pre', identifier)
+      break
+
+    case 'major':
+      // If this is a pre-major version, bump up to the same major version.
+      // Otherwise increment major.
+      // 1.0.0-5 bumps to 1.0.0
+      // 1.1.0 bumps to 2.0.0
+      if (this.minor !== 0 ||
+          this.patch !== 0 ||
+          this.prerelease.length === 0) {
+        this.major++
+      }
+      this.minor = 0
+      this.patch = 0
+      this.prerelease = []
+      break
+    case 'minor':
+      // If this is a pre-minor version, bump up to the same minor version.
+      // Otherwise increment minor.
+      // 1.2.0-5 bumps to 1.2.0
+      // 1.2.1 bumps to 1.3.0
+      if (this.patch !== 0 || this.prerelease.length === 0) {
+        this.minor++
+      }
+      this.patch = 0
+      this.prerelease = []
+      break
+    case 'patch':
+      // If this is not a pre-release version, it will increment the patch.
+      // If it is a pre-release it will bump up to the same patch version.
+      // 1.2.0-5 patches to 1.2.0
+      // 1.2.0 patches to 1.2.1
+      if (this.prerelease.length === 0) {
+        this.patch++
+      }
+      this.prerelease = []
+      break
+    // This probably shouldn't be used publicly.
+    // 1.0.0 "pre" would become 1.0.0-0 which is the wrong direction.
+    case 'pre':
+      if (this.prerelease.length === 0) {
+        this.prerelease = [0]
+      } else {
+        var i = this.prerelease.length
+        while (--i >= 0) {
+          if (typeof this.prerelease[i] === 'number') {
+            this.prerelease[i]++
+            i = -2
+          }
+        }
+        if (i === -1) {
+          // didn't increment anything
+          this.prerelease.push(0)
+        }
+      }
+      if (identifier) {
+        // 1.2.0-beta.1 bumps to 1.2.0-beta.2,
+        // 1.2.0-beta.fooblz or 1.2.0-beta bumps to 1.2.0-beta.0
+        if (this.prerelease[0] === identifier) {
+          if (isNaN(this.prerelease[1])) {
+            this.prerelease = [identifier, 0]
+          }
+        } else {
+          this.prerelease = [identifier, 0]
+        }
+      }
+      break
+
+    default:
+      throw new Error('invalid increment argument: ' + release)
+  }
+  this.format()
+  this.raw = this.version
+  return this
+}
+
+exports.inc = inc
+function inc (version, release, loose, identifier) {
+  if (typeof (loose) === 'string') {
+    identifier = loose
+    loose = undefined
+  }
+
+  try {
+    return new SemVer(version, loose).inc(release, identifier).version
+  } catch (er) {
+    return null
+  }
+}
+
+exports.diff = diff
+function diff (version1, version2) {
+  if (eq(version1, version2)) {
+    return null
+  } else {
+    var v1 = parse(version1)
+    var v2 = parse(version2)
+    var prefix = ''
+    if (v1.prerelease.length || v2.prerelease.length) {
+      prefix = 'pre'
+      var defaultResult = 'prerelease'
+    }
+    for (var key in v1) {
+      if (key === 'major' || key === 'minor' || key === 'patch') {
+        if (v1[key] !== v2[key]) {
+          return prefix + key
+        }
+      }
+    }
+    return defaultResult // may be undefined
+  }
+}
+
+exports.compareIdentifiers = compareIdentifiers
+
+var numeric = /^[0-9]+$/
+function compareIdentifiers (a, b) {
+  var anum = numeric.test(a)
+  var bnum = numeric.test(b)
+
+  if (anum && bnum) {
+    a = +a
+    b = +b
+  }
+
+  return a === b ? 0
+    : (anum && !bnum) ? -1
+    : (bnum && !anum) ? 1
+    : a < b ? -1
+    : 1
+}
+
+exports.rcompareIdentifiers = rcompareIdentifiers
+function rcompareIdentifiers (a, b) {
+  return compareIdentifiers(b, a)
+}
+
+exports.major = major
+function major (a, loose) {
+  return new SemVer(a, loose).major
+}
+
+exports.minor = minor
+function minor (a, loose) {
+  return new SemVer(a, loose).minor
+}
+
+exports.patch = patch
+function patch (a, loose) {
+  return new SemVer(a, loose).patch
+}
+
+exports.compare = compare
+function compare (a, b, loose) {
+  return new SemVer(a, loose).compare(new SemVer(b, loose))
+}
+
+exports.compareLoose = compareLoose
+function compareLoose (a, b) {
+  return compare(a, b, true)
+}
+
+exports.compareBuild = compareBuild
+function compareBuild (a, b, loose) {
+  var versionA = new SemVer(a, loose)
+  var versionB = new SemVer(b, loose)
+  return versionA.compare(versionB) || versionA.compareBuild(versionB)
+}
+
+exports.rcompare = rcompare
+function rcompare (a, b, loose) {
+  return compare(b, a, loose)
+}
+
+exports.sort = sort
+function sort (list, loose) {
+  return list.sort(function (a, b) {
+    return exports.compareBuild(a, b, loose)
+  })
+}
+
+exports.rsort = rsort
+function rsort (list, loose) {
+  return list.sort(function (a, b) {
+    return exports.compareBuild(b, a, loose)
+  })
+}
+
+exports.gt = gt
+function gt (a, b, loose) {
+  return compare(a, b, loose) > 0
+}
+
+exports.lt = lt
+function lt (a, b, loose) {
+  return compare(a, b, loose) < 0
+}
+
+exports.eq = eq
+function eq (a, b, loose) {
+  return compare(a, b, loose) === 0
+}
+
+exports.neq = neq
+function neq (a, b, loose) {
+  return compare(a, b, loose) !== 0
+}
+
+exports.gte = gte
+function gte (a, b, loose) {
+  return compare(a, b, loose) >= 0
+}
+
+exports.lte = lte
+function lte (a, b, loose) {
+  return compare(a, b, loose) <= 0
+}
+
+exports.cmp = cmp
+function cmp (a, op, b, loose) {
+  switch (op) {
+    case '===':
+      if (typeof a === 'object')
+        a = a.version
+      if (typeof b === 'object')
+        b = b.version
+      return a === b
+
+    case '!==':
+      if (typeof a === 'object')
+        a = a.version
+      if (typeof b === 'object')
+        b = b.version
+      return a !== b
+
+    case '':
+    case '=':
+    case '==':
+      return eq(a, b, loose)
+
+    case '!=':
+      return neq(a, b, loose)
+
+    case '>':
+      return gt(a, b, loose)
+
+    case '>=':
+      return gte(a, b, loose)
+
+    case '<':
+      return lt(a, b, loose)
+
+    case '<=':
+      return lte(a, b, loose)
+
+    default:
+      throw new TypeError('Invalid operator: ' + op)
+  }
+}
+
+exports.Comparator = Comparator
+function Comparator (comp, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (comp instanceof Comparator) {
+    if (comp.loose === !!options.loose) {
+      return comp
+    } else {
+      comp = comp.value
+    }
+  }
+
+  if (!(this instanceof Comparator)) {
+    return new Comparator(comp, options)
+  }
+
+  debug('comparator', comp, options)
+  this.options = options
+  this.loose = !!options.loose
+  this.parse(comp)
+
+  if (this.semver === ANY) {
+    this.value = ''
+  } else {
+    this.value = this.operator + this.semver.version
+  }
+
+  debug('comp', this)
+}
+
+var ANY = {}
+Comparator.prototype.parse = function (comp) {
+  var r = this.options.loose ? re[t.COMPARATORLOOSE] : re[t.COMPARATOR]
+  var m = comp.match(r)
+
+  if (!m) {
+    throw new TypeError('Invalid comparator: ' + comp)
+  }
+
+  this.operator = m[1] !== undefined ? m[1] : ''
+  if (this.operator === '=') {
+    this.operator = ''
+  }
+
+  // if it literally is just '>' or '' then allow anything.
+  if (!m[2]) {
+    this.semver = ANY
+  } else {
+    this.semver = new SemVer(m[2], this.options.loose)
+  }
+}
+
+Comparator.prototype.toString = function () {
+  return this.value
+}
+
+Comparator.prototype.test = function (version) {
+  debug('Comparator.test', version, this.options.loose)
+
+  if (this.semver === ANY || version === ANY) {
+    return true
+  }
+
+  if (typeof version === 'string') {
+    try {
+      version = new SemVer(version, this.options)
+    } catch (er) {
+      return false
+    }
+  }
+
+  return cmp(version, this.operator, this.semver, this.options)
+}
+
+Comparator.prototype.intersects = function (comp, options) {
+  if (!(comp instanceof Comparator)) {
+    throw new TypeError('a Comparator is required')
+  }
+
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  var rangeTmp
+
+  if (this.operator === '') {
+    if (this.value === '') {
+      return true
+    }
+    rangeTmp = new Range(comp.value, options)
+    return satisfies(this.value, rangeTmp, options)
+  } else if (comp.operator === '') {
+    if (comp.value === '') {
+      return true
+    }
+    rangeTmp = new Range(this.value, options)
+    return satisfies(comp.semver, rangeTmp, options)
+  }
+
+  var sameDirectionIncreasing =
+    (this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '>=' || comp.operator === '>')
+  var sameDirectionDecreasing =
+    (this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '<=' || comp.operator === '<')
+  var sameSemVer = this.semver.version === comp.semver.version
+  var differentDirectionsInclusive =
+    (this.operator === '>=' || this.operator === '<=') &&
+    (comp.operator === '>=' || comp.operator === '<=')
+  var oppositeDirectionsLessThan =
+    cmp(this.semver, '<', comp.semver, options) &&
+    ((this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '<=' || comp.operator === '<'))
+  var oppositeDirectionsGreaterThan =
+    cmp(this.semver, '>', comp.semver, options) &&
+    ((this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '>=' || comp.operator === '>'))
+
+  return sameDirectionIncreasing || sameDirectionDecreasing ||
+    (sameSemVer && differentDirectionsInclusive) ||
+    oppositeDirectionsLessThan || oppositeDirectionsGreaterThan
+}
+
+exports.Range = Range
+function Range (range, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (range instanceof Range) {
+    if (range.loose === !!options.loose &&
+        range.includePrerelease === !!options.includePrerelease) {
+      return range
+    } else {
+      return new Range(range.raw, options)
+    }
+  }
+
+  if (range instanceof Comparator) {
+    return new Range(range.value, options)
+  }
+
+  if (!(this instanceof Range)) {
+    return new Range(range, options)
+  }
+
+  this.options = options
+  this.loose = !!options.loose
+  this.includePrerelease = !!options.includePrerelease
+
+  // First, split based on boolean or ||
+  this.raw = range
+  this.set = range.split(/\s*\|\|\s*/).map(function (range) {
+    return this.parseRange(range.trim())
+  }, this).filter(function (c) {
+    // throw out any that are not relevant for whatever reason
+    return c.length
+  })
+
+  if (!this.set.length) {
+    throw new TypeError('Invalid SemVer Range: ' + range)
+  }
+
+  this.format()
+}
+
+Range.prototype.format = function () {
+  this.range = this.set.map(function (comps) {
+    return comps.join(' ').trim()
+  }).join('||').trim()
+  return this.range
+}
+
+Range.prototype"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.File = File;
+exports.Program = Program;
+exports.BlockStatement = BlockStatement;
+exports.Directive = Directive;
+exports.DirectiveLiteral = DirectiveLiteral;
+exports.InterpreterDirective = InterpreterDirective;
+exports.Placeholder = Placeholder;
+
+var t = require("@babel/types");
+
+function File(node) {
+  if (node.program) {
+    this.print(node.program.interpreter, node);
+  }
+
+  this.print(node.program, node);
+}
+
+function Program(node) {
+  this.printInnerComments(node, false);
+  this.printSequence(node.directives, node);
+  if (node.directives && node.directives.length) this.newline();
+  this.printSequence(node.body, node);
+}
+
+function BlockStatement(node) {
+  var _node$directives;
+
+  this.token("{");
+  this.printInnerComments(node);
+  const hasDirectives = (_node$directives = node.directives) == null ? void 0 : _node$directives.length;
+
+  if (node.body.length || hasDirectives) {
+    this.newline();
+    this.printSequence(node.directives, node, {
+      indent: true
+    });
+    if (hasDirectives) this.newline();
+    this.printSequence(node.body, node, {
+      indent: true
+    });
+    this.removeTrailingNewline();
+    this.source("end", node.loc);
+    if (!this.endsWith("\n")) this.newline();
+    this.rightBrace();
+  } else {
+    this.source("end", node.loc);
+    this.token("}");
+  }
+}
+
+function Directive(node) {
+  this.print(node.value, node);
+  this.semicolon();
+}
+
+const unescapedSingleQuoteRE = /(?:^|[^\\])(?:\\\\)*'/;
+const unescapedDoubleQuoteRE = /(?:^|[^\\])(?:\\\\)*"/;
+
+function DirectiveLiteral(node) {
+  const raw = this.getPossibleRaw(node);
+
+  if (raw != null) {
+    this.token(raw);
+    return;
+  }
+
+  const {
+    value
+  } = node;
+
+  if (!unescapedDoubleQuoteRE.test(value)) {
+    this.token(`"${value}"`);
+  } else if (!unescapedSingleQuoteRE.test(value)) {
+    this.token(`'${value}'`);
+  } else {
+    throw new Error("Malformed AST: it is not possible to print a directive containing" + " both unescaped single and double quotes.");
+  }
+}
+
+function InterpreterDirective(node) {
+  this.token(`#!${node.value}\n`);
+}
+
+function Placeholder(node) {
+  this.token("%%");
+  this.print(node.name);
+  this.token("%%");
+
+  if (node.expectedNode === "Statement") {
+    this.semicolon();
+  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            they were created above with a flag.
+for (var i = 0; i < R; i++) {
+  debug(i, src[i])
+  if (!re[i]) {
+    re[i] = new RegExp(src[i])
+  }
+}
+
+exports.parse = parse
+function parse (version, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (version instanceof SemVer) {
+    return version
+  }
+
+  if (typeof version !== 'string') {
+    return null
+  }
+
+  if (version.length > MAX_LENGTH) {
+    return null
+  }
+
+  var r = options.loose ? re[t.LOOSE] : re[t.FULL]
+  if (!r.test(version)) {
+    return null
+  }
+
+  try {
+    return new SemVer(version, options)
+  } catch (er) {
+    return null
+  }
+}
+
+exports.valid = valid
+function valid (version, options) {
+  var v = parse(version, options)
+  return v ? v.version : null
+}
+
+exports.clean = clean
+function clean (version, options) {
+  var s = parse(version.trim().replace(/^[=v]+/, ''), options)
+  return s ? s.version : null
+}
+
+exports.SemVer = SemVer
+
+function SemVer (version, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+  if (version instanceof SemVer) {
+    if (version.loose === options.loose) {
+      return version
+    } else {
+      version = version.version
+    }
+  } else if (typeof version !== 'string') {
+    throw new TypeError('Invalid Version: ' + version)
+  }
+
+  if (version.length > MAX_LENGTH) {
+    throw new TypeError('version is longer than ' + MAX_LENGTH + ' characters')
+  }
+
+  if (!(this instanceof SemVer)) {
+    return new SemVer(version, options)
+  }
+
+  debug('SemVer', version, options)
+  this.options = options
+  this.loose = !!options.loose
+
+  var m = version.trim().match(options.loose ? re[t.LOOSE] : re[t.FULL])
+
+  if (!m) {
+    throw new TypeError('Invalid Version: ' + version)
+  }
+
+  this.raw = version
+
+  // these are actually numbers
+  this.major = +m[1]
+  this.minor = +m[2]
+  this.patch = +m[3]
+
+  if (this.major > MAX_SAFE_INTEGER || this.major < 0) {
+    throw new TypeError('Invalid major version')
+  }
+
+  if (this.minor > MAX_SAFE_INTEGER || this.minor < 0) {
+    throw new TypeError('Invalid minor version')
+  }
+
+  if (this.patch > MAX_SAFE_INTEGER || this.patch < 0) {
+    throw new TypeError('Invalid patch version')
+  }
+
+  // numberify any prerelease numeric ids
+  if (!m[4]) {
+    this.prerelease = []
+  } else {
+    this.prerelease = m[4].split('.').map(function (id) {
+      if (/^[0-9]+$/.test(id)) {
+        var num = +id
+        if (num >= 0 && num < MAX_SAFE_INTEGER) {
+          return num
+        }
+      }
+      return id
+    })
+  }
+
+  this.build = m[5] ? m[5].split('.') : []
+  this.format()
+}
+
+SemVer.prototype.format = function () {
+  this.version = this.major + '.' + this.minor + '.' + this.patch
+  if (this.prerelease.length) {
+    this.version += '-' + this.prerelease.join('.')
+  }
+  return this.version
+}
+
+SemVer.prototype.toString = function () {
+  return this.version
+}
+
+SemVer.prototype.compare = function (other) {
+  debug('SemVer.compare', this.version, this.options, other)
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  return this.compareMain(other) || this.comparePre(other)
+}
+
+SemVer.prototype.compareMain = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  return compareIdentifiers(this.major, other.major) ||
+         compareIdentifiers(this.minor, other.minor) ||
+         compareIdentifiers(this.patch, other.patch)
+}
+
+SemVer.prototype.comparePre = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  // NOT having a prerelease is > having one
+  if (this.prerelease.length && !other.prerelease.length) {
+    return -1
+  } else if (!this.prerelease.length && other.prerelease.length) {
+    return 1
+  } else if (!this.prerelease.length && !other.prerelease.length) {
+    return 0
+  }
+
+  var i = 0
+  do {
+    var a = this.prerelease[i]
+    var b = other.prerelease[i]
+    debug('prerelease compare', i, a, b)
+    if (a === undefined && b === undefined) {
+      return 0
+    } else if (b === undefined) {
+      return 1
+    } else if (a === undefined) {
+      return -1
+    } else if (a === b) {
+      continue
+    } else {
+      return compareIdentifiers(a, b)
+    }
+  } while (++i)
+}
+
+SemVer.prototype.compareBuild = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  var i = 0
+  do {
+    var a = this.build[i]
+    var b = other.build[i]
+    debug('prerelease compare', i, a, b)
+    if (a === undefined && b === undefined) {
+      return 0
+    } else if (b === undefined) {
+      return 1
+    } else if (a === undefined) {
+      return -1
+    } else if (a === b) {
+      continue
+    } else {
+      return compareIdentifiers(a, b)
+    }
+  } while (++i)
+}
+
+// preminor will bump the version up to the next minor release, and immediately
+// down to pre-release. premajor and prepatch work the same way.
+SemVer.prototype.inc = function (release, identifier) {
+  switch (release) {
+    case 'premajor':
+      this.prerelease.length = 0
+      this.patch = 0
+      this.minor = 0
+      this.major++
+      this.inc('pre', identifier)
+      break
+    case 'preminor':
+      this.prerelease.length = 0
+      this.patch = 0
+      this.minor++
+      this.inc('pre', identifier)
+      break
+    case 'prepatch':
+      // If this is already a prerelease, it will bump to the next version
+      // drop any prereleases that might already exist, since they are not
+      // relevant at this point.
+      this.prerelease.length = 0
+      this.inc('patch', identifier)
+      this.inc('pre', identifier)
+      break
+    // If the input is a non-prerelease version, this acts the same as
+    // prepatch.
+    case 'prerelease':
+      if (this.prerelease.length === 0) {
+        this.inc('patch', identifier)
+      }
+      this.inc('pre', identifier)
+      break
+
+    case 'major':
+      // If this is a pre-major version, bump up to the same major version.
+      // Otherwise increment major.
+      // 1.0.0-5 bumps to 1.0.0
+      // 1.1.0 bumps to 2.0.0
+      if (this.minor !== 0 ||
+          this.patch !== 0 ||
+          this.prerelease.length === 0) {
+        this.major++
+      }
+      this.minor = 0
+      this.patch = 0
+      this.prerelease = []
+      break
+    case 'minor':
+      // If this is a pre-minor version, bump up to the same minor version.
+      // Otherwise increment minor.
+      // 1.2.0-5 bumps to 1.2.0
+      // 1.2.1 bumps to 1.3.0
+      if (this.patch !== 0 || this.prerelease.length === 0) {
+        this.minor++
+      }
+      this.patch = 0
+      this.prerelease = []
+      break
+    case 'patch':
+      // If this is not a pre-release version, it will increment the patch.
+      // If it is a pre-release it will bump up to the same patch version.
+      // 1.2.0-5 patches to 1.2.0
+      // 1.2.0 patches to 1.2.1
+      if (this.prerelease.length === 0) {
+        this.patch++
+      }
+      this.prerelease = []
+      break
+    // This probably shouldn't be used publicly.
+    // 1.0.0 "pre" would become 1.0.0-0 which is the wrong direction.
+    case 'pre':
+      if (this.prerelease.length === 0) {
+        this.prerelease = [0]
+      } else {
+        var i = this.prerelease.length
+        while (--i >= 0) {
+          if (typeof this.prerelease[i] === 'number') {
+            this.prerelease[i]++
+            i = -2
+          }
+        }
+        if (i === -1) {
+          // didn't increment anything
+          this.prerelease.push(0)
+        }
+      }
+      if (identifier) {
+        // 1.2.0-beta.1 bumps to 1.2.0-beta.2,
+        // 1.2.0-beta.fooblz or 1.2.0-beta bumps to 1.2.0-beta.0
+        if (this.prerelease[0] === identifier) {
+          if (isNaN(this.prerelease[1])) {
+            this.prerelease = [identifier, 0]
+          }
+        } else {
+          this.prerelease = [identifier, 0]
+        }
+      }
+      break
+
+    default:
+      throw new Error('invalid increment argument: ' + release)
+  }
+  this.format()
+  this.raw = this.version
+  return this
+}
+
+exports.inc = inc
+function inc (version, release, loose, identifier) {
+  if (typeof (loose) === 'string') {
+    identifier = loose
+    loose = undefined
+  }
+
+  try {
+    return new SemVer(version, loose).inc(release, identifier).version
+  } catch (er) {
+    return null
+  }
+}
+
+exports.diff = diff
+function diff (version1, version2) {
+  if (eq(version1, version2)) {
+    return null
+  } else {
+    var v1 = parse(version1)
+    var v2 = parse(version2)
+    var prefix = ''
+    if (v1.prerelease.length || v2.prerelease.length) {
+      prefix = 'pre'
+      var defaultResult = 'prerelease'
+    }
+    for (var key in v1) {
+      if (key === 'major' || key === 'minor' || key === 'patch') {
+        if (v1[key] !== v2[key]) {
+          return prefix + key
+        }
+      }
+    }
+    return defaultResult // may be undefined
+  }
+}
+
+exports.compareIdentifiers = compareIdentifiers
+
+var numeric = /^[0-9]+$/
+function compareIdentifiers (a, b) {
+  var anum = numeric.test(a)
+  var bnum = numeric.test(b)
+
+  if (anum && bnum) {
+    a = +a
+    b = +b
+  }
+
+  return a === b ? 0
+    : (anum && !bnum) ? -1
+    : (bnum && !anum) ? 1
+    : a < b ? -1
+    : 1
+}
+
+exports.rcompareIdentifiers = rcompareIdentifiers
+function rcompareIdentifiers (a, b) {
+  return compareIdentifiers(b, a)
+}
+
+exports.major = major
+function major (a, loose) {
+  return new SemVer(a, loose).major
+}
+
+exports.minor = minor
+function minor (a, loose) {
+  return new SemVer(a, loose).minor
+}
+
+exports.patch = patch
+function patch (a, loose) {
+  return new SemVer(a, loose).patch
+}
+
+exports.compare = compare
+function compare (a, b, loose) {
+  return new SemVer(a, loose).compare(new SemVer(b, loose))
+}
+
+exports.compareLoose = compareLoose
+function compareLoose (a, b) {
+  return compare(a, b, true)
+}
+
+exports.compareBuild = compareBuild
+function compareBuild (a, b, loose) {
+  var versionA = new SemVer(a, loose)
+  var versionB = new SemVer(b, loose)
+  return versionA.compare(versionB) || versionA.compareBuild(versionB)
+}
+
+exports.rcompare = rcompare
+function rcompare (a, b, loose) {
+  return compare(b, a, loose)
+}
+
+exports.sort = sort
+function sort (list, loose) {
+  return list.sort(function (a, b) {
+    return exports.compareBuild(a, b, loose)
+  })
+}
+
+exports.rsort = rsort
+function rsort (list, loose) {
+  return list.sort(function (a, b) {
+    return exports.compareBuild(b, a, loose)
+  })
+}
+
+exports.gt = gt
+function gt (a, b, loose) {
+  return compare(a, b, loose) > 0
+}
+
+exports.lt = lt
+function lt (a, b, loose) {
+  return compare(a, b, loose) < 0
+}
+
+exports.eq = eq
+function eq (a, b, loose) {
+  return compare(a, b, loose) === 0
+}
+
+exports.neq = neq
+function neq (a, b, loose) {
+  return compare(a, b, loose) !== 0
+}
+
+exports.gte = gte
+function gte (a, b, loose) {
+  return compare(a, b, loose) >= 0
+}
+
+exports.lte = lte
+function lte (a, b, loose) {
+  return compare(a, b, loose) <= 0
+}
+
+exports.cmp = cmp
+function cmp (a, op, b, loose) {
+  switch (op) {
+    case '===':
+      if (typeof a === 'object')
+        a = a.version
+      if (typeof b === 'object')
+        b = b.version
+      return a === b
+
+    case '!==':
+      if (typeof a === 'object')
+        a = a.version
+      if (typeof b === 'object')
+        b = b.version
+      return a !== b
+
+    case '':
+    case '=':
+    case '==':
+      return eq(a, b, loose)
+
+    case '!=':
+      return neq(a, b, loose)
+
+    case '>':
+      return gt(a, b, loose)
+
+    case '>=':
+      return gte(a, b, loose)
+
+    case '<':
+      return lt(a, b, loose)
+
+    case '<=':
+      return lte(a, b, loose)
+
+    default:
+      throw new TypeError('Invalid operator: ' + op)
+  }
+}
+
+exports.Comparator = Comparator
+function Comparator (comp, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (comp instanceof Comparator) {
+    if (comp.loose === !!options.loose) {
+      return comp
+    } else {
+      comp = comp.value
+    }
+  }
+
+  if (!(this instanceof Comparator)) {
+    return new Comparator(comp, options)
+  }
+
+  debug('comparator', comp, options)
+  this.options = options
+  this.loose = !!options.loose
+  this.parse(comp)
+
+  if (this.semver === ANY) {
+    this.value = ''
+  } else {
+    this.value = this.operator + this.semver.version
+  }
+
+  debug('comp', this)
+}
+
+var ANY = {}
+Comparator.prototype.parse = function (comp) {
+  var r = this.options.loose ? re[t.COMPARATORLOOSE] : re[t.COMPARATOR]
+  var m = comp.match(r)
+
+  if (!m) {
+    throw new TypeError('Invalid comparator: ' + comp)
+  }
+
+  this.operator = m[1] !== undefined ? m[1] : ''
+  if (this.operator === '=') {
+    this.operator = ''
+  }
+
+  // if it literally is just '>' or '' then allow anything.
+  if (!m[2]) {
+    this.semver = ANY
+  } else {
+    this.semver = new SemVer(m[2], this.options.loose)
+  }
+}
+
+Comparator.prototype.toString = function () {
+  return this.value
+}
+
+Comparator.prototype.test = function (version) {
+  debug('Comparator.test', version, this.options.loose)
+
+  if (this.semver === ANY || version === ANY) {
+    return true
+  }
+
+  if (typeof version === 'string') {
+    try {
+      version = new SemVer(version, this.options)
+    } catch (er) {
+      return false
+    }
+  }
+
+  return cmp(version, this.operator, this.semver, this.options)
+}
+
+Comparator.prototype.intersects = function (comp, options) {
+  if (!(comp instanceof Comparator)) {
+    throw new TypeError('a Comparator is required')
+  }
+
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  var rangeTmp
+
+  if (this.operator === '') {
+    if (this.value === '') {
+      return true
+    }
+    rangeTmp = new Range(comp.value, options)
+    return satisfies(this.value, rangeTmp, options)
+  } else if (comp.operator === '') {
+    if (comp.value === '') {
+      return true
+    }
+    rangeTmp = new Range(this.value, options)
+    return satisfies(comp.semver, rangeTmp, options)
+  }
+
+  var sameDirectionIncreasing =
+    (this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '>=' || comp.operator === '>')
+  var sameDirectionDecreasing =
+    (this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '<=' || comp.operator === '<')
+  var sameSemVer = this.semver.version === comp.semver.version
+  var differentDirectionsInclusive =
+    (this.operator === '>=' || this.operator === '<=') &&
+    (comp.operator === '>=' || comp.operator === '<=')
+  var oppositeDirectionsLessThan =
+    cmp(this.semver, '<', comp.semver, options) &&
+    ((this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '<=' || comp.operator === '<'))
+  var oppositeDirectionsGreaterThan =
+    cmp(this.semver, '>', comp.semver, options) &&
+    ((this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '>=' || comp.operator === '>'))
+
+  return sameDirectionIncreasing || sameDirectionDecreasing ||
+    (sameSemVer && differentDirectionsInclusive) ||
+    oppositeDirectionsLessThan || oppositeDirectionsGreaterThan
+}
+
+exports.Range = Range
+function Range (range, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (range instanceof Range) {
+    if (range.loose === !!options.loose &&
+        range.includePrerelease === !!options.includePrerelease) {
+      return range
+    } else {
+      return new Range(range.raw, options)
+    }
+  }
+
+  if (range instanceof Comparator) {
+    return new Range(range.value, options)
+  }
+
+  if (!(this instanceof Range)) {
+    return new Range(range, options)
+  }
+
+  this.options = options
+  this.loose = !!options.loose
+  this.includePrerelease = !!options.includePrerelease
+
+  // First, split based on boolean or ||
+  this.raw = range
+  this.set = range.split(/\s*\|\|\s*/).map(function (range) {
+    return this.parseRange(range.trim())
+  }, this).filter(function (c) {
+    // throw out any that are not relevant for whatever reason
+    return c.length
+  })
+
+  if (!this.set.length) {
+    throw new TypeError('Invalid SemVer Range: ' + range)
+  }
+
+  this.format()
+}
+
+Range.prototype.format = function () {
+  this.range = this.set.map(function (comps) {
+    return comps.join(' ').trim()
+  }).join('||').trim()
+  return this.range
+}
+
+Range.prototype": "9",
+    "node": "0.12",
+    "ios": "9",
+    "samsung": "2",
+    "electron": "0.20"
+  },
+  "es6.number.parse-float": {
+    "chrome": "34",
+    "opera": "21",
+    "edge": "12",
+    "firefox": "25",
+    "safari": "9",
+    "node": "0.12",
+    "ios": "9",
+    "samsung": "2",
+    "electron": "0.20"
+  },
+  "es6.number.parse-int": {
+    "chrome": "34",
+    "opera": "21",
+    "edge": "12",
+    "firefox": "25",
+    "safari": "9",
+    "node": "0.12",
+    "ios": "9",
+    "samsung": "2",
+    "electron": "0.20"
+  },
+  "es6.object.assign": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "13",
+    "firefox": "36",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.object.create": {
+    "chrome": "5",
+    "opera": "12",
+    "edge": "12",
+    "firefox": "4",
+    "safari": "4",
+    "node": "0.10",
+    "ie": "9",
+    "android": "4",
+    "ios": "6",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es7.object.define-getter": {
+    "chrome": "62",
+    "opera": "49",
+    "edge": "16",
+    "firefox": "48",
+    "safari": "9",
+    "node": "8.10",
+    "ios": "9",
+    "samsung": "8",
+    "electron": "3.0"
+  },
+  "es7.object.define-setter": {
+    "chrome": "62",
+    "opera": "49",
+    "edge": "16",
+    "firefox": "48",
+    "safari": "9",
+    "node": "8.10",
+    "ios": "9",
+    "samsung": "8",
+    "electron": "3.0"
+  },
+  "es6.object.define-property": {
+    "chrome": "5",
+    "opera": "12",
+    "edge": "12",
+    "firefox": "4",
+    "safari": "5.1",
+    "node": "0.10",
+    "ie": "9",
+    "android": "4",
+    "ios": "6",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.object.define-properties": {
+    "chrome": "5",
+    "opera": "12",
+    "edge": "12",
+    "firefox": "4",
+    "safari": "4",
+    "node": "0.10",
+    "ie": "9",
+    "android": "4",
+    "ios": "6",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es7.object.entries": {
+    "chrome": "54",
+    "opera": "41",
+    "edge": "14",
+    "firefox": "47",
+    "safari": "10.1",
+    "node": "7",
+    "ios": "10.3",
+    "samsung": "6",
+    "electron": "1.4"
+  },
+  "es6.object.freeze": {
+    "chrome": "44",
+    "opera": "31",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "4",
+    "electron": "0.30"
+  },
+  "es6.object.get-own-property-descriptor": {
+    "chrome": "44",
+    "opera": "31",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "4",
+    "electron": "0.30"
+  },
+  "es7.object.get-own-property-descriptors": {
+    "chrome": "54",
+    "opera": "41",
+    "edge": "15",
+    "firefox": "50",
+    "safari": "10.1",
+    "node": "7",
+    "ios": "10.3",
+    "samsung": "6",
+    "electron": "1.4"
+  },
+  "es6.object.get-own-property-names": {
+    "chrome": "40",
+    "opera": "27",
+    "edge": "12",
+    "firefox": "33",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.object.get-prototype-of": {
+    "chrome": "44",
+    "opera": "31",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "4",
+    "electron": "0.30"
+  },
+  "es7.object.lookup-getter": {
+    "chrome": "62",
+    "opera": "49",
+    "edge": "79",
+    "firefox": "36",
+    "safari": "9",
+    "node": "8.10",
+    "ios": "9",
+    "samsung": "8",
+    "electron": "3.0"
+  },
+  "es7.object.lookup-setter": {
+    "chrome": "62",
+    "opera": "49",
+    "edge": "79",
+    "firefox": "36",
+    "safari": "9",
+    "node": "8.10",
+    "ios": "9",
+    "samsung": "8",
+    "electron": "3.0"
+  },
+  "es6.object.prevent-extensions": {
+    "chrome": "44",
+    "opera": "31",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "4",
+    "electron": "0.30"
+  },
+  "es6.object.to-string": {
+    "chrome": "57",
+    "opera": "44",
+    "edge": "15",
+    "firefox": "51",
+    "safari": "10",
+    "node": "8",
+    "ios": "10",
+    "samsung": "7",
+    "electron": "1.7"
+  },
+  "es6.object.is": {
+    "chrome": "19",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "22",
+    "safari": "9",
+    "node": "0.12",
+    "android": "4.1",
+    "ios": "9",
+    "samsung": "1.5",
+    "electron": "0.20"
+  },
+  "es6.object.is-frozen": {
+    "chrome": "44",
+    "opera": "31",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "4",
+    "electron": "0.30"
+  },
+  "es6.object.is-sealed": {
+    "chrome": "44",
+    "opera": "31",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "4",
+    "electron": "0.30"
+  },
+  "es6.object.is-extensible": {
+    "chrome": "44",
+    "opera": "31",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "4",
+    "electron": "0.30"
+  },
+  "es6.object.keys": {
+    "chrome": "40",
+    "opera": "27",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.object.seal": {
+    "chrome": "44",
+    "opera": "31",
+    "edge": "12",
+    "firefox": "35",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "4",
+    "electron": "0.30"
+  },
+  "es6.object.set-prototype-of": {
+    "chrome": "34",
+    "opera": "21",
+    "edge": "12",
+    "firefox": "31",
+    "safari": "9",
+    "node": "0.12",
+    "ie": "11",
+    "ios": "9",
+    "samsung": "2",
+    "electron": "0.20"
+  },
+  "es7.object.values": {
+    "chrome": "54",
+    "opera": "41",
+    "edge": "14",
+    "firefox": "47",
+    "safari": "10.1",
+    "node": "7",
+    "ios": "10.3",
+    "samsung": "6",
+    "electron": "1.4"
+  },
+  "es6.promise": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "14",
+    "firefox": "45",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es7.promise.finally": {
+    "chrome": "63",
+    "opera": "50",
+    "edge": "18",
+    "firefox": "58",
+    "safari": "11.1",
+    "node": "10",
+    "ios": "11.3",
+    "samsung": "8",
+    "electron": "3.0"
+  },
+  "es6.reflect.apply": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.construct": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "13",
+    "firefox": "49",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.define-property": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "13",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.delete-property": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.get": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.get-own-property-descriptor": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.get-prototype-of": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.has": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.is-extensible": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.own-keys": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.prevent-extensions": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.set": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.reflect.set-prototype-of": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "12",
+    "firefox": "42",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.regexp.constructor": {
+    "chrome": "50",
+    "opera": "37",
+    "edge": "79",
+    "firefox": "40",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.1"
+  },
+  "es6.regexp.flags": {
+    "chrome": "49",
+    "opera": "36",
+    "edge": "79",
+    "firefox": "37",
+    "safari": "9",
+    "node": "6",
+    "ios": "9",
+    "samsung": "5",
+    "electron": "0.37"
+  },
+  "es6.regexp.match": {
+    "chrome": "50",
+    "opera": "37",
+    "edge": "79",
+    "firefox": "49",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.1"
+  },
+  "es6.regexp.replace": {
+    "chrome": "50",
+    "opera": "37",
+    "edge": "79",
+    "firefox": "49",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.1"
+  },
+  "es6.regexp.split": {
+    "chrome": "50",
+    "opera": "37",
+    "edge": "79",
+    "firefox": "49",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.1"
+  },
+  "es6.regexp.search": {
+    "chrome": "50",
+    "opera": "37",
+    "edge": "79",
+    "firefox": "49",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.1"
+  },
+  "es6.regexp.to-string": {
+    "chrome": "50",
+    "opera": "37",
+    "edge": "79",
+    "firefox": "39",
+    "safari": "10",
+    "node": "6",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.1"
+  },
+  "es6.set": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "15",
+    "firefox": "53",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es6.symbol": {
+    "chrome": "51",
+    "opera": "38",
+    "edge": "79",
+    "firefox": "51",
+    "safari": "10",
+    "node": "6.5",
+    "ios": "10",
+    "samsung": "5",
+    "electron": "1.2"
+  },
+  "es7.symbol.async-iterator": {
+    "chrome": "63",
+    "opera": "50",
+    "edge": "79",
+    "firefox": "57",
+    "safari": "12",
+    "node": "10",
+    "ios": "12",
+    "samsung": "8",
+    "electron": "3.0"
+  },
+  "es6.string.anchor": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.big": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.blink": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.bold": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.code-point-at": {
+    "chrome": "41",
+    "opera": "28",
+    "edge": "12",
+    "firefox": "29",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.string.ends-with": {
+    "chrome": "41",
+    "opera": "28",
+    "edge": "12",
+    "firefox": "29",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.string.fixed": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.fontcolor": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.fontsize": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.from-code-point": {
+    "chrome": "41",
+    "opera": "28",
+    "edge": "12",
+    "firefox": "29",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.string.includes": {
+    "chrome": "41",
+    "opera": "28",
+    "edge": "12",
+    "firefox": "40",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.string.italics": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.iterator": {
+    "chrome": "38",
+    "opera": "25",
+    "edge": "12",
+    "firefox": "36",
+    "safari": "9",
+    "node": "0.12",
+    "ios": "9",
+    "samsung": "3",
+    "electron": "0.20"
+  },
+  "es6.string.link": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es7.string.pad-start": {
+    "chrome": "57",
+    "opera": "44",
+    "edge": "15",
+    "firefox": "48",
+    "safari": "10",
+    "node": "8",
+    "ios": "10",
+    "samsung": "7",
+    "electron": "1.7"
+  },
+  "es7.string.pad-end": {
+    "chrome": "57",
+    "opera": "44",
+    "edge": "15",
+    "firefox": "48",
+    "safari": "10",
+    "node": "8",
+    "ios": "10",
+    "samsung": "7",
+    "electron": "1.7"
+  },
+  "es6.string.raw": {
+    "chrome": "41",
+    "opera": "28",
+    "edge": "12",
+    "firefox": "34",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.string.repeat": {
+    "chrome": "41",
+    "opera": "28",
+    "edge": "12",
+    "firefox": "24",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.string.small": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.starts-with": {
+    "chrome": "41",
+    "opera": "28",
+    "edge": "12",
+    "firefox": "29",
+    "safari": "9",
+    "node": "4",
+    "ios": "9",
+    "samsung": "3.4",
+    "electron": "0.21"
+  },
+  "es6.string.strike": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.sub": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.sup": {
+    "chrome": "5",
+    "opera": "15",
+    "edge": "12",
+    "firefox": "17",
+    "safari": "6",
+    "node": "0.10",
+    "android": "4",
+    "ios": "7",
+    "phantom": "2",
+    "samsung": "1",
+    "electron": "0.20"
+  },
+  "es6.string.trim": {
+    "chrome": "5",
+    "opera": "10.50",
+    "edge": "12",
+    "firefox": "3.5",
+    "safari": "4",
+    "node": "0.10",
+    "ieÇÕÓÕb¨ªT:œÙ\œˆ|œÄÈî√¯Õ$\ÃvJkâà7ﬂπÃ¨{¥º Ôú–`‹ŒWJÕ¯¸–—M™R®ä˛,5WŒTDpl ~πŒÌÃ 
+=“á	âÏ–ù“*Ω“È8ãsX—}—âó«Òˇ÷§	Xµuπ†55*áÃÃûV ≈∞K“D¡Òå“Hù‘≤º‘Jç‘=º¸,rÓE”ÚV"@$¿§9-xT£∞◊˚”y–E=÷Æ|ä‹Àhù÷jΩ÷l›÷n}óÑÈÕ$,«Ô5kKA’mY$awq:ç◊É•ìx Êx©"M÷àù√<<& ÿé›ÿê˝ÿíŸî=Ÿñ]Ÿò}Ÿö]Ÿ„˚‘P=◊êÈ\µ∂V‡p∞´ò¨É˜ag
+∞ #‡myÃÄù—Ëlë=|ÿâù€F›•º›€æ˝€¿‹¬=‹ƒ›€‰kâ‚ÈÉıÎƒ—GrXk] 	bóTTçj$¿⁄°PL5§≤=€Uˇ˝¨]ëfç€∫]ﬁ_‹¿ËùﬁÍΩﬁÏ›ﬁÓÕ≠Gmõ…˝Ÿ[Y◊–-	±¿◊#†’.åmY‡VUîJY}\ –›ﬁ]”◊[–z9ﬁÊ˝‡Nﬁ>·^·.“ÇLÿµ¯“Ù⁄cµÊ◊}¶¿P%ù˝=kËÒﬂ#@´{ b◊oé‡	~mÕ‡“ﬁ„>~·@‰BéãùëÏ¿·Œ´Sçπ¯}{–˙ÕﬂUnÂ‚\„ß ‘€¢w„¥≠É}ó<˛„d^ªÑ[Ê=n÷ËÄÆHÓ·n.üÌµåíNû∞&^\O˜T#‹
+„t–í†ñﬁÂ^˛›ˇ-Êë0‰hﬁËéN‘jòOô‰ı-⁄ =PPÁ€„Ç.	˝zs"ﬁ‚õËﬁ „±P‡#hË)>€}W€äŒËèÎ≤^÷ÊZëqMÈ˚æ≠Áó~
+öﬁ{
+¥êÁÃ∆Y´N[;∆r
+^ÍŒû}`S…wod{Ë-ÿ≥¯Í≥æÌ‹^‘ëﬁ“mÆÎr|ØñNka◊Õ˛ÏPÓV$v⁄Ó˛ú¿é¨%›ËN©¿ûÔ£ŒB†rJÌ¯∂‹^.~lg]ÆûîcﬁÌ
+øÜ¸ÌËà‹0-Óıjﬂ≥v’ÀÆÔ˙~WΩ
+mÀ—êgR≠†◊a7Ú#oõŸ
+ˆûÓ*üÔ|ùWq™ûäﬂˇ6Û òËøËüÛ:Ø√éèÎ˘JÒ≤VSf‚œûÔ9–ÈÌæW¥Ñ’N/vßPRıbá’ßpÒ§~Ù¶ÓÈıÿFÛﬂº«®zõ;üˆj/∏=oé?_Ç€»ÑK^≥¯mÙ\oÁf‡⁄_v“Õ
+!Paê}†ı£Ï∞ ÉO˜^¯wøÈ^uÒn„Ö.ˆ0?ud\ﬂóhøˆúØˆm/G>ﬂ'"6»ÎLvèÒ§^‚}?ıg–Œ©œ¯Ü?˚≤Ø˙õ~’Ù–«ØvÌÅù˘zπ˘ù?¸ˇ˘oˇÊ»r˛'Áÿ›¯/!Ä›9@˚+o˚’o˝˙.ËL`m+ˇå„O”¿ø„8O¸‰ØÛ∆?È@oèÀ?⁄´±è˝Ô_˚?ˇ™®é⁄ÄÊ˚vÛuÙÒƒﬁºvÔ õ)“;%N§X—‚Eå5n‰HcFåé!Eé$Y“d»3s–LHé.NDÙ†π BÄ)rÓ‘ŸìÁOüAÅZî(QáIï.e⁄‘ÈS®Q•N•Z’ÍU®*¥nÂ⁄ïkáUßˆåÌV÷ÏY¥∞∂yã∂∂-€¥qÂŒï√BRâ^ı~µ‡!¡ﬂΩÅ;ÙÌÿaƒz4àp!CáON¶\Y∆eÃô-oÊ‹˘d ñéÂ±ã9≥¶ úPDX›öık◊±aœñ]õˆˇm€±±ÓÊ›€˜o‡VÎõC€€π…ë√Uﬁ<-B≤/@8uæ÷cÁûxq¡t¢Gˆ\ﬁÛ“9t>¥Å„£dÛÒÂoÕ“1Lôßm™ˆ‹ˇ p@ª”™ÑG‰pÀπókêA˜®bIúP`ªΩ+¨;AË¿@˚Æ±– co>GZJÙíÇÔΩ5Kq∆Î+ë¥¸ÙK™ áˆk¿G 2H"áí@$ìTrIﬁlÂë>åpJ*uH„JZYE
+‘0ƒP;Ó< 3D2[åƒ«÷ãëF6)™ÍÚbpqÕ6ÎÏÃ∆–3≠®•é2ÍO§òtPBôëÚ‡ˇ„∏*MÓéXB8eRS¢º£.∏ ¿À≠:‰Ù017,s‘ØFØD5ÌTµ‹pì5.Å*é¶ Ä§Us˝L%ÒF+M?úöJ°Pbã5ˆÿ®‘ÇÑ0uÙŸ¥≤åj£·åP˙ÄØE•é0oI%’‘^S’µÕñbc]vŸHä2jıË\zI¬Ûæ_Å›iG@˚ıs_dx‡H@ÇÑ§Ñ∂Qiπ†@Ã0Aíö)#ám?‡K±µcqCﬁÔÃS”å≥ﬁ˘"S˜ñìj9™7XEYF:œΩW!˜™œ‹pÛπg†y"xh¢}3pÑ…Z¯Y3(\¡+·> çˇn”çµ
+ı:Ô¿Â˙Së9$’ìg∂»¥iVQ©vb◊)L ∆»Uπœ#/Ì[)S*éºQ‚U<=ııs…üY+˙pƒßë	IfÓQ9æ1≈lïÜˆî
+”Äb9ÓÿV∂pª3Ïê«6˘DŒˆ∂ru÷[«µÊö¯v]ÌŸõj˜ˆ5ÿvwNôœñâ˜Ÿ›ûˆòÖ«£∏√≠˛˘æã'‰Ø1†Ø˘Üõ}ÕQp#˝ı˛_˛ÇN||Úï2–!DP¯AL)vøZ,_?π∫Jÿl≠ñ]•sÃ1»‘èÖét£2›cÍˆ∫ËÕÎz$^1Éº»N=Ω[‡DËÊ2‹ep]™£†ßgˇ‡9∞Çö9^Úr¿âd¬y¬a?X=∂0{Å„ﬁ˜l>ñOá„&Ê¨‰ƒÇB"¿@ Öâç‡ñjTH`!¸mã“ƒû¶5ﬁ$ÄY`ô
+8‘ùMÇcú °W6ŸùåwLcd»X<:1EÉ‰†KËÂaÜo|ûã‚TBÂç¥do•îñëèúaæN≥CHFR`!ÍÇ$ı∏	A8¡W≤Ä†…BBúNqÇÅ∆ÖBì_S∂(¶u±t_4—ıÓÄá§¡C?‚_^0cpc.ÎHà„‰Éuê <A¬±vëf$ÊH«Eˇ¶´`)Ù•3sYFbì oºÉC†);@j3òŒtAˆ&»:⁄ ûxL'/ìÇGCˆ≠ë€+o¯œ°HR†£$	*'ó3Pk˜cËÖÚG-ã]	ì i	JôòJVÅı_j<‰5êˆSñ$Yπ‰ñÀ¸,EtHdÃP®Bñöë<”√.„ Oãô,ÕÑ~j™ÉE Òö∑ãßuˆ”îŒî)0}!zzöü¶ìy0u* L„Ñsõ)º√Nÿ#Û¡∞Ñ##BWá∑œ£¶¶{ki[Ÿ˙V TÆ≈Ía	* µxŒ¢mË≤∆Ñâ9ÓíŒ©ËEMYÅ©uNKXÉ¿+?˙µëêˇñÊ¢»	U†”±î&û âeÎ‡<"Ï¿|*(Î1ÀSá¿ Yã`B+Z∞Rfd‡Y+‹UVŸ‰ß3µ2⁄]‚≤G\-û93‹“"Oyc∏hGKZd^Hßú+pcp<‰^à≥˘îZkP˙Shs%Ø°$Ö§≠Øè∞ﬂamëﬁ¡*«âÜEÃóhäÃ©UCÉÅ¨)#+∂…pô+k´6+QÊ~∂ú√î]ha∫7\¶&√]Èe¡À¿≥em†6„∂2J¥!ƒ	Ò≥Ÿ@¶a¿ )X∑˚¢w ΩTÓÚ P”>òfÖÃÉ.ı‚õîï«IπÉi™˜Z±ÍxQkˇÚÆéxX^(;HcAî‚k!r)ñöZ,BqÂπdô;ãÖx_4õ©§d„{Í©ûÿµ‘≥ Ê|] /¿ŒÏõ„ªE3n3EÃ–X]ãNtªJ¸∂ﬂ¥yh33º∫»ÿ¶ﬂîÍjö‡`∫H∏Ï‘ÆçÏRÍœ¿‘ÓYˇñ'G∫Uº·Ωaîm-†ÓêØn)Ï∑¬bÜ]ÀeöÚo÷(ê 	! ÕÀ˛…@¿c“B◊†“ôï3®’ÛÃ£*/»´[Ì$Ω õ∆¨€sŒLÏHä™‡Æ®ï5•'=¡nœ·éµ%‰O≠DûN÷4Y!|íÇm≤Vï√,.ıˇL<ÅÔVw0fM˛Æ¨·˙pá«ı÷wÏk÷0KÇSNÂ¸d÷A}¿î_ôΩÏ G˚Õ7`£ie;’Ë˛π∑‹6D^˚ÌpÀ vö.wfÿ""+%ƒCgŸ¢mE[vO⁄⁄∂âf0H´åöŒÎDçaæoÙ˚¶»‰D†.dËJÊÖ9&-¬gÃ›Öø_¸å¯¨›˛=ä«Ω7aöæ<Q≤Ñ`-ˆÖ%ÿ`√EÔÙ’K^∂≤,çbn„m?9ôRNßy«l–‘ÚèoÍ;‰ÄÏû±Â˘yßG0–´[¶c¯8ö!)∞íó4ìÆ`–O√Z¥5˝oÅƒ|πûéπ'åˇ#ÌÔ¸%èw(¯ª7\U{oÿ’®“^ZÉˆ¸¬Ahrßæp∞É f‹Ô«<›CÈ π±¯´ “∑x∆%LÃåo<Äù]≤”Aæ&¬ÂqkÕ=÷™& è·¨iKﬂpÛì1—€&™C≤3∫‚ö
+™-^∫ê‡öøõ™øÎ˙ã81;öπ™”?S#Uã™ßj'ﬁ@:∏0∫Å†#Û++!{c2µs	¢µ∑ãA>©>Ã
+èPCã^„´ƒpI0Ì€>≤∞&DYä…á4X/` ˆk?±a˚0†h≥,≈‡©·⁄éò”"¯∑%∑8®?`a)3Ã©H®∞j=ˇå@Ö;:ªoÎ¬œö@à¶ z- ©û|€•4Lµ@‹
+N ;ÆΩeÍC‚a∏)Ñ8Glƒ÷®AI|Æ·@%!3|"ıë®Ê¿/ õ©©N
+ÄJ¬Ã1*å¨«£§⁄*æq™•-´ •
+7lKõÉ€¶LË≈Lh∞ß:§õ©!Œ®*Á¡=$0gC†ª¡6s‚Ñ¨í	Z‰0Àä-„®¶^4ß¿©•∞)ú˙éﬂc@FÑD<«úDäÎ!%‘A"ã¶?5§éÕâL|éΩÚ¡˚EÖ“
+D¡¸R∂ê[≈Yz?¯£ÎYäD';≥3xbè{ <g“%≥"≤2B&ˇáÑ√áî≠ˆp=7ÅCÛÆaäã‘∫≥â»í‹£√åt»˜∏%"kIc"Iê†IèÏÆl>`Å$ŸP«âƒ√8Â∏É≈»/¡ ∏¢ò"/Û8Êà«
+‡T¢ò(Ù;¬o»/Çî,ÉÑ∂í∞¶˚JÀéƒïu˚HBZ§ì …õL†7å6L@∏À∏§ÀrDGºÑA…u‰ª≤ªåΩH.süR⁄Ä‚∏«¥®®PÏ´øêò§‹ä‹ÉÑjL«‹Jí≤BØ	6"KÎ˘Ã∂Mã∞I≥)M–°ª|D’4Gá„À(∆Èƒw<9∏ãü9òjiØ±<|‘2µ⁄ãˇ…ÑNî>ÃÙòÆd3±Ãè7Õ”tÀ8öKbTH∫4MËå√≤Fœ¨Œ¥[	¿â5÷ÃKtM[# l≈ƒGæ„î) Õ≠HwdLÈ(£d≠˙≤â¡ ø8ŒY“LÂ¥NÁºŒ∏<K -PøaæúŸIû$œÚÚ√Î
+¯t h±ÕΩò ˜ëb [ÄíŸåØ˘d,}TÅ,»’:"%‰Ç#‰œÃ|∂ˇ4–Ú¿çQëHMÒ‘K∑cPπ¬jI ËîƒLOL“;˙Ù
+ ºã˝ÃÄçœ-L•¸ªJQiO‡Ïª¸±Ã„lE›R.≠]M0O¡—π≤∏$⁄íÖbJﬂîãˇıÅ'Ì
+X⁄ﬁ«T;’¡lŸ#ï¬≠ Å¸ÃTíèŸú™¥“ë““.MTE5è/≠QG2ï§£ë™‘5 ç¸Ç#ïm9à(ª`Re¯·S¿úª("'H¬!-ºâ!L√Ä"’ÄM≈LD]T^Ì’]APN„÷Ë+÷HåTÅ2Ù¢ < aÃ\›¶Ã<;=éˆô
+πPä©î1Çe%pÌÇ≈3•Õ—ÇÆ0&@¢Ë(ECe≈‰å?_çWy=–+|	Äk∏GÕWA÷ÅZ%§êSPRπÉ	Å-L¯4jïl˝◊‹¨(–ôX∏ ˇ0E%Z≈ât=”åm◊CıOxùWëYCÀ…≈◊0MYH‰◊ÉQΩñ5Uö•òém(Dâ’:∞3'zXü›—=ç[Å#J¬pΩY›,Yím⁄ymTç⁄eŸÍéÕ>X–§G¿⁄¿|CQ%,Åé]ÅJí«5Ä3˝YR
+‡Gpm’ 8XèE≥]uZª]‘ª$Ø†⁄™µ∏é„É>®(ÑX¥P5æ⁄ £%"§E\≠U∑U[%§±+±≠ÿ˛ö[îÎE4¡¬Ìº[œ≠®’W—
+æ-´Ω ªsà&µGºÎ$NA‹J MáÅ>ªR[≠ƒ\ØX≥MZÔ\8»ˇZ˙\·Â“–UY„]Ÿ“Ì[Í∏∏K˙2ΩÎÕâ∫0«Ïëâµ\èôJm•P‹eOê[ﬁU3Õ^ ^Ú–‚›|M^:›KåñˆmêØΩÃUW˜…–∞96v›ﬁì[3¶≠Kc¥Èå!`.`>`N`^`µ\`ò°{ïZcù`buı%É˘[	>û—o-¢˙$Ù—ŸÔ-ïÔ‡ÒM	Ó¥É&â._ßÕû~∫≠⁄≤
+¶`Æ‡6ñI?gUÃ¯=a∫´R"6ì•}å3àaÏî·Á|bÌÑb)éb~K2®◊t8Ÿ¶@_	é¡N2·N¨VÀ9(‰Ë‡ˇÆyò÷_/Å›=b~ørﬂÏ¸_'ŒN=ﬁc>Óc?˛c@‰=∆„Œ•·”/Œa„c$	ä’(ÖÔÉÖ3¯‘PÙ<ã-∂RƒåáëR]›8v„˝Âﬂ4Åó>XÇ®®ö&NF& äÂ£ìeZ&3∏‚4Aà`Ωâ„Md_ÓèW∆µ1´‘ TQ5U-◊≠L∏X∞>ƒã]pËﬁJÇrïcŸ«`á%®©®Ç%Äó =âj
+f%©du^gvngwŒIùÙô›yV‰ËCgaû2.Ë~tXj’P3^ã±Í; |ö–Ç⁄• "≤^RÆD~‘ÄÜÜ%ˇ˛:≥6Â«XÇM8´H÷a‚è,F|&M?ê ,Niï^i‹ÂÈ‚û‡z∂Á‹i)ÎòÄƒhÖëﬁb[√ÚÄ,X\m•fW•ÿGﬁ •Æ^¢-Z(ÚXBıÁÙôj›ç á&)å>/àÑí6D`∞k•¯Í§∫)Áé`ä∞^k∂nk∑~k∏ékπûk∫ÆkªæÎ∑>?ËÑﬂu	ø˛k¿l¡˛ŒC∆·ôéÈûÅÈ_Œ	õÛÃîôU„ÃGìÎ”	·$R
+˜°j~[MVåÅÍ}U~>fQ5‚PŒjxÉÆ˛É∫∫ ~KµÎ∆EH‹∂ÇælÊÎÌˇr…‚¬∆·}›&bnƒûç⁄vÏÛ)c ïÏ˙¢lÚ# 0pÍ}ænÏvÇ,hÇ≈R_Cm>›‰†’’ÌBh◊˛jı^o∑&–íÉFH
+ˆûo˙Æo˚æo¸Œo˝ﬁo˛Óoˇ6ΩÇr…e/pXn/~>≈Ó‰Ê!¬˜eSÁ>å5W
+ƒ¨ÌEØ¸•G7’ÊmﬁÌ«ËÙˆÍ©`á0Ñ†ãÌìåhä?h‡¿ÌBËﬂÆqn∂CdÔÂ_Ï*œÂ¬EãA§€ΩÍ@L! mƒ∞ ÌEr∫-oÒqØ&Ò®®r• 6¥sNó9ÁjD(⁄éT∂ˆgàˇÁm¿&ó6nÔq8s∏rÏ∞Ø!7ãÇ.6%ár¿ BÁéÕπ®.‰ÛÇt6o	*ØÚ˝>q /ÑqÜ#˜Üà±6Òπk~]k`JÛ«Ë—`sls>7?nöuRuSóÈüt¯¬;‚Ô¿∞´huc(Œvù¢8ˆÿxWDq+∑äF◊Ç›ê )‡hÆê/ÛDx
+EOÔ1gPM0ÛÔÊ,ûvjœbò‡Ñ“Eî=un/uoÔˆnÔK_C]f.‹mÁ
+?†(›DM≈ıﬁDÔı™¿mMpà0(k3»}◊w®ÎÄÑExÒIßtüTÔΩÆqká	Ö_xl«∂¸ ıèxˇüxâó¯∏Û[!6¨„‰'Ù≤_Í∞"wwÛÊuº¶oÄ'ˆ§8ñørïolhlÖ&õøyhí	mØE9˜oˇyü∑gπSñª∏Û<élfr¢◊M+E%˘˘KbÑàwÇﬂçeøÌ´WˆÚ©˙I4xßyú±{≤?˜û?˚8O˚~wUáÇ;üp«]ãvı·∞uÔEÏo®œunûzì˜zèk?ÒÅŸ™ù˘\Œˆ≈‡y∆7˚†z»|…ø∂o˚!'ªAáÊ´°˚–n˜ ˆäÁ
+‘πﬂ˚fÎ˚t†˙ˇ^
+∂&¸~'kdˇÔÙväΩΩäŸwäóß>◊ˇ˙M◊bˇüBYßx‡Ø¯‡~s¨æ\„º:zˇBn˘¸æ¨Õ7TBçu“ß%‘á}Ïœ~˚LØ¡g?Û›os«G{ÚW{ÛﬂI<˛≠BFÅ{Õ±Ÿ
+û ßè˚.∞jBœ\]˜˚´◊~˛D,hPQ§Ñ
+2lË·BF'R¨hÒ‚≈Å~:µ#˜ÓcG\ûà‘`2 î*∞lπ†A+e“úi≥&Œõ:sÚ‹È≥'–üBÉÍ#“§Jë™hÍÙ)T	 `êÙàV®=Z£qΩc‡Âè©b£BuéDâ,»F›¿eÑ’ lÁ*ê Wä ∫z˜ÚÌÎ∑$OÏ‡ÕÎh∏S#Cä%ˇ.mÏ¯1‰àEÆl˘°ü!ÖAÜY“ËÉ¢¢Aìm∫4Í”™S_n}˘/XgC»Ÿ∫Ì∂Wÿ;TÄ–pVà-@`∞·8\lëêîñlæW!X≠˚:ˆóÄß€|8Òb◊‚+Óøê‰ÉÍ◊≥oÔ˛}˚çÜ9ãÃÙlLò˙S§Óo›?Äˇ	‡QÊ®înà–\,wÿ¶I◊Å‡ƒÇÕÅ#ƒÇ´ú’ú\P¡ncâHB†µAv)™∏◊v›yWbã1ç5⁄H–BÂ=Ca)$»d
+iQf/vfﬂI.»ì°9Ÿ$îOJ%ïSZY%ñWjô%ó[zŸ%òW9ˇ&E)VE¬)ﬂ‰ &ÂË◊YîXÇtrúå∏Áà@d®≈~RÒπ"°∫Èÿ`F∆ôïÕòPS
+§{ˆÿ(¶	îG—ÁYíK(*©£öZÍhôf™"%X’Lm\i≥°
+:iXÖée¿b∞Æ∫
+€Wã.r∂®b™æÏ≠ëF“, –*;≠¶Ez
+R}˜)ô_ò®û˙≠∑·éJm£ÑJa‚#!Ñ·†Vwå°-≥¬Jß·ø∆;,æt´(x…íÎXÒ’•ˇ*´Qßúëì≠≠;¸0ƒ7ñ"%¬eUsßòÎ}|Ö¥¯NX!p‹õ/ dÌ;_:»2&ˇ1y˜ßê
+êN–£S0cj≠¬w.–‚
+4Ä:ª&·[VA—å)Õ4CÔLœöÜªÓPÈäHÄí4Á·	'ß<∂îu jÏw2"ı®¡5¸î`è5≤-»-’e7ÍΩw|	ä$îF>8F19L6lÁ¢πqVçÀa
+≥∞tï„*»!FÀÌ∂Q≠p.∫#h∞àõ˛◊°‹Ò+#{	)í€Ø≥â!Æˇ8„À∂”>{R8úP‹ò†§wj¸Œ*µûÓ©≠)Ô∑„ΩÎ≥ø.=éë¸∑’D˝Ω˜·ˇw¯È{ë·∫¬±˛}tΩa∆PlúG∏`Î^Ä0ˇÅr[U¬›ƒV>≤≠ÏX˝ ›C`˜áÑàb¨SHàΩ…PeÄp`ıhﬁ‹©É+xJÏ&Üha‡N0qLê†«∫…Dz¢®ﬁÛ∞«ê“n!Ña¬)ñ}ƒg¯!É¯∂È¬…Ä∞<ê¥fL≠â›x¢7feÜ∞ M#Ω&Ç*T!X¿xº1ñP‚ ù°≤ufSÀ\6√+4Dê‚/(àÑlÅè<pË¿?àb[h`!ÒòÑ< Åîπ:xß
+JX3Å≈í©°G§"°»¢è
+πÇ_HJBäè’˚Õ>I√M˝hˇ{ÿ¬\ÊƒßKÒró+!‚_ŒÁµ∏ Ë¬ä˙†®Ã<P±é£‰NÒài˙œB÷º¶Ë0ÄÄ:m¸¶·h¿“Æîõã%TÆ ªBFEÄPCSËHª<©@ïQ·A 5Ö
+ÕÈÀ8ì|JB(ôÄ
+O†Kaƒ&Æ¿Oß®sÏ—-¯®9>&√'!iñ3jt*≤X·Ù‰s≠‚≤%B<iG.ød¡9√3¶$™√9›úââ…T¶2cÅ¶5±èÌ™\¬∞≈
+:äÙ”—Õ-TÄ‡ƒW”∆®7Ù
+ã9J32RÄ§… ΩÈ–öE‚ùWuDÛÇÚ‹±†ˇ˝ßXJh–µ·Ó™
+ÿÍ•b	à/Ï∆îœRÅ1àñœ≤„≥N…Éx.Ñ	¢`ÇXA
+<Õåta%˝í/{©ŸÃàZ∫°"àB‘Ö@÷©¥
+2oÉ”’ÓAë3≈Me%€Èt…ÿ_ü™€päS™˛™ﬁb1Z©&t7Öïâ;Q)|Fa*à‹j«¡‚ññ?*úX‡™hó rUﬁRÆ⁄–‚ˆùjE≈YAì∆.õ0Îq∑;»¨fµ	ÄÉ#´ È!åáñ‹Q*`£©tU∞1Àm≈Ru@B:«T;€’Ü`ß±ï0Ügã»Åcx35ÌnOU∞!¡}ˇ}˘,v÷î'Ê´|Øz√∑vaJvÖw Ób Yò A		OËëê®„r/ËÕ#ør¢Æ€kSL–»ÙﬁÒè∑sà-I
+‡Œqv≥^Ór—î•õ:ë%$‡B»Ù≤5√A=ÕjM—gFŒvñ∞4·‚·xY¿à€l0àC|ù∑¨ƒ6<±!RL≥K0VÊ„>õLñè*Pv⁄nw3-<ºmr1Úå†t#·Œ!CÎÇ,(÷:‹FY‘Kf,ÙvXYöt¿∂éXÅÀ&ƒÙjoÚÕèô™f•ñµ∆~⁄Ã‡”:OòŸvÆ∞ú;Ãóﬁ¿èòÇÒGCøiºà+ëœˇ
+\`Tº–°t+ÀJ›„Ó∆èÔÊ.î∂1ìëÒı˛X$§ìÒ˜B‹+
+#w»—U†∏ilÈàd˘ø›˚2ƒ¡ÒÒ©*A$(Ì=5d2fm‡,∫3k›∑∏∆%$‰∞p‚l•˘8=ÎE6ãÉf¶âó@_õX©CõoòU7ÇÙÑ2`!»ÔÊ∂)ˆÃ s»(?\ﬁTº∂˙!_8«};ÍV
+≠e]à◊s§OıíıY<Ä §Ã	p}KWÈ"ÌŸe#pÎπìØ‚ªæ¯\Zäff˘∂o6∂ÜÕ–5/€Œı	!ÿï·»ù·¥`9ü§*:kÖôΩvÕìHhˇ9z“€$æß TBVêäYÏ€˛ËuÅváPhôúÏhaR!ë†§ÆKJª¢í‘Ò=ª£ù‚ø¥jhÛ{nC,∑‘˝ºÕ
+õ^r6ú÷òù∏ƒ≥è}1ò¥‡mÎÂ'”X9—ÜOÔ¸1ß™Sãúj˛\)—9‰ob¶I.g>kŸ∆y°ëSYÖœÌÄ,çí´åruª5ﬂR±[ı¶=«X(«BÃú&AÑ&ÿÿÓ±ECa÷àRS5PÛAEçï†Ç9–©ù“åÌNÕZ‹—ùz÷ÿ›_òEqÃL”∆ÕÖY¯»uÖ»]E„û‡èI(ﬁÑA‘úˇ\Â…\hù·Ÿôú…ˇı_äl∑ÌéB}î+ù£5èËMAz®] eïb…RA‡XSè§öú8Å¢`’5Vb$∏•€-ËR üt“π©a"ë°dƒ“µõˆP‹mŸıiü#bﬂfq_0·ÊÅ–ô5‹ê ñü…‰AÜ\Ñ∞Ö(^î≥πZ|L—∆Ö…Y‘Â
+Íä
+‡DÈﬁπ®%⁄Nê‚ñC ^	LZIÜ<ïSIOë±P•UT3™ÿ◊·P.Í"Rcˆ¯Õ-1¢‹Õ†7bJÆç…u¥TR—EU J.±ƒ[l¢˘Õ∆ﬂ±ñ∞àõâ ¢\,Pˇ”l\WT·,B’ˇ≠NÎ—–5∫†ÛÑ⁄.>#B6í-äGŸAF]6∂GD‚"BLd
+π‡
+i`ı≈›#v$$füÅYú@mT≥∏ ûç»Ü¢±I”«°NΩKöA‹¡7¨¬ñﬂ„@Å∆Ë#‹Å4ùd?˙ﬂÕ†À‹HzPdÎ`d
+!eˆX™Mì·!Ï‡[•Y$Y•ua•Qƒ.¢’|#XäcÍönt\,¢Z≥Ä h±≈öŸ»˘$ÙA4N!° åA◊|‹B†\˙πd¸âN•Pû@˛÷cPè∫Æπõ¶îV$dN’AfFVƒFr#XÑ•fŒ`v–Iº¥T	Ùˇ ü–„˝qb(HSd≠¯EPQir‚\˙%≥EŒH
+¶Pˆâ-‰Å(Êb„Qn`d2ÂÀH÷-
+gˆ …zº˜îc†§£s6'tn¶tíIvTÖêb`å¡ª0·ﬁa^U¥$‡ù¡4ÖÅ˚≠÷(2Àw*^llŒJ\¢,⁄f÷¢dé	oFL#pÂ,UÂcNÊU$÷ßRRƒeÆt˛Lóà›t.Ë—`á	H≤ﬂ(aàú‰‡‹ÿd_÷£i·Ωd»k∂gl…ôºÕ…'}¶}J§E BBD⁄êPfAÚçH•ç öW⁄e#ˆh|˙(êVbêûÉ
+	l–cÈ(¿Læˇ#’‰YÇÅ≈[§O>Õ)®g]≤ZhÂ—%ân≤%©äŒÁ?nõnbÈåË√='õÚ®õ∂)úæ©ú≤öl»∆Y÷ÅJñ_ÃA(
+Æô$W∞dl≠&&>≈ÄVUà¿à≤gl~iò“‚P&ç":eùJ•rn;pI¿ã≠Ñ™®é*©ñ™©û*™¶Ísf™yåô˜Ä¨ß˘Eé @9é;ûÜ4j(Ë\ºßöÖá!n»AÖùhäF*∑L*ô
+(Jƒ!´ö«Fb`\+∂f´∂n+∑v´∑~+∏Ük∑F…¥é«›]hl){û≤ÅÉáX@«}¢¨ö&ïﬁˇYn<'¿Án∏ú+Œ+k›£sÄ©≤Œ'a6+ã⁄ñkktÂ"íÑ}<,ƒF¨ƒN,≈V¨≈^,∆f¨∆!∑"®«~ÏêÜ0˝≈[Dù∫≤g(¨úÖ–â$∏%â™by*”ΩíÖh\:πJ∫ú¨l°ÑÕ°¨°dn†≥>´e¨ï¬2D√y'xÍH<-‘F≠‘N-’V≠’^-÷f≠÷:lƒ~%Uy$h¨î´.¡»&ó:^ü^xû ]ÿÃB∞±ÖÑ-»AmÿÌ„Ùi	Ïüêm–Ï8ÌIeùbÇ&DkF$ÌïEÇ6æ.àD”Bn‰N.ÂVÆÂ^.ÊfÆÊn.Ár.‘BˇÏöÇ≠è∂Õ_®ev)»ù- [„ô≠7¥-óŒ yÜ≈{ˆÏè*‡,\–£ˇî :&´ﬂ2…ònp⁄®ÒÔUD•N´&,-atÙFØÙN/ıVØı^/ˆfØˆnoÙvj”~nËËGÈÓõYiÏ*ÑÜeÖâÚÍ6¿,ÍÜLNEU\hL "ˇÄŒ*tà`ÔIÌ„R*Ú∞_™‚vZÛ*¢¬â?0G∞O0W∞+J:xØ”rl®¶ö¯∆)∞g&:ö∏Ø£ˆ‰±Ú™ú°üÎvL÷/Üµ≠®q0ªh£PÛ6nW±1±1ˇIo0Î	»>q»VâÿbG˝ÅÉÀ°˙ ÷±õ¨‘(æ˙ægh“0Ôa<fßÒAÏ∞Ω1Ïœ««Òœ±◊1ﬂ1”fKòèÔNå,v∏\‘ËlÏ2≤—PÂA⁄¶&±Jòâ÷&Ô÷vpQ·"%)Ï€±'2(á≤(è≤(/Òß™™Ë™ õ	∫Ñ „l®Ÿ™‚0•>ˆÈM¶p(‘ñF≤†Ω%+q~*eÒnÂx p&€ßÎ¬/?o7≥3?34G≥<0353-GÜpgsìËåÑP»0U›¢Æ'¬\+úkÌ/
+w"‰˝//SÒÕ)1$&"ˇgS∫∆0”3>Á≥>Ô3?˜≥?ˇ3@¥@Ù"4)‡'¥B/4CSp_3cÛO4Åç£≈Xà¿“®ã∫ƒÇ"g»+Á ﬁ:°ÜUX≤°o;é¿Ï±s;ÛBìC'hA0øhÚÊÕ1ˇÀ ‡<.O˜¥Oˇ4PµP5QµQ5RÛÙKßÉg4ÒRi3TgIESÃ‘±lµ]£¢t≥ıiÆ≤gáÓ2K∑4ã¯ÚR„¬(D.ÉZZ„MÉ•0√3`]◊µ]ﬂ5^Áµ^Ô5_˜µ_ˇ5`v]#¿A+±ıEtóN1ÒèÈØ¨m¸ ﬂ;™.ãı7ëµaAZ_ƒ{%ˇ¨e–R.ºu¶ √0îvZ√iß∂jØ6k∑∂kø6l«∂lœ6mßˆ3,Å∂qÍ£rT˜ˆ‡‡À‹¢V:sh‰02ßÏ:[6∂-LWiÛB/ËÇtO7uC7[ãá1ãv£DwuÉw7xá∑xè7yó∑yü7zß∑z´7Ù ∂ÈTón7!ÍÁ®-!Gˆ)`4Iß∞Â…‘Ì*7T	K;√sC72$∏Ç/¯.1§ı&‘4
+i˜¥0∏Ö_8Üg∏Üo8áw∏á8à7∏2¯¡{CÙDK4äã0ÆeGÓöàªˆ/ˇË.„¯+.√≤—[“∑AaÄ∏Ê≠<CB48wk¯.ZˇiˇÖ/˘I˘3 zÍ+…os≥nåÂŸ5…O7≤≥¨îoƒ•†Ó¯¸ÖµèõÅ+ 3TwE√êÂA19ù79wÁB„vÍ)Û∂G¬M°	(ï”<v~◊∏,€Æ,.ÍpØèÂÂ)ö∏√Hõ/8E xÉC.(å*E.¸B/‘9®Mt'D1∏∑ëÏvíÙq*Øƒ8¿rô;™±ÓÓìﬁä∞.zLëü¶π?ÆyCwo∏B\∫Ù8FëKwd˘±+;≥swπ6;¥á∏¥O;µWªµ[8û„¬©[k•®zo#ˆKHLIBWÎ∏±ıAª8&û…≤Ü—*Úˇ∫ˇm'Lz¥wxhC1 ¯∞#y∞[:¿w˜fN˜B ¸õ_;¬'º¬O{©ó8fB@äG¸âÔáüè;{9çØ	ò#:õ Üºñ˘&ÈS?˙¿nûΩáxú?Ü2îˆ.¥∆æø<Ã«ºÃœºtÚBCÃ<Œ¸≤/<œ˜|µìz'h˚HÈ˘îC¸ƒÉ{»Æ¯ùí{Ã÷¯É®¨ªZ¿$Ç√≈ì(≤’:…ì1≥À…+Ö≥£ıZøˆ∞{∑—‰;›µ<d†∂ÕèΩœ∑Ω€S{√o˚Ï^°ƒ◊Ω¯V¸$∆B”;}Ö∂+Ω˝¨
+∑éG€.è|èÀ˚≤ÓatΩ◊ˇ;ú;Œ∑Ü*7F$$0ÑÉ'x)ˇ¯Bò}Ï9ÑÁøΩËèæëGB∂À˝{˚™„}_®eï∆∫Ã¬-ºO…§àÀU}{ÏÔ~ﬂ"˛÷/˛Ω#¸C¨}$P˚¥x>UwZAs9åB ázÒ+x‹Ûêâ«˜ã;lÿ¬∞zª˙nZæû.ìÆVMÍ´vÏœx¡¯*‚óç‚K∫≤/2åΩ◊_Ñ.LLä@˛ßD$Å	4xaBÖ{Ìjòã`Ñ	TPîxP≈Bç9vÙ¯$2dsu¬5è‹;ïÈ“q"¢ßŒÄ†à0gMù9yÓÙŸËO°@A˝XiR•Jùê√«[‘nS©V›´íFpô@¿ˇ"Äaóñ%´b≈™¶Óhã&Æ’´ZKH)!D-8ΩyÖ‘¬cÅY¡É	6|ò0LO,QÆL◊ÈôCëEE„eTaC]##+vÙlh—V6}uj’´YØéòÏƒ∞$èm∂›wn›ªy˜^]¨c«Ï\¬î)ê&rõÀo6g˛‹ytË”•WgéªBƒJôêqı≠\´±FÙ˝ª}˚Ωlams7|¯>ß∂ñg!‚~(¯ç®ØÅÇ±FCè¿îI1v‡i¨î ìå≥Ï$,àÕ<õ√Œz…ê√Ü8Ï»∑Eëƒ”H2âAîà{)¶†
+x—≈°dåë∆°>Ãê¿.$9ˇ<Ò™jÜDÃºöÈ>Òb°Ö«¯Ë–!˜‰†•
+∏“ ∞Ü‹íK√b"b1·|,2K<ì5ÂnÏh,í÷ú≤7’åƒè`jªÕ<ı‘81UÙÑ≈„"InPÍµ—CuNŒÏ–B(⁄BRºo ´@¨.Û¿ f˙p“G∑B°T‘RGÖ≈˙J`@M]=0A?…Ñ∞Q£$´ïÕ (‹ÕÅ¿"√å‚ïÿbw;Ò§î∆l)–g|÷Yheƒ3ÙtåÖT%I‡B¿Wó⁄†BhO‘ÅB5ı‹=Ê€ˆÄLΩ}V0LqV3ç1¢L©’Ë3ÔQπVπ$H≥}Ü≥ˇ≤>Èe÷∏ÊÑq—àùX—ÉA#‰xècπ÷5ﬁou<ect”=ô\˙VôeÙæìﬁÒ¸`_-Üm†
+g¶π5jë"ÿBûÖÊŸÖm80â£]Z⁄†nˆΩ¶™Ë8TSÿXS∏ *™QN◊j∞nôÏóe≠W∑Énª1¬AA¬:_a≈9Ü⁄~z†\ú˘j	Œ•Bº≥≥p◊ªCJ88£õM∆)~\i»õú#Ù8%ÅΩì≠°l-Qê¬ªíøI∞Ïı•Ã^pLÀÏı√8aS¿0å∫Lªi ﬂÖÚŒ^´úv≥*OÊôﬁ1⁄^¬mÂ¨§dá;∫E«!nöˇz¶k4^;ÙLœåÆœ#»‘hj-Ô≥%˝ΩÆ$ﬂ’’c~=MÇtﬂ,Ác/fîä&™[†ƒÿ‡°˘U¿¸≤§PnQ¡äÒ√YÃCE	ÀØÙW(√8{±–'êjÿÌÅ1ç¬Z«Ë!®4ëﬁ˙XπÈd0{àA W>e≤¯»°<cs’Àáæt·Pl:d_ó‹WBôMf!Ω@†.≤—´XàE@Ä.\ÒäB
+˙«ù,¶-YŸFË«ë2rpg©¡—ùÄE-¢'I<£⁄r&'‰ùf5I∆”HFÊ°HYZ\ı®Á´ÈµP:0îÅ0@(àŒG8ˇ«”ÇπêÀkËÅ$Ç ƒ!r©àé9bÎ∑ƒ&Ú—!•·L+CõT–v+‡¬@⁄àEL-äúãJp±L ó¥√ŒÎß6€O„_GdâE[
+Ë#:sMf¢ãhñÜ!’îÎgÕlv”õ√B‹ŸNhΩıëáR§§µG¶¡Üs¬ÌP∑=Iå+ìöÙN<˘…!ÖrL£T#®MÀ¯¢6‚‹àù<gª‰<@ ¡®ØXDåË4ÅEW∆∑$b§˛˙E7EàçnÑRfæËQ8—±p ˚¶AíG⁄p£ª*Z ·±"§riË„
+áZT¢Æsv€q'ˇ◊‡)qÎì‡r$ˆ`.8\´YuKS’ÜMÆBó˛D]¨ﬁgØÖDñâ„∞êô ô⁄åùµkE&z—
+≥"0\—Ç◊ìí≠™$Ü≥ëcPHBcŸ®!€(§Âô¶ {D#LUI†’1∞‘ÄƒÔj–¡z65$|ﬁ UhT&R®@ı	R!:§F>"s•ídG£:2&]rTwòTnu´€)—"U[—  ›%÷ñ‘ufç€Rv—ƒ"‘πI…Ytì	_Ã¥ïÀ<àfiA*™‘		‡^Y⁄ÖV§¢R0 ¸:e #ú d'ZlC›¥2äèF±»
+ÍB¡âæ1$ÖK∆Y$ˇãg8ƒæ(„u›Ê¡WFaF&$Bc∑C∏BFN2Ód¶ùéˆß;$PE\b	ÜµIï°ZﬁŸ5´ôé®‚›ï† Öf‹ÿ96≈ç≥¬ÆÄ√Æ≈5.Àêã∂9Z∞µµI!áÛò÷úÅ1"Ü,Aàõ¥)µl◊J”[Öî7àWÊ¬-	„¿©-∫Ë‹Ï‹–©‰ùê;‚]ÜjE sv2‹g]™•Å`¢3}ÄF\JÜ`°°lÿÔ¢åVa„îj>(ÚDª¨r>Ï¥ëãÛ†S¨‚√Hu+>V_?·%K≠¯Á«©Vµ¸í%R9^03"¸¬âPèN„Ω~n§Ÿ|‡ˇ&G†∞ztp·"Î‰Ç4ì∏“çƒ¡¬Â*Ø*MwïÊ..êõM@∞)rÑjxf’ZJãRç\‰~–µu=gfg8:∫Œ€+ˇ™!'vF◊QpEé†ì+áx˝fg∞R'4,ÕS‹O3MbGΩ®”%ê,√é˛¬∫,>Å	≤Âé|Œd∆8˚ä,–Ï6ÿﬁ§i CËmåÉ"«∞qyﬂ
+,ÉÏ5…NJ]#ä◊, <Ø`l?B O<Bõbç¸]V§ÒΩò
+™àŒ√ôàQ`25éaçºÊ+h·∫| ªù‡–¥7˘¡}k‹T˛ıLPXTéˇs·-¬t:˘Ó¬àœ˜@L0‡´G^xíóú÷\˜ŸwΩrﬂuìÏ”hÌfNsvb‰ ÀÃ2¬{º
+ƒô—õÑ÷äsﬁQ˘πÂfˆvw∑>˛‹esÄ†`ˆ[ŸÍå£;Ï\˙ÏáVÄ›ˆ&^e‡‹Ho≥döÃd¡⁄Ì√ñ&mﬂUkNú¸›”Ü◊˛ˆAI÷Y'/√∞ˇ∞a_˛§Çìòä6HRãKtûÀúw¬óE_oÉÙÎÙıÛΩeéç|˛ˇy˙M §âVNÏ ¥ ãÌ#ÏÑ≤~G¬"+ ¡ˇ\nˇ¥kÈ≥¸Ôõí! JCöOoEﬂP©“©aˆÆ·ˇZú∞oÚ∏Og–eØ OnÏﬁé!“à¡î‡™P∞‡≥ÿ·Ëfæ‰ä)Z¡ÆÇ…Œ2•ä∆,Ø.@Ñ“»πP‡,HwﬁÆ¯§¨è¢ÆŒ;Ù5bÕré”Ç∞–¨°Ó¯«õÓ´áﬂíŒ_ÓÌÆ†à√.0˘(€¬ÓN¶éß&z™œ≠oµ`Pëü£‰EVFI≠Ëô»ÒÄ¡—.ê˝˛Ø-‰ã  'id„	ïÉ ¿,Ä∆Î¢öP > 	É.ˆb™æ¸¨µ6!ﬂÃ¨…ñÔı¶o~Èãx`h)´"<P>¬jıÏO'~Oªäë∏Œ!Ëˇ˜mÅr˜* uBª∂0˘N#M®YXê˙\∞bQ◊ëµ|¬˚D)ÒºÈtÌ"r∞ÅÂ<ß†L–Âfgë Ã§†ñ<ë		¢ªË§(é∂Ñ'ÍPc≠¯çÏﬁ‡
+ÈR/§PjÁ¬¢À# gLPgÁ∂Pƒ~œ⁄6,¬ƒÇèÛ%üëÒÙQèñAπƒ
+Qµÿë'{≤wÀÍVx1SR–(B9˜~9íÔ¸ÊÀú Ù∞PÓj	Øàñ˙«îpB´Õ£ã!$p6p0ıH)–$é"Í*Ùz©M¶–†ÆëBË1ØíO£∞µ⁄¨¿¯Ï"zÅ◊|Ö√ˇ¸≤Û&ˇén	QPeƒrí1≈“'2k≈ÉÚ˚X	¥6®π†œ#`,ì¡´Î\Ø2¸Äê∞¿4E.
+9”A† 6Û§Ë“o3JOç°∞∂n“@±örÂÄ: SÄË2 1jy≥>≥s@‡òè(„Î6VÚˇ&ÀÉ¨Å(w;mR˙Óuíi"<√ÛCÄR÷‡¸*hà√ÿê _Æ!«Pƒ–#>	O)hcÂGÿﬁ≥=ïKC4¢’≤v@Ñï(m“ˆ”Bº€p@èvéL47„0/çÕ≥;”ÏƒC3‘ Ñ2ÕsAì	˝ÊŒ9s(yÉ—¶»ÊÊ@ˇƒÉ"C∞ˆD°NÍ4BY2E9ñ ¬å§…ò““ªp@sÍ≠æ…√.>µSq≤BΩSZ4‘IüEq‚À3†‡ÁÍfTÌ>7))Ù∆AÒ≥òS°ÜIGQn<ÀÚö<B ©≥wt#BÀqB-tIüJÎ‘NEÃµ47"r≠Ù”D3(≠5lhíg$ì)1+v¢Oıth∂4· È&QHNÒ;ÔS5î<Á•2Ô˝˛t uF¶SúÓàfÊÛUbämÜ“OuDﬁt„tNkıB3W¡s2©4πuONP”∆x("Æ·Aau†‘oB\™ò÷ƒWëµ7¢/I)’Vˇô‘ir[sS#—JØUœ≥fÜY;Ã7®≈Úp§c\øZ›4qJ»ßÙéV+uN≥’^yrWœ∆‰⁄ıOü&
+hçµ¶GApÔ’è§U”RM+∆÷avVbbﬁ±J◊ï_[c'“L7≠CQ7±Ô/1R,
+ˇÿ5cS7dUI´’cpbc6‚Ú5aW¢WU∂_Èƒ:FgQv™Ee63˛»y£8(UUÈUiÑñiq[Ögk¶TÉ Ä CÄ`∞AG‘'üa\a¨V#FÅ0Ì«UõçXV&Jka€V(–nSåf°6jsñ$†°U+K±BŒå#ˇNVoÎVp{&RãvZ›ViU3nÜû∂SóD^ÍÒnp÷¸éïq€Jm˜a;7∆2táµb3ÅWçrEÑqOWuÔIˆ˙~4qïÜBóv-Ü<9Å[1vuwów{◊wKdè∂ec˜k◊x˜eWqónóyõ◊yüwP%uLÑwm≠’zè{qÂv9ıb°◊{ø|O∑§w‚ïZ«sâw9≤ó}ﬂdWK7√W~Áó~çÂ‹@V âs!6}ß}ˇw`•‘bƒ‚∑8_µ~QVÅòÅÿÅÇ#XÇ'òÇ+∏oÉÄú2Å;—óB≠˜z ÑŒqHWySdÍƒÅˇWÖyT]4X_xÖcÜgXÜkòÜoÿÜsáwXá{òáÿáW¯õ¸ Ú˜ÑV‘e%ÑóX‹Ü™‰Ú†Nò!Jïä•Xä·Î>;B¨xäªòãøÿã√å«XåÀòåœÿå”ç◊Xç€òçﬂÿç„éÁXéÎòéŸ8¸ !ı◊É+îâyÍPàÑœ∆@Ä¿ñ`ë]Ä Ÿ4≥Öï¡9í3y	4ôì7Ÿì;î?YîCôîGŸîKïOYïSôïWŸï[ñ_YñcôñgYî]°Ü†àYßf]w=XêÉôd£cÄSéôëπ%ñ†Å‹Cj»7ôˇßŸò´ôöØŸö≥õ∑YõªôõøŸõ√ú«YúÀôúœŸú”ù…qÉì¯¥Ñû≥èC=wkvaxü{*˙¿	∞∏0á…Âûa	N‚lÚŸ†°Z°ö°⁄°¢#Z¢'ö¢+⁄¢È•8⁄Ÿùã7û;:i_¶û'ö8
+∏HØÆ‡äÄ{/zWö•[⁄•_¶cZ¶gö“î≥6†˜◊yNNÀXJp"NI)9w˜bZ¸Ææä¡0ΩúéŒXª„hä‡°¬t
+ÀÔDÊ¡0˘∆œ[w~û≈àÇ¶s°Y≈ïñÙG9ë/^¨≥kQa¿ﬁüﬁjÈzâÎ⁄|âîWi(r¸êFØ•¿≥øU=–OqS€π≤@uˇÿ+2yp®U=n†»+»;áÖ
+;2ÈÆ2L”H´J0óß¥:±“j£ÃTÀÂ©ëZ2^âñﬂÃN\Íˆ≈–‡:B!\ŸEÌ∂'ütb√q'3ô“õY®ûﬂ"Òrx-ïçñ6xF≥‚∑:´ÍçÉ^| ÜOA£˙≤ ÑÑ–V¢¯ç8£ôºX[∫ñ¯Èô∆Jë”zÅƒh(CbŒ≈í≤≤_Øk}Sı√Ùn%e’DØ˝∆7Oª∂2H∞”lX÷˙ÆÌGˆ33°Xx—Œ‹êÃ∑ º⁄vTì´Í˛UU¢;—öùãnßoÿÉnﬂπEã60Í»ïL¸Ifo©áhN‰)'π=©pâ˛ı≈B LòrWéõl›êÉ—–·HﬁÂâu°È≥˚_’´Ω∫ö‘û¥•y±ê-ÎR2b©æ{.ßéO {8≥0èÇ®˝~P«Œ`qÚùÍ[Ës'cº|ÂbÌ©mOø	e€\¶T¶¥NÛ≤Øè_Ωãæ˚wœ»„_Qz&\¶¢°≥⁄

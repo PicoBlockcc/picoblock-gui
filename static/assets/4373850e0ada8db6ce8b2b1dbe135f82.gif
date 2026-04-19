@@ -1,0 +1,1714 @@
+\n          // The injected member will be queued and eventually transformed when visited\n          t.callExpression(t.arrowFunctionExpression([], parentPath.node), []),\n        );\n        return;\n      }\n      parentPath.replaceWith(this.optionalCall(member, parent.arguments));\n      return;\n    }\n\n    // for (MEMBER of ARR)\n    // for (MEMBER in ARR)\n    // { KEY: MEMBER } = OBJ -> { KEY: _destructureSet(MEMBER) } = OBJ\n    // { KEY: MEMBER = _VALUE } = OBJ -> { KEY: _destructureSet(MEMBER) = _VALUE } = OBJ\n    // {...MEMBER} -> {..._destructureSet(MEMBER)}\n    //\n    // [MEMBER] = ARR -> [_destructureSet(MEMBER)] = ARR\n    // [MEMBER = _VALUE] = ARR -> [_destructureSet(MEMBER) = _VALUE] = ARR\n    // [...MEMBER] -> [..._destructureSet(MEMBER)]\n    if (\n      // for (MEMBER of ARR)\n      // for (MEMBER in ARR)\n      parentPath.isForXStatement({ left: node }) ||\n      // { KEY: MEMBER } = OBJ\n      (parentPath.isObjectProperty({ value: node }) &&\n        parentPath.parentPath.isObjectPattern()) ||\n      // { KEY: MEMBER = _VALUE } = OBJ\n      (parentPath.isAssignmentPattern({ left: node }) &&\n        parentPath.parentPath.isObjectProperty({ value: parent }) &&\n        parentPath.parentPath.parentPath.isObjectPattern()) ||\n      // [MEMBER] = ARR\n      parentPath.isArrayPattern() ||\n      // [MEMBER = _VALUE] = ARR\n      (parentPath.isAssignmentPattern({ left: node }) &&\n        parentPath.parentPath.isArrayPattern()) ||\n      // {...MEMBER}\n      // [...MEMBER]\n      parentPath.isRestElement()\n    ) {\n      member.replaceWith(this.destructureSet(member));\n      return;\n    }\n\n    if (parentPath.isTaggedTemplateExpression()) {\n      // MEMBER   ->   _get(MEMBER).bind(this)\n      member.replaceWith(this.boundGet(member));\n    } else {\n      // MEMBER   ->   _get(MEMBER)\n      member.replaceWith(this.get(member));\n    }\n  },\n};\n\n// We do not provide a default traversal visitor\n// Instead, caller passes one, and must call `state.handle` on the members\n// it wishes to be transformed.\n// Additionally, the caller must pass in a state object with at least\n// get, set, and call methods.\n// Optionally, a memoise method may be defined on the state, which will be\n// called when the member is a self-referential update.\nexport default function memberExpressionToFunctions(path, visitor, state) {\n  path.traverse(visitor, {\n    ...handle,\n    ...state,\n    memoiser: new AssignmentMemoiser(),\n  });\n}\n"],"names":["willPathCastToBoolean","path","maybeWrapped","node","parentPath","isLogicalExpression","operator","right","isSequenceExpression","expressions","length","isConditional","test","isUnaryExpression","isLoop","AssignmentMemoiser","constructor","_map","WeakMap","has","key","get","record","value","count","t","assignmentExpression","set","toNonOptional","base","isOptionalMemberExpression","memberExpression","property","computed","isOptionalCallExpression","callee","optional","object","context","scope","maybeGenerateMemoised","replaceWith","callExpression","identifier","arguments","isInDetachedTree","isProgram","container","listKey","parentNode","handle","memoise","member","noDocumentAll","parent","endPath","find","isPattern","arrowFunctionExpression","willEndPathCastToBoolean","rootParentPath","isUpdateExpression","argument","isAssignmentExpression","left","buildCodeFrameError","isDeleteOperation","isPrivateName","startingOptional","Error","type","startingProp","startingNode","baseNeedsMemoised","baseRef","parentIsOptionalCall","parentIsCall","isCallExpression","optionalCall","call","boundGet","regular","current","endParentPath","isMemberExpression","replacementPath","baseMemoised","cloneNode","nonNullishCheck","binaryExpression","nullLiteral","logicalExpression","buildUndefinedNode","nullishCheck","conditionalExpression","booleanLiteral","endParent","optionalCallExpression","optionalMemberExpression","simpleSet","prefix","unaryExpression","numericLiteral","ref","generateUidIdentifierBasedOnNode","push","id","sequenceExpression","operatorTrunc","slice","LOGICAL_OPERATORS","includes","isForXStatement","isObjectProperty","isObjectPattern","isAssignmentPattern","isArrayPattern","isRestElement","destructureSet","isTaggedTemplateExpression","memberExpressionToFunctions","visitor","state","traverse","memoiser"],"mappings":"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"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.File = File;
+exports.Program = Program;
+exports.BlockStatement = BlockStatement;
+exports.Directive = Directive;
+exports.DirectiveLiteral = DirectiveLiteral;
+exports.InterpreterDirective = InterpreterDirective;
+exports.Placeholder = Placeholder;
+
+var t = _interopRequireWildcard(require("@babel/types"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function File(node) {
+  if (node.program) {
+    this.print(node.program.interpreter, node);
+  }
+
+  this.print(node.program, node);
+}
+
+function Program(node) {
+  this.printInnerComments(node, false);
+  this.printSequence(node.directives, node);
+  if (node.directives && node.directives.length) this.newline();
+  this.printSequence(node.body, node);
+}
+
+function BlockStatement(node) {
+  var _node$directives;
+
+  this.token("{");
+  this.printInnerComments(node);
+  const hasDirectives = (_node$directives = node.directives) == null ? void 0 : _node$directives.length;
+
+  if (node.body.length || hasDirectives) {
+    this.newline();
+    this.printSequence(node.directives, node, {
+      indent: true
+    });
+    if (hasDirectives) this.newline();
+    this.printSequence(node.body, node, {
+      indent: true
+    });
+    this.removeTrailingNewline();
+    this.source("end", node.loc);
+    if (!this.endsWith("\n")) this.newline();
+    this.rightBrace();
+  } else {
+    this.source("end", node.loc);
+    this.token("}");
+  }
+}
+
+function Directive(node) {
+  this.print(node.value, node);
+  this.semicolon();
+}
+
+const unescapedSingleQuoteRE = /(?:^|[^\\])(?:\\\\)*'/;
+const unescapedDoubleQuoteRE = /(?:^|[^\\])(?:\\\\)*"/;
+
+function DirectiveLiteral(node) {
+  const raw = this.getPossibleRaw(node);
+
+  if (raw != null) {
+    this.token(raw);
+    return;
+  }
+
+  const {
+    value
+  } = node;
+
+  if (!unescapedDoubleQuoteRE.test(value)) {
+    this.token(`"${value}"`);
+  } else if (!unescapedSingleQuoteRE.test(value)) {
+    this.token(`'${value}'`);
+  } else {
+    throw new Error("Malformed AST: it is not possible to print a directive containing" + " both unescaped single and double quotes.");
+  }
+}
+
+function InterpreterDirective(node) {
+  this.token(`#!${node.value}\n`);
+}
+
+function Placeholder(node) {
+  this.token("%%");
+  this.print(node.name);
+  this.token("%%");
+
+  if (node.expectedNode === "Statement") {
+    this.semicolon();
+  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.File = File;
+exports.Program = Program;
+exports.BlockStatement = BlockStatement;
+exports.Directive = Directive;
+exports.DirectiveLiteral = DirectiveLiteral;
+exports.InterpreterDirective = InterpreterDirective;
+exports.Placeholder = Placeholder;
+
+var t = require("@babel/types");
+
+function File(node) {
+  if (node.program) {
+    this.print(node.program.interpreter, node);
+  }
+
+  this.print(node.program, node);
+}
+
+function Program(node) {
+  this.printInnerComments(node, false);
+  this.printSequence(node.directives, node);
+  if (node.directives && node.directives.length) this.newline();
+  this.printSequence(node.body, node);
+}
+
+function BlockStatement(node) {
+  var _node$directives;
+
+  this.token("{");
+  this.printInnerComments(node);
+  const hasDirectives = (_node$directives = node.directives) == null ? void 0 : _node$directives.length;
+
+  if (node.body.length || hasDirectives) {
+    this.newline();
+    this.printSequence(node.directives, node, {
+      indent: true
+    });
+    if (hasDirectives) this.newline();
+    this.printSequence(node.body, node, {
+      indent: true
+    });
+    this.removeTrailingNewline();
+    this.source("end", node.loc);
+    if (!this.endsWith("\n")) this.newline();
+    this.rightBrace();
+  } else {
+    this.source("end", node.loc);
+    this.token("}");
+  }
+}
+
+function Directive(node) {
+  this.print(node.value, node);
+  this.semicolon();
+}
+
+const unescapedSingleQuoteRE = /(?:^|[^\\])(?:\\\\)*'/;
+const unescapedDoubleQuoteRE = /(?:^|[^\\])(?:\\\\)*"/;
+
+function DirectiveLiteral(node) {
+  const raw = this.getPossibleRaw(node);
+
+  if (raw != null) {
+    this.token(raw);
+    return;
+  }
+
+  const {
+    value
+  } = node;
+
+  if (!unescapedDoubleQuoteRE.test(value)) {
+    this.token(`"${value}"`);
+  } else if (!unescapedSingleQuoteRE.test(value)) {
+    this.token(`'${value}'`);
+  } else {
+    throw new Error("Malformed AST: it is not possible to print a directive containing" + " both unescaped single and double quotes.");
+  }
+}
+
+function InterpreterDirective(node) {
+  this.token(`#!${node.value}\n`);
+}
+
+function Placeholder(node) {
+  this.token("%%");
+  this.print(node.name);
+  this.token("%%");
+
+  if (node.expectedNode === "Statement") {
+    this.semicolon();
+  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           rt interface ForStatement extends BaseNode {
+  type: "ForStatement";
+  init: VariableDeclaration | Expression | null;
+  test: Expression | null;
+  update: Expression | null;
+  body: Statement;
+}
+
+export interface FunctionDeclaration extends BaseNode {
+  type: "FunctionDeclaration";
+  id: Identifier | null;
+  params: Array<LVal>;
+  body: BlockStatement;
+  generator: boolean;
+  async: boolean;
+  declare: boolean | null;
+  returnType: TypeAnnotation | TSTypeAnnotation | Noop | null;
+  typeParameters: TypeParameterDeclaration | TSTypeParameterDeclaration | Noop | null;
+}
+
+export interface FunctionExpression extends BaseNode {
+  type: "FunctionExpression";
+  id: Identifier | null;
+  params: Array<LVal>;
+  body: BlockStatement;
+  generator: boolean;
+  async: boolean;
+  returnType: TypeAnnotation | TSTypeAnnotation | Noop | null;
+  typeParameters: TypeParameterDeclaration | TSTypeParameterDeclaration | Noop | null;
+}
+
+export interface Identifier extends BaseNode {
+  type: "Identifier";
+  name: string;
+  decorators: Array<Decorator> | null;
+  optional: boolean | null;
+  typeAnnotation: TypeAnnotation | TSTypeAnnotation | Noop | null;
+}
+
+export interface IfStatement extends BaseNode {
+  type: "IfStatement";
+  test: Expression;
+  consequent: Statement;
+  alternate: Statement | null;
+}
+
+export interface LabeledStatement extends BaseNode {
+  type: "LabeledStatement";
+  label: Identifier;
+  body: Statement;
+}
+
+export interface StringLiteral extends BaseNode {
+  type: "StringLiteral";
+  value: string;
+}
+
+export interface NumericLiteral extends BaseNode {
+  type: "NumericLiteral";
+  value: number;
+}
+
+export interface NullLiteral extends BaseNode {
+  type: "NullLiteral";
+}
+
+export interface BooleanLiteral extends BaseNode {
+  type: "BooleanLiteral";
+  value: boolean;
+}
+
+export interface RegExpLiteral extends BaseNode {
+  type: "RegExpLiteral";
+  pattern: string;
+  flags: string;
+}
+
+export interface LogicalExpression extends BaseNode {
+  type: "LogicalExpression";
+  operator: "||" | "&&" | "??";
+  left: Expression;
+  right: Expression;
+}
+
+export interface MemberExpression extends BaseNode {
+  type: "MemberExpression";
+  object: Expression;
+  property: any;
+  computed: boolean;
+  optional: true | false | null;
+}
+
+export interface NewExpression extends BaseNode {
+  type: "NewExpression";
+  callee: Expression;
+  arguments: Array<Expression | SpreadElement | JSXNamespacedName>;
+  optional: true | false | null;
+  typeArguments: TypeParameterInstantiation | null;
+  typeParameters: TSTypeParameterInstantiation | null;
+}
+
+export interface Program extends BaseNode {
+  type: "Program";
+  body: Array<Statement>;
+  directives: Array<Directive>;
+  sourceType: "script" | "module";
+  interpreter: InterpreterDirective | null;
+  sourceFile: string | null;
+}
+
+export interface ObjectExpression extends BaseNode {
+  type: "ObjectExpression";
+  properties: Array<ObjectMethod | ObjectProperty | SpreadElement>;
+}
+
+export interface ObjectMethod extends BaseNode {
+  type: "ObjectMethod";
+  kind: "method" | "get" | "set";
+  key: any;
+  params: Array<LVal>;
+  body: BlockStatement;
+  computed: boolean;
+  async: boolean;
+  decorators: Array<Decorator> | null;
+  generator: boolean;
+  returnType: TypeAnnotation | TSTypeAnnotation | Noop | null;
+  typeParameters: TypeParameterDeclaration | TSTypeParameterDeclaration | Noop | null;
+}
+
+export interface ObjectProperty extends BaseNode {
+  type: "ObjectProperty";
+  key: any;
+  value: Expression | PatternLike;
+  computed: boolean;
+  shorthand: boolean;
+  decorators: Array<Decorator> | null;
+}
+
+export interface RestElement extends BaseNode {
+  type: "RestElement";
+  argument: LVal;
+  decorators: Array<Decorator> | null;
+  typeAnnotation: TypeAnnotation | TSTypeAnnotation | Noop | null;
+}
+
+export interface ReturnStatement extends BaseNode {
+  type: "ReturnStatement";
+  argument: Expression | null;
+}
+
+export interface SequenceExpression extends BaseNode {
+  type: "SequenceExpression";
+  expressions: Array<Expression>;
+}
+
+export interface SwitchCase extends BaseNode {
+  type: "SwitchCase";
+  test: Expression | null;
+  consequent: Array<Statement>;
+}
+
+export interface SwitchStatement extends BaseNode {
+  type: "SwitchStatement";
+  discriminant: Expression;
+  cases: Array<SwitchCase>;
+}
+
+export interface ThisExpression extends BaseNode {
+  type: "ThisExpression";
+}
+
+export interface ThrowStatement extends BaseNode {
+  type: "ThrowStatement";
+  argument: Expression;
+}
+
+export interface TryStatement extends BaseNode {
+  type: "TryStatement";
+  block: BlockStatement;
+  handler: CatchClause | null;
+  finalizer: BlockStatement | null;
+}
+
+export interface UnaryExpression extends BaseNode {
+  type: "UnaryExpression";
+  operator: "void" | "throw" | "delete" | "!" | "+" | "-" | "~" | "typeof";
+  argument: Expression;
+  prefix: boolean;
+}
+
+export interface UpdateExpression extends BaseNode {
+  type: "UpdateExpression";
+  operator: "++" | "--";
+  argument: Expression;
+  prefix: boolean;
+}
+
+export interface VariableDeclaration extends BaseNode {
+  type: "VariableDeclaration";
+  kind: "var" | "let" | "const";
+  declarations: Array<VariableDeclarator>;
+  declare: boolean | null;
+}
+
+export interface VariableDeclarator extends BaseNode {
+  type: "VariableDeclarator";
+  id: LVal;
+  init: Expression | null;
+  definite: boolean | null;
+}
+
+export interface WhileStatement extends BaseNode {
+  type: "WhileStatement";
+  test: Expression;
+  body: BlockStatement | Statement;
+}
+
+export interface WithStatement extends BaseNode {
+  type: "WithStatement";
+  object: Expression;
+  body: BlockStatement | Statement;
+}
+
+export interface AssignmentPattern extends BaseNode {
+  type: "AssignmentPattern";
+  left: Identifier | ObjectPattern | ArrayPattern;
+  right: Expression;
+  decorators: Array<Decorator> | null;
+  typeAnnotation: TypeAnnotation | TSTypeAnnotation | Noop | null;
+}
+
+export interface ArrayPattern extends BaseNode {
+  type: "ArrayPattern";
+  elements: Array<PatternLike>;
+  decorators: Array<Decorator> | null;
+  typeAnnotation: TypeAnnotation | TSTypeAnnotation | Noop | null;
+}
+
+export interface ArrowFunctionExpression extends BaseNode {
+  type: "ArrowFunctionExpression";
+  params: Array<LVal>;
+  body: BlockStatement | Expression;
+  async: boolean;
+  expression: boolean | null;
+  generator: boolean;
+  returnType: TypeAnnotation | TSTypeAnnotation | Noop | null;
+  typeParameters: TypeParameterDeclaration | TSTypeParameterDeclaration | Noop | null;
+}
+
+export interface ClassBody extends BaseNode {
+  type: "ClassBody";
+  body: Array<ClassMethod | ClassProperty | ClassPrivateProperty | TSDeclareMethod | TSIndexSignature>;
+}
+
+export interface ClassDeclaration extends BaseNode {
+  type: "ClassDeclaration";
+  id: Identifier | null;
+  superClass: Expression | null;
+  body: ClassBody;
+  decorators: Array<Decorator> | null;
+  abstract: boolean | null;
+  declare: boolean | null;
+  mixins: any | null;
+  superTypeParameters: TypeParameterInstantiation | TSTypeParameterInstantiation | null;
+  typeParameters: TypeParameterDeclaration | TSTypeParameterDeclaration | Noop | null;
+}
+
+export interface ClassExpression extends BaseNode {
+  type: "ClassExpression";
+  id: Identifier | null;
+  superClass: Expression | null;
+  body: ClassBody;
+  decorators: Array<Decorator> | null;
+  mixins: any | null;
+  superTypeParameters: TypeParameterInstantiation | TSTypeParameterInstantiation | null;
+  typeParameters: TypeParameterDeclaration | TSTypeParameterDeclaration | Noop | null;
+}
+
+export interface ExportAllDeclaration extends BaseNode {
+  type: "ExportAllDeclaration";
+  source: StringLiteral;
+}
+
+export interface ExportDefaultDeclaration extends BaseNode {
+  type: "ExportDefaultDeclaration";
+  declaration: FunctionDeclaration | TSDeclareFunction | ClassDeclaration | Expression;
+}
+
+export interface ExportNamedDeclaration extends BaseNode {
+  type: "ExportNamedDeclaration";
+  declaration: Declaration | null;
+  specifiers: Array<ExportSpecifier | ExportDefaultSpecifier | ExportNamespaceSpecifier>;
+  source: StringLiteral | null;
+}
+
+export interface ExportSpecifier extends BaseNode {
+  type: "ExportSpecifier";
+  local: Identifier;
+  exported: Identifier;
+}
+
+export interface ForOfStatement extends BaseNode {
+  type: "ForOfStatement";
+  left: VariableDeclaration | LVal;
+  right: Expression;
+  body: Statement;
+}
+
+export interface ImportDeclaration extends BaseNode {
+  type: "ImportDeclaration";
+  specifiers: Array<ImportSpecifier | ImportDefaultSpecifier | ImportNamespaceSpecifier>;
+  source: StringLiteral;
+}
+
+export interface ImportDefaultSpecifier extends BaseNode {
+  type: "ImportDefaultSpecifier";
+  local: Identifier;
+}
+
+export interface ImportNamespaceSpecifier extends BaseNode {
+  type: "ImportNamespaceSpecifier";
+  local: Identifier;
+}
+
+export interface ImportSpecifier extends BaseNode {
+  type: "ImportSpecifier";
+  local: Identifier;
+  imported: Identifier;
+  importKind: null | "type" | "typeof" | null;
+}
+
+export interface MetaProperty extends BaseNode {
+  type: "MetaProperty";
+  meta: Identifier;
+  property: Identifier;
+}
+
+export interface ClassMethod extends BaseNode {
+  type: "ClassMethod";
+  kind: "get" | "set" | "method" | "constructor";
+  key: Identifier | StringLiteral | NumericLiteral | Expression;
+  params: Array<LVal>;
+  body: BlockStatement;
+  computed: boolean;
+  abstract: boolean | null;
+  access: "public" | "private" | "protected" | null;
+  accessibility: "public" | "private" | "protected" | null;
+  async: boolean;
+  decorators: Array<Decorator> | null;
+  generator: boolean;
+  optional: boolean | null;
+  returnType: TypeAnnotation | TSTypeAnnotation | Noop | null;
+  typeParameters: TypeParameterDeclaration | TSTypeParameterDeclaration | Noop | null;
+}
+
+export interface ObjectPattern extends BaseNode {
+  type: "ObjectPattern";
+  properties: Array<RestElement | ObjectProperty>;
+  decorators: Array<Decorator> | null;
+  typeAnnotation: TypeAnnotation | TSTypeAnnotation | Noop | null;
+}
+
+export interface SpreadElement extends BaseNode {
+  type: "SpreadElement";
+  argument: Expression;
+}
+
+export interface Super extends BaseNode {
+  type: "Super";
+}
+
+export interface TaggedTemplateExpression extends BaseNode {
+  type: "TaggedTemplateExpression";
+  tag: Expression;
+  quasi: TemplateLiteral;
+  typeParameters: TypeParameterInstantiation | TSTypeParameterInstantiation | null;
+}
+
+export interface TemplateElement extends BaseNode {
+  type: "TemplateElement";
+  value: any;
+  tail: boolean;
+}
+
+export interface TemplateLiteral extends BaseNode {
+  type: "TemplateLiteral";
+  quasis: Array<TemplateElement>;
+  expressions: Array<Expression>;
+}
+
+export interface YieldExpression extends BaseNode {
+  type: "YieldExpression";
+  argument: Expression | null;
+  delegate: boolean;
+}
+
+export interface AnyTypeAnnotation extends BaseNode {
+  type: "AnyTypeAnnotation";
+}
+
+export interface ArrayTypeAnnotation extends BaseNode {
+  type: "ArrayTypeAnnotation";
+  elementType: FlowType;
+}
+
+export interface BooleanTypeAnnotation extends BaseNode {
+  type: "BooleanTypeAnnotation";
+}
+
+export interface BooleanLiteralTypeAnnotation extends BaseNode {
+  type: "BooleanLiteralTypeAnnotation";
+  value: boolean;
+}
+
+export interface NullLiteralTypeAnnotation extends BaseNode {
+  type: "NullLiteralTypeAnnotation";
+}
+
+export interface ClassImplements extends BaseNode {
+  type: "ClassImplements";
+  id: Identifier;
+  typeParameters: TypeParameterInstantiation | null;
+}
+
+export interface DeclareClass extends BaseNode {
+  type: "DeclareClass";
+  id: Identifier;
+  typeParameters: TypeParameterInstantiation | null;
+  body: ObjectTypeAnnotation;
+  mixins: Array<InterfaceExtends> | null;
+}
+
+export interface DeclareFunction extends BaseNode {
+  type: "DeclareFunction";
+  id: Identifier;
+  predicate: DeclaredPredicate | null;
+}
+
+export interface DeclareInterface extends BaseNode {
+  type: "DeclareInterface";
+  id: Identifier;
+  typeParameters: TypeParameterDeclaration | null;
+  body: ObjectTypeAnnotation;
+  mixins: Array<InterfaceExtends> | null;
+}
+
+export interface DeclareModule extends BaseNode {
+  type: "DeclareModule";
+  id: Identifier | StringLiteral;
+  body: BlockStatement;
+  kind: "CommonJS" | "ES" | null;
+}
+
+export interface DeclareModuleExports extends BaseNode {
+  type: "DeclareModuleExports";
+  typeAnnotation: TypeAnnotation;
+}
+
+export interface DeclareTypeAlias extends BaseNode {
+  type: "DeclareTypeAlias";
+  id: Identifier;
+  typeParameters: TypeParameterDeclaration | null;
+  right: FlowType;
+}
+
+export interface DeclareOpaqueType extends BaseNode {
+  type: "DeclareOpaqueType";
+  id: Identifier;
+  typeParameters: TypeParameterDeclaration | null;
+  supertype: FlowType | null;
+}
+
+export interface DeclareVariable extends BaseNode {
+  type: "DeclareVariable";
+  id: Identifier;
+}
+
+export interface DeclareExportDeclaration extends BaseNode {
+  type: "DeclareExportDeclaration";
+  declaration: Flow | null;
+  specifiers: Array<ExportSpecifier | ExportNamespaceSpecifier> | null;
+  source: StringLiteral | null;
+}
+
+export interface DeclareExportAllDeclaration extends BaseNode {
+  type: "DeclareExportAllDeclaration";
+  source: StringLiteral;
+  exportKind: ["type","value"] | null;
+}
+
+export interface DeclaredPredicate extends BaseNode {
+  type: "DeclaredPredicate";
+  value: Flow;
+}
+
+export interface ExistsTypeAnnotation extends BaseNode {
+  type: "ExistsTypeAnnotation";
+}
+
+export interface FunctionTypeAnnotation extends BaseNode {
+  type: "FunctionTypeAnnotation";
+  typeParameters: TypeParameterDeclaration | null;
+  params: Array<FunctionTypeParam>;
+  rest: FunctionTypeParam | null;
+  returnType: FlowType;
+}
+
+export interface FunctionTypeParam extends BaseNode {
+  type: "FunctionTypeParam";
+  name: Identifier | null;
+  typeAnnotation: FlowType;
+  optional: boolean | null;
+}
+
+export interface GenericTypeAnnotation extends BaseNode {
+  type: "GenericTypeAnnotation";
+  id: Identifier;
+  typeParameters: TypeParameterInstantiation | null;
+}
+
+export interface InferredPredicate extends BaseNode {
+  type: "InferredPredicate";
+}
+
+export interface InterfaceExtends extends BaseNode {
+  type: "InterfaceExtends";
+  id: Identifier;
+  typeParameters: TypeParameterInstantiation | null;
+}
+
+export interface InterfaceDeclaration extends BaseNode {
+  type: "InterfaceDeclaration";
+  id: Identifier;
+  typeParameters: TypeParameterDeclaration | null;
+  body: ObjectTypeAnnotation;
+  mixins: Array<InterfaceExtends> | null;
+}
+
+export interface InterfaceTypeAnnotation extends BaseNode {
+  type: "InterfaceTypeAnnotation";
+  body: ObjectTypeAnnotation;
+}
+
+export interface IntersectionTypeAnnotation extends BaseNode {
+  type: "IntersectionTypeAnnotation";
+  types: Array<FlowType>;
+}
+
+export interface MixedTypeAnnotation extends BaseNode {
+  type: "MixedTypeAnnotation";
+}
+
+export interface EmptyTypeAnnotation extends BaseNode {
+  type: "EmptyTypeAnnotation";
+}
+
+export interface NullableTypeAnnotation extends BaseNode {
+  type: "NullableTypeAnnotation";
+  typeAnnotation: FlowType;
+}
+
+export interface NumberLiteralTypeAnnotation extends BaseNode {
+  type: "NumberLiteralTypeAnnotation";
+  value: number;
+}
+
+export interface NumberTypeAnnotation extends BaseNode {
+  type: "NumberTypeAnnotation";
+}
+
+export interface ObjectTypeAnnotation extends BaseNode {
+  type: "ObjectTypeAnnotation";
+  properties: Array<ObjectTypeProperty | ObjectTypeSpreadProperty>;
+  indexers: Array<ObjectTypeIndexer> | null;
+  callProperties: Array<ObjectTypeCallProperty> | null;
+  internalSlots: Array<ObjectTypeInternalSlot> | null;
+  exact: boolean;
+}
+
+export interface ObjectTypeInternalSlot extends BaseNode {
+  type: "ObjectTypeInternalSlot";
+  id: Identifier;
+  value: FlowType;
+  optional: boolean;
+  method: boolean;
+}
+
+export interface ObjectTypeCallProperty extends BaseNode {
+  type: "ObjectTypeCallProperty";
+  value: FlowType;
+}
+
+export interface ObjectTypeIndexer extends BaseNode {
+  type: "ObjectTypeIndexer";
+  id: Identifier | null;
+  key: FlowType;
+  value: FlowType;
+  variance: Variance | null;
+}
+
+export interface ObjectTypeProperty extends BaseNode {
+  type: "ObjectTypeProperty";
+  key: Identifier | StringLiteral;
+  value: FlowType;
+  variance: Variance | null;
+  kind: "init" | "get" | "set" | null;
+  optional: boolean | null;
+  proto: boolean | null;
+}
+
+export interface ObjectTypeSpreadProperty extends BaseNode {
+  type: "ObjectTypeSpreadProperty";
+  argument: FlowType;
+}
+
+export interface OpaqueType extends BaseNode {
+  type"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.File = File;
+exports.Program = Program;
+exports.BlockStatement = BlockStatement;
+exports.Directive = Directive;
+exports.DirectiveLiteral = DirectiveLiteral;
+exports.InterpreterDirective = InterpreterDirective;
+exports.Placeholder = Placeholder;
+
+var t = _interopRequireWildcard(require("@babel/types"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function File(node) {
+  if (node.program) {
+    this.print(node.program.interpreter, node);
+  }
+
+  this.print(node.program, node);
+}
+
+function Program(node) {
+  this.printInnerComments(node, false);
+  this.printSequence(node.directives, node);
+  if (node.directives && node.directives.length) this.newline();
+  this.printSequence(node.body, node);
+}
+
+function BlockStatement(node) {
+  var _node$directives;
+
+  this.token("{");
+  this.printInnerComments(node);
+  const hasDirectives = (_node$directives = node.directives) == null ? void 0 : _node$directives.length;
+
+  if (node.body.length || hasDirectives) {
+    this.newline();
+    this.printSequence(node.directives, node, {
+      indent: true
+    });
+    if (hasDirectives) this.newline();
+    this.printSequence(node.body, node, {
+      indent: true
+    });
+    this.removeTrailingNewline();
+    this.source("end", node.loc);
+    if (!this.endsWith("\n")) this.newline();
+    this.rightBrace();
+  } else {
+    this.source("end", node.loc);
+    this.token("}");
+  }
+}
+
+function Directive(node) {
+  this.print(node.value, node);
+  this.semicolon();
+}
+
+const unescapedSingleQuoteRE = /(?:^|[^\\])(?:\\\\)*'/;
+const unescapedDoubleQuoteRE = /(?:^|[^\\])(?:\\\\)*"/;
+
+function DirectiveLiteral(node) {
+  const raw = this.getPossibleRaw(node);
+
+  if (raw != null) {
+    this.token(raw);
+    return;
+  }
+
+  const {
+    value
+  } = node;
+
+  if (!unescapedDoubleQuoteRE.test(value)) {
+    this.token(`"${value}"`);
+  } else if (!unescapedSingleQuoteRE.test(value)) {
+    this.token(`'${value}'`);
+  } else {
+    throw new Error("Malformed AST: it is not possible to print a directive containing" + " both unescaped single and double quotes.");
+  }
+}
+
+function InterpreterDirective(node) {
+  this.token(`#!${node.value}\n`);
+}
+
+function Placeholder(node) {
+  this.token("%%");
+  this.print(node.name);
+  this.token("%%");
+
+  if (node.expectedNode === "Statement") {
+    this.semicolon();
+  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ead(name);
+          } else {
+            builder.var(name).prop(importName);
+          }
+        }
+      }
+    } else {
+      throw new Error(`Unknown importedInterop "${importedInterop}".`);
+    }
+
+    const {
+      statements,
+      resultName
+    } = builder.done();
+
+    this._insertStatements(statements, importPosition, blockHoist);
+
+    if ((isDefault || isNamed) && ensureNoContext && resultName.type !== "Identifier") {
+      return t.sequenceExpression([t.numericLiteral(0), resultName]);
+    }
+
+    return resultName;
+  }
+
+  _insertStatements(statements, importPosition = "before", blockHoist = 3) {
+    const body = this._programPath.get("body");
+
+    if (importPosition === "after") {
+      for (let i = body.length - 1; i >= 0; i--) {
+        if (body[i].isImportDeclaration()) {
+          body[i].insertAfter(statements);
+          return;
+        }
+      }
+    } else {
+      statements.forEach(node => {
+        node._blockHoist = blockHoist;
+      });
+      const targetPath = body.find(p => {
+        const val = p.node._blockHoist;
+        return Number.isFinite(val) && val < 4;
+      });
+
+      if (targetPath) {
+        targetPath.insertBefore(statements);
+        return;
+      }
+    }
+
+    this._programPath.unshiftContainer("body", statements);
+  }
+
+}
+
+exports.default = ImportInjector;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                they were created above with a flag.
+for (var i = 0; i < R; i++) {
+  debug(i, src[i])
+  if (!re[i]) {
+    re[i] = new RegExp(src[i])
+  }
+}
+
+exports.parse = parse
+function parse (version, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (version instanceof SemVer) {
+    return version
+  }
+
+  if (typeof version !== 'string') {
+    return null
+  }
+
+  if (version.length > MAX_LENGTH) {
+    return null
+  }
+
+  var r = options.loose ? re[t.LOOSE] : re[t.FULL]
+  if (!r.test(version)) {
+    return null
+  }
+
+  try {
+    return new SemVer(version, options)
+  } catch (er) {
+    return null
+  }
+}
+
+exports.valid = valid
+function valid (version, options) {
+  var v = parse(version, options)
+  return v ? v.version : null
+}
+
+exports.clean = clean
+function clean (version, options) {
+  var s = parse(version.trim().replace(/^[=v]+/, ''), options)
+  return s ? s.version : null
+}
+
+exports.SemVer = SemVer
+
+function SemVer (version, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+  if (version instanceof SemVer) {
+    if (version.loose === options.loose) {
+      return version
+    } else {
+      version = version.version
+    }
+  } else if (typeof version !== 'string') {
+    throw new TypeError('Invalid Version: ' + version)
+  }
+
+  if (version.length > MAX_LENGTH) {
+    throw new TypeError('version is longer than ' + MAX_LENGTH + ' characters')
+  }
+
+  if (!(this instanceof SemVer)) {
+    return new SemVer(version, options)
+  }
+
+  debug('SemVer', version, options)
+  this.options = options
+  this.loose = !!options.loose
+
+  var m = version.trim().match(options.loose ? re[t.LOOSE] : re[t.FULL])
+
+  if (!m) {
+    throw new TypeError('Invalid Version: ' + version)
+  }
+
+  this.raw = version
+
+  // these are actually numbers
+  this.major = +m[1]
+  this.minor = +m[2]
+  this.patch = +m[3]
+
+  if (this.major > MAX_SAFE_INTEGER || this.major < 0) {
+    throw new TypeError('Invalid major version')
+  }
+
+  if (this.minor > MAX_SAFE_INTEGER || this.minor < 0) {
+    throw new TypeError('Invalid minor version')
+  }
+
+  if (this.patch > MAX_SAFE_INTEGER || this.patch < 0) {
+    throw new TypeError('Invalid patch version')
+  }
+
+  // numberify any prerelease numeric ids
+  if (!m[4]) {
+    this.prerelease = []
+  } else {
+    this.prerelease = m[4].split('.').map(function (id) {
+      if (/^[0-9]+$/.test(id)) {
+        var num = +id
+        if (num >= 0 && num < MAX_SAFE_INTEGER) {
+          return num
+        }
+      }
+      return id
+    })
+  }
+
+  this.build = m[5] ? m[5].split('.') : []
+  this.format()
+}
+
+SemVer.prototype.format = function () {
+  this.version = this.major + '.' + this.minor + '.' + this.patch
+  if (this.prerelease.length) {
+    this.version += '-' + this.prerelease.join('.')
+  }
+  return this.version
+}
+
+SemVer.prototype.toString = function () {
+  return this.version
+}
+
+SemVer.prototype.compare = function (other) {
+  debug('SemVer.compare', this.version, this.options, other)
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  return this.compareMain(other) || this.comparePre(other)
+}
+
+SemVer.prototype.compareMain = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  return compareIdentifiers(this.major, other.major) ||
+         compareIdentifiers(this.minor, other.minor) ||
+         compareIdentifiers(this.patch, other.patch)
+}
+
+SemVer.prototype.comparePre = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  // NOT having a prerelease is > having one
+  if (this.prerelease.length && !other.prerelease.length) {
+    return -1
+  } else if (!this.prerelease.length && other.prerelease.length) {
+    return 1
+  } else if (!this.prerelease.length && !other.prerelease.length) {
+    return 0
+  }
+
+  var i = 0
+  do {
+    var a = this.prerelease[i]
+    var b = other.prerelease[i]
+    debug('prerelease compare', i, a, b)
+    if (a === undefined && b === undefined) {
+      return 0
+    } else if (b === undefined) {
+      return 1
+    } else if (a === undefined) {
+      return -1
+    } else if (a === b) {
+      continue
+    } else {
+      return compareIdentifiers(a, b)
+    }
+  } while (++i)
+}
+
+SemVer.prototype.compareBuild = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  var i = 0
+  do {
+    var a = this.build[i]
+    var b = other.build[i]
+    debug('prerelease compare', i, a, b)
+    if (a === undefined && b === undefined) {
+      return 0
+    } else if (b === undefined) {
+      return 1
+    } else if (a === undefined) {
+      return -1
+    } else if (a === b) {
+      continue
+    } else {
+      return compareIdentifiers(a, b)
+    }
+  } while (++i)
+}
+
+// preminor will bump the version up to the next minor release, and immediately
+// down to pre-release. premajor and prepatch work the same way.
+SemVer.prototype.inc = function (release, identifier) {
+  switch (release) {
+    case 'premajor':
+      this.prerelease.length = 0
+      this.patch = 0
+      this.minor = 0
+      this.major++
+      this.inc('pre', identifier)
+      break
+    case 'preminor':
+      this.prerelease.length = 0
+      this.patch = 0
+      this.minor++
+      this.inc('pre', identifier)
+      break
+    case 'prepatch':
+      // If this is already a prerelease, it will bump to the next version
+      // drop any prereleases that might already exist, since they are not
+      // relevant at this point.
+      this.prerelease.length = 0
+      this.inc('patch', identifier)
+      this.inc('pre', identifier)
+      break
+    // If the input is a non-prerelease version, this acts the same as
+    // prepatch.
+    case 'prerelease':
+      if (this.prerelease.length === 0) {
+        this.inc('patch', identifier)
+      }
+      this.inc('pre', identifier)
+      break
+
+    case 'major':
+      // If this is a pre-major version, bump up to the same major version.
+      // Otherwise increment major.
+      // 1.0.0-5 bumps to 1.0.0
+      // 1.1.0 bumps to 2.0.0
+      if (this.minor !== 0 ||
+          this.patch !== 0 ||
+          this.prerelease.length === 0) {
+        this.major++
+      }
+      this.minor = 0
+      this.patch = 0
+      this.prerelease = []
+      break
+    case 'minor':
+      // If this is a pre-minor version, bump up to the same minor version.
+      // Otherwise increment minor.
+      // 1.2.0-5 bumps to 1.2.0
+      // 1.2.1 bumps to 1.3.0
+      if (this.patch !== 0 || this.prerelease.length === 0) {
+        this.minor++
+      }
+      this.patch = 0
+      this.prerelease = []
+      break
+    case 'patch':
+      // If this is not a pre-release version, it will increment the patch.
+      // If it is a pre-release it will bump up to the same patch version.
+      // 1.2.0-5 patches to 1.2.0
+      // 1.2.0 patches to 1.2.1
+      if (this.prerelease.length === 0) {
+        this.patch++
+      }
+      this.prerelease = []
+      break
+    // This probably shouldn't be used publicly.
+    // 1.0.0 "pre" would become 1.0.0-0 which is the wrong direction.
+    case 'pre':
+      if (this.prerelease.length === 0) {
+        this.prerelease = [0]
+      } else {
+        var i = this.prerelease.length
+        while (--i >= 0) {
+          if (typeof this.prerelease[i] === 'number') {
+            this.prerelease[i]++
+            i = -2
+          }
+        }
+        if (i === -1) {
+          // didn't increment anything
+          this.prerelease.push(0)
+        }
+      }
+      if (identifier) {
+        // 1.2.0-beta.1 bumps to 1.2.0-beta.2,
+        // 1.2.0-beta.fooblz or 1.2.0-beta bumps to 1.2.0-beta.0
+        if (this.prerelease[0] === identifier) {
+          if (isNaN(this.prerelease[1])) {
+            this.prerelease = [identifier, 0]
+          }
+        } else {
+          this.prerelease = [identifier, 0]
+        }
+      }
+      break
+
+    default:
+      throw new Error('invalid increment argument: ' + release)
+  }
+  this.format()
+  this.raw = this.version
+  return this
+}
+
+exports.inc = inc
+function inc (version, release, loose, identifier) {
+  if (typeof (loose) === 'string') {
+    identifier = loose
+    loose = undefined
+  }
+
+  try {
+    return new SemVer(version, loose).inc(release, identifier).version
+  } catch (er) {
+    return null
+  }
+}
+
+exports.diff = diff
+function diff (version1, version2) {
+  if (eq(version1, version2)) {
+    return null
+  } else {
+    var v1 = parse(version1)
+    var v2 = parse(version2)
+    var prefix = ''
+    if (v1.prerelease.length || v2.prerelease.length) {
+      prefix = 'pre'
+      var defaultResult = 'prerelease'
+    }
+    for (var key in v1) {
+      if (key === 'major' || key === 'minor' || key === 'patch') {
+        if (v1[key] !== v2[key]) {
+          return prefix + key
+        }
+      }
+    }
+    return defaultResult // may be undefined
+  }
+}
+
+exports.compareIdentifiers = compareIdentifiers
+
+var numeric = /^[0-9]+$/
+function compareIdentifiers (a, b) {
+  var anum = numeric.test(a)
+  var bnum = numeric.test(b)
+
+  if (anum && bnum) {
+    a = +a
+    b = +b
+  }
+
+  return a === b ? 0
+    : (anum && !bnum) ? -1
+    : (bnum && !anum) ? 1
+    : a < b ? -1
+    : 1
+}
+
+exports.rcompareIdentifiers = rcompareIdentifiers
+function rcompareIdentifiers (a, b) {
+  return compareIdentifiers(b, a)
+}
+
+exports.major = major
+function major (a, loose) {
+  return new SemVer(a, loose).major
+}
+
+exports.minor = minor
+function minor (a, loose) {
+  return new SemVer(a, loose).minor
+}
+
+exports.patch = patch
+function patch (a, loose) {
+  return new SemVer(a, loose).patch
+}
+
+exports.compare = compare
+function compare (a, b, loose) {
+  return new SemVer(a, loose).compare(new SemVer(b, loose))
+}
+
+exports.compareLoose = compareLoose
+function compareLoose (a, b) {
+  return compare(a, b, true)
+}
+
+exports.compareBuild = compareBuild
+function compareBuild (a, b, loose) {
+  var versionA = new SemVer(a, loose)
+  var versionB = new SemVer(b, loose)
+  return versionA.compare(versionB) || versionA.compareBuild(versionB)
+}
+
+exports.rcompare = rcompare
+function rcompare (a, b, loose) {
+  return compare(b, a, loose)
+}
+
+exports.sort = sort
+function sort (list, loose) {
+  return list.sort(function (a, b) {
+    return exports.compareBuild(a, b, loose)
+  })
+}
+
+exports.rsort = rsort
+function rsort (list, loose) {
+  return list.sort(function (a, b) {
+    return exports.compareBuild(b, a, loose)
+  })
+}
+
+exports.gt = gt
+function gt (a, b, loose) {
+  return compare(a, b, loose) > 0
+}
+
+exports.lt = lt
+function lt (a, b, loose) {
+  return compare(a, b, loose) < 0
+}
+
+exports.eq = eq
+function eq (a, b, loose) {
+  return compare(a, b, loose) === 0
+}
+
+exports.neq = neq
+function neq (a, b, loose) {
+  return compare(a, b, loose) !== 0
+}
+
+exports.gte = gte
+function gte (a, b, loose) {
+  return compare(a, b, loose) >= 0
+}
+
+exports.lte = lte
+function lte (a, b, loose) {
+  return compare(a, b, loose) <= 0
+}
+
+exports.cmp = cmp
+function cmp (a, op, b, loose) {
+  switch (op) {
+    case '===':
+      if (typeof a === 'object')
+        a = a.version
+      if (typeof b === 'object')
+        b = b.version
+      return a === b
+
+    case '!==':
+      if (typeof a === 'object')
+        a = a.version
+      if (typeof b === 'object')
+        b = b.version
+      return a !== b
+
+    case '':
+    case '=':
+    case '==':
+      return eq(a, b, loose)
+
+    case '!=':
+      return neq(a, b, loose)
+
+    case '>':
+      return gt(a, b, loose)
+
+    case '>=':
+      return gte(a, b, loose)
+
+    case '<':
+      return lt(a, b, loose)
+
+    case '<=':
+      return lte(a, b, loose)
+
+    default:
+      throw new TypeError('Invalid operator: ' + op)
+  }
+}
+
+exports.Comparator = Comparator
+function Comparator (comp, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (comp instanceof Comparator) {
+    if (comp.loose === !!options.loose) {
+      return comp
+    } else {
+      comp = comp.value
+    }
+  }
+
+  if (!(this instanceof Comparator)) {
+    return new Comparator(comp, options)
+  }
+
+  debug('comparator', comp, options)
+  this.options = options
+  this.loose = !!options.loose
+  this.parse(comp)
+
+  if (this.semver === ANY) {
+    this.value = ''
+  } else {
+    this.value = this.operator + this.semver.version
+  }
+
+  debug('comp', this)
+}
+
+var ANY = {}
+Comparator.prototype.parse = function (comp) {
+  var r = this.options.loose ? re[t.COMPARATORLOOSE] : re[t.COMPARATOR]
+  var m = comp.match(r)
+
+  if (!m) {
+    throw new TypeError('Invalid comparator: ' + comp)
+  }
+
+  this.operator = m[1] !== undefined ? m[1] : ''
+  if (this.operator === '=') {
+    this.operator = ''
+  }
+
+  // if it literally is just '>' or '' then allow anything.
+  if (!m[2]) {
+    this.semver = ANY
+  } else {
+    this.semver = new SemVer(m[2], this.options.loose)
+  }
+}
+
+Comparator.prototype.toString = function () {
+  return this.value
+}
+
+Comparator.prototype.test = function (version) {
+  debug('Comparator.test', version, this.options.loose)
+
+  if (this.semver === ANY || version === ANY) {
+    return true
+  }
+
+  if (typeof version === 'string') {
+    try {
+      version = new SemVer(version, this.options)
+    } catch (er) {
+      return false
+    }
+  }
+
+  return cmp(version, this.operator, this.semver, this.options)
+}
+
+Comparator.prototype.intersects = function (comp, options) {
+  if (!(comp instanceof Comparator)) {
+    throw new TypeError('a Comparator is required')
+  }
+
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  var rangeTmp
+
+  if (this.operator === '') {
+    if (this.value === '') {
+      return true
+    }
+    rangeTmp = new Range(comp.value, options)
+    return satisfies(this.value, rangeTmp, options)
+  } else if (comp.operator === '') {
+    if (comp.value === '') {
+      return true
+    }
+    rangeTmp = new Range(this.value, options)
+    return satisfies(comp.semver, rangeTmp, options)
+  }
+
+  var sameDirectionIncreasing =
+    (this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '>=' || comp.operator === '>')
+  var sameDirectionDecreasing =
+    (this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '<=' || comp.operator === '<')
+  var sameSemVer = this.semver.version === comp.semver.version
+  var differentDirectionsInclusive =
+    (this.operator === '>=' || this.operator === '<=') &&
+    (comp.operator === '>=' || comp.operator === '<=')
+  var oppositeDirectionsLessThan =
+    cmp(this.semver, '<', comp.semver, options) &&
+    ((this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '<=' || comp.operator === '<'))
+  var oppositeDirectionsGreaterThan =
+    cmp(this.semver, '>', comp.semver, options) &&
+    ((this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '>=' || comp.operator === '>'))
+
+  return sameDirectionIncreasing || sameDirectionDecreasing ||
+    (sameSemVer && differentDirectionsInclusive) ||
+    oppositeDirectionsLessThan || oppositeDirectionsGreaterThan
+}
+
+exports.Range = Range
+function Range (range, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (range instanceof Range) {
+    if (range.loose === !!options.loose &&
+        range.includePrerelease === !!options.includePrerelease) {
+      return range
+    } else {
+      return new Range(range.raw, options)
+    }
+  }
+
+  if (range instanceof Comparator) {
+    return new Range(range.value, options)
+  }
+
+  if (!(this instanceof Range)) {
+    return new Range(range, options)
+  }
+
+  this.options = options
+  this.loose = !!options.loose
+  this.includePrerelease = !!options.includePrerelease
+
+  // First, split based on boolean or ||
+  this.raw = range
+  this.set = range.split(/\s*\|\|\s*/).map(function (range) {
+    return this.parseRange(range.trim())
+  }, this).filter(function (c) {
+    // throw out any that are not relevant for whatever reason
+    return c.length
+  })
+
+  if (!this.set.length) {
+    throw new TypeError('Invalid SemVer Range: ' + range)
+  }
+
+  this.format()
+}
+
+Range.prototype.format = function () {
+  this.range = this.set.map(function (comps) {
+    return comps.join(' ').trim()
+  }).join('||').trim()
+  return this.range
+}
+
+Range.prototypeMIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ath.insertBefore(statements);
+        return;
+      }
+    }
+
+    this._programPath.unshiftContainer("body", statements);
+  }
+
+}
+
+exports.default = ImportInjector;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           [
+{"version":"v3.3.1","date":"2015-09-15","files":["headers","linux-arm64","linux-armv6l","linux-armv7l","linux-x64","linux-x86","osx-x64-pkg","osx-x64-tar","src","sunos-x64","sunos-x86","win-x64-exe","win-x64-msi","win-x86-exe","win-x86-msi"],"npm":"2.14.3","v8":"4.4.63.30","uv":"1.7.4","zlib":"1.2.8","openssl":"1.0.2d","modules":"45"},
+{"version":"v3.3.0","date":"2015-09-02","files":["headers","linux-armv6l","linux-armv7l","linux-x64","linux-x86","osx-x64-pkg","osx-x64-tar","src","win-x64-exe","win-x64-msi","win-x86-exe","win-x86-msi"],"npm":"2.13.3","v8":"4.4.63.30","uv":"1.7.3","zlib":"1.2.8","openssl":"1.0.2d","modules":"45"},
+{"version":"v3.2.0","date":"2015-08-25","files":["headers","linux-armv6l","linux-armv7l","linux-x64","linux-x86","osx-x64-pkg","osx-x64-tar","src","win-x64-exe","win-x64-msi","win-x86-exe","win-x86-msi"],"npm":"2.13.3","v8":"4.4.63.26","uv":"1.6.1","zlib":"1.2.8","openssl":"1.0.2d","modules":"45"},
+{"version":"v3.1.0","date":"2015-08-19","files":["headers","linux-armv6l","linux-armv7l","linux-x64","linux-x86","osx-x64-pkg","osx-x64-tar","src","win-x64-exe","win-x64-msi","win-x86-exe","win-x86-msi"],"npm":"2.13.3","v8":"4.4.63.26","uv":"1.6.1","zlib":"1.2.8","openssl":"1.0.2d","modules":"45"},
+{"version":"v3.0.0","date":"2015-08-04","files":["headers","linux-armv6l","linux-armv7l","linux-x64","linux-x86","osx-x64-pkg","osx-x64-tar","src","win-x64-exe","win-x64-msi","win-x86-exe","win-x86-msi"],"npm":"2.13.3","v8":"4.4.63.26","uv":"1.6.1","zlib":"1.2.8","openssl":"1.0.2d","modules":"45"},
+{"version":"v2.5.0","date":"2015-07-28","files":["headers","linux-armv6l","linux-armv7l","linux-x64","linux-x86","osx-x64-pkg","osx-x64-tar","src","win-x64-exe","win-x64-msi","win-x86-exe","win-x86-msi"],"npm":"2.13.2","v8":"4.2.77.21","uv":"1.6.1","

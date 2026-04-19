@@ -1,0 +1,1692 @@
+rs = null; }",e.opts.allErrors&&(t+=" } "),t}},{}],32:[function(e,r,t){"use strict";r.exports=function(e,r){var t=" ",a=e.level,s=e.dataLevel,o=e.schema[r],i=e.schemaPath+e.util.getProperty(r),n=e.errSchemaPath+"/"+r,l=!e.opts.allErrors,c="data"+(s||""),u=e.opts.$data&&o&&o.$data,h=u?(t+=" var schema"+a+" = "+e.util.getData(o.$data,s,e.dataPathArr)+"; ","schema"+a):o,d=u?"(new RegExp("+h+"))":e.usePattern(o);t+="if ( ",u&&(t+=" ("+h+" !== undefined && typeof "+h+" != 'string') || ");var p=p||[];p.push(t+=" !"+d+".test("+c+") ) {   "),t="",!1!==e.createErrors?(t+=" { keyword: 'pattern' , dataPath: (dataPath || '') + "+e.errorPath+" , schemaPath: "+e.util.toQuotedString(n)+" , params: { pattern:  ",t+=u?""+h:""+e.util.toQuotedString(o),t+="  } ",!1!==e.opts.messages&&(t+=" , message: 'should match pattern \"",t+=u?"' + "+h+" + '":""+e.util.escapeQuotes(o),t+="\"' "),e.opts.verbose&&(t+=" , schema:  ",t+=u?"validate.schema"+i:""+e.util.toQuotedString(o),t+="         , parentSchema: validate.schema"+e.schemaPath+" , data: "+c+" "),t+=" } "):t+=" {} ";var f=t,t=p.pop();return t+=!e.compositeRule&&l?e.async?" throw new ValidationError(["+f+"]); ":" validate.errors = ["+f+"]; return false; ":" var err = "+f+";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ",t+="} ",l&&(t+=" else { "),t}},{}],33:[function(e,r,t){"use strict";r.exports=function(e,r){var t=" ",a=e.level,s=e.dataLevel,o=e.schema[r],i=e.schemaPath+e.util.getProperty(r),n=e.errSchemaPath+"/"+r,l=!e.opts.allErrors,c="data"+(s||""),u="errs__"+a,h=e.util.copy(e),d="";h.level++;var p,f,m,v="valid"+h.level,y="key"+a,g="idx"+a,P=h.dataLevel=e.dataLevel+1,E="data"+P,w="dataProperties"+a,b=Object.keys(o||{}).filter(k),S=e.schema.patternProperties||{},_=Object.keys(S).filter(k),F=e.schema.additionalProperties,x=b.length||_.length,R=!1===F,$="object"==typeof F&&Object.keys(F).length,j=e.opts.removeAdditional,D=R||$||j,O=e.opts.ownProperties,I=e.baseId,A=e.schema.required;function k(e){return"__proto__"!==e}if(A&&(!e.opts.$data||!A.$data)&&A.length<e.opts.loopRequired&&(p=e.util.toHash(A)),t+="var "+u+" = errors;var "+v+" = true;",O&&(t+=" var "+w+" = undefined;"),D){if(t+=O?" "+w+" = "+w+" || Object.keys("+c+"); for (var "+g+"=0; "+g+"<"+w+".length; "+g+"++) { var "+y+" = "+w+"["+g+"]; ":" for (var "+y+" in "+c+") { ",x){if(t+=" var isAdditional"+a+" = !(false ",b.length)if(8<b.length)t+=" || validate.schema"+i+".hasOwnProperty("+y+") ";else{var C=b;if(C)for(var L=-1,N=C.length-1;L<N;)U=C[L+=1],t+=" || "+y+" == "+e.util.toQuotedString(U)+" "}if(_.length){var q=_;if(q)for(var z=-1,T=q.length-1;z<T;)te=q[z+=1],t+=" || "+e.usePattern(te)+".test("+y+") "}t+=" ); if (isAdditional"+a+") { "}"all"==j?t+=" delete "+c+"["+y+"]; ":(Z=e.errorPath,f="' + "+y+" + '",e.opts._errorDataPathProperty&&(e.errorPath=e.util.getPathExpr(e.errorPath,y,e.opts.jsonPointers)),R?j?t+=" delete "+c+"["+y+"]; ":(G=n,n=e.errSchemaPath+"/additionalProperties",(W=W||[]).push(t+=" "+v+" = false; "),t="",!1!==e.createErrors?(t+=" { keyword: 'additionalProperties' , dataPath: (dataPath || '') + "+e.errorPath+" , schemaPath: "+e.util.toQuotedString(n)+" , params: { additionalProperty: '"+f+"' } ",!1!==e.opts.messages&&(t+=" , message: '",t+=e.opts._errorDataPathProperty?"is an invalid additional property":"should NOT have additional properties",t+="' "),e.opts.verbose&&(t+=" , schema: false , parentSchema: validate.schema"+e.schemaPath+" , data: "+c+" "),t+=" } "):t+=" {} ",X=t,t=W.pop(),t+=!e.compositeRule&&l?e.async?" throw new ValidationError(["+X+"]); ":" validate.errors = ["+X+"]; return false; ":" var err = "+X+";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ",n=G,l&&(t+=" break; ")):$&&("failing"==j?(t+=" var "+u+" = errors;  ",m=e.compositeRule,e.compositeRule=h.compositeRule=!0,h.schema=F,h.schemaPath=e.schemaPath+".additionalProperties",h.errSchemaPath=e.errSchemaPath+"/additionalProperties",h.errorPath=e.opts._errorDataPathProperty?e.errorPath:e.util.getPathExpr(e.errorPath,y,e.opts.jsonPointers),oe=c+"["+y+"]",h.dataPathArr[P]=y,ie=e.validate(h),h.baseId=I,e.util.varOccurences(ie,E)<2?t+=" "+e.util.varReplace(ie,E,oe)+" ":t+=" var "+E+" = "+oe+"; "+ie+" ",t+=" if (!"+v+") { errors = "+u+"; if (validate.errors !== null) { if (errors) validate.errors.length = errors; else validate.errors = null; } delete "+c+"["+y+"]; }  ",e.compositeRule=h.compositeRule=m):(h.schema=F,h.schemaPath=e.schemaPath+".additionalProperties",h.errSchemaPath=e.errSchemaPath+"/additionalProperties",h.errorPath=e.opts._errorDataPathProperty?e.errorPath:e.util.getPathExpr(e.errorPath,y,e.opts.jsonPointers),oe=c+"["+y+"]",h.dataPathArr[P]=y,ie=e.validate(h),h.baseId=I,e.util.varOccurences(ie,E)<2?t+=" "+e.util.varReplace(ie,E,oe)+" ":t+=" var "+E+" = "+oe+"; "+ie+" ",l&&(t+=" if (!"+v+") break; "))),e.errorPath=Z),x&&(t+=" } "),t+=" }  ",l&&(t+=" if ("+v+") { ",d+="}")}var Q=e.opts.useDefaults&&!e.compositeRule;if(b.length){var V=b;if(V)for(var U,H=-1,M=V.length-1;H<M;){var K,B,J,Z,G,Y,W,X,ee=o[U=V[H+=1]];(e.opts.strictKeywords?"object"==typeof ee&&0<Object.keys(ee).length||!1===ee:e.util.schemaHasRules(ee,e.RULES.all))&&(oe=c+(K=e.util.getProperty(U)),B=Q&&void 0!==ee.default,h.schema=ee,h.schemaPath=i+K,h.errSchemaPath=n+"/"+e.util.escapeFragment(U),h.errorPath=e.util.getPath(e.errorPath,U,e.opts.jsonPointers),h.dataPathArr[P]=e.util.toQuotedString(U),ie=e.validate(h),h.baseId=I,e.util.varOccurences(ie,E)<2?(ie=e.util.varReplace(ie,E,oe),J=oe):t+=" var "+(J=E)+" = "+oe+"; ",B?t+=" "+ie+" ":(p&&p[U]?(t+=" if ( "+J+" === undefined ",O&&(t+=" || ! Object.prototype.hasOwnProperty.call("+c+", '"+e.util.escapeQuotes(U)+"') "),t+=") { "+v+" = false; ",Z=e.errorPath,G=n,Y=e.util.escapeQuotes(U),e.opts._errorDataPathProperty&&(e.errorPath=e.util.getPath(Z,U,e.opts.jsonPointers)),n=e.errSchemaPath+"/required",(W=W||[]).push(t),t="",!1!==e.createErrors?(t+=" { keyword: 'required' , dataPath: (dataPath || '') + "+e.errorPath+" , schemaPath: "+e.util.toQuotedString(n)+" , params: { missingProperty: '"+Y+"' } ",!1!==e.opts.messages&&(t+=" , message: '",t+=e.opts._errorDataPathProperty?"is a required property":"should have required property \\'"+Y+"\\'",t+="' "),e.opts.verbose&&(t+=" , schema: validate.schema"+i+" , parentSchema: validate.schema"+e.schemaPath+" , data: "+c+" "),t+=" } "):t+=" {} ",X=t,t=W.pop(),t+=!e.compositeRule&&l?e.async?" throw new ValidationError(["+X+"]); ":" validate.errors = ["+X+"]; return false; ":" var err = "+X+";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ",n=G,e.errorPath=Z,t+=" } else { "):l?(t+=" if ( "+J+" === undefined ",O&&(t+=" || ! Object.prototype.hasOwnProperty.call("+c+", '"+e.util.escapeQuotes(U)+"') "),t+=") { "+v+" = true; } else { "):(t+=" if ("+J+" !== undefined ",O&&(t+=" &&   Object.prototype.hasOwnProperty.call("+c+", '"+e.util.escapeQuotes(U)+"') "),t+=" ) { "),t+=" "+ie+" } ")),l&&(t+=" if ("+v+") { ",d+="}")}}if(_.length){var re=_;if(re)for(var te,ae=-1,se=re.length-1;ae<se;){var oe,ie,ee=S[te=re[ae+=1]];(e.opts.strictKeywords?"object"==typeof ee&&0<Object.keys(ee).length||!1===ee:e.util.schemaHasRules(ee,e.RULES.all))&&(h.schema=ee,h.schemaPath=e.schemaPath+".patternProperties"+e.util.getProperty(te),h.errSchemaPath=e.errSchemaPath+"/patternProperties/"+e.util.escapeFragment(te),t+=O?" "+w+" = "+w+" || Object.keys("+c+"); for (var "+g+"=0; "+g+"<"+w+".length; "+g+"++) { var "+y+" = "+w+"["+g+"]; ":" for (var "+y+" in "+c+") { ",t+=" if ("+e.usePattern(te)+".test("+y+")) { ",h.errorPath=e.util.getPathExpr(e.errorPath,y,e.opts.jsonPointers),oe=c+"["+y+"]",h.dataPathArr[P]=y,ie=e.validate(h),h.baseId=I,e.util.varOccurences(ie,E)<2?t+=" "+e.util.varReplace(ie,E,oe)+" ":t+=" var "+E+" = "+oe+"; "+ie+" ",l&&(t+=" if (!"+v+") break; "),t+=" } ",l&&(t+=" else "+v+" = true; "),t+=" }  ",l&&(t+=" if ("+v+") { ",d+="}"))}}return l&&(t+=" "+d+" if ("+u+" == errors) {"),t}},{}],34:[function(e,r,t){"use strict";r.exports=function(e,r){var t=" ",a=e.level,s=e.dataLevel,o=e.schema[r],i=e.schemaPath+e.util.getProperty(r),n=e.errSchemaPath+"/"+r,l=!e.opts.allErrors,c="data"+(s||""),u="errs__"+a,h=e.util.copy(e);h.level++;var d,p,f,m,v,y,g,P,E,w,b,S="valid"+h.level;return t+="var "+u+" = errors;",(e.opts.strictKeywords?"object"==typeof o&&0<Object.keys(o).length||!1===o:e.util.schemaHasRules(o,e.RULES.all))&&(h.schema=o,h.schemaPath=i,h.errSchemaPath=n,p="idx"+a,f="i"+a,m="' + "+(d="key"+a)+" + '",v="data"+(h.dataLevel=e.dataLevel+1),y="dataProperties"+a,P=e.baseId,(g=e.opts.ownProperties)&&(t+=" var "+y+" = undefined; "),t+=g?" "+y+" = "+y+" || Object.keys("+c+"); for (var "+p+"=0; "+p+"<"+y+".length; "+p+"++) { var "+d+" = "+y+"["+p+"]; ":" for (var "+d+" in "+c+") { ",t+=" var startErrs"+a+" = errors; ",E=d,w=e.compositeRule,e.compositeRule=h.compositeRule=!0,b=e.validate(h),h.baseId=P,e.util.varOccurences(b,v)<2?t+=" "+e.util.varReplace(b,v,E)+" ":t+=" var "+v+" = "+E+"; "+b+" ",e.compositeRule=h.compositeRule=w,t+=" if (!"+S+") { for (var "+f+"=startErrs"+a+"; "+f+"<errors; "+f+"++) { vErrors["+f+"].propertyName = "+d+"; }   var err =   ",!1!==e.createErrors?(t+=" { keyword: 'propertyNames' , dataPath: (dataPath || '') + "+e.errorPath+" , schemaPath: "+e.util.toQuotedString(n)+" , params: { propertyName: '"+m+"' } ",!1!==e.opts.messages&&(t+=" , message: 'property name \\'"+m+"\\' is invalid' "),e.opts.verbose&&(t+=" , schema: validate.schema"+i+" , parentSchema: validate.schema"+e.schemaPath+" , data: "+c+" "),t+=" } "):t+=" {} ",t+=";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ",!e.compositeRule&&l&&(t+=e.async?" throw new ValidationError(vErrors); ":" validate.errors = vErrors; return false; "),l&&(t+=" break; "),t+=" } }"),l&&(t+="  if ("+u+" == errors) {"),t}},{}],35:[function(e,r,t){"use strict";r.exports=function(e,r){var t,a,s=" ",o=e.dataLevel,i=e.schema[r],n=e.errSchemaPath+"/"+r,l=!e.opts.allErrors,c="data"+(o||""),u="valid"+e.level;if("#"==i||"#/"==i)a=e.isRoot?(t=e.async,"validate"):(t=!0===e.root.schema.$async,"root.refVal[0]");else{var h,d,p=e.resolveRef(e.baseId,i,e.isRoot);if(void 0===p){var f,m=e.MissingRefError.message(e.baseId,i);if("fail"==e.opts.missingRefs){e.logger.error(m),(f=f||[]).push(s),s="",!1!==e.createErrors?(s+=" { keyword: '$ref' , dataPath: (dataPath || '') + "+e.errorPath+" , schemaPath: "+e.util.toQuotedString(n)+" , params: { ref: '"+e.util.escapeQuotes(i)+"' } ",!1!==e.opts.messages&&(s+=" , message: 'can\\'t resolve reference "+e.util.escapeQuotes(i)+"' "),e.opts.verbose&&(s+=" , schema: "+e.util.toQuotedString(i)+" , parentSchema: validate.schema"+e.schemaPath+" , data: "+c+" "),s+=" } "):s+=" {} ";var v=s,s=f.pop();s+=!e.compositeRule&&l?e.async?" throw new ValidationError(["+v+"]); ":" validate.errors = ["+v+"]; return false; ":" var err = "+v+";  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ",l&&(s+=" if (false) { ")}else{if("ignore"!=e.opts.missingRefs)throw new e.MissingRefError(e.baseId,i,m);e.logger.warn(m),l&&(s+=" if (true) { ")}}else{p.inline?((h=e.util.copy(e)).level++,d="valid"+h.level,h.schema=p.schema,h.schemaPath="",h.errSchemaPath=i,s+=" "+e.validate(h).replace(/validate\.schema/g,p.code)+" ",l&&(s+=" if ("+d+") { ")):(t=!0===p.$async||e.async&&!1!==p.$async,a=p.code)}}if(a){(f=f||[]).push(s),s="",s+=e.opts.passContext?" "+a+".call(this, ":" "+a+"( ",s+=" "+c+", (dataPath || '')",'""'!=e.errorPath&&(s+=" + "+e.errorPath);var y=s+=" , "+(o?"data"+(o-1||""):"parentData")+" , "+(o?e.dataPathArr[o]:"parentDataProperty")+", rootData)  ";if(s=f.pop(),t){if(!e.async)throw new Error("async schema referenced by sync schema");l&&(s+=" var "+u+"; "),s+=" try { await "+y+"; ",l&&(s+=" "+u+" = true; "),s+=" } catch (e) { if (!(e instanceof ValidationError)) throw e; if (vErrors === null) vErrors = e.errors; else vErrors = vErrors.concat(e.errors); errors = vErrors.length; ",l&&(s+=" "+u+" = false; "),s+=" } ",l&&(s+=" if ("+u+") { ")}else s+=" if (!"+y+") { if (vErrors === null) vErrors = "+a+".errors; else vErrors = vErrors.concat("+a+".errors); errors = vErrors.length; } ",l&&(s+=" else { ")}return s}},{}],36:[function(e,r,t){"use strict";r.exports=function(e,r){var t=" ",a=e.level,s=e.dataLevel,o=e.schema[r],i=e.schemaPath+e.util.getProperty(r),ns = (firstLineError.stack || "").split("\n");
+    var lastStackLines = (lastLineError.stack || "").split("\n");
+    var firstIndex = -1;
+    var lastIndex = -1;
+    var firstFileName;
+    var lastFileName;
+    for (var i = 0; i < firstStackLines.length; ++i) {
+        var result = parseLineInfo(firstStackLines[i]);
+        if (result) {
+            firstFileName = result.fileName;
+            firstIndex = result.line;
+            break;
+        }
+    }
+    for (var i = 0; i < lastStackLines.length; ++i) {
+        var result = parseLineInfo(lastStackLines[i]);
+        if (result) {
+            lastFileName = result.fileName;
+            lastIndex = result.line;
+            break;
+        }
+    }
+    if (firstIndex < 0 || lastIndex < 0 || !firstFileName || !lastFileName ||
+        firstFileName !== lastFileName || firstIndex >= lastIndex) {
+        return;
+    }
+
+    shouldIgnore = function(line) {
+        if (bluebirdFramePattern.test(line)) return true;
+        var info = parseLineInfo(line);
+        if (info) {
+            if (info.fileName === firstFileName &&
+                (firstIndex <= info.line && info.line <= lastIndex)) {
+                return true;
+            }
+        }
+        return false;
+    };
+}
+
+function CapturedTrace(parent) {
+    this._parent = parent;
+    this._promisesCreated = 0;
+    var length = this._length = 1 + (parent === undefined ? 0 : parent._length);
+    captureStackTrace(this, CapturedTrace);
+    if (length > 32) this.uncycle();
+}
+util.inherits(CapturedTrace, Error);
+Context.CapturedTrace = CapturedTrace;
+
+CapturedTrace.prototype.uncycle = function() {
+    var length = this._length;
+    if (length < 2) return;
+    var nodes = [];
+    var stackToIndex = {};
+
+    for (var i = 0, node = this; node !== undefined; ++i) {
+        nodes.push(node);
+        node = node._parent;
+    }
+    length = this._length = i;
+    for (var i = length - 1; i >= 0; --i) {
+        var stack = nodes[i].stack;
+        if (stackToIndex[stack] === undefined) {
+            stackToIndex[stack] = i;
+        }
+    }
+    for (var i = 0; i < length; ++i) {
+        var currentStack = nodes[i].stack;
+        var index = stackToIndex[currentStack];
+        if (index !== undefined && index !== i) {
+            if (index > 0) {
+                nodes[index - 1]._parent = undefined;
+                nodes[index - 1]._length = 1;
+            }
+            nodes[i]._parent = undefined;
+            nodes[i]._length = 1;
+            var cycleEdgeNode = i > 0 ? nodes[i - 1] : this;
+
+            if (index < length - 1) {
+                cycleEdgeNode._parent = nodes[index + 1];
+                cycleEdgeNode._parent.uncycle();
+                cycleEdgeNode._length =
+                    cycleEdgeNode._parent._length + 1;
+            } else {
+                cycleEdgeNode._parent = undefined;
+                cycleEdgeNode._length = 1;
+            }
+            var currentChildLength = cycleEdgeNode._length + 1;
+            for (var j = i - 2; j >= 0; --j) {
+                nodes[j]._length = currentChildLength;
+                currentChildLength++;
+            }
+            return;
+        }
+    }
+};
+
+CapturedTrace.prototype.attachExtraTrace = function(error) {
+    if (error.__stackCleaned__) return;
+    this.uncycle();
+    var parsed = parseStackAndMessage(error);
+    var message = parsed.message;
+    var stacks = [parsed.stack];
+
+    var trace = this;
+    while (trace !== undefined) {
+        stacks.push(cleanStack(trace.stack.split("\n")));
+        trace = trace._parent;
+    }
+    removeCommonRoots(stacks);
+    removeDuplicateOrEmptyJumps(stacks);
+    util.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+    util.notEnumerableProp(error, "__stackCleaned__", true);
+};
+
+var captureStackTrace = (function stackDetection() {
+    var v8stackFramePattern = /^\s*at\s*/;
+    var v8stackFormatter = function(stack, error) {
+        if (typeof stack === "string") return stack;
+
+        if (error.name !== undefined &&
+            error.message !== undefined) {
+            return error.toString();
+        }
+        return formatNonError(error);
+    };
+
+    if (typeof Error.stackTraceLimit === "number" &&
+        typeof Error.captureStackTrace === "function") {
+        Error.stackTraceLimit += 6;
+        stackFramePattern = v8stackFramePattern;
+        formatStack = v8stackFormatter;
+        var captureStackTrace = Error.captureStackTrace;
+
+        shouldIgnore = function(line) {
+            return bluebirdFramePattern.test(line);
+        };
+        return function(receiver, ignoreUntil) {
+            Error.stackTraceLimit += 6;
+            captureStackTrace(receiver, ignoreUntil);
+            Error.stackTraceLimit -= 6;
+        };
+    }
+    var err = new Error();
+
+    if (typeof err.stack === "string" &&
+        err.stack.split("\n")[0].indexOf("stackDetection@") >= 0) {
+        stackFramePattern = /@/;
+        formatStack = v8stackFormatter;
+        indentStackFrames = true;
+        return function captureStackTrace(o) {
+            o.stack = new Error().stack;
+        };
+    }
+
+    var hasStackAfterThrow;
+    try { throw new Error(); }
+    catch(e) {
+        hasStackAfterThrow = ("stack" in e);
+    }
+    if (!("stack" in err) && hasStackAfterThrow &&
+        typeof Error.stackTraceLimit === "number") {
+        stackFramePattern = v8stackFramePattern;
+        formatStack = v8stackFormatter;
+        return function captureStackTrace(o) {
+            Error.stackTraceLimit += 6;
+            try { throw new Error(); }
+            catch(e) { o.stack = e.stack; }
+            Error.stackTraceLimit -= 6;
+        };
+    }
+
+    formatStack = function(stack, error) {
+        if (typeof stack === "string") return stack;
+
+        if ((typeof error === "object" ||
+            typeof error === "function") &&
+            error.name !== undefined &&
+            error.message !== undefined) {
+            return error.toString();
+        }
+        return formatNonError(error);
+    };
+
+    return null;
+
+})([]);
+
+if (typeof console !== "undefined" && typeof console.warn !== "undefined") {
+    printWarning = function (message) {
+        console.warn(message);
+    };
+    if (util.isNode && process.stderr.isTTY) {
+        printWarning = function(message, isSoft) {
+            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
+            console.warn(color + message + "\u001b[0m\n");
+        };
+    } else if (!util.isNode && typeof (new Error().stack) === "string") {
+        printWarning = function(message, isSoft) {
+            console.warn("%c" + message,
+                        isSoft ? "color: darkorange" : "color: red");
+        };
+    }
+}
+
+var config = {
+    warnings: warnings,
+    longStackTraces: false,
+    cancellation: false,
+    monitoring: false,
+    asyncHooks: false
+};
+
+if (longStackTraces) Promise.longStackTraces();
+
+return {
+    asyncHooks: function() {
+        return config.asyncHooks;
+    },
+    longStackTraces: function() {
+        return config.longStackTraces;
+    },
+    warnings: function() {
+        return config.warnings;
+    },
+    cancellation: function() {
+        return config.cancellation;
+    },
+    monitoring: function() {
+        return config.monitoring;
+    },
+    propagateFromFunction: function() {
+        return propagateFromFunction;
+    },
+    boundValueFunction: function() {
+        return boundValueFunction;
+    },
+    checkForgottenReturns: checkForgottenReturns,
+    setBounds: setBounds,
+    warn: warn,
+    deprecated: deprecated,
+    CapturedTrace: CapturedTrace,
+    fireDomEvent: fireDomEvent,
+    fireGlobalEvent: fireGlobalEvent
+};
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Literal");
+exports.isStringLiteral = isStringLiteral;
+var isNumberLiteral = isTypeOf("NumberLiteral");
+exports.isNumberLiteral = isNumberLiteral;
+var isLongNumberLiteral = isTypeOf("LongNumberLiteral");
+exports.isLongNumberLiteral = isLongNumberLiteral;
+var isFloatLiteral = isTypeOf("FloatLiteral");
+exports.isFloatLiteral = isFloatLiteral;
+var isElem = isTypeOf("Elem");
+exports.isElem = isElem;
+var isIndexInFuncSection = isTypeOf("IndexInFuncSection");
+exports.isIndexInFuncSection = isIndexInFuncSection;
+var isValtypeLiteral = isTypeOf("ValtypeLiteral");
+exports.isValtypeLiteral = isValtypeLiteral;
+var isTypeInstruction = isTypeOf("TypeInstruction");
+exports.isTypeInstruction = isTypeInstruction;
+var isStart = isTypeOf("Start");
+exports.isStart = isStart;
+var isGlobalType = isTypeOf("GlobalType");
+exports.isGlobalType = isGlobalType;
+var isLeadingComment = isTypeOf("LeadingComment");
+exports.isLeadingComment = isLeadingComment;
+var isBlockComment = isTypeOf("BlockComment");
+exports.isBlockComment = isBlockComment;
+var isData = isTypeOf("Data");
+exports.isData = isData;
+var isGlobal = isTypeOf("Global");
+exports.isGlobal = isGlobal;
+var isTable = isTypeOf("Table");
+exports.isTable = isTable;
+var isMemory = isTypeOf("Memory");
+exports.isMemory = isMemory;
+var isFuncImportDescr = isTypeOf("FuncImportDescr");
+exports.isFuncImportDescr = isFuncImportDescr;
+var isModuleImport = isTypeOf("ModuleImport");
+exports.isModuleImport = isModuleImport;
+var isModuleExportDescr = isTypeOf("ModuleExportDescr");
+exports.isModuleExportDescr = isModuleExportDescr;
+var isModuleExport = isTypeOf("ModuleExport");
+exports.isModuleExport = isModuleExport;
+var isLimit = isTypeOf("Limit");
+exports.isLimit = isLimit;
+var isSignature = isTypeOf("Signature");
+exports.isSignature = isSignature;
+var isProgram = isTypeOf("Program");
+exports.isProgram = isProgram;
+var isIdentifier = isTypeOf("Identifier");
+exports.isIdentifier = isIdentifier;
+var isBlockInstruction = isTypeOf("BlockInstruction");
+exports.isBlockInstruction = isBlockInstruction;
+var isCallInstruction = isTypeOf("CallInstruction");
+exports.isCallInstruction = isCallInstruction;
+var isCallIndirectInstruction = isTypeOf("CallIndirectInstruction");
+exports.isCallIndirectInstruction = isCallIndirectInstruction;
+var isByteArray = isTypeOf("ByteArray");
+exports.isByteArray = isByteArray;
+var isFunc = isTypeOf("Func");
+exports.isFunc = isFunc;
+var isInternalBrUnless = isTypeOf("InternalBrUnless");
+exports.isInternalBrUnless = isInternalBrUnless;
+var isInternalGoto = isTypeOf("InternalGoto");
+exports.isInternalGoto = isInternalGoto;
+var isInternalCallExtern = isTypeOf("InternalCallExtern");
+exports.isInternalCallExtern = isInternalCallExtern;
+var isInternalEndAndReturn = isTypeOf("InternalEndAndReturn");
+exports.isInternalEndAndReturn = isInternalEndAndReturn;
+
+var isNode = function isNode(node) {
+  return isModule(node) || isModuleMetadata(node) || isModuleNameMetadata(node) || isFunctionNameMetadata(node) || isLocalNameMetadata(node) || isBinaryModule(node) || isQuoteModule(node) || isSectionMetadata(node) || isProducersSectionMetadata(node) || isProducerMetadata(node) || isProducerMetadataVersionedName(node) || isLoopInstruction(node) || isInstr(node) || isIfInstruction(node) || isStringLiteral(node) || isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node) || isElem(node) || isIndexInFuncSection(node) || isValtypeLiteral(node) || isTypeInstruction(node) || isStart(node) || isGlobalType(node) || isLeadingComment(node) || isBlockComment(node) || isData(node) || isGlobal(node) || isTable(node) || isMemory(node) || isFuncImportDescr(node) || isModuleImport(node) || isModuleExportDescr(node) || isModuleExport(node) || isLimit(node) || isSignature(node) || isProgram(node) || isIdentifier(node) || isBlockInstruction(node) || isCallInstruction(node) || isCallIndirectInstruction(node) || isByteArray(node) || isFunc(node) || isInternalBrUnless(node) || isInternalGoto(node) || isInternalCallExtern(node) || isInternalEndAndReturn(node);
+};
+
+exports.isNode = isNode;
+
+var isBlock = function isBlock(node) {
+  return isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
+};
+
+exports.isBlock = isBlock;
+
+var isInstruction = function isInstruction(node) {
+  return isLoopInstruction(node) || isInstr(node) || isIfInstruction(node) || isTypeInstruction(node) || isBlockInstruction(node) || isCallInstruction(node) || isCallIndirectInstruction(node);
+};
+
+exports.isInstruction = isInstruction;
+
+var isExpression = function isExpression(node) {
+  return isInstr(node) || isStringLiteral(node) || isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node) || isValtypeLiteral(node) || isIdentifier(node);
+};
+
+exports.isExpression = isExpression;
+
+var isNumericLiteral = function isNumericLiteral(node) {
+  return isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node);
+};
+
+exports.isNumericLiteral = isNumericLiteral;
+
+var isImportDescr = function isImportDescr(node) {
+  return isGlobalType(node) || isTable(node) || isMemory(node) || isFuncImportDescr(node);
+};
+
+exports.isImportDescr = isImportDescr;
+
+var isIntrinsic = function isIntrinsic(node) {
+  return isInternalBrUnless(node) || isInternalGoto(node) || isInternalCallExtern(node) || isInternalEndAndReturn(node);
+};
+
+exports.isIntrinsic = isIntrinsic;
+var assertModule = assertTypeOf("Module");
+exports.assertModule = assertModule;
+var assertModuleMetadata = assertTypeOf("ModuleMetadata");
+exports.assertModuleMetadata = assertModuleMetadata;
+var assertModuleNameMetadata = assertTypeOf("ModuleNameMetadata");
+exports.assertModuleNameMetadata = assertModuleNameMetadata;
+var assertFunctionNameMetadata = assertTypeOf("FunctionNameMetadata");
+exports.assertFunctionNameMetadata = assertFunctionNameMetadata;
+var assertLocalNameMetadata = assertTypeOf("LocalNameMetadata");
+exports.assertLocalNameMetadata = assertLocalNameMetadata;
+var assertBinaryModule = assertTypeOf("BinaryModule");
+exports.assertBinaryModule = assertBinaryModule;
+var assertQuoteModule = assertTypeOf("QuoteModule");
+exports.assertQuoteModule = assertQuoteModule;
+var assertSectionMetadata = assertTypeOf("SectionMetadata");
+exports.assertSectionMetadata = assertSectionMetadata;
+var assertProducersSectionMetadata = assertTypeOf("ProducersSectionMetadata");
+exports.assertProducersSectionMetadata = assertProducersSectionMetadata;
+var assertProducerMetadata = assertTypeOf("ProducerMetadata");
+exports.assertProducerMetadata = assertProducerMetadata;
+var assertProducerMetadataVersionedName = assertTypeOf("ProducerMetadataVersionedName");
+exports.assertProducerMetadataVersionedName = assertProducerMetadataVersionedName;
+var assertLoopInstruction = assertTypeOf("LoopInstruction");
+exports.assertLoopInstruction = assertLoopInstruction;
+var assertInstr = assertTypeOf("Instr");
+exports.assertInstr = assertInstr;
+var assertIfInstruction = assertTypeOf("IfInstruction");
+exports.assertIfInstruction = assertIfInstruction;
+var assertStringLiteral = assertTypeOf("StringLiteral");
+exports.assertStringLiteral = assertStringLiteral;
+var assertNumberLiteral = assertTypeOf("NumberLiteral");
+exports.assertNumberLiteral = assertNumberLiteral;
+var assertLongNumberLiteral = assertTypeOf("LongNumberLiteral");
+exports.assertLongNumberLiteral = assertLongNumberLiteral;
+var assertFloatLiteral = assertTypeOf("FloatLiteral");
+exports.assertFloatLiteral = assertFloatLiteral;
+var assertElem = assertTypeOf("Elem");
+exports.assertElem = assertElem;
+var assertIndexInFuncSection = assertTypeOf("IndexInFuncSection");
+exports.assertIndexInFuncSection = assertIndexInFuncSection;
+var assertValtypeLiteral = assertTypeOf("ValtypeLiteral");
+exports.assertValtypeLiteral = assertValtypeLiteral;
+var assertTypeInstruction = assertTypeOf("TypeInstruction");
+exports.assertTypeInstruction = assertTypeInstruction;
+var assertStart = assertTypeOf("Start");
+exports.assertStart = assertStart;
+var assertGlobalType = assertTypeOf("GlobalType");
+exports.assertGlobalType = assertGlobalType;
+var assertLeadingComment = assertTypeOf("LeadingComment");
+exports.assertLeadingComment = assertLeadingComment;
+var assertBlockComment = assertTypeOf("BlockComment");
+exports.assertBlockComment = assertBlockComment;
+var assertData = assertTypeOf("Data");
+exports.assertData = assertData;
+var assertGlobal = assertTypeOf("Global");
+exports.assertGlobal = assertGlobal;
+var assertTable = assertTypeOf("Table");
+exports.assertTable = assertTable;
+var assertMemory = assertTypeOf("Memory");
+exports.assertMemory = assertMemory;
+var assertFuncImportDescr = assertTypeOf("FuncImportDescr");
+exports.assertFuncImportDescr = assertFuncImportDescr;
+var assertModuleImport = assertTypeOf("ModuleImport");
+exports.assertModuleImport = assertModuleImport;
+var assertModuleExportDescr = assertTypeOf("ModuleExportDescr");
+exports.assertModuleExportDescr = assertModuleExportDescr;
+var assertModuleExport = assertTypeOf("ModuleExport");
+exports.assertModuleExport = assertModuleExport;
+var assertLimit = assertTypeOf("Limit");
+exports.assertLimit = assertLimit;
+var assertSignature = assertTypeOf("Signature");
+exports.assertSignature = assertSignature;
+var assertProgram = assertTypeOf("Program");
+exports.assertProgram = assertProgram;
+var assertIdentifier = assertTypeOf("Identifier");
+exports.assertIdentifier = assertIdentifier;
+var assertBlockInstruction = assertTypeOf("BlockInstruction");
+exports.assertBlockInstruction = assertBlockInstruction;
+var assertCallInstruction = assertTypeOf("CallInstruction");
+exports.assertCallInstruction = assertCallInstruction;
+var assertCallIndirectInstruction = assertTypeOf("CallIndirectInstruction");
+exports.assertCallIndirectInstruction = assertCallIndirectInstruction;
+var assertByteArray = assertTypeOf("ByteArray");
+exports.assertByteArray = assertByteArray;
+var assertFunc = assertTypeOf("Func");
+exports.assertFunc = assertFunc;
+var assertInternalBrUnless = assertTypeOf("InternalBrUnless");
+exports.assertInternalBrUnless = assertInternalBrUnless;
+var assertInternalGoto = assertTypeOf("InternalGoto");
+exports.assertInternalGoto = assertInternalGoto;
+var assertInternalCallExtern = assertTypeOf("InternalCallExtern");
+exports.assertInternalCallExtern = assertInternalCallExtern;
+var assertInternalEndAndReturn = assertTypeOf("InternalEndAndReturn");
+exports.assertInternalEndAndReturn = assertInternalEndAndReturn;
+var unionTypesMap = {
+  Module: ["Node"],
+  ModuleMetadata: ["Node"],
+  ModuleNameMetadata: ["Node"],
+  FunctionNameMetadata: ["Node"],
+  LocalNameMetadata: ["Node"],
+  BinaryModule: ["Node"],
+  QuoteModule: ["Node"],
+  SectionMetadata: ["Node"],
+  ProducersSectionMetadata: ["Node"],
+  ProducerMetadata: ["Node"],
+  ProducerMetadataVersionedName: ["Node"],
+  LoopInstruction: ["Node", "Block", "Instruction"],
+  Instr: ["Node", "Expression", "Instruction"],
+  IfInstruction: ["Node", "Instruction"],
+  StringLiteral: ["Node", "Expression"],
+  NumberLiteral: ["Node", "NumericLiteral", "Expression"],
+  LongNumberLiteral: ["Node", "NumericLiteral", "Expression"],
+  FloatLiteral: ["Node", "NumericLiteral", "Expression"],
+  Elem: ["Node"],
+  IndexInFuncSection: ["Node"],
+  ValtypeLiteral: ["Node", "Expression"],
+  TypeInstruction: ["Node", "Instruction"],
+  Start: ["Node"],
+  GlobalType: ["Node", "ImportDescr"],
+  LeadingComment: ["Node"],
+  BlockComment: ["Node"],
+  Data: ["Node"],
+  Global: ["Node"],
+  Table: ["Node", "ImportDescr"],
+  Memory: ["Node", "ImportDescr"],
+  FuncImportDescr: ["Node", "ImportDescr"],
+  ModuleImport: ["Node"],
+  ModuleExportDescr: ["Node"],
+  ModuleExport: ["Node"],
+  Limit: ["Node"],
+  Signature: ["Node"],
+  Program: ["Node"],
+  Identifier: ["Node", "Expression"],
+  BlockInstruction: ["Node", "Block", "Instruction"],
+  CallInstruction: ["Node", "Instruction"],
+  CallIndirectInstruction: ["Node", "Instruction"],
+  ByteArray: ["Node"],
+  Func: ["Node", "Block"],
+  InternalBrUnless: ["Node", "Intrinsic"],
+  InternalGoto: ["Node", "Intrinsic"],
+  InternalCallExtern: ["Node", "Intrinsic"],
+  InternalEndAndReturn: ["Node", "Intrinsic"]
+};
+exports.unionTypesMap = unionTypesMap;
+var nodeAndUnionTypes = ["Module", "ModuleMetadata", "ModuleNameMetadata", "FunctionNameMetadata", "LocalNameMetadata", "BinaryModule", "QuoteModule", "SectionMetadata", "ProducersSectionMetadata", "ProducerMetadata", "ProducerMetadataVersionedName", "LoopInstruction", "Instr", "IfInstruction", "StringLiteral", "NumberLiteral", "LongNumberLiteral", "FloatLiteral", "Elem", "IndexInFuncSection", "ValtypeLiteral", "TypeInstruction", "Start", "GlobalType", "LeadingComment", "BlockComment", "Data", "Global", "Table", "Memory", "FuncImportDescr", "ModuleImport", "ModuleExportDescr", "ModuleExport", "Limit", "Signature", "Program", "Identifier", "BlockInstruction", "CallInstruction", "CallIndirectInstruction", "ByteArray", "Func", "InternalBrUnless", "InternalGoto", "InternalCallExtern", "InternalEndAndReturn", "Node", "Block", "Instruction", "Expression", "NumericLiteral", "ImportDescr", "Intrinsic"];
+exports.nodeAndUnionTypes = nodeAndUnionTypes;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     // Copyright 2018 Joyent, Inc.
+
+module.exports = {
+	read: read,
+	write: write
+};
+
+var assert = require('assert-plus');
+var asn1 = require('asn1');
+var crypto = require('crypto');
+var Buffer = require('safer-buffer').Buffer;
+var algs = require('../algs');
+var utils = require('../utils');
+var Key = require('../key');
+var PrivateKey = require('../private-key');
+
+var pkcs1 = require('./pkcs1');
+var pkcs8 = require('./pkcs8');
+var sshpriv = require('./ssh-private');
+var rfc4253 = require('./rfc4253');
+
+var errors = require('../errors');
+
+var OID_PBES2 = '1.2.840.113549.1.5.13';
+var OID_PBKDF2 = '1.2.840.113549.1.5.12';
+
+var OID_TO_CIPHER = {
+	'1.2.840.113549.3.7': '3des-cbc',
+	'2.16.840.1.101.3.4.1.2': 'aes128-cbc',
+	'2.16.840.1.101.3.4.1.42': 'aes256-cbc'
+};
+var CIPHER_TO_OID = {};
+Object.keys(OID_TO_CIPHER).forEach(function (k) {
+	CIPHER_TO_OID[OID_TO_CIPHER[k]] = k;
+});
+
+var OID_TO_HASH = {
+	'1.2.840.113549.2.7': 'sha1',
+	'1.2.840.113549.2.9': 'sha256',
+	'1.2.840.113549.2.11': 'sha512'
+};
+var HASH_TO_OID = {};
+Object.keys(OID_TO_HASH).forEach(function (k) {
+	HASH_TO_OID[OID_TO_HASH[k]] = k;
+});
+
+/*
+ * For reading we support both PKCS#1 and PKCS#8. If we find a private key,
+ * we just take the public component of it and use that.
+ */
+function read(buf, options, forceType) {
+	var input = buf;
+	if (typeof (buf) !== 'string') {
+		assert.buffer(buf, 'buf');
+		buf = buf.toString('ascii');
+	}
+
+	var lines = buf.trim().split(/[\r\n]+/g);
+
+	var m;
+	var si = -1;
+	while (!m && si < lines.length) {
+		m = lines[++si].match(/*JSSTYLED*/
+		    /[-]+[ ]*BEGIN ([A-Z0-9][A-Za-z0-9]+ )?(PUBLIC|PRIVATE) KEY[ ]*[-]+/);
+	}
+	assert.ok(m, 'invalid PEM header');
+
+	var m2;
+	var ei = lines.length;
+	while (!m2 && ei > 0) {
+		m2 = lines[--ei].match(/*JSSTYLED*/
+		    /[-]+[ ]*END ([A-Z0-9][A-Za-z0-9]+ )?(PUBLIC|PRIVATE) KEY[ ]*[-]+/);
+	}
+	assert.ok(m2, 'invalid PEM footer');
+
+	/* Begin and end banners must match key type */
+	assert.equal(m[2], m2[2]);
+	var type = m[2].toLowerCase();
+
+	var alg;
+	if (m[1]) {
+		/* They also must match algorithms, if given */
+		assert.equal(m[1], m2[1], 'PEM header and footer mismatch');
+		alg = m[1].trim();
+	}
+
+	lines = lines.slice(si, ei + 1);
+
+	var headers = {};
+	while (true) {
+		lines = lines.slice(1);
+		m = lines[0].match(/*JSSTYLED*/
+		    /^([A-Za-z0-9-]+): (.+)$/);
+		if (!m)
+			break;
+		headers[m[1].toLowerCase()] = m[2];
+	}
+
+	/* Chop off the first and last lines */
+	lines = lines.slice(0, -1).join('');
+	buf = Buffer.from(lines, 'base64');
+
+	var cipher, key, iv;
+	if (headers['proc-type']) {
+		var parts = headers['proc-type'].split(',');
+		if (parts[0] === '4' && parts[1] === 'ENCRYPTED') {
+			if (typeof (options.passphrase) === 'string') {
+				options.passphrase = Buffer.from(
+				    options.passphrase, 'utf-8');
+			}
+			if (!Buffer.isBuffer(options.passphrase)) {
+				throw (new errors.KeyEncryptedError(
+				    options.filename, 'PEM'));
+			} else {
+				parts = headers['dek-info'].split(',');
+				assert.ok(parts.length === 2);
+				cipher = parts[0].toLowerCase();
+				iv = Buffer.from(parts[1], 'hex');
+				key = utils.opensslKeyDeriv(cipher, iv,
+				    options.passphrase, 1).key;
+			}
+		}
+	}
+
+	if (alg && alg.toLowerCase() === 'encrypted') {
+		var eder = new asn1.BerReader(buf);
+		var pbesEnd;
+		eder.readSequence();
+
+		eder.readSequence();
+		pbesEnd = eder.offset + eder.length;
+
+		var method = eder.readOID();
+		if (method !== OID_PBES2) {
+			throw (new Error('Unsupported PEM/PKCS8 encryption ' +
+			    'scheme: ' + method));
+		}
+
+		eder.readSequence();	/* PBES2-params */
+
+		eder.readSequence();	/* keyDerivationFunc */
+		var kdfEnd = eder.offset + eder.length;
+		var kdfOid = eder.readOID();
+		if (kdfOid !== OID_PBKDF2)
+			throw (new Error('Unsupported PBES2 KDF: ' + kdfOid));
+		eder.readSequence();
+		var salt = eder.readString(asn1.Ber.OctetString, true);
+		var iterations = eder.readInt();
+		var hashAlg = 'sha1';
+		if (eder.offset < kdfEnd) {
+			eder.readSequence();
+			var hashAlgOid = eder.readOID();
+			hashAlg = OID_TO_HASH[hashAlgOid];
+			if (hashAlg === undefined) {
+				throw (new Error('Unsupported PBKDF2 hash: ' +
+				    hashAlgOid));
+			}
+		}
+		eder._offset = kdfEnd;
+
+		eder.readSequence();	/* encryptionScheme */
+		var cipherOid = eder.readOID();
+		cipher = OID_TO_CIPHER[cipherOid];
+		if (cipher === undefined) {
+			throw (new Error('Unsupported PBES2 cipher: ' +
+			    cipherOid));
+		}
+		iv = eder.readString(asn1.Ber.OctetString, true);
+
+		eder._offset = pbesEnd;
+		buf = eder.readString(asn1.Ber.OctetString, true);
+
+		if (typeof (options.passphrase) === 'string') {
+			options.passphrase = Buffer.from(
+			    options.passphrase, 'utf-8');
+		}
+		if (!Buffer.isBuffer(options.passphrase)) {
+			throw (new errors.KeyEncryptedError(
+			    options.filename, 'PEM'));
+		}
+
+		var cinfo = utils.opensshCipherInfo(cipher);
+
+		cipher = cinfo.opensslName;
+		key = utils.pbkdf2(hashAlg, salt, iterations, cinfo.keySize,
+		    options.passphrase);
+		alg = undefined;
+	}
+
+	if (cipher && key && iv) {
+		var cipherStream = crypto.createDecipheriv(cipher, key, iv);
+		var chunk, chunks = [];
+		cipherStream.once('error', function (e) {
+			if (e.toString().indexOf('bad decrypt') !== -1) {
+				throw (new Error('Incorrect passphrase ' +
+				    'supplied, could not decrypt key'));
+			}
+			throw (e);
+		});
+		cipherStream.write(buf);
+		cipherStream.end();
+		while ((chunk = cipherStream.read()) !== null)
+			chunks.push(chunk);
+		buf = Buffer.concat(chunks);
+	}
+
+	/* The new OpenSSH internal format abuses PEM headers */
+	if (alg && alg.toLowerCase() === 'openssh')
+		return (sshpriv.readSSHPrivate(type, buf, options));
+	if (alg && alg.toLowerCase() === 'ssh2')
+		return (rfc4253.readType(type, buf, options));
+
+	var der = new asn1.BerReader(buf);
+	der.originalInput = input;
+
+	/*
+	 * All of the PEM file types start with a sequence tag, so chop it
+	 * off here
+	 */
+	der.readSequence();
+
+	/* PKCS#1 type keys name an algorithm in the banner explicitly */
+	if (alg) {
+		if (forceType)
+			assert.strictEqual(forceType, 'pkcs1');
+		return (pkcs1.readPkcs1(alg, type, der));
+	} else {
+		if (forceType)
+			assert.strictEqual(forceType, 'pkcs8');
+		return (pkcs8.readPkcs8(alg, type, der));
+	}
+}
+
+function write(key, options, type) {
+	assert.object(key);
+
+	var alg = {
+	    'ecdsa': 'EC',
+	    'rsa': 'RSA',
+	    'dsa': 'DSA',
+	    'ed25519': 'EdDSA'
+	}[key.type];
+	var header;
+
+	var der = new asn1.BerWriter();
+
+	if (PrivateKey.isPrivateKey(key)) {
+		if (type && type === 'pkcs8') {
+			header = 'PRIVATE KEY';
+			pkcs8.writePkcs8(der, key);
+		} else {
+			if (type)
+				assert.strictEqual(type, 'pkcs1');
+			header = alg + ' PRIVATE KEY';
+			pkcs1.writePkcs1(der, key);
+		}
+
+	} else if (Key.isKey(key)) {
+		if (type && type === 'pkcs1') {
+			header = alg + ' PUBLIC KEY';
+			pkcs1.writePkcs1(der, key);
+		} else {
+			if (type)
+				assert.strictEqual(type, 'pkcs8');
+			header = 'PUBLIC KEY';
+			pkcs8.writePkcs8(der, key);
+		}
+
+	} else {
+		throw (new Error('key is not a Key or PrivateKey'));
+	}
+
+	var tmp = der.buffer.toString('base64');
+	var len = tmp.length + (tmp.length / 64) +
+	    18 + 16 + header.length*2 + 10;
+	var buf = Buffer.alloc(len);
+	var o = 0;
+	o += buf.write('-----BEGIN ' + header + '-----\n', o);
+	for (var i = 0; i < tmp.length; ) {
+		var limit = i + 64;
+		if (limit > tmp.length)
+			limit = tmp.length;
+		o += buf.write(tmp.slice(i, limit), o);
+		buf[o++] = 10;
+		i = limit;
+	}
+	o += buf.write('-----END ' + header + '-----\n', o);
+
+	return (buf.slice(0, o));
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         table(type, lens, lens_index, codes, table, table_index, work, opts)
+{
+  var bits = opts.bits;
+      //here = opts.here; /* table entry for duplication */
+
+  var len = 0;               /* a code's length in bits */
+  var sym = 0;               /* index of code symbols */
+  var min = 0, max = 0;          /* minimum and maximum code lengths */
+  var root = 0;              /* number of index bits for root table */
+  var curr = 0;              /* number of index bits for current table */
+  var drop = 0;              /* code bits to drop for sub-table */
+  var left = 0;                   /* number of prefix codes available */
+  var used = 0;              /* code entries in table used */
+  var huff = 0;              /* Huffman code */
+  var incr;              /* for incrementing code, index */
+  var fill;              /* index for replicating entries */
+  var low;               /* low bits for current root entry */
+  var mask;              /* mask for low root bits */
+  var next;             /* next available space in table */
+  var base = null;     /* base value table to use */
+  var base_index = 0;
+//  var shoextra;    /* extra bits table to use */
+  var end;                    /* use base and extra for symbol > end */
+  var count = new utils.Buf16(MAXBITS + 1); //[MAXBITS+1];    /* number of codes of each length */
+  var offs = new utils.Buf16(MAXBITS + 1); //[MAXBITS+1];     /* offsets in table for each length */
+  var extra = null;
+  var extra_index = 0;
+
+  var here_bits, here_op, here_val;
+
+  /*
+   Process a set of code lengths to create a canonical Huffman code.  The
+   code lengths are lens[0..codes-1].  Each length corresponds to the
+   symbols 0..codes-1.  The Huffman code is generated by first sorting the
+   symbols by length from short to long, and retaining the symbol order
+   for codes with equal lengths.  Then the code starts with all zero bits
+   for the first code of the shortest length, and the codes are integer
+   increments for the same length, and zeros are appended as the length
+   increases.  For the deflate format, these bits are stored backwards
+   from their more natural integer increment ordering, and so when the
+   decoding tables are built in the large loop below, the integer codes
+   are incremented backwards.
+
+   This routine assumes, but does not check, that all of the entries in
+   lens[] are in the range 0..MAXBITS.  The caller must assure this.
+   1..MAXBITS is interpreted as that code length.  zero means that that
+   symbol does not occur in this code.
+
+   The codes are sorted by computing a count of codes for each length,
+   creating from that a table of starting indices for each length in the
+   sorted table, and then entering the symbols in order in the sorted
+   table.  The sorted table is work[], with that space being provided by
+   the caller.
+
+   The length counts are used for other purposes as well, i.e. finding
+   the minimum and maximum length codes, determining if there are any
+   codes at all, checking for a valid set of lengths, and looking ahead
+   at length counts to determine sub-table sizes when building the
+   decoding tables.
+   */
+
+  /* accumulate lengths for codes (assumes lens[] all in 0..MAXBITS) */
+  for (len = 0; len <= MAXBITS; len++) {
+    count[len] = 0;
+  }
+  for (sym = 0; sym < codes; sym++) {
+    count[lens[lens_index + sym]]++;
+  }
+
+  /* bound code lengths, force root to be within code lengths */
+  root = bits;
+  for (max = MAXBITS; max >= 1; max--) {
+    if (count[max] !== 0) { break; }
+  }
+  if (root > max) {
+    root = max;
+  }
+  if (max === 0) {                     /* no symbols to code at all */
+    //table.op[opts.table_index] = 64;  //here.op = (var char)64;    /* invalid code marker */
+    //table.bits[opts.table_index] = 1;   //here.bits = (var char)1;
+    //table.val[opts.table_index++] = 0;   //here.val = (var short)0;
+    table[table_index++] = (1 << 24) | (64 << 16) | 0;
+
+
+    //table.op[opts.table_index] = 64;
+    //table.bits[opts.table_index] = 1;
+    //table.val[opts.table_index++] = 0;
+    table[table_index++] = (1 << 24) | (64 << 16) | 0;
+
+    opts.bits = 1;
+    return 0;     /* no symbols, but wait for decoding to report error */
+  }
+  for (min = 1; min < max; min++) {
+    if (count[min] !== 0) { break; }
+  }
+  if (root < min) {
+    root = min;
+  }
+
+  /* check for an over-subscribed or incomplete set of lengths */
+  left = 1;
+  for (len = 1; len <= MAXBITS; len++) {
+    left <<= 1;
+    left -= count[len];
+    if (left < 0) {
+      return -1;
+    }        /* over-subscribed */
+  }
+  if (left > 0 && (type === CODES || max !== 1)) {
+    return -1;                      /* incomplete set */
+  }
+
+  /* generate offsets into symbol table for each length for sorting */
+  offs[1] = 0;
+  for (len = 1; len < MAXBITS; len++) {
+    offs[len + 1] = offs[len] + count[len];
+  }
+
+  /* sort symbols by length, by symbol order within each length */
+  for (sym = 0; sym < codes; sym++) {
+    if (lens[lens_index + sym] !== 0) {
+      work[offs[lens[lens_index + sym]]++] = sym;
+    }
+  }
+
+  /*
+   Create and fill in decoding tables.  In this loop, the table being
+   filled is at next and has curr index bits.  The code being used is huff
+   with length len.  That code is converted to an index by dropping drop
+   bits off of the bottom.  For codes where len is less than drop + curr,
+   those top drop + curr - len bits are incremented through all values to
+   fill the table with replicated entries.
+
+   root is the number of index bits for the root table.  When len exceeds
+   root, sub-tables are created pointed to by the root entry with an index
+   of the low root bits of huff.  This is saved in low to check for when a
+   new sub-table should be started.  drop is zero when the root table is
+   being filled, and drop is root when sub-tables are being filled.
+
+   When a new sub-table is needed, it is necessary to look ahead in the
+   code lengths to determine what size sub-table is needed.  The length
+   counts are used for this, and so count[] is decremented as codes are
+   entered in the tables.
+
+   used keeps track of how many table entries have been allocated from the
+   provided *table space.  It is checked for LENS and DIST tables against
+   the constants ENOUGH_LENS and ENOUGH_DISTS to guard against changes in
+   the initial root table size constants.  See the comments in inftrees.h
+   for more information.
+
+   sym increments through all symbols, and the loop terminates when
+   all codes of length max, i.e. all codes, have been processed.  This
+   routine permits incomplete codes, so another loop after this one fills
+   in the rest of the decoding tables with invalid code markers.
+   */
+
+  /* set up for code type */
+  // poor man optimization - use if-else instead of switch,
+  // to avoid deopts in old v8
+  if (type === CODES) {
+    base = extra = work;    /* dummy value--not used */
+    end = 19;
+
+  } else if (type === LENS) {
+    base = lbase;
+    base_index -= 257;
+    extra = lext;
+    extra_index -= 257;
+    end = 256;
+
+  } else {                    /* DISTS */
+    base = dbase;
+    extra = dext;
+    end = -1;
+  }
+
+  /* initialize opts for loop */
+  huff = 0;                   /* starting code */
+  sym = 0;                    /* starting code symbol */
+  len = min;                  /* starting code length */
+  next = table_index;              /* current table to fill in */
+  curr = root;                /* current table index bits */
+  drop = 0;                   /* current bits to drop from code for index */
+  low = -1;                   /* trigger new sub-table when len > root */
+  used = 1 << root;          /* use root table entries */
+  mask = used - 1;            /* mask for comparing low */
+
+  /* check available table space */
+  if ((type === LENS && used > ENOUGH_LENS) ||
+    (type === DISTS && used > ENOUGH_DISTS)) {
+    return 1;
+  }
+
+  /* process all codes and make table entries */
+  for (;;) {
+    /* create table entry */
+    here_bits = len - drop;
+    if (work[sym] < end) {
+      here_op = 0;
+      here_val = work[sym];
+    }
+    else if (work[sym] > end) {
+      here_op = extra[extra_index + work[sym]];
+      here_val = base[base_index + work[sym]];
+    }
+    else {
+      here_op = 32 + 64;         /* end of block */
+      here_val = 0;
+    }
+
+    /* replicate for those indices with low len bits equal to huff */
+    incr = 1 << (len - drop);
+    fill = 1 << curr;
+    min = fill;                 /* save offset to next table */
+    do {
+      fill -= incr;
+      table[next + (huff >> drop) + fill] = (here_bits << 24) | (here_op << 16) | here_val |0;
+    } while (fill !== 0);
+
+    /* backwards increment the len-bit code huff */
+    incr = 1 << (len - 1);
+    while (huff & incr) {
+      incr >>= 1;
+    }
+    if (incr !== 0) {
+      huff &= incr - 1;
+      huff += incr;
+    } else {
+      huff = 0;
+    }
+
+    /* go to next symbol, update count, len */
+    sym++;
+    if (--count[len] === 0) {
+      if (len === max) { break; }
+      len = lens[lens_index + work[sym]];
+    }
+
+    /* create new sub-table if needed */
+    if (len > root && (huff & mask) !== low) {
+      /* if first time, transition to sub-tables */
+      if (drop === 0) {
+        drop = root;
+      }
+
+      /* increment past last table */
+      next += min;            /* here min is 1 << curr */
+
+      /* determine length of next table */
+      curr = len - drop;
+      left = 1 << curr;
+      while (curr + drop < max) {
+        left -= count[curr + drop];
+        if (left <= 0) { break; }
+        curr++;
+        left <<= 1;
+      }
+
+      /* check for enough space */
+      used += 1 << curr;
+      if ((type === LENS && used > ENOUGH_LENS) ||
+        (type === DISTS && used > ENOUGH_DISTS)) {
+        return 1;
+      }
+
+      /* point entry in root table to sub-table */
+      low = huff & mask;
+      /*table.op[low] = curr;
+      table.bits[low] = root;
+      table.val[low] = next - opts.table_index;*/
+      table[low] = (root << 24) | (curr << 16) | (next - table_index) |0;
+    }
+  }
+
+  /* fill in remaining table entry if code is incomplete (guaranteed to have
+   at most one remaining entry, since if the code is incomplete, the
+   maximum code length that was allowed to get this far is one bit) */
+  if (huff !== 0) {
+    //table.op[next + huff] = 64;            /* invalid code marker */
+    //table.bits[next + huff] = len - drop;
+    //table.val[next + huff] = 0;
+    table[next + huff] = ((len - drop) << 24) | (64 << 16) |0;
+  }
+
+  /* set return parameters */
+  //opts.table_index += used;
+  opts.bits = root;
+  return 0;
+};
+
+},{"../utils/common":1}],10:[function(require,module,exports){
+'use strict';
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+module.exports = {
+  2:      'need dictionary',     /* Z_NEED_DICT       2  */
+  1:      'stream end',          /* Z_STREAM_END      1  */
+  0:      '',                    /* Z_OK              0  */
+  '-1':   'file error',          /* Z_ERRNO         (-1) */
+  '-2':   'stream error',        /* Z_STREAM_ERROR  (-2) */
+  '-3':   'data error',          /* Z_DATA_ERROR    (-3) */
+  '-4':   'insufficient memory', /* Z_MEM_ERROR     (-4) */
+  '-5':   'buffer error',        /* Z_BUF_ERROR     (-5) */
+  '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
+};
+
+},{}],11:[function(require,module,exports){
+'use strict';
+
+// (C) 1995-2013 Jean-loup Gailly and Mark Adler
+// (C) 2014-2017 Vitaly Puzrin and Andrey Tupitsin
+//
+// This software is provided 'as-is', without any express or implied
+// warranty. In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//   claim that you wrote the original software. If you use this software
+//   in a product, an acknowledgment in the product documentation would be
+//   appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//   misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+
+function ZStream() {
+  /* next input byte */
+  this.input = null; // JS specific, because we have no pointers
+  this.next_in = 0;
+  /* number of bytes available at input */
+  this.avail_in = 0;
+  /* total number of input bytes read so far */
+  this.total_in = 0;
+  /* next output byte should be put there */
+  this.output = null; // JS specific, because we have no pointers
+  this.next_out = 0;
+  /* remaining free space at output */
+  this.avail_out = 0;
+  /* total number of bytes output so far */
+  this.total_out = 0;
+  /* last error message, NULL if no error */
+  this.msg = ''/*Z_NULL*/;
+  /* not visible by applications */
+  this.state = null;
+  /* best guess about the data type: binary or text */
+  this.data_type = 2/*Z_UNKNOWN*/;
+  /* adler32 value of the uncompressed data */
+  this.adler = 0;
+}
+
+module.exports = ZStream;
+
+},{}],"/lib/inflate.js":[function(require,module,exports){
+'use strict';
+
+
+var zlib_inflate = require('./zlib/inflate');
+var utils        = require('./utils/common');
+var strings      = require('./utils/strings');
+var c            = require('./zlib/constants');
+var msg          = require('./zlib/messages');
+var ZStream      = require('./zlib/zstream');
+var GZheader     = require('./zlib/gzheader');
+
+var toString = Object.prototype.toString;
+
+/**
+ * class Inflate
+ *
+ * Generic JS-style wrapper for zlib calls. If you don't need
+ * streaming behaviour - use more simple functions: [[inflate]]
+ * and [[inflateRaw]].
+ **/
+
+/* internal
+ * inflate.chunks -> Array
+ *
+ * Chunks of output data, if [[Inflate#onData]] not overridden.
+ **/
+
+/**
+ * Inflate.result -> Uint8Array|Array|String
+ *
+ * Uncompressed result, generated by default [[Inflate#onData]]
+ * and [[Inflate#onEnd]] handlers. Filled after you push last chunk
+ * (call [[Inflate#push]] with `Z_FINISH` / `true` param) or if you
+ * push a chunk with explicit flush (call [[Inflate#push]] with
+ * `Z_SYNC_FLUSH` param).
+ **/
+
+/**
+ * Inflate.err -> Number
+ *
+ * Error code after inflate finished. 0 (Z_OK) on success.
+ * Should be checked if broken data possible.
+ **/
+
+/**
+ * Inflate.msg -> String
+ *
+ * Error message, if [[Inflate.err]] != 0
+ **/
+
+
+/**
+ * new Inflate(options)
+ * - options (Object): zlib inflate options.
+ *
+ * Creates new inflator instance with specified params. Throws exception
+ * on bad params. Supported options:
+ *
+ * - `windowBits`
+ * - `dictionary`
+ *
+ * [http://zlib.net/manual.html#Advanced](http://zlib.net/manual.html#Advanced)
+ * for more information on these.
+ *
+ * Additional options, for internal needs:
+ *
+ * - `chunkSize` - size of generated data chunks (16K by default)
+ * - `raw` (Boolean) - do raw inflate
+ * - `to` (String) - if equal to 'string', then result will be converted
+ *   from utf8 to utf16 (javascript) string. When string output requested,
+ *   chunk length can differ from `chunkSize`, depending on content.
+ *
+ * By default, when no options set, autodetect deflate/gzip data format via
+ * wrapper header.
+ *
+ * ##### Example:
+ *
+ * ```javascript
+ * var pako = require('pako')
+ *   , chunk1 = Uint8Array([1,2,3,4,5,6,7,8,9])
+ *   , chunk2 = Uint8Array([10,11,12,13,14,15,16,17,18,19]);
+ *
+ * var inflate = new pako.Inflate({ level: 3});
+ *
+ * inflate.push( shiftNextLine());
+	      }
+	      // and add the remaining lines without any mapping
+	      node.add(remainingLines.splice(remainingLinesIndex).join(""));
+	    }
+
+	    // Copy sourcesContent into SourceNode
+	    aSourceMapConsumer.sources.forEach(function (sourceFile) {
+	      var content = aSourceMapConsumer.sourceContentFor(sourceFile);
+	      if (content != null) {
+	        if (aRelativePath != null) {
+	          sourceFile = util.join(aRelativePath, sourceFile);
+	        }
+	        node.setSourceContent(sourceFile, content);
+	      }
+	    });
+
+	    return node;
+
+	    function addMappingWithCode(mapping, code) {
+	      if (mapping === null || mapping.source === undefined) {
+	        node.add(code);
+	      } else {
+	        var source = aRelativePath
+	          ? util.join(aRelativePath, mapping.source)
+	          : mapping.source;
+	        node.add(new SourceNode(mapping.originalLine,
+	                                mapping.originalColumn,
+	                                source,
+	                                code,
+	                                mapping.name));
+	      }
+	    }
+	  };
+
+	/**
+	 * Add a chunk of generated JS to this source node.
+	 *
+	 * @param aChunk A string snippet of generated JS code, another instance of
+	 *        SourceNode, or an array where each member is one of those things.
+	 */
+	SourceNode.prototype.add = function SourceNode_add(aChunk) {
+	  if (Array.isArray(aChunk)) {
+	    aChunk.forEach(function (chunk) {
+	      this.add(chunk);
+	    }, this);
+	  }
+	  else if (aChunk[isSourceNode] || typeof aChunk === "string") {
+	    if (aChunk) {
+	      this.children.push(aChunk);
+	    }
+	  }
+	  else {
+	    throw new TypeError(
+	      "Expected a SourceNode, string, or an array of SourceNodes and strings. Got " + aChunk
+	    );
+	  }
+	  return this;
+	};
+
+	/**
+	 * Add a chunk of generated JS to the beginning of this source node.
+	 *
+	 * @param aChunk A string snippet of generated JS code, another instance of
+	 *        SourceNode, or an array where each member is one of those things.
+	 */
+	SourceNode.prototype.prepend = function SourceNode_prepend(aChunk) {
+	  if (Array.isArray(aChunk)) {
+	    for (var i = aChunk.length-1; i >= 0; i--) {
+	      this.prepend(aChunk[i]);
+	    }
+	  }
+	  else if (aChunk[isSourceNode] || typeof aChunk === "string") {
+	    this.children.unshift(aChunk);
+	  }
+	  else {
+	    throw new TypeError(
+	      "Expected a SourceNode, string, or an array of SourceNodes and strings. Got " + aChunk
+	    );
+	  }
+	  return this;
+	};
+
+	/**
+	 * Walk over the tree of JS snippets in this node and its children. The
+	 * walking function is called once for each snippet of JS and is passed that
+	 * snippet and the its original associated source's line/column location.
+	 *
+	 * @param aFn The traversal function.
+	 */
+	SourceNode.prototype.walk = function SourceNode_walk(aFn) {
+	  var chunk;
+	  for (var i = 0, len = this.children.length; i < len; i++) {
+	    chunk = this.children[i];
+	    if (chunk[isSourceNode]) {
+	      chunk.walk(aFn);
+	    }
+	    else {
+	      if (chunk !== '') {
+	        aFn(chunk, { source: this.source,
+	                     line: this.line,
+	                     column: this.column,
+	                     name: this.name });
+	      }
+	    }
+	  }
+	};
+
+	/**
+	 * Like `String.prototype.join` except for SourceNodes. Inserts `aStr` between
+	 * each of `this.children`.
+	 *
+	 * @param aSep The separator.
+	 */
+	SourceNode.prototype.join = function SourceNode_join(aSep) {
+	  var newChildren;
+	  var i;
+	  var len = this.children.length;
+	  if (len > 0) {
+	    newChildren = [];
+	    for (i = 0; i < len-1; i++) {
+	      newChildren.push(this.children[i]);
+	      newChildren.push(aSep);
+	    }
+	    newChildren.push(this.children[i]);
+	    this.children = newChildren;
+	  }
+	  return this;
+	};
+
+	/**
+	 * Call String.prototype.replace on the very right-most source snippet. Useful
+	 * for trimming whitespace from the end of a source node, etc.
+	 *
+	 * @param aPattern The pattern to replace.
+	 * @param aReplacement The thing to replace the pattern with.
+	 */
+	SourceNode.prototype.replaceRight = function SourceNode_replaceRight(aPattern, aReplacement) {
+	  var lastChild = this.children[this.children.length - 1];
+	  if (lastChild[isSourceNode]) {
+	    lastChild.replaceRight(aPattern, aReplacement);
+	  }
+	  else if (typeof lastChild === 'string') {
+	    this.children[this.children.length - 1] = lastChild.replace(aPattern, aReplacement);
+	  }
+	  else {
+	    this.children.push(''.replace(aPattern, aReplacement));
+	  }
+	  return this;
+	};
+
+	/**
+	 * Set the source content for a source file. This will be added to the SourceMapGenerator
+	 * in the sourcesContent field.
+	 *
+	 * @param aSourceFile The filename of the source file
+	 * @param aSourceContent The content of the source file
+	 */
+	SourceNode.prototype.setSourceContent =
+	  function SourceNode_setSourceContent(aSourceFile, aSourceContent) {
+	    this.sourceContents[util.toSetString(aSourceFile)] = aSourceContent;
+	  };
+
+	/**
+	 * Walk over the tree of SourceNodes. The walking function is called for each
+	 * source file content and is passed the filename and source content.
+	 *
+	 * @param aFn The traversal function.
+	 */
+	SourceNode.prototype.walkSourceContents =
+	  function SourceNode_walkSourceContents(aFn) {
+	    for (var i = 0, len = this.children.length; i < len; i++) {
+	      if (this.children[i][isSourceNode]) {
+	        this.children[i].walkSourceContents(aFn);
+	      }
+	    }
+
+	    var sources = Object.keys(this.sourceContents);
+	    for (var i = 0, len = sources.length; i < len; i++) {
+	      aFn(util.fromSetString(sources[i]), this.sourceContents[sources[i]]);
+	    }
+	  };
+
+	/**
+	 * Return the string representation of this source node. Walks over the tree
+	 * and concatenates all the various snippets together to one string.
+	 */
+	SourceNode.prototype.toString = function SourceNode_toString() {
+	  var str = "";
+	  this.walk(function (chunk) {
+	    str += chunk;
+	  });
+	  return str;
+	};
+
+	/**
+	 * Returns the string representation of this source node along with a source
+	 * map.
+	 */
+	SourceNode.prototype.toStringWithSourceMap = function SourceNode_toStringWithSourceMap(aArgs) {
+	  var generated = {
+	    code: "",
+	    line: 1,
+	    column: 0
+	  };
+	  var map = new SourceMapGenerator(aArgs);
+	  var sourceMappingActive = false;
+	  var lastOriginalSource = null;
+	  var lastOriginalLine = null;
+	  var lastOriginalColumn = null;
+	  var lastOriginalName = null;
+	  this.walk(function (chunk, original) {
+	    generated.code += chunk;
+	    if (original.source !== null
+	        && original.line !== null
+	        && original.column !== null) {
+	      if(lastOriginalSource !== original.source
+	         || lastOriginalLine !== original.line
+	         || lastOriginalColumn !== original.column
+	         || lastOriginalName !== original.name) {
+	        map.addMapping({
+	          source: original.source,
+	          original: {
+	            line: original.line,
+	            column: original.column
+	          },
+	          generated: {
+	            line: generated.line,
+	            column: generated.column
+	          },
+	          name: original.name
+	        });
+	      }
+	      lastOriginalSource = original.source;
+	      lastOriginalLine = original.line;
+	      lastOriginalColumn = original.column;
+	      lastOriginalName = original.name;
+	      sourceMappingActive = true;
+	    } else if (sourceMappingActive) {
+	      map.addMapping({
+	        generated: {
+	          line: generated.line,
+	          column: generated.column
+	        }
+	      });
+	      lastOriginalSource = null;
+	      sourceMappingActive = false;
+	    }
+	    for (var idx = 0, length = chunk.length; idx < length; idx++) {
+	      if (chunk.charCodeAt(idx) === NEWLINE_CODE) {
+	        generated.line++;
+	        generated.column = 0;
+	        // Mappings end at eol
+	        if (idx + 1 === length) {
+	          lastOriginalSource = null;
+	          sourceMappingActive = false;
+	        } else if (sourceMappingActive) {
+	          map.addMapping({
+	            source: original.source,
+	            original: {
+	              line: original.line,
+	              column: original.column
+	            },
+	            generated: {
+	              line: generated.line,
+	              column: generated.column
+	            },
+	            name: original.name
+	          });
+	        }
+	      } else {
+	        generated.column++;
+	      }
+	    }
+	  });
+	  this.walkSourceContents(function (sourceFile, sourceContent) {
+	    map.setSourceContent(sourceFile, sourceContent);
+	  });
+
+	  return { code: generated.code, map: map };
+	};
+
+	exports.SourceNode = SourceNode;
+
+
+/***/ })
+/******/ ])
+});
+;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   /*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+"use strict";
+
+const TypeUnknown = 0;
+const TypeNull = 1;
+const TypeString = 2;
+const TypeNumber = 3;
+const TypeBoolean = 4;
+const TypeRegExp = 5;
+const TypeConditional = 6;
+const TypeArray = 7;
+const TypeConstArray = 8;
+const TypeIdentifier = 9;
+const TypeWrapped = 10;
+const TypeTemplateString = 11;
+
+class BasicEvaluatedExpression {
+	constructor() {
+		this.type = TypeUnknown;
+		this.range = null;
+		this.falsy = false;
+		this.truthy = false;
+		this.bool = null;
+		this.number = null;
+		this.regExp = null;
+		this.string = null;
+		this.quasis = null;
+		this.parts = null;
+		this.array = null;
+		this.items = null;
+		this.options = null;
+		this.prefix = null;
+		this.postfix = null;
+		this.wrappedInnerExpressions = null;
+		this.expression = null;
+	}
+
+	isNull() {
+		return this.type === TypeNull;
+	}
+
+	isString() {
+		return this.type === TypeString;
+	}
+
+	isNumber() {
+		return this.type === TypeNumber;
+	}
+
+	isBoolean() {
+		return this.type === TypeBoolean;
+	}
+
+	isRegExp() {
+		return this.type === TypeRegExp;
+	}
+
+	isConditional() {
+		return this.type === TypeConditional;
+	}
+
+	isArray() {
+		return this.type === TypeArray;
+	}
+
+	isConstArray() {
+		return this.type === TypeConstArray;
+	}
+
+	isIdentifier() {
+		return this.type === TypeIdentifier;
+	}
+
+	isWrapped() {
+		return this.type === TypeWrapped;
+	}
+
+	isTemplateString() {
+		return this.type === TypeTemplateString;
+	}
+
+	isTruthy() {
+		return this.truthy;
+	}
+
+	isFalsy() {
+		return this.falsy;
+	}
+
+	asBool() {
+		if (this.truthy) return true;
+		if (this.falsy) return false;
+		if (this.isBoolean()) return this.bool;
+		if (this.isNull()) return false;
+		if (this.isString()) return this.string !== "";
+		if (this.isNumber()) return this.number !== 0;
+		if (this.isRegExp()) return true;
+		if (this.isArray()) return true;
+		if (this.isConstArray()) return true;
+		if (this.isWrapped()) {
+			return (this.prefix && this.prefix.asBool()) ||
+				(this.postfix && this.postfix.asBool())
+				? true
+				: undefined;
+		}
+		if (this.isTemplateString()) {
+			const str = this.asString();
+			if (typeof str === "string") return str !== "";
+		}
+		return undefined;
+	}
+
+	asString() {
+		if (this.isBoolean()) return `${this.bool}`;
+		if (this.isNull()) return "null";
+		if (this.isString()) return this.string;
+		if (this.isNumber()) return `${this.number}`;
+		if (this.isRegExp()) return `${this.regExp}`;
+		if (this.isArray()) {
+			let array = [];
+			for (const item of this.items) {
+				const itemStr = item.asString();
+				if (itemStr === undefined) return undefined;
+				array.push(itemStr);
+			}
+			return `${array}`;
+		}
+		if (this.isConstArray()) return `${this.array}`;
+		if (this.isTemplateString()) {
+			let str = "";
+			for (const part of this.parts) {
+				const partStr = part.asString();
+				if (partStr === undefined) return undefined;
+				str += partStr;
+			}
+			return str;
+		}
+		return undefined;
+	}
+
+	setString(string) {
+		this.type = TypeString;
+		this.string = string;
+		return this;
+	}
+
+	setNull() {
+		this.type = TypeNull;
+		return this;
+	}
+
+	setNumbe

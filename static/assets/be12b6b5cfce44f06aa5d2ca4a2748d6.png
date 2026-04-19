@@ -1,0 +1,1510 @@
+Node.js: fs-extra
+=================
+
+`fs-extra` adds file system methods that aren't included in the native `fs` module and adds promise support to the `fs` methods. It also uses [`graceful-fs`](https://github.com/isaacs/node-graceful-fs) to prevent `EMFILE` errors. It should be a drop in replacement for `fs`.
+
+[![npm Package](https://img.shields.io/npm/v/fs-extra.svg)](https://www.npmjs.org/package/fs-extra)
+[![License](https://img.shields.io/npm/l/express.svg)](https://github.com/jprichardson/node-fs-extra/blob/master/LICENSE)
+[![build status](https://img.shields.io/travis/jprichardson/node-fs-extra/master.svg)](http://travis-ci.org/jprichardson/node-fs-extra)
+[![windows Build status](https://img.shields.io/appveyor/ci/jprichardson/node-fs-extra/master.svg?label=windows%20build)](https://ci.appveyor.com/project/jprichardson/node-fs-extra/branch/master)
+[![downloads per month](http://img.shields.io/npm/dm/fs-extra.svg)](https://www.npmjs.org/package/fs-extra)
+[![Coverage Status](https://img.shields.io/coveralls/github/jprichardson/node-fs-extra/master.svg)](https://coveralls.io/github/jprichardson/node-fs-extra)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+Why?
+----
+
+I got tired of including `mkdirp`, `rimraf`, and `ncp` in most of my projects.
+
+
+
+
+Installation
+------------
+
+    npm install fs-extra
+
+
+
+Usage
+-----
+
+`fs-extra` is a drop in replacement for native `fs`. All methods in `fs` are attached to `fs-extra`. All `fs` methods return promises if the callback isn't passed.
+
+You don't ever need to include the original `fs` module again:
+
+```js
+const fs = require('fs') // this is no longer necessary
+```
+
+you can now do this:
+
+```js
+const fs = require('fs-extra')
+```
+
+or if you prefer to make it clear that you're using `fs-extra` and not `fs`, you may want
+to name your `fs` variable `fse` like so:
+
+```js
+const fse = require('fs-extra')
+```
+
+you can also keep both, but it's redundant:
+
+```js
+const fs = require('fs')
+const fse = require('fs-extra')
+```
+
+Sync vs Async vs Async/Await
+-------------
+Most methods are async by default. All async methods will return a promise if the callback isn't passed.
+
+Sync methods on the other hand will throw if an error occurs.
+
+Also Async/Await will throw an error if one occurs.
+
+Example:
+
+```js
+const fs = require('fs-extra')
+
+// Async with promises:
+fs.copy('/tmp/myfile', '/tmp/mynewfile')
+  .then(() => console.log('success!'))
+  .catch(err => console.error(err))
+
+// Async with callbacks:
+fs.copy('/tmp/myfile', '/tmp/mynewfile', err => {
+  if (err) return console.error(err)
+  console.log('success!')
+})
+
+// Sync:
+try {
+  fs.copySync('/tmp/myfile', '/tmp/mynewfile')
+  console.log('success!')
+} catch (err) {
+  console.error(err)
+}
+
+// Async/Await:
+async function copyFiles () {
+  try {
+    await fs.copy('/tmp/myfile', '/tmp/mynewfile')
+    console.log('success!')
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+copyFiles()
+```
+
+
+Methods
+-------
+
+### Async
+
+- [copy](docs/copy.md)
+- [emptyDir](docs/emptyDir.md)
+- [ensureFile](docs/ensureFile.md)
+- [ensureDir](docs/ensureDir.md)
+- [ensureLink](docs/ensureLink.md)
+- [ensureSymlink](docs/ensureSymlink.md)
+- [mkdirp](docs/ensureDir.md)
+- [mkdirs](docs/ensureDir.md)
+- [move](docs/move.md)
+- [outputFile](docs/outputFile.md)
+- [outputJson](docs/outputJson.md)
+- [pathExists](docs/pathExists.md)
+- [readJson](docs/readJson.md)
+- [remove](docs/remove.md)
+- [writeJson](docs/writeJson.md)
+
+### Sync
+
+- [copySync](docs/copy-sync.md)
+- [emptyDirSync](docs/emptyDir-sync.md)
+- [ensureFileSync](docs/ensureFile-sync.md)
+- [ensureDirSync](docs/ensureDir-sync.md)
+- [ensureLinkSync](docs/ensureLink-sync.md)
+- [ensureSymlinkSync](docs/ensureSymlink-sync.md)
+- [mkdirpSync](docs/ensureDir-sync.md)
+- [mkdirsSync](docs/ensureDir-sync.md)
+- [moveSync](docs/move-sync.md)
+- [outputFileSync](docs/outputFile-sync.md)
+- [outputJsonSync](docs/outputJson-sync.md)
+- [pathExistsSync](docs/pathExists-sync.md)
+- [readJsonSync](docs/readJson-sync.md)
+- [removeSync](docs/remove-sync.md)
+- [writeJsonSync](docs/writeJson-sync.md)
+
+
+**NOTE:** You can still use the native Node.js methods. They are promisified and copied over to `fs-extra`. See [notes on `fs.read()` & `fs.write()`](docs/fs-read-write.md)
+
+### What happened to `walk()` and `walkSync()`?
+
+They were removed from `fs-extra` in v2.0.0. If you need the functionality, `walk` and `walkSync` are available as separate packages, [`klaw`](https://github.com/jprichardson/node-klaw) and [`klaw-sync`](https://github.com/manidlou/node-klaw-sync).
+
+
+Third Party
+-----------
+
+
+### TypeScript
+
+If you like TypeScript, you can use `fs-extra` with it: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/fs-extra
+
+
+### File / Directory Watching
+
+If you want to watch for changes to files or directories, then you should use [chokidar](https://github.com/paulmillr/chokidar).
+
+### Obtain Filesystem (Devices, Partitions) Information
+
+[fs-filesystem](https://github.com/arthurintelligence/node-fs-filesystem) allows you to read the state of the filesystem of the host on which it is run. It returns information about both the devices and the partitions (volumes) of the system.
+
+### Misc.
+
+- [fs-extra-debug](https://github.com/jdxcode/fs-extra-debug) - Send your fs-extra calls to [debug](https://npmjs.org/package/debug).
+- [mfs](https://github.com/cadorn/mfs) - Monitor your fs-extra calls.
+
+
+
+Hacking on fs-extra
+-------------------
+
+Wanna hack on `fs-extra`? Great! Your help is needed! [fs-extra is one of the most depended upon Node.js packages](http://nodei.co/npm/fs-extra.png?downloads=true&downloadRank=true&stars=true). This project
+uses [JavaScript Standard Style](https://github.com/feross/standard) - if the name or style choices bother you,
+you're gonna have to get over it :) If `standard` is good enough for `npm`, it's good enough for `fs-extra`.
+
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
+What's needed?
+- First, take a look at existing issues. Those are probably going to be where the priority lies.
+- More tests for edge cases. Specifically on different platforms. There can never be enough tests.
+- Improve test coverage. See coveralls output for more info.
+
+Note: If you make any big changes, **you should definitely file an issue for discussion first.**
+
+### Running the Test Suite
+
+fs-extra contains hundreds of tests.
+
+- `npm run lint`: runs the linter ([standard](http://standardjs.com/))
+- `npm run unit`: runs the unit tests
+- `npm test`: runs both the linter and the tests
+
+
+### Windows
+
+If you run the tests on the Windows and receive a lot of symbolic link `EPERM` permission errors, it's
+because on Windows you need elevated privilege to create symbolic links. You can add this to your Windows's
+account by following the instructions here: http://superuser.com/questions/104845/permission-to-make-symbolic-links-in-windows-7
+However, I didn't have much luck doing this.
+
+Since I develop on Mac OS X, I use VMWare Fusion for Windows testing. I create a shared folder that I map to a drive on Windows.
+I open the `Node.js command prompt` and run as `Administrator`. I then map the network drive running the following command:
+
+    net use z: "\\vmware-host\Shared Folders"
+
+I can then navigate to my `fs-extra` directory and run the tests.
+
+
+Naming
+------
+
+I put a lot of thought into the naming of these functions. Inspired by @coolaj86's request. So he deserves much of the credit for raising the issue. See discussion(s) here:
+
+* https://github.com/jprichardson/node-fs-extra/issues/2
+* https://github.com/flatiron/utile/issues/11
+* https://github.com/ryanmcgrath/wrench-js/issues/29
+* https://github.com/substack/node-mkdirp/issues/17
+
+First, I believe that in as many cases as possible, the [Node.js naming schemes](http://nodejs.org/api/fs.html) should be chosen. However, there are problems with the Node.js own naming schemes.
+
+For example, `fs.readFile()` and `fs.readdir()`: the **F** is capitalized in *File* and the **d** is not capitalized in *dir*. Perhaps a bit pedantic, but they should still be consistent. Also, Node.js has chosen a lot of POSIX naming schemes, which I believe is great. See: `fs.mkdir()`, `fs.rmdir()`, `fs.chown()`, etc.
+
+We have a dilemma though. How do you consistently name methods that perform the following POSIX commands: `cp`, `cp -r`, `mkdir -p`, and `rm -rf`?
+
+My perspective: when in doubt, err on the side of simplicity. A directory is just a hierarchical grouping of directories and files. Consider that for a moment. So when you want to copy it or remove it, in most cases you'll want to copy or remove all of its contents. When you want to create a directory, if the directory that it's suppose to be contained in does not exist, then in most cases you'll want to create that too.
+
+So, if you want to remove a file or a directory regardless of whether it has contents, just call `fs.remove(path)`. If you want to copy a file or a directory whether it has contents, just call `fs.copy(source, destination)`. If you want to create a directory regardless of whether its parent directories exist, just call `fs.mkdirs(path)` or `fs.mkdirp(path)`.
+
+
+Credit
+------
+
+`fs-extra` wouldn't be possible without using the modules from the following authors:
+
+- [Isaac Shlueter](https://github.com/isaacs)
+- [Charlie McConnel](https://github.com/avianflu)
+- [James Halliday](https://github.com/substack)
+- [Andrew Kelley](https://github.com/andrewrk)
+
+
+
+
+License
+-------
+
+Licensed under MIT
+
+Copyright (c) 2011-2017 [JP Richardson](https://github.com/jprichardson)
+
+[1]: http://nodejs.org/docs/latest/api/fs.html
+
+
+[jsonfile]: https://github.com/jprichardson/node-jsonfile
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         'use strict';
+
+var keys = require('object-keys');
+var foreach = require('foreach');
+var hasSymbols = typeof Symbol === 'function' && typeof Symbol() === 'symbol';
+
+var toStr = Object.prototype.toString;
+
+var isFunction = function (fn) {
+	return typeof fn === 'function' && toStr.call(fn) === '[object Function]';
+};
+
+var arePropertyDescriptorsSupported = function () {
+	var obj = {};
+	try {
+		Object.defineProperty(obj, 'x', { enumerable: false, value: obj });
+        /* eslint-disable no-unused-vars, no-restricted-syntax */
+        for (var _ in obj) { return false; }
+        /* eslint-enable no-unused-vars, no-restricted-syntax */
+		return obj.x === obj;
+	} catch (e) { /* this is IE 8. */
+		return false;
+	}
+};
+var supportsDescriptors = Object.defineProperty && arePropertyDescriptorsSupported();
+
+var defineProperty = function (object, name, value, predicate) {
+	if (name in object && (!isFunction(predicate) || !predicate())) {
+		return;
+	}
+	if (supportsDescriptors) {
+		Object.defineProperty(object, name, {
+			configurable: true,
+			enumerable: false,
+			value: value,
+			writable: true
+		});
+	} else {
+		object[name] = value;
+	}
+};
+
+var defineProperties = function (object, map) {
+	var predicates = arguments.length > 2 ? arguments[2] : {};
+	var props = keys(map);
+	if (hasSymbols) {
+		props = props.concat(Object.getOwnPropertySymbols(map));
+	}
+	foreach(props, function (name) {
+		defineProperty(object, name, map[name], predicates[name]);
+	});
+};
+
+defineProperties.supportsDescriptors = !!supportsDescriptors;
+
+module.exports = defineProperties;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "use strict";
+
+const execa = require("execa");
+
+const db2util = "/QOpenSys/pkgs/bin/db2util";
+const sql = "select NEXT_HOP, LOCAL_BINDING_INTERFACE from QSYS2.NETSTAT_ROUTE_INFO where ROUTE_TYPE='DFTROUTE' and NEXT_HOP!='*DIRECT' and CONNECTION_TYPE=?";
+
+const parse = stdout => {
+  let result;
+  try {
+    const resultObj = JSON.parse(stdout);
+    const gateway = resultObj.records[0].NEXT_HOP;
+    const iface = resultObj.records[0].LOCAL_BINDING_INTERFACE;
+    result = {gateway, iface};
+  } catch (err) {}
+  if (!result) {
+    throw new Error("Unable to determine default gateway");
+  }
+  return result;
+};
+
+const promise = family => {
+  return execa.stdout(db2util, [sql, "-p", family, "-o", "json"]).then(stdout => parse(stdout));
+};
+
+const sync = family => {
+  const {stdout} = execa.sync(db2util, [sql, "-p", family, "-o", "json"]);
+  return parse(stdout);
+};
+
+module.exports.v4 = () => promise("IPV4");
+module.exports.v6 = () => promise("IPV6");
+
+module.exports.v4.sync = () => sync("IPV4");
+module.exports.v6.sync = () => sync("IPV6");
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          Copyright (c) 2013, Coveralls, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of Coveralls, LLC.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          'use strict';
+
+var map        = require('es5-ext/object/map')
+  , isCallable = require('es5-ext/object/is-callable')
+  , validValue = require('es5-ext/object/valid-value')
+  , contains   = require('es5-ext/string/#/contains')
+
+  , call = Function.prototype.call
+  , defineProperty = Object.defineProperty
+  , getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor
+  , getPrototypeOf = Object.getPrototypeOf
+  , hasOwnProperty = Object.prototype.hasOwnProperty
+  , cacheDesc = { configurable: false, enumerable: false, writable: false,
+		value: null }
+  , define;
+
+define = function (name, options) {
+	var value, dgs, cacheName, desc, writable = false, resolvable
+	  , flat;
+	options = Object(validValue(options));
+	cacheName = options.cacheName;
+	flat = options.flat;
+	if (cacheName == null) cacheName = name;
+	delete options.cacheName;
+	value = options.value;
+	resolvable = isCallable(value);
+	delete options.value;
+	dgs = { configurable: Boolean(options.configurable),
+		enumerable: Boolean(options.enumerable) };
+	if (name !== cacheName) {
+		dgs.get = function () {
+			if (hasOwnProperty.call(this, cacheName)) return this[cacheName];
+			cacheDesc.value = resolvable ? call.call(value, this, options) : value;
+			cacheDesc.writable = writable;
+			defineProperty(this, cacheName, cacheDesc);
+			cacheDesc.value = null;
+			if (desc) defineProperty(this, name, desc);
+			return this[cacheName];
+		};
+	} else if (!flat) {
+		dgs.get = function self() {
+			var ownDesc;
+			if (hasOwnProperty.call(this, name)) {
+				ownDesc = getOwnPropertyDescriptor(this, name);
+				// It happens in Safari, that getter is still called after property
+				// was defined with a value, following workarounds that
+				// While in IE11 it may happen that here ownDesc is undefined (go figure)
+				if (ownDesc) {
+					if (ownDesc.hasOwnProperty('value')) return ownDesc.value;
+					if ((typeof ownDesc.get === 'function') && (ownDesc.get !== self)) {
+						return ownDesc.get.call(this);
+					}
+					return value;
+				}
+			}
+			desc.value = resolvable ? call.call(value, this, options) : value;
+			defineProperty(this, name, desc);
+			desc.value = null;
+			return this[name];
+		};
+	} else {
+		dgs.get = function self() {
+			var base = this, ownDesc;
+			if (hasOwnProperty.call(this, name)) {
+				// It happens in Safari, that getter is still called after property
+				// was defined with a value, following workarounds that
+				ownDesc = getOwnPropertyDescriptor(this, name);
+				if (ownDesc.hasOwnProperty('value')) return ownDesc.value;
+				if ((typeof ownDesc.get === 'function') && (ownDesc.get !== self)) {
+					return ownDesc.get.call(this);
+				}
+			}
+			while (!hasOwnProperty.call(base, name)) base = getPrototypeOf(base);
+			desc.value = resolvable ? call.call(value, base, options) : value;
+			defineProperty(base, name, desc);
+			desc.value = null;
+			return base[name];
+		};
+	}
+	dgs.set = function (value) {
+		if (hasOwnProperty.call(this, name)) {
+			throw new TypeError("Cannot assign to lazy defined '" + name + "' property of " + this);
+		}
+		dgs.get.call(this);
+		this[cacheName] = value;
+	};
+	if (options.desc) {
+		desc = {
+			configurable: contains.call(options.desc, 'c'),
+			enumerable: contains.call(options.desc, 'e')
+		};
+		if (cacheName === name) {
+			desc.writable = contains.call(options.desc, 'w');
+			desc.value = null;
+		} else {
+			writable = contains.call(options.desc, 'w');
+			desc.get = dgs.get;
+			desc.set = dgs.set;
+		}
+		delete options.desc;
+	} else if (cacheName === name) {
+		desc = {
+			configurable: Boolean(options.configurable),
+			enumerable: Boolean(options.enumerable),
+			writable: Boolean(options.writable),
+			value: null
+		};
+	}
+	delete options.configurable;
+	delete options.enumerable;
+	delete options.writable;
+	return dgs;
+};
+
+module.exports = function (props) {
+	return map(props, function (desc, name) { return define(name, desc); });
+};
+                                                                                                                                                                                                                           
+# cookie-signature
+
+  Sign and unsign cookies.
+
+## Example
+
+```js
+var cookie = require('cookie-signature');
+
+var val = cookie.sign('hello', 'tobiiscool');
+val.should.equal('hello.DGDUkGlIkCzPz+C0B064FNgHdEjox7ch8tOBGslZ5QI');
+
+var val = cookie.sign('hello', 'tobiiscool');
+cookie.unsign(val, 'tobiiscool').should.equal('hello');
+cookie.unsign(val, 'luna').should.be.false;
+```
+
+## License 
+
+(The MIT License)
+
+Copyright (c) 2012 LearnBoost &lt;tj@learnboost.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              # cross-spawn
+
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Build status][appveyor-image]][appveyor-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
+
+[npm-url]:https://npmjs.org/package/cross-spawn
+[downloads-image]:http://img.shields.io/npm/dm/cross-spawn.svg
+[npm-image]:http://img.shields.io/npm/v/cross-spawn.svg
+[travis-url]:https://travis-ci.org/moxystudio/node-cross-spawn
+[travis-image]:http://img.shields.io/travis/moxystudio/node-cross-spawn/master.svg
+[appveyor-url]:https://ci.appveyor.com/project/satazor/node-cross-spawn
+[appveyor-image]:https://img.shields.io/appveyor/ci/satazor/node-cross-spawn/master.svg
+[codecov-url]:https://codecov.io/gh/moxystudio/node-cross-spawn
+[codecov-image]:https://img.shields.io/codecov/c/github/moxystudio/node-cross-spawn/master.svg
+[david-dm-url]:https://david-dm.org/moxystudio/node-cross-spawn
+[david-dm-image]:https://img.shields.io/david/moxystudio/node-cross-spawn.svg
+[david-dm-dev-url]:https://david-dm.org/moxystudio/node-cross-spawn?type=dev
+[david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/node-cross-spawn.svg
+[greenkeeper-image]:https://badges.greenkeeper.io/moxystudio/node-cross-spawn.svg
+[greenkeeper-url]:https://greenkeeper.io/
+
+A cross platform solution to node's spawn and spawnSync.
+
+
+## Installation
+
+`$ npm install cross-spawn`
+
+
+## Why
+
+Node has issues when using spawn on Windows:
+
+- It ignores [PATHEXT](https://github.com/joyent/node/issues/2318)
+- It does not support [shebangs](https://en.wikipedia.org/wiki/Shebang_(Unix))
+- Has problems running commands with [spaces](https://github.com/nodejs/node/issues/7367)
+- Has problems running commands with posix relative paths (e.g.: `./my-folder/my-executable`)
+- Has an [issue](https://github.com/moxystudio/node-cross-spawn/issues/82) with command shims (files in `node_modules/.bin/`), where arguments with quotes and parenthesis would result in [invalid syntax error](https://github.com/moxystudio/node-cross-spawn/blob/e77b8f22a416db46b6196767bcd35601d7e11d54/test/index.test.js#L149)
+- No `options.shell` support on node `<v4.8`
+
+All these issues are handled correctly by `cross-spawn`.
+There are some known modules, such as [win-spawn](https://github.com/ForbesLindesay/win-spawn), that try to solve this but they are either broken or provide faulty escaping of shell arguments.
+
+
+## Usage
+
+Exactly the same way as node's [`spawn`](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) or [`spawnSync`](https://nodejs.org/api/child_process.html#child_process_child_process_spawnsync_command_args_options), so it's a drop in replacement.
+
+
+```js
+const spawn = require('cross-spawn');
+
+// Spawn NPM asynchronously
+const child = spawn('npm', ['list', '-g', '-depth', '0'], { stdio: 'inherit' });
+
+// Spawn NPM synchronously
+const result = spawn.sync('npm', ['list', '-g', '-depth', '0'], { stdio: 'inherit' });
+```
+
+
+## Caveats
+
+### Using `options.shell` as an alternative to `cross-spawn`
+
+Starting from node `v4.8`, `spawn` has a `shell` option that allows you run commands from within a shell. This new option solves
+the [PATHEXT](https://github.com/joyent/node/issues/2318) issue but:
+
+- It's not supported in node `<v4.8`
+- You must manually escape the command and arguments which is very error prone, specially when passing user input
+- There are a lot of other unresolved issues from the [Why](#why) section that you must take into account
+
+If you are using the `shell` option to spawn a command in a cross platform way, consider using `cross-spawn` instead. You have been warned.
+
+### `options.shell` support
+
+While `cross-spawn` adds support for `options.shell` in node `<v4.8`, all of its enhancements are disabled.
+
+This mimics the Node.js behavior. More specifically, the command and its arguments will not be automatically escaped nor shebang support will be offered. This is by design because if you are using `options.shell` you are probably targeting a specific platform anyway and you don't want things to get into your way.
+
+### Shebangs support
+
+While `cross-spawn` handles shebangs on Windows, its support is limited. More specifically, it just supports `#!/usr/bin/env <program>` where `<program>` must not contain any arguments.   
+If you would like to have the shebang support improved, feel free to contribute via a pull-request.
+
+Remember to always test your code on Windows!
+
+
+## Tests
+
+`$ npm test`   
+`$ npm test -- --watch` during development
+
+## License
+
+Released under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           # cookie
+
+[![NPM Version][npm-version-image]][npm-url]
+[![NPM Downloads][npm-downloads-image]][npm-url]
+[![Node.js Version][node-version-image]][node-version-url]
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
+Basic HTTP cookie parser and serializer for HTTP servers.
+
+## Installation
+
+```sh
+$ npm install cookie
+```
+
+## API
+
+```js
+var cookie = require('cookie');
+```
+
+### cookie.parse(str, options)
+
+Parse an HTTP `Cookie` header string and returning an object of all cookie name-value pairs.
+The `str` argument is the string representing a `Cookie` header value and `options` is an
+optional object containing additional parsing options.
+
+```js
+var cookies = cookie.parse('foo=bar; equation=E%3Dmc%5E2');
+// { foo: 'bar', equation: 'E=mc^2' }
+```
+
+#### Options
+
+`cookie.parse` accepts these properties in the options object.
+
+##### decode
+
+Specifies a function that will be used to decode a cookie's value. Since the value of a cookie
+has a limited character set (and must be a simple string), this function can be used to decode
+a previously-encoded cookie value into a JavaScript string or other object.
+
+The default function is the global `decodeURIComponent`, which will decode any URL-encoded
+sequences into their byte representations.
+
+**note** if an error is thrown from this function, the original, non-decoded cookie value will
+be returned as the cookie's value.
+
+### cookie.serialize(name, value, options)
+
+Serialize a cookie name-value pair into a `Set-Cookie` header string. The `name` argument is the
+name for the cookie, the `value` argument is the value to set the cookie to, and the `options`
+argument is an optional object containing additional serialization options.
+
+```js
+var setCookie = cookie.serialize('foo', 'bar');
+// foo=bar
+```
+
+#### Options
+
+`cookie.serialize` accepts these properties in the options object.
+
+##### domain
+
+Specifies the value for the [`Domain` `Set-Cookie` attribute][rfc-6265-5.2.3]. By default, no
+domain is set, and most clients will consider the cookie to apply to only the current domain.
+
+##### encode
+
+Specifies a function that will be used to encode a cookie's value. Since value of a cookie
+has a limited character set (and must be a simple string), this function can be used to encode
+a value into a string suited for a cookie's value.
+
+The default function is the global `encodeURIComponent`, which will encode a JavaScript string
+into UTF-8 byte sequences and then URL-encode any that fall outside of the cookie range.
+
+##### expires
+
+Specifies the `Date` object to be the value for the [`Expires` `Set-Cookie` attribute][rfc-6265-5.2.1].
+By default, no expiration is set, and most clients will consider this a "non-persistent cookie" and
+will delete it on a condition like exiting a web browser application.
+
+**note** the [cookie storage model specification][rfc-6265-5.3] states that if both `expires` and
+`maxAge` are set, then `maxAge` takes precedence, but it is possible not all clients by obey this,
+so if both are set, they should point to the same date and time.
+
+##### httpOnly
+
+Specifies the `boolean` value for the [`HttpOnly` `Set-Cookie` attribute][rfc-6265-5.2.6]. When truthy,
+the `HttpOnly` attribute is set, otherwise it is not. By default, the `HttpOnly` attribute is not set.
+
+**note** be careful when setting this to `true`, as compliant clients will not allow client-side
+JavaScript to see the cookie in `document.cookie`.
+
+##### maxAge
+
+Specifies the `number` (in seconds) to be the value for the [`Max-Age` `Set-Cookie` attribute][rfc-6265-5.2.2].
+The given number will be converted to an integer by rounding down. By default, no maximum age is set.
+
+**note** the [cookie storage model specification][rfc-6265-5.3] states that if both `expires` and
+`maxAge` are set, then `maxAge` takes precedence, but it is possible not all clients by obey this,
+so if both are set, they should point to the same date and time.
+
+##### path
+
+Specifies the value for the [`Path` `Set-Cookie` attribute][rfc-6265-5.2.4]. By default, the path
+is considered the ["default path"][rfc-6# compression
+
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
+Node.js compression middleware.
+
+The following compression codings are supported:
+
+  - deflate
+  - gzip
+
+## Install
+
+This is a [Node.js](https://nodejs.org/en/) module available through the
+[npm registry](https://www.npmjs.com/). Installation is done using the
+[`npm install` command](https://docs.npmjs.com/getting-started/installing-npm-packages-locally):
+
+```bash
+$ npm install compression
+```
+
+## API
+
+<!-- eslint-disable no-unused-vars -->
+
+```js
+var compression = require('compression')
+```
+
+### compression([options])
+
+Returns the compression middleware using the given `options`. The middleware
+will attempt to compress response bodies for all request that traverse through
+the middleware, based on the given `options`.
+
+This middleware will never compress responses that include a `Cache-Control`
+header with the [`no-transform` directive](https://tools.ietf.org/html/rfc7234#section-5.2.2.4),
+as compressing will transform the body.
+
+#### Options
+
+`compression()` accepts these properties in the options object. In addition to
+those listed below, [zlib](http://nodejs.org/api/zlib.html) options may be
+passed in to the options object.
+
+##### chunkSize
+
+The default value is `zlib.Z_DEFAULT_CHUNK`, or `16384`.
+
+See [Node.js documentation](http://nodejs.org/api/zlib.html#zlib_memory_usage_tuning)
+regarding the usage.
+
+##### filter
+
+A function to decide if the response should be considered for compression.
+This function is called as `filter(req, res)` and is expected to return
+`true` to consider the response for compression, or `false` to not compress
+the response.
+
+The default filter function uses the [compressible](https://www.npmjs.com/package/compressible)
+module to determine if `res.getHeader('Content-Type')` is compressible.
+
+##### level
+
+The level of zlib compression to apply to responses. A higher level will result
+in better compression, but will take longer to complete. A lower level will
+result in less compression, but will be much faster.
+
+This is an integer in the range of `0` (no compression) to `9` (maximum
+compression). The special value `-1` can be used to mean the "default
+compression level", which is a default compromise between speed and
+compression (currently equivalent to level 6).
+
+  - `-1` Default compression level (also `zlib.Z_DEFAULT_COMPRESSION`).
+  - `0` No compression (also `zlib.Z_NO_COMPRESSION`).
+  - `1` Fastest compression (also `zlib.Z_BEST_SPEED`).
+  - `2`
+  - `3`
+  - `4`
+  - `5`
+  - `6` (currently what `zlib.Z_DEFAULT_COMPRESSION` points to).
+  - `7`
+  - `8`
+  - `9` Best compression (also `zlib.Z_BEST_COMPRESSION`).
+
+The default value is `zlib.Z_DEFAULT_COMPRESSION`, or `-1`.
+
+**Note** in the list above, `zlib` is from `zlib = require('zlib')`.
+
+##### memLevel
+
+This specifies how much memory should be allocated for the internal compression
+state and is an integer in the range of `1` (minimum level) and `9` (maximum
+level).
+
+The default value is `zlib.Z_DEFAULT_MEMLEVEL`, or `8`.
+
+See [Node.js documentation](http://nodejs.org/api/zlib.html#zlib_memory_usage_tuning)
+regarding the usage.
+
+##### strategy
+
+This is used to tune the compression algorithm. This value only affects the
+compression ratio, not the correctness of the compressed output, even if it
+is not set appropriately.
+
+  - `zlib.Z_DEFAULT_STRATEGY` Use for normal data.
+  - `zlib.Z_FILTERED` Use for data produced by a filter (or predictor).
+    Filtered data consists mostly of small values with a somewhat random
+    distribution. In this case, the compression algorithm is tuned to
+    compress them better. The effect is to force more Huffman coding and less
+    string matching; it is somewhat intermediate between `zlib.Z_DEFAULT_STRATEGY`
+    and `zlib.Z_HUFFMAN_ONLY`.
+  - `zlib.Z_FIXED` Use to prevent the use of dynamic Huffman codes, allowing
+    for a simpler decoder for special applications.
+  - `zlib.Z_HUFFMAN_ONLY` Use to force Huffman encoding only (no string match).
+  - `zlib.Z_RLE` Use to limit match distances to one (run-length encoding).
+    This is designed to be almost as fast as `zlib.Z_HUFFMAN_ONLY`, but give
+    better compression for PNG image data.
+
+**Note** in the list above, `zlib` is from `zlib = require('zlib')`.
+
+##### threshold
+
+The byte threshold for the response body size before compression is considered
+for the response, defaults to `1kb`. This is a number of bytes or any string
+accepted by the [bytes](https://www.npmjs.com/package/bytes) module.
+
+**Note** this is only an advisory setting; if the response size cannot be determined
+at the time the response headers are written, then it is assumed the response is
+_over_ the threshold. To guarantee the response size can be determined, be sure
+set a `Content-Length` response header.
+
+##### windowBits
+
+The default value is `zlib.Z_DEFAULT_WINDOWBITS`, or `15`.
+
+See [Node.js documentation](http://nodejs.org/api/zlib.html#zlib_memory_usage_tuning)
+regarding the usage.
+
+#### .filter
+
+The default `filter` function. This is used to construct a custom filter
+function that is an extension of the default function.
+
+```js
+var compression = require('compression')
+var express = require('express')
+
+var app = express()
+app.use(compression({ filter: shouldCompress }))
+
+function shouldCompress (req, res) {
+  if (req.headers['x-no-compression']) {
+    // don't compress responses with this request header
+    return false
+  }
+
+  // fallback to standard filter function
+  return compression.filter(req, res)
+}
+```
+
+### res.flush
+
+This module adds a `res.flush()` method to force the partially-compressed
+response to be flushed to the client.
+
+## Examples
+
+### express/connect
+
+When using this module with express or connect, simply `app.use` the module as
+high as you like. Requests that pass through the middleware will be compressed.
+
+```js
+var compression = require('compression')
+var express = require('express')
+
+var app = express()
+
+// compress all responses
+app.use(compression())
+
+// add all routes
+```
+
+### Server-Sent Events
+
+Because of the nature of compression this module does not work out of the box
+with server-sent events. To compress content, a window of the output needs to
+be buffered up in order to get good compression. Typically when using server-sent
+events, there are certain block of data that need to reach the client.
+
+You can achieve this by calling `res.flush()` when you need the data written to
+actually make it to the client.
+
+```js
+var compression = require('compression')
+var express = require('express')
+
+var app = express()
+
+// compress responses
+app.use(compression())
+
+// server-sent event stream
+app.get('/events', function (req, res) {
+  res.setHeader('Content-Type', 'text/event-stream')
+  res.setHeader('Cache-Control', 'no-cache')
+
+  // send a ping approx every 2 seconds
+  var timer = setInterval(function () {
+    res.write('data: ping\n\n')
+
+    // !!! this is the important part
+    res.flush()
+  }, 2000)
+
+  res.on('close', function () {
+    clearInterval(timer)
+  })
+})
+```
+
+## License
+
+[MIT](LICENSE)
+
+[npm-image]: https://img.shields.io/npm/v/compression.svg
+[npm-url]: https://npmjs.org/package/compression
+[travis-image]: https://img.shields.io/travis/expressjs/compression/master.svg
+[travis-url]: https://travis-ci.org/expressjs/compression
+[coveralls-image]: https://img.shields.io/coveralls/expressjs/compression/master.svg
+[coveralls-url]: https://coveralls.io/r/expressjs/compression?branch=master
+[downloads-image]: https://img.shields.io/npm/dm/compression.svg
+[downloads-url]: https://npmjs.org/package/compression
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   # compressible
+
+[![NPM Version][npm-version-image]][npm-url]
+[![NPM Downloads][npm-downloads-image]][npm-url]
+[![Node.js Version][node-version-image]][node-version-url]
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
+Compressible `Content-Type` / `mime` checking.
+
+## Installation
+
+```sh
+$ npm install compressible
+```
+
+## API
+
+<!-- eslint-disable no-unused-vars -->
+
+```js
+var compressible = require('compressible')
+```
+
+### compressible(type)
+
+Checks if the given `Content-Type` is compressible. The `type` argument is expected
+to be a value MIME type or `Content-Type` string, though no validation is performed.
+
+The MIME is looked up in the [`mime-db`](https://www.npmjs.com/package/mime-db) and
+if there is compressible information in the database entry, that is returned. Otherwise,
+this module will fallback to `true` for the following types:
+
+  * `text/*`
+  * `*/*+json`
+  * `*/*+text`
+  * `*/*+xml`
+
+If this module is not sure if a type is specifically compressible or specifically
+uncompressible, `undefined` is returned.
+
+<!-- eslint-disable no-undef -->
+
+```js
+compressible('text/html') // => true
+compressible('image/png') // => false
+```
+
+## License
+
+[MIT](LICENSE)
+
+[coveralls-image]: https://badgen.net/coveralls/c/github/jshttp/compressible/master
+[coveralls-url]: https://coveralls.io/r/jshttp/compressible?branch=master
+[node-version-image]: https://badgen.net/npm/node/compressible
+[node-version-url]: https://nodejs.org/en/download
+[npm-downloads-image]: https://badgen.net/npm/dm/compressible
+[npm-url]: https://npmjs.org/package/compressible
+[npm-version-image]: https://badgen.net/npm/v/compressible
+[travis-image]: https://badgen.net/travis/jshttp/compressible/master
+[travis-url]: https://travis-ci.org/jshttp/compressible
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           'use strict';
+
+exports = module.exports = cliWidth;
+
+function normalizeOpts(options) {
+  var defaultOpts = {
+    defaultWidth: 0,
+    output: process.stdout,
+    tty: require('tty')
+  };
+
+  if (!options) {
+    return defaultOpts;
+  } else {
+    Object.keys(defaultOpts).forEach(function (key) {
+      if (!options[key]) {
+        options[key] = defaultOpts[key];
+      }
+    });
+
+    return options;
+  }
+}
+
+function cliWidth(options) {
+  var opts = normalizeOpts(options);
+
+  if (opts.output.getWindowSize) {
+    return opts.output.getWindowSize()[0] || opts.defaultWidth;
+  } else {
+    if (opts.tty.getWindowSize) {
+      return opts.tty.getWindowSize()[1] || opts.defaultWidth;
+    } else {
+      if (opts.output.columns) {
+        return opts.output.columns;
+      } else {
+        if (process.env.CLI_WIDTH) {
+          var width = parseInt(process.env.CLI_WIDTH, 10);
+
+          if (!isNaN(width) && width !== 0) {
+            return width;
+          }
+        }
+      }
+
+      return opts.defaultWidth;
+    }
+  }
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 # Colorette [![](https://img.shields.io/npm/v/colorette.svg?label=&color=2a64e6)](https://www.npmjs.org/package/colorette)
+
+> Color your terminal using pure idiomatic JavaScript.
+
+Colorette is a Node.js library for embellishing your CLI tools with colors and styles using [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code).
+
+- ~1.5x faster than alternatives ([run the benchmarks](#run-the-benchmarks)).
+- No wonky prototype-based method chains.
+- Automatic color support detection.
+- ~80 LOC and no dependencies.
+- [`NO_COLOR`](https://no-color.org) friendly.
+
+## Quickstart
+
+```console
+npm i colorette
+```
+
+Import the [styles](#styles) you need. [Here](#supported-styles)'s the list of styles you can use.
+
+```js
+import { red, blue, bold } from "colorette"
+```
+
+Wrap your strings in one or more styles to produce the finish you're looking for.
+
+```js
+console.log(bold(blue("Engage!")))
+```
+
+Mix it with [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) to interpolate variables, expressions and create multi-line strings easily.
+
+```js
+console.log(`
+  Beets are ${red("red")},
+  Plums are ${blue("blue")},
+  ${bold("Colorette!")}.
+`)
+```
+
+Using `console.log`'s [string substitution](https://nodejs.org/api/console.html#console_console_log_data_args) can be useful too.
+
+```js
+console.log(bold("Total: $%f"), 1.99)
+```
+
+You can also nest styles without breaking existing escape codes.
+
+```js
+console.log(red(`Red Shirt ${blue("Blue Shirt")} Red Shirt`))
+```
+
+Feeling adventurous? Try the [pipeline operator](https://github.com/tc39/proposal-pipeline-operator).
+
+```js
+console.log("Make it so!" |> bold |> blue)
+```
+
+## Supported styles
+
+Colorette supports the standard and bright color variations out-of-the-box. See [this issue](https://github.com/jorgebucaran/colorette/issues/27) if you were looking for TrueColor support.
+
+| Colors  | Background Colors | Bright Colors | Bright Background Colors | Modifiers         |
+| ------- | ----------------- | ------------- | ------------------------ | ----------------- |
+| black   | bgBlack           | blackBright   | bgBlackBright            | dim               |
+| red     | bgRed             | redBright     | bgRedBright              | **bold**          |
+| green   | bgGreen           | greenBright   | bgGreenBright            | hidden            |
+| yellow  | bgYellow          | yellowBright  | bgYellowBright           | _italic_          |
+| blue    | bgBlue            | blueBright    | bgBlueBright             | underline         |
+| magenta | bgMagenta         | magentaBright | bgMagentaBright          | ~~strikethrough~~ |
+| cyan    | bgCyan            | cyanBright    | bgCyanBright             | reset             |
+| white   | bgWhite           | whiteBright   | bgWhiteBright            |                   |
+| gray    |                   |               |                          |                   |
+
+## API
+
+### <code><i>style</i>(string)</code>
+
+Returns a string wrapped in the corresponding ANSI escape codes.
+
+```js
+red("Red Alert") //=> \u001b[31mRed Alert\u001b[39m
+```
+
+### `options.enabled`
+
+Color will be enabled if your terminal supports it, `FORCE_COLOR` is defined in [`process.env`](https://nodejs.org/dist/latest-v8.x/docs/api/process.html#process_process_env) and if `NO_COLOR` isn't, but you can always override it if you want.
+
+```js
+import { options } from "colorette"
+
+options.enabled = false
+```
+
+## Run the benchmarks
+
+```
+npm i -C bench && node bench
+```
+
+<pre>
+colorette × 759,429 ops/sec
+chalk × 524,034 ops/sec
+kleur × 490,347 ops/sec
+colors × 255,661 ops/sec
+ansi-colors × 317,605 ops/sec
+</pre>
+
+## License
+
+[MIT](LICENSE.md)
+                                                                                                                                                                                                                                                                                                                                                                                                          
+var fs = require('fs');
+
+var utf8  = require('./encoding/utf8'),
+  unicode = require('./encoding/unicode'),
+  mbcs    = require('./encoding/mbcs'),
+  sbcs    = require('./encoding/sbcs'),
+  iso2022 = require('./encoding/iso2022');
+
+var self = this;
+
+var recognisers = [
+  new utf8,
+  new unicode.UTF_16BE,
+  new unicode.UTF_16LE,
+  new unicode.UTF_32BE,
+  new unicode.UTF_32LE,
+  new mbcs.sjis,
+  new mbcs.big5,
+  new mbcs.euc_jp,
+  new mbcs.euc_kr,
+  new mbcs.gb_18030,
+  new iso2022.ISO_2022_JP,
+  new iso2022.ISO_2022_KR,
+  new iso2022.ISO_2022_CN,
+  new sbcs.ISO_8859_1,
+  new sbcs.ISO_8859_2,
+  new sbcs.ISO_8859_5,
+  new sbcs.ISO_8859_6,
+  new sbcs.ISO_8859_7,
+  new sbcs.ISO_8859_8,
+  new sbcs.ISO_8859_9,
+  new sbcs.windows_1251,
+  new sbcs.windows_1256,
+  new sbcs.KOI8_R
+];
+
+module.exports.detect = function(buffer) {
+
+  // Tally up the byte occurence statistics.
+  var fByteStats = [];
+  for (var i = 0; i < 256; i++)
+    fByteStats[i] = 0;
+
+  for (var i = buffer.length - 1; i >= 0; i--)
+    fByteStats[buffer[i] & 0x00ff]++;
+
+  var fC1Bytes = false;
+  for (var i = 0x80; i <= 0x9F; i += 1) {
+    if (fByteStats[i] != 0) {
+      fC1Bytes = true;
+      break;
+    }
+  }
+
+  var context = {
+    fByteStats:  fByteStats,
+    fC1Bytes:    fC1Bytes,
+    fRawInput:   buffer,
+    fRawLength:  buffer.length,
+    fInputBytes: buffer,
+    fInputLen:   buffer.length
+  };
+
+  var match = recognisers.map(function(rec) {
+    return rec.match(context);
+  }).filter(function(match) {
+    return !!match;
+  }).sort(function(a, b) {
+    return a.confidence - b.confidence;
+  }).pop();
+
+  return match ? match.name : null;
+};
+
+module.exports.detectFile = function(filepath, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts;
+    opts = undefined;
+  }
+
+  var fd;
+
+  var handler = function(err, buffer) {
+    if (fd) {
+      fs.closeSync(fd);
+    }
+
+    if (err) return cb(err, null);
+    cb(null, self.detect(buffer));
+  };
+
+  if (opts && opts.sampleSize) {
+    fd = fs.openSync(filepath, 'r'),
+      sample = new Buffer(opts.sampleSize);
+
+    fs.read(fd, sample, 0, opts.sampleSize, null, function(err) {
+      handler(err, sample);
+    });
+    return;
+  }
+
+  fs.readFile(filepath, handler);
+};
+
+module.exports.detectFileSync = function(filepath, opts) {
+  if (opts && opts.sampleSize) {
+    var fd = fs.openSync(filepath, 'r'),
+      sample = new Buffer(opts.sampleSize);
+
+    fs.readSync(fd, sample, 0, opts.sampleSize);
+    fs.closeSync(fd);
+    return self.detect(sample);
+  }
+
+  return self.detect(fs.readFileSync(filepath));
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  var tape = require('tape')
+  , caseless = require('./')
+  ;
+
+tape('set get has', function (t) {
+  var headers = {}
+    , c = caseless(headers)
+    ;
+  t.plan(17)
+  c.set('a-Header', 'asdf')
+  t.equal(c.get('a-header'), 'asdf')
+  t.equal(c.has('a-header'), 'a-Header')
+  t.ok(!c.has('nothing'))
+  // old bug where we used the wrong regex
+  t.ok(!c.has('a-hea'))
+  c.set('a-header', 'fdsa')
+  t.equal(c.get('a-header'), 'fdsa')
+  t.equal(c.get('a-Header'), 'fdsa')
+  c.set('a-HEADER', 'more', false)
+  t.equal(c.get('a-header'), 'fdsa,more')
+
+  t.deepEqual(headers, {'a-Header': 'fdsa,more'})
+  c.swap('a-HEADER')
+  t.deepEqual(headers, {'a-HEADER': 'fdsa,more'})
+
+  c.set('deleteme', 'foobar')
+  t.ok(c.has('deleteme'))
+  t.ok(c.del('deleteme'))
+  t.notOk(c.has('deleteme'))
+  t.notOk(c.has('idonotexist'))
+  t.ok(c.del('idonotexist'))
+
+  c.set('tva', 'test1')
+  c.set('tva-header', 'test2')
+  t.equal(c.has('tva'), 'tva')
+  t.notOk(c.has('header'))
+
+  t.equal(c.get('tva'), 'test1')
+
+})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     # brfs
+
+fs.readFileSync() and fs.readFile() static asset browserify transform
+
+[![build status](https://secure.travis-ci.org/browserify/brfs.png)](http://travis-ci.org/browserify/brfs)
+
+This module is a plugin for [browserify](http://browserify.org) to parse the AST
+for `fs.readFileSync()` calls so that you can inline file contents into your
+bundles.
+
+Even though this module is intended for use with browserify, nothing about it is
+particularly specific to browserify so it should be generally useful in other
+projects.
+
+# example
+
+for a main.js:
+
+``` js
+var fs = require('fs');
+var html = fs.readFileSync(__dirname + '/robot.html', 'utf8');
+console.log(html);
+```
+
+and a robot.html:
+
+``` html
+<b>beep boop</b>
+```
+
+first `npm install brfs` into your project, then:
+
+## on the command-line
+
+```
+$ browserify -t brfs example/main.js > bundle.js
+```
+
+now in the bundle output file,
+
+``` js
+var html = fs.readFileSync(__dirname + '/robot.html', 'utf8');
+```
+
+turns into:
+
+``` js
+var html = "<b>beep boop</b>\n";
+```
+
+## or with the api
+
+``` js
+var browserify = require('browserify');
+var fs = require('fs');
+
+var b = browserify('example/main.js');
+b.transform('brfs');
+
+b.bundle().pipe(fs.createWriteStream('bundle.js'));
+```
+
+## async
+
+You can also use `fs.readFile()`:
+
+``` js
+var fs = require('fs');
+fs.readFile(__dirname + '/robot.html', 'utf8', function (err, html) {
+    console.log(html);
+});
+```
+
+When you run this code through brfs, it turns into:
+
+``` js
+var fs = require('fs');
+process.nextTick(function () {(function (err, html) {
+    console.log(html);
+})(null,"<b>beep boop</b>\n")});
+```
+
+# methods
+
+brfs looks for:
+
+* `fs.readFileSync(pathExpr, enc=null)`
+* `fs.readFile(pathExpr, enc=null, cb)`
+* `fs.readdirSync(pathExpr)`
+* `fs.readdir(pathExpr, cb)`
+
+Inside of each `pathExpr`, you can use
+[statically analyzable](http://npmjs.org/package/static-eval) expressions and
+these variables and functions:
+
+* `__dirname`
+* `__filename`
+* `path` if you `var path = require('path')` first
+* `require.resolve()`
+
+Just like node, the default encoding is `null` and will give back a `Buffer`.
+If you want differently-encoded file contents for your inline content you can
+set `enc` to `'utf8'`, `'base64'`, or `'hex'`.
+
+In async mode when a callback `cb` is given, the contents of `pathExpr` are
+inlined into the source inside of a `process.nextTick()` call.
+
+When you use a `'file'`-event aware watcher such as
+[watchify](https://npmjs.org/package/watchify), the inlined assets will be
+updated automatically.
+
+If you want to use this plugin directly, not through browserify, the api
+follows.
+
+``` js
+var brfs = require('brfs')
+```
+
+## var tr = brfs(file, opts)
+
+Return a through stream `tr` inlining `fs.readFileSync()` file contents
+in-place.
+
+Optionally, you can set which `opts.vars` will be used in the
+[static argument evaluation](https://npmjs.org/package/static-eval)
+in addition to `__dirname` and `__filename`.
+
+`opts.parserOpts` can be used to configure the parser brfs uses,
+[acorn](https://github.com/acornjs/acorn#main-parser).
+
+# events
+
+## tr.on('file', function (file) {})
+
+For every file included with `fs.readFileSync()` or `fs.readFile()`, the `tr`
+instance emits a `'file'` event with the `file` path.
+
+# usage
+
+A tiny command-line program ships with this module to make debugging easier.
+
+```
+usage:
+
+  brfs file
+ 
+    Inline `fs.readFileSync()` calls from `file`, printing the transformed file
+    contents to stdout.
+
+  brfs
+  brfs -
+ 
+    Inline `fs.readFileSync()` calls from stdin, printing the transformed file
+    conten

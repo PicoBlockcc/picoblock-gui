@@ -1,0 +1,1359 @@
+'use strict';
+
+/** Highest positive signed 32-bit float value */
+const maxInt = 2147483647; // aka. 0x7FFFFFFF or 2^31-1
+
+/** Bootstring parameters */
+const base = 36;
+const tMin = 1;
+const tMax = 26;
+const skew = 38;
+const damp = 700;
+const initialBias = 72;
+const initialN = 128; // 0x80
+const delimiter = '-'; // '\x2D'
+
+/** Regular expressions */
+const regexPunycode = /^xn--/;
+const regexNonASCII = /[^\0-\x7E]/; // non-ASCII chars
+const regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g; // RFC 3490 separators
+
+/** Error messages */
+const errors = {
+	'overflow': 'Overflow: input needs wider integers to process',
+	'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+	'invalid-input': 'Invalid input'
+};
+
+/** Convenience shortcuts */
+const baseMinusTMin = base - tMin;
+const floor = Math.floor;
+const stringFromCharCode = String.fromCharCode;
+
+/*--------------------------------------------------------------------------*/
+
+/**
+ * A generic error utility function.
+ * @private
+ * @param {String} type The error type.
+ * @returns {Error} Throws a `RangeError` with the applicable error message.
+ */
+function error(type) {
+	throw new RangeError(errors[type]);
+}
+
+/**
+ * A generic `Array#map` utility function.
+ * @private
+ * @param {Array} array The array to iterate over.
+ * @param {Function} callback The function that gets called for every array
+ * item.
+ * @returns {Array} A new array of values returned by the callback function.
+ */
+function map(array, fn) {
+	const result = [];
+	let length = array.length;
+	while (length--) {
+		result[length] = fn(array[length]);
+	}
+	return result;
+}
+
+/**
+ * A simple `Array#map`-like wrapper to work with domain name strings or email
+ * addresses.
+ * @private
+ * @param {String} domain The domain name or email address.
+ * @param {Function} callback The function that gets called for every
+ * character.
+ * @returns {Array} A new string of characters returned by the callback
+ * function.
+ */
+function mapDomain(string, fn) {
+	const parts = string.split('@');
+	let result = '';
+	if (parts.length > 1) {
+		// In email addresses, only the domain name should be punycoded. Leave
+		// the local part (i.e. everything up to `@`) intact.
+		result = parts[0] + '@';
+		string = parts[1];
+	}
+	// Avoid `split(regex)` for IE8 compatibility. See #17.
+	string = string.replace(regexSeparators, '\x2E');
+	const labels = string.split('.');
+	const encoded = map(labels, fn).join('.');
+	return result + encoded;
+}
+
+/**
+ * Creates an array containing the numeric code points of each Unicode
+ * character in the string. While JavaScript uses UCS-2 internally,
+ * this function will convert a pair of surrogate halves (each of which
+ * UCS-2 exposes as separate characters) into a single code point,
+ * matching UTF-16.
+ * @see `punycode.ucs2.encode`
+ * @see <https://mathiasbynens.be/notes/javascript-encoding>
+ * @memberOf punycode.ucs2
+ * @name decode
+ * @param {String} string The Unicode input string (UCS-2).
+ * @returns {Array} The new array of code points.
+ */
+function ucs2decode(string) {
+	const output = [];
+	let counter = 0;
+	const length = string.length;
+	while (counter < length) {
+		const value = string.charCodeAt(counter++);
+		if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+			// It's a high surrogate, and there is a next character.
+			const extra = string.charCodeAt(counter++);
+			if ((extra & 0xFC00) == 0xDC00) { // Low surrogate.
+				output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+			} else {
+				// It's an unmatched surrogate; only append this code unit, in case the
+				// next code unit is the high surrogate of a surrogate pair.
+				output.push(value);
+				counter--;
+			}
+		} else {
+			output.push(value);
+		}
+	}
+	return output;
+}
+
+/**
+ * Creates a string based on an array of numeric code points.
+ * @see `punycode.ucs2.decode`
+ * @memberOf punycode.ucs2
+ * @name encode
+ * @param {Array} codePoints The array of numeric code points.
+ * @returns {String} The new Unicode string (UCS-2).
+ */
+const ucs2encode = array => String.fromCodePoint(...array);
+
+/**
+ * Converts a basic code point into a digit/integer.
+ * @see `digitToBasic()`
+ * @private
+ * @param {Number} codePoint The basic numeric code point value.
+ * @returns {Number} The numeric value of a basic code point (for use in
+ * representing integers) in the range `0` to `base - 1`, or `base` if
+ * the code point does not represent a value.
+ */
+const basicToDigit = function(codePoint) {
+	if (codePoint - 0x30 < 0x0A) {
+		return codePoint - 0x16;
+	}
+	if (codePoint - 0x41 < 0x1A) {
+		return codePoint - 0x41;
+	}
+	if (codePoint - 0x61 < 0x1A) {
+		return codePoint - 0x61;
+	}
+	return base;
+};
+
+/**
+ * Converts a digit/integer into a basic code point.
+ * @see `basicToDigit()`
+ * @private
+ * @param {Number} digit The numeric value of a basic code point.
+ * @returns {Number} The basic code point whose value (when used for
+ * representing integers) is `digit`, which needs to be in the range
+ * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+ * used; else, the lowercase form is used. The behavior is undefined
+ * if `flag` is non-zero and `digit` has no uppercase form.
+ */
+const digitToBasic = function(digit, flag) {
+	//  0..25 map to ASCII a..z or A..Z
+	// 26..35 map to ASCII 0..9
+	return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+};
+
+/**
+ * Bias adaptation function as per section 3.4 of RFC 3492.
+ * https://tools.ietf.org/html/rfc3492#section-3.4
+ * @private
+ */
+const adapt = function(delta, numPoints, firstTime) {
+	let k = 0;
+	delta = firstTime ? floor(delta / damp) : delta >> 1;
+	delta += floor(delta / numPoints);
+	for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+		delta = floor(delta / baseMinusTMin);
+	}
+	return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+};
+
+/**
+ * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+ * symbols.
+ * @memberOf punycode
+ * @param {String} input The Punycode string of ASCII-only symbols.
+ * @returns {String} The resulting string of Unicode symbols.
+ */
+const decode = function(input) {
+	// Don't use UCS-2.
+	const output = [];
+	const inputLength = input.length;
+	let i = 0;
+	let n = initialN;
+	let bias = initialBias;
+
+	// Handle the basic code points: let `basic` be the number of input code
+	// points before the last delimiter, or `0` if there is none, then copy
+	// the first basic code points to the output.
+
+	let basic = input.lastIndexOf(delimiter);
+	if (basic < 0) {
+		basic = 0;
+	}
+
+	for (let j = 0; j < basic; ++j) {
+		// if it's not a basic code point
+		if (input.charCodeAt(j) >= 0x80) {
+			error('not-basic');
+		}
+		output.push(input.charCodeAt(j));
+	}
+
+	// Main decoding loop: start just after the last delimiter if any basic code
+	// points were copied; start at the beginning otherwise.
+
+	for (let index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+
+		// `index` is the index of the next character to be consumed.
+		// Decode a generalized variable-length integer into `delta`,
+		// which gets added to `i`. The overflow checking is easier
+		// if we increase `i` as we go, then subtract off its starting
+		// value at the end to obtain `delta`.
+		let oldi = i;
+		for (let w = 1, k = base; /* no condition */; k += base) {
+
+			if (index >= inputLength) {
+				error('invalid-input');
+			}
+
+			const digit = basicToDigit(input.charCodeAt(index++));
+
+			if (digit >= base || digit > floor((maxInt - i) / w)) {
+				error('overflow');
+			}
+
+			i += digit * w;
+			const t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+
+			if (digit < t) {
+				break;
+			}
+
+			const baseMinusT = base - t;
+			if (w > floor(maxInt / baseMinusT)) {
+				error('overflow');
+			}
+
+			w *= baseMinusT;
+
+		}
+
+		const out = output.length + 1;
+		bias = adapt(i - oldi, out, oldi == 0);
+
+		// `i` was supposed to wrap around from `out` to `0`,
+		// incrementing `n` each time, so we'll fix that now:
+		if (floor(i / out) > maxInt - n) {
+			error('overflow');
+		}
+
+		n += floor(i / out);
+		i %= out;
+
+		// Insert `n` at position `i` of the output.
+		output.splice(i++, 0, n);
+
+	}
+
+	return String.fromCodePoint(...output);
+};
+
+/**
+ * Converts a string of Unicode symbols (e.g. a domain name label) to a
+ * Punycode string of ASCII-only symbols.
+ * @memberOf punycode
+ * @param {String} input The string of Unicode symbols.
+ * @returns {String} The resulting Punycode string of ASCII-only symbols.
+ */
+const encode = function(input) {
+	const output = [];
+
+	// Convert the input in UCS-2 to an array of Unicode code points.
+	input = ucs2decode(input);
+
+	// Cache the length.
+	let inputLength = input.length;
+
+	// Initialize the state.
+	let n = initialN;
+	let delta = 0;
+	let bias = initialBias;
+
+	// Handle the basic code points.
+	for (const currentValue of input) {
+		if (currentValue < 0x80) {
+			output.push(stringFromCharCode(currentValue));
+		}
+	}
+
+	let basicLength = output.length;
+	let handledCPCount = basicLength;
+
+	// `handledCPCount` is the number of code points that have been handled;
+	// `basicLength` is the number of basic code points.
+
+	// Finish the basic string with a delimiter unless it's empty.
+	if (basicLength) {
+		output.push(delimiter);
+	}
+
+	// Main encoding loop:
+	while (handledCPCount < inputLength) {
+
+		// All non-basic code points < n have been handled already. Find the next
+		// larger one:
+		let m = maxInt;
+		for (const currentValue of input) {
+			if (currentValue >= n && currentValue < m) {
+				m = currentValue;
+			}
+		}
+
+		// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+		// but guard against overflow.
+		const handledCPCountPlusOne = handledCPCount + 1;
+		if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+			error('overflow');
+		}
+
+		delta += (m - n) * handledCPCountPlusOne;
+		n = m;
+
+		for (const currentValue of input) {
+			if (currentValue < n && ++delta > maxInt) {
+				error('overflow');
+			}
+			if (currentValue == n) {
+				// Represent delta as a generalized variable-length integer.
+				let q = delta;
+				for (let k = base; /* no condition */; k += base) {
+					const t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+					if (q < t) {
+						break;
+					}
+					const qMinusT = q - t;
+					const baseMinusT = base - t;
+					output.push(
+						stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+					);
+					q = floor(qMinusT / baseMinusT);
+				}
+
+				output.push(stringFromCharCode(digitToBasic(q, 0)));
+				bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+				delta = 0;
+				++handledCPCount;
+			}
+		}
+
+		++delta;
+		++n;
+
+	}
+	return output.join('');
+};
+
+/**
+ * Converts a Punycode string representing a domain name or an email address
+ * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+ * it doesn't matter if you call it on a string that has already been
+ * converted to Unicode.
+ * @memberOf punycode
+ * @param {String} input The Punycoded domain name or email address to
+ * convert to Unicode.
+ * @returns {String} The Unicode representation of the given Punycode
+ * string.
+ */
+const toUnicode = function(input) {
+	return mapDomain(input, function(string) {
+		return regexPunycode.test(string)
+			? decode(string.slice(4).toLowerCase())
+			: string;
+	});
+};
+
+/**
+ * Converts a Unicode string representing a domain name or an email address to
+ * Punycode. Only the non-ASCII parts of the domain name will be converted,
+ * i.e. it doesn't matter if you call it with a domain that's already in
+ * ASCII.
+ * @memberOf punycode
+ * @param {String} input The domain name or email address to convert, as a
+ * Unicode string.
+ * @returns {String} The Punycode representation of the given domain name or
+ * email address.
+ */
+const toASCII = function(input) {
+	return mapDomain(input, function(string) {
+		return regexNonASCII.test(string)
+			? 'xn--' + encode(string)
+			: string;
+	});
+};
+
+/*--------------------------------------------------------------------------*/
+
+/** Define the public API */
+const punycode = {
+	/**
+	 * A string representing the current Punycode.js version number.
+	 * @memberOf punycode
+	 * @type String
+	 */
+	'version': '2.1.0',
+	/**
+	 * An object of methods to convert from JavaScript's internal character
+	 * representation (UCS-2) to Unicode code points, and back.
+	 * @see <# debug
+[![Build Status](https://travis-ci.org/visionmedia/debug.svg?branch=master)](https://travis-ci.org/visionmedia/debug)  [![Coverage Status](https://coveralls.io/repos/github/visionmedia/debug/badge.svg?branch=master)](https://coveralls.io/github/visionmedia/debug?branch=master)  [![Slack](https://visionmedia-community-slackin.now.sh/badge.svg)](https://visionmedia-community-slackin.now.sh/) [![OpenCollective](https://opencollective.com/debug/backers/badge.svg)](#backers) 
+[![OpenCollective](https://opencollective.com/debug/sponsors/badge.svg)](#sponsors)
+
+
+
+A tiny node.js debugging utility modelled after node core's debugging technique.
+
+**Discussion around the V3 API is under way [here](https://github.com/visionmedia/debug/issues/370)**
+
+## Installation
+
+```bash
+$ npm install debug
+```
+
+## Usage
+
+`debug` exposes a function; simply pass this function the name of your module, and it will return a decorated version of `console.error` for you to pass debug statements to. This will allow you to toggle the debug output for different parts of your module as well as the module as a whole.
+
+Example _app.js_:
+
+```js
+var debug = require('debug')('http')
+  , http = require('http')
+  , name = 'My App';
+
+// fake app
+
+debug('booting %s', name);
+
+http.createServer(function(req, res){
+  debug(req.method + ' ' + req.url);
+  res.end('hello\n');
+}).listen(3000, function(){
+  debug('listening');
+});
+
+// fake worker of some kind
+
+require('./worker');
+```
+
+Example _worker.js_:
+
+```js
+var debug = require('debug')('worker');
+
+setInterval(function(){
+  debug('doing some work');
+}, 1000);
+```
+
+ The __DEBUG__ environment variable is then used to enable these based on space or comma-delimited names. Here are some examples:
+
+  ![debug http and worker](http://f.cl.ly/items/18471z1H402O24072r1J/Screenshot.png)
+
+  ![debug worker](http://f.cl.ly/items/1X413v1a3M0d3C2c1E0i/Screenshot.png)
+
+#### Windows note
+
+ On Windows the environment variable is set using the `set` command.
+
+ ```cmd
+ set DEBUG=*,-not_this
+ ```
+
+ Note that PowerShell uses different syntax to set environment variables.
+
+ ```cmd
+ $env:DEBUG = "*,-not_this"
+  ```
+
+Then, run the program to be debugged as usual.
+
+## Millisecond diff
+
+  When actively developing an application it can be useful to see when the time spent between one `debug()` call and the next. Suppose for example you invoke `debug()` before requesting a resource, and after as well, the "+NNNms" will show you how much time was spent between calls.
+
+  ![](http://f.cl.ly/items/2i3h1d3t121M2Z1A3Q0N/Screenshot.png)
+
+  When stdout is not a TTY, `Date#toUTCString()` is used, making it more useful for logging the debug information as shown below:
+
+  ![](http://f.cl.ly/items/112H3i0e0o0P0a2Q2r11/Screenshot.png)
+
+## Conventions
+
+  If you're using this in one or more of your libraries, you _should_ use the name of your library so that developers may toggle debugging as desired without guessing names. If you have more than one debuggers you _should_ prefix them with your library name and use ":" to separate features. For example "bodyParser" from Connect would then be "connect:bodyParser".
+
+## Wildcards
+
+  The `*` character may be used as a wildcard. Suppose for example your library has debuggers named "connect:bodyParser", "connect:compress", "connect:session", instead of listing all three with `DEBUG=connect:bodyParser,connect:compress,connect:session`, you may simply do `DEBUG=connect:*`, or to run everything using this module simply use `DEBUG=*`.
+
+  You can also exclude specific debuggers by prefixing them with a "-" character.  For example, `DEBUG=*,-connect:*` would include all debuggers except those starting with "connect:".
+
+## Environment Variables
+
+  When running through Node.js, you can set a few environment variables that will
+  change the behavior of the debug logging:
+
+| Name      | Purpose                                         |
+|-----------|-------------------------------------------------|
+| `DEBUG`   | Enables/disables specific debugging namespaces. |
+| `DEBUG_COLORS`| Whether or not to use colors in the debug output. |
+| `DEBUG_DEPTH` | Object inspection depth. |
+| `DEBUG_SHOW_HIDDEN` | Shows hidden properties on inspected objects. |
+
+
+  __Note:__ The environment variables beginning with `DEBUG_` end up being
+  converted into an Options object that gets used with `%o`/`%O` formatters.
+  See the Node.js documentation for
+  [`util.inspect()`](https://nodejs.org/api/util.html#util_util_inspect_object_options)
+  for the complete list.
+
+## Formatters
+
+
+  Debug uses [printf-style](https://wikipedia.org/wiki/Printf_format_string) formatting. Below are the officially supported formatters:
+
+| Formatter | Representation |
+|-----------|----------------|
+| `%O`      | Pretty-print an Object on multiple lines. |
+| `%o`      | Pretty-print an Object all on a single line. |
+| `%s`      | String. |
+| `%d`      | Number (both integer and float). |
+| `%j`      | JSON. Replaced with the string '[Circular]' if the argument contains circular references. |
+| `%%`      | Single percent sign ('%'). This does not consume an argument. |
+
+### Custom formatters
+
+  You can add custom formatters by extending the `debug.formatters` object. For example, if you wanted to add support for rendering a Buffer as hex with `%h`, you could do something like:
+
+```js
+const createDebug = require('debug')
+createDebug.formatters.h = (v) => {
+  return v.toString('hex')
+}
+
+// …elsewhere
+const debug = createDebug('foo')
+debug('this is hex: %h', new Buffer('hello world'))
+//   foo this is hex: 68656c6c6f20776f726c6421 +0ms
+```
+
+## Browser support
+  You can build a browser-ready script using [browserify](https://github.com/substack/node-browserify),
+  or just use the [browserify-as-a-service](https://wzrd.in/) [build](https://wzrd.in/standalone/debug@latest),
+  if you don't want to build it yourself.
+
+  Debug's enable state is currently persisted by `localStorage`.
+  Consider the situation shown below where you have `worker:a` and `worker:b`,
+  and wish to debug both. You can enable this using `localStorage.debug`:
+
+```js
+localStorage.debug = 'worker:*'
+```
+
+And then refresh the page.
+
+```js
+a = debug('worker:a');
+b = debug('worker:b');
+
+setInterval(function(){
+  a('doing some work');
+}, 1000);
+
+setInterval(function(){
+  b('doing some work');
+}, 1200);
+```
+
+#### Web Inspector Colors
+
+  Colors are also enabled on "Web Inspectors" that understand the `%c` formatting
+  option. These are WebKit web inspectors, Firefox ([since version
+  31](https://hacks.mozilla.org/2014/05/editable-box-model-multiple-selection-sublime-text-keys-much-more-firefox-developer-tools-episode-31/))
+  and the Firebug plugin for Firefox (any version).
+
+  Colored output looks something like:
+
+  ![](https://cloud.githubusercontent.com/assets/71256/3139768/b98c5fd8-e8ef-11e3-862a-f7253b6f47c6.png)
+
+
+## Output streams
+
+  By default `debug` will log to stderr, however this can be configured per-namespace by overriding the `log` method:
+
+Example _stdout.js_:
+
+```js
+var debug = require('debug');
+var error = debug('app:error');
+
+// by default stderr is used
+error('goes to stderr!');
+
+var log = debug('app:log');
+// set this namespace to log via console.log
+log.log = console.log.bind(console); // don't forget to bind to console!
+log('goes to stdout');
+error('still goes to stderr!');
+
+// set all output to go via console.info
+// overrides all per-namespace log settings
+debug.log = console.info.bind(console);
+error('now goes to stdout via console.info');
+log('still goes to stdout, but via console.info now');
+```
+
+
+## Authors
+
+ - TJ Holowaychuk
+ - Nathan Rajlich
+ - Andrew Rhyne
+ 
+## Backers
+
+Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/debug#backer)]
+
+<a href="https://opencollective.com/debug/backer/0/website" target="_blank"><img src="https://opencollective.com/debug/backer/0/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/1/website" target="_blank"><img src="https://opencollective.com/debug/backer/1/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/2/website" target="_blank"><img src="https://opencollective.com/debug/backer/2/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/3/website" target="_blank"><img src="https://opencollective.com/debug/backer/3/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/4/website" target="_blank"><img src="https://opencollective.com/debug/backer/4/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/5/website" target="_blank"><img src="https://opencollective.com/debug/backer/5/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/6/website" target="_blank"><img src="https://opencollective.com/debug/backer/6/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/7/website" target="_blank"><img src="https://opencollective.com/debug/backer/7/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/8/website" target="_blank"><img src="https://opencollective.com/debug/backer/8/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/9/website" target="_blank"><img src="https://opencollective.com/debug/backer/9/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/10/website" target="_blank"><img src="https://opencollective.com/debug/backer/10/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/11/website" target="_blank"><img src="https://opencollective.com/debug/backer/11/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/12/website" target="_blank"><img src="https://opencollective.com/debug/backer/12/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/13/website" target="_blank"><img src="https://opencollective.com/debug/backer/13/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/14/website" target="_blank"><img src="https://opencollective.com/debug/backer/14/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/15/website" target="_blank"><img src="https://opencollective.com/debug/backer/15/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/16/website" target="_blank"><img src="https://opencollective.com/debug/backer/16/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/17/website" target="_blank"><img src="https://opencollective.com/debug/backer/17/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/18/website" target="_blank"><img src="https://opencollective.com/debug/backer/18/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/19/website" target="_blank"><img src="https://opencollective.com/debug/backer/19/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/20/website" target="_blank"><img src="https://opencollective.com/debug/backer/20/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/21/website" target="_blank"><img src="https://opencollective.com/debug/backer/21/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/22/website" target="_blank"><img src="https://opencollective.com/debug/backer/22/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/23/website" target="_blank"><img src="https://opencollective.com/debug/backer/23/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/24/website" target="_blank"><img src="https://opencollective.com/debug/backer/24/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/25/website" target="_blank"><img src="https://opencollective.com/debug/backer/25/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/26/website" target="_blank"><img src="https://opencollective.com/debug/backer/26/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/27/website" target="_blank"><img src="https://opencollective.com/debug/backer/27/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/28/website" target="_blank"><img src="https://opencollective.com/debug/backer/28/avatar.svg"></a>
+<a href="https://opencollective.com/debug/backer/29/website" target="_blank"><img src="https://opencollective.com/debug/backer/29/avatar.svg"></a>
+
+
+## Sponsors
+
+Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/debug#sponsor)]
+
+<a href="https://opencollective.com/debug/sponsor/0/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/1/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/2/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/3/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/4/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/5/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/6/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/7/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/8/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/9/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/9/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/10/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/10/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/11/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/11/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/12/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/12/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/13/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/13/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/14/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/14/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/15/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/15/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/16/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/16/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/17/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/17/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/18/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/18/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/19/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/19/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/20/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/20/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/21/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/21/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/22/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/22/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/23/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/23/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/24/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/24/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/25/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/25/avatar.svg"></a>
+<a href="https://opencollective.com/debug/sponsor/26/website" target="_blank"><img src="https://opencollective.com/debug/sponsor/26/avatar.svg"></a>
+<a href="https://opencollective.comThe MIT License (MIT)
+
+Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 // @flow
+'use strict'
+
+/*::
+export type AST = Element[]
+export type Element = string | Placeholder
+export type Placeholder = Plural | Styled | Typed | Simple
+export type Plural = [ string, 'plural' | 'selectordinal', number, SubMessages ]
+export type Styled = [ string, string, string | SubMessages ]
+export type Typed = [ string, string ]
+export type Simple = [ string ]
+export type SubMessages = { [string]: AST }
+export type Token = [ TokenType, string ]
+export type TokenType = 'text' | 'space' | 'id' | 'type' | 'style' | 'offset' | 'number' | 'selector' | 'syntax'
+type Context = {|
+  pattern: string,
+  index: number,
+  tagsType: ?string,
+  tokens: ?Token[]
+|}
+*/
+
+var ARG_OPN = '{'
+var ARG_CLS = '}'
+var ARG_SEP = ','
+var NUM_ARG = '#'
+var TAG_OPN = '<'
+var TAG_CLS = '>'
+var TAG_END = '</'
+var TAG_SELF_CLS = '/>'
+var ESC = '\''
+var OFFSET = 'offset:'
+var simpleTypes = [
+  'number',
+  'date',
+  'time',
+  'ordinal',
+  'duration',
+  'spellout'
+]
+var submTypes = [
+  'plural',
+  'select',
+  'selectordinal'
+]
+
+/**
+ * parse
+ *
+ * Turns this:
+ *  `You have { numBananas, plural,
+ *       =0 {no bananas}
+ *      one {a banana}
+ *    other {# bananas}
+ *  } for sale`
+ *
+ * into this:
+ *  [ "You have ", [ "numBananas", "plural", 0, {
+ *       "=0": [ "no bananas" ],
+ *      "one": [ "a banana" ],
+ *    "other": [ [ '#' ], " bananas" ]
+ *  } ], " for sale." ]
+ *
+ * tokens:
+ *  [
+ *    [ "text", "You have " ],
+ *    [ "syntax", "{" ],
+ *    [ "space", " " ],
+ *    [ "id", "numBananas" ],
+ *    [ "syntax", ", " ],
+ *    [ "space", " " ],
+ *    [ "type", "plural" ],
+ *    [ "syntax", "," ],
+ *    [ "space", "\n     " ],
+ *    [ "selector", "=0" ],
+ *    [ "space", " " ],
+ *    [ "syntax", "{" ],
+ *    [ "text", "no bananas" ],
+ *    [ "syntax", "}" ],
+ *    [ "space", "\n    " ],
+ *    [ "selector", "one" ],
+ *    [ "space", " " ],
+ *    [ "syntax", "{" ],
+ *    [ "text", "a banana" ],
+ *    [ "syntax", "}" ],
+ *    [ "space", "\n  " ],
+ *    [ "selector", "other" ],
+ *    [ "space", " " ],
+ *    [ "syntax", "{" ],
+ *    [ "syntax", "#" ],
+ *    [ "text", " bananas" ],
+ *    [ "syntax", "}" ],
+ *    [ "space", "\n" ],
+ *    [ "syntax", "}" ],
+ *    [ "text", " for sale." ]
+ *  ]
+ **/
+exports = module.exports = function parse (
+  pattern/*: string */,
+  options/*:: ?: { tagsType?: string, tokens?: Token[] } */
+)/*: AST */ {
+  return parseAST({
+    pattern: String(pattern),
+    index: 0,
+    tagsType: (options && options.tagsType) || null,
+    tokens: (options && options.tokens) || null
+  }, '')
+}
+
+function parseAST (current/*: Context */, parentType/*: string */)/*: AST */ {
+  var pattern = current.pattern
+  var length = pattern.length
+  var elements/*: AST */ = []
+  var start = current.index
+  var text = parseText(current, parentType)
+  if (text) elements.push(text)
+  if (text && current.tokens) current.tokens.push([ 'text', pattern.slice(start, current.index) ])
+  while (current.index < length) {
+    if (pattern[current.index] === ARG_CLS) {
+      if (!parentType) throw expected(current)
+      break
+    }
+    if (parentType && current.tagsType && pattern.slice(current.index, current.index + TAG_END.length) === TAG_END) break
+    elements.push(parsePlaceholder(current))
+    start = current.index
+    text = parseText(current, parentType)
+    if (text) elements.push(text)
+    if (text && current.tokens) current.tokens.push([ 'text', pattern.slice(start, current.index) ])
+  }
+  return elements
+}
+
+function parseText (current/*: Context */, parentType/*: string */)/*: string */ {
+  var pattern = current.pattern
+  var length = pattern.length
+  var isHashSpecial = (parentType === 'plural' || parentType === 'selectordinal')
+  var isAngleSpecial = !!current.tagsType
+  var isArgStyle = (parentType === '{style}')
+  var text = ''
+  while (current.index < length) {
+    var char = pattern[current.index]
+    if (
+      char === ARG_OPN || char === ARG_CLS ||
+      (isHashSpecial && char === NUM_ARG) ||
+      (isAngleSpecial && char === TAG_OPN) ||
+      (isArgStyle && isWhitespace(char.charCodeAt(0)))
+    ) {
+      break
+    } else if (char === ESC) {
+      char = pattern[++current.index]
+      if (char === ESC) { // double is always 1 '
+        text += char
+        ++current.index
+      } else if (
+        // only when necessary
+        char === ARG_OPN || char === ARG_CLS ||
+        (isHashSpecial && char === NUM_ARG) ||
+        (isAngleSpecial && char === TAG_OPN) ||
+        isArgStyle
+      ) {
+        text += char
+        while (++current.index < length) {
+          char = pattern[current.index]
+          if (char === ESC && pattern[current.index + 1] === ESC) { // double is always 1 '
+            text += ESC
+            ++current.index
+          } else if (char === ESC) { // end of quoted
+            ++current.index
+            break
+          } else {
+            text += char
+          }
+        }
+      } else { // lone ' is just a '
+        text += ESC
+        // already incremented
+      }
+    } else {
+      text += char
+      ++current.index
+    }
+  }
+  return text
+}
+
+function isWhitespace (code/*: number */)/*: boolean */ {
+  return (
+    (code >= 0x09 && code <= 0x0D) ||
+    code === 0x20 || code === 0x85 || code === 0xA0 || code === 0x180E ||
+    (code >= 0x2000 && code <= 0x200D) ||
+    code === 0x2028 || code === 0x2029 || code === 0x202F || code === 0x205F ||
+    code === 0x2060 || code === 0x3000 || code === 0xFEFF
+  )
+}
+
+function skipWhitespace (current/*: Context */)/*: void */ {
+  var pattern = current.pattern
+  var length = pattern.length
+  var start = current.index
+  while (current.index < length && isWhitespace(pattern.charCodeAt(current.index))) {
+    ++current.index
+  }
+  if (start < current.index && current.tokens) {
+    current.tokens.push([ 'space', current.pattern.slice(start, current.index) ])
+  }
+}
+
+function parsePlaceholder (current/*: Context */)/*: Placeholder */ {
+  var pattern = current.pattern
+  if (pattern[current.index] === NUM_ARG) {
+    if (current.tokens) current.tokens.push([ 'syntax', NUM_ARG ])
+    ++current.index // move passed #
+    return [ NUM_ARG ]
+  }
+
+  var tag = parseTag(current)
+  if (tag) return tag
+
+  /* istanbul ignore if should be unreachable if parseAST and parseText are right */
+  if (pattern[current.index] !== ARG_OPN) throw expected(current, ARG_OPN)
+  if (current.tokens) current.tokens.push([ 'syntax', ARG_OPN ])
+  ++current.index // move passed {
+  skipWhitespace(current)
+
+  var id = parseId(current)
+  if (!id) throw expected(current, 'placeholder id')
+  if (current.tokens) current.tokens.push([ 'id', id ])
+  skipWhitespace(current)
+
+  var char = pattern[current.index]
+  if (char === ARG_CLS) { // end placeholder
+    if (current.tokens) current.tokens.push([ 'syntax', ARG_CLS ])
+    ++current.index // move passed }
+    return [ id ]
+  }
+
+  if (char !== ARG_SEP) throw expected(current, ARG_SEP + ' or ' + ARG_CLS)
+  if (current.tokens) current.tokens.push([ 'syntax', ARG_SEP ])
+  ++current.index // move passed ,
+  skipWhitespace(current)
+
+  var type = parseId(current)
+  if (!type) throw expected(current, 'placeholder type')
+  if (current.tokens) current.tokens.push([ 'type', type ])
+  skipWhitespace(current)
+  char = pattern[current.index]
+  if (char === ARG_CLS) { // end placeholder
+    if (current.tokens) current.tokens.push([ 'syntax', ARG_CLS ])
+    if (type === 'plural' || type === 'selectordinal' || type === 'select') {
+      throw expected(current, type + ' sub-messages')
+    }
+    ++current.index // move passed }
+    return [ id, type ]
+  }
+
+  if (char !== ARG_SEP) throw expected(current, ARG_SEP + ' or ' + ARG_CLS)
+  if (current.tokens) current.tokens.push([ 'syntax', ARG_SEP ])
+  ++current.index // move passed ,
+  skipWhitespace(current)
+
+  var arg
+  if (type === 'plural' || type === 'selectordinal') {
+    var offset = parsePluralOffset(current)
+    skipWhitespace(current)
+    arg = [ id, type, offset, parseSubMessages(current, type) ]
+  } else if (type === 'select') {
+    arg = [ id, type, parseSubMessages(current, type) ]
+  } else if (simpleTypes.indexOf(type) >= 0) {
+    arg = [ id, type, parseSimpleFormat(current) ]
+  } else { // custom placeholder type
+    var index = current.index
+    var format/*: string | SubMessages */ = parseSimpleFormat(current)
+    skipWhitespace(current)
+    if (pattern[current.index] === ARG_OPN) {
+      current.index = index // rewind, since should have been submessages
+      format = parseSubMessages(current, type)
+    }
+    arg = [ id, type, format ]
+  }
+
+  skipWhitespace(current)
+  if (pattern[current.index] !== ARG_CLS) throw expected(current, ARG_CLS)
+  if (current.tokens) current.tokens.push([ 'syntax', ARG_CLS ])
+  ++current.index // move passed }
+  return arg
+}
+
+function parseTag (current/*: Context */)/*: ?Placeholder */ {
+  var tagsType = current.tagsType
+  if (!tagsType || current.pattern[current.index] !== TAG_OPN) return
+
+  if (current.pattern.slice(current.index, current.index + TAG_END.length) === TAG_END) {
+    throw expected(current, null, 'closing tag without matching opening tag')
+  }
+  if (current.tokens) current.tokens.push([ 'syntax', TAG_OPN ])
+  ++current.index // move passed <
+
+  var id = parseId(current, true)
+  if (!id) throw expected(current, 'placeholder id')
+  if (current.tokens) current.tokens.push([ 'id', id ])
+  skipWhitespace(current)
+
+  if (current.pattern.slice(current.index, current.index + TAG_SELF_CLS.length) === TAG_SELF_CLS) {
+    if (current.tokens) current.tokens.push([ 'syntax', TAG_SELF_CLS ])
+    current.index += TAG_SELF_CLS.length
+    return [ id, tagsType ]
+  }
+  if (current.pattern[current.index] !== TAG_CLS) throw expected(current, TAG_CLS)
+  if (current.tokens) current.tokens.push([ 'syntax', TAG_CLS ])
+  ++current.index // move passed >
+
+  var children = parseAST(current, tagsType)
+
+  var end = current.index
+  if (current.pattern.slice(current.index, current.index + TAG_END.length) !== TAG_END) throw expected(current, TAG_END + id + TAG_CLS)
+  if (current.tokens) current.tokens.push([ 'syntax', TAG_END ])
+  current.index += TAG_END.length
+  var closeId = parseId(current, true)
+  if (closeId && current.tokens) current.tokens.push([ 'id', closeId ])
+  if (id !== closeId) {
+    current.index = end // rewind for better error message
+    throw expected(current, TAG_END + id + TAG_CLS, TAG_END + closeId + TAG_CLS)
+  }
+  skipWhitespace(current)
+  if (current.pattern[current.index] !== TAG_CLS) throw expected(current, TAG_CLS)
+  if (current.tokens) current.tokens.push([ 'syntax', TAG_CLS ])
+  ++current.index // move passed >
+
+  return [ id, tagsType, { children: children } ]
+}
+
+function parseId (current/*: Context */, isTag/*:: ?: boolean */)/*: string */ {
+  var pattern = current.pattern
+  var length = pattern.length
+  var id = ''
+  while (current.index < length) {
+    var char = pattern[current.index]
+    if (
+      char === ARG_OPN || char === ARG_CLS || char === ARG_SEP ||
+      char === NUM_ARG || char === ESC || isWhitespace(char.charCodeAt(0)) ||
+      (isTag && (char === TAG_OPN || char === TAG_CLS || char === '/'))
+    ) break
+    id += char
+    ++current.index
+  }
+  return id
+}
+
+function parseSimpleFormat (current/*: Context */)/*: string */ {
+  var start = current.index
+  var style = parseText(current, '{style}')
+  if (!style) throw expected(current, 'placeholder style name')
+  if (current.tokens) current.tokens.push([ 'style', current.pattern.slice(start, current.index) ])
+  return style
+}
+
+function parsePluralOffset (current/*: Context */)/*: number */ {
+  var pattern = current.pattern
+  var length = pattern.length
+  var offset = 0
+  if (pattern.slice(current.index, current.index + OFFSET.length) === OFFSET) {
+    if (current.tokens) current.tokens.push([ 'offset', 'offset' ], [ 'syntax', ':' ])
+    current.index += OFFSET.length // move passed offset:
+    skipWhitespace(current)
+    var start = current.index
+    while (current.index < length && isDigit(pattern.charCodeAt(current.index))) {
+      ++current.index
+    }
+    if (start === current.index) throw expected(current, 'offset number')
+    if (current.tokens) current.tokens.push([ 'number', pattern.slice(start, current.index) ])
+    offset = +pattern.slice(start, current.index)
+  }
+  return offset
+}
+
+function isDigit (code/*: number */)/*: boolean */ {
+  return (code >= Copyright (c) 2014 IndigoUnited
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // @flow
+'use strict'
+var formats = require('format-message-formats')
+var lookupClosestLocale = require('lookup-closest-locale')
+var plurals = require('./plurals')
+
+/*::
+import type {
+  AST,
+  SubMessages
+} from '../format-message-parse'
+type Locale = string
+type Locales = Locale | Locale[]
+type Placeholder = any[] // https://github.com/facebook/flow/issues/4050
+export type Type = (Placeholder, Locales) => (any, ?Object) => any
+export type Types = { [string]: Type }
+*/
+
+exports = module.exports = function interpret (
+  ast/*: AST */,
+  locale/*:: ?: Locales */,
+  types/*:: ?: Types */
+)/*: (args?: Object) => string */ {
+  return interpretAST(ast, null, locale || 'en', types || {}, true)
+}
+
+exports.toParts = function toParts (
+  ast/*: AST */,
+  locale/*:: ?: Locales */,
+  types/*:: ?: Types */
+)/*: (args?: Object) => any[] */ {
+  return interpretAST(ast, null, locale || 'en', types || {}, false)
+}
+
+function interpretAST (
+  elements/*: any[] */,
+  parent/*: ?Placeholder */,
+  locale/*: Locales */,
+  types/*: Types */,
+  join/*: boolean */
+)/*: Function */ {
+  var parts = elements.map(function (element) {
+    return interpretElement(element, parent, locale, types, join)
+  })
+
+  if (!join) {
+    return function format (args) {
+      return parts.reduce(function (parts, part) {
+        return parts.concat(part(args))
+      }, [])
+    }
+  }
+
+  if (parts.length === 1) return parts[0]
+  return function format (args) {
+    var message = ''
+    for (var e = 0; e < parts.length; ++e) {
+      message += parts[e](args)
+    }
+    return message
+  }
+}
+
+function interpretElement (
+  element/*: Placeholder */,
+  parent/*: ?Placeholder */,
+  locale/*: Locales */,
+  types/*: Types */,
+  join/*: boolean */
+)/*: Function */ {
+  if (typeof element === 'string') {
+    var value/*: string */ = element
+    return function format () { return value }
+  }
+
+  var id = element[0]
+  var type = element[1]
+
+  if (parent && element[0] === '#') {
+    id = parent[0]
+    var offset = parent[2]
+    var formatter = (types.number || defaults.number)([ id, 'number' ], locale)
+    return function format (args) {
+      return formatter(getArg(id, args) - offset, args)
+    }
+  }
+
+  // pre-process children
+  var children
+  if (type === 'plural' || type === 'selectordinal') {
+    children = {}
+    Object.keys(element[3]).forEach(function (key) {
+      children[key] = interpretAST(element[3][key], element, locale, types, join)
+    })
+    element = [ element[0], element[1], element[2], children ]
+  } else if (element[2] && typeof element[2] === 'object') {
+    children = {}
+    Object.keys(element[2]).forEach(function (key) {
+      children[key] = interpretAST(element[2][key], element, locale, types, join)
+    })
+    element = [ element[0], element[1], children ]
+  }
+
+  var getFrmt = type && (types[type] || defaults[type])
+  if (getFrmt) {
+    var frmt = getFrmt(element, locale)
+    return function format (args) {
+      return frmt(getArg(id, args), args)
+    }
+  }
+
+  return join
+    ? function format (args) { return String(getArg(id, args)) }
+    : function format (args) { return getArg(id, args) }
+}
+
+function getArg (id/*: string */, args/*: ?Object */)/*: any */ {
+  if (args && (id in args)) return args[id]
+  var parts = id.split('.')
+  var a = args
+  for (var i = 0, ii = parts.length; a && i < ii; ++i) {
+    a = a[parts[i]]
+  }
+  return a
+}
+
+function interpretNumber (element/*: Placeholder */, locales/*: Locales */) {
+  var style = element[2]
+  var options = formats.number[style] || formats.parseNumberPattern(style) || formats.number.default
+  return new Intl.NumberFormat(locales, options).format
+}
+
+function interpretDuration (element/*: Placeholder */, locales/*: Locales */) {
+  var style = element[2]
+  var options = formats.duration[style] || formats.duration.default
+  var fs = new Intl.NumberFormat(locales, options.seconds).format
+  var fm = new Intl.NumberFormat(locales, options.minutes).format
+  var fh = new Intl.NumberFormat(locales, options.hours).format
+  var sep = /^fi$|^fi-|^da/.test(String(locales)) ? '.' : ':'
+
+  return function (s, args) {
+    s = +s
+    if (!isFinite(s)) return fs(s)
+    var h = ~~(s / 60 / 60) // ~~ acts much like Math.trunc
+    var m = ~~(s / 60 % 60)
+    var dur = (h ? (fh(Math.abs(h)) + sep) : '') +
+      fm(Math.abs(m)) + sep + fs(Math.abs(s % 60))
+    return s < 0 ? fh(-1).replace(fh(1), dur) : dur
+  }
+}
+
+function interpretDateTime (element/*: Placeholder */, locales/*: Locales */) {
+  var type = element[1]
+  var style = element[2]
+  var options = formats[type][style] || formats.parseDatePattern(style) || formats[type].default
+  return new Intl.DateTimeFormat(locales, options).format
+}
+
+function interpretPlural (element/*: Placeholder */, locales/*: Locales */) {
+  var type = element[1]
+  var pluralType = type === 'selectordinal' ? 'ordinal' : 'cardinal'
+  var offset = element[2]
+  var children = element[3]
+  var pluralRules
+  if (Intl.PluralRules && Intl.PluralRules.supportedLocalesOf(locales).length > 0) {
+    pluralRules = new Intl.PluralRules(locales, { type: pluralType })
+  } else {
+    var locale = lookupClosestLocale(locales, plurals)
+    var select = (locale && plurals[locale][pluralType]) || returnOther
+    pluralRules = { select: select }
+  }
+
+  return function (value, args) {
+    var clause =
+      children['=' + +value] ||
+      children[pluralRules.select(value - offset)] ||
+      children.other
+    return clause(args)
+  }
+}
+
+function returnOther (/*:: n:number */) { return 'other' }
+
+function interpretSelect (element/*: Placeholder */, locales/*: Locales */) {
+  var children = element[2]
+  return function (value, args) {
+    var clause = children[value] || children.other
+    return clause(args)
+  }
+}
+
+var defaults/*: Types */ = {
+  number: interpretNumber,
+  ordinal: interpretNumber, // TODO: support rbnf
+  spellout: interpretNumber, // TODO: support rbnf
+  duration: interpretDuration,
+  date: interpretDateTime,
+  time: interpretDateTime,
+  plural: interpretPlural,
+  selectordinal: interpretPlural,
+  select: interpretSelect
+}
+exports.types = defaults
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           The MIT License (MIT)
+
+Copyright (c) 2016 Zeit, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    

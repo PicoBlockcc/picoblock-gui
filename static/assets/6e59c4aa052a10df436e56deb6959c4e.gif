@@ -1,0 +1,1831 @@
+<img align="right" alt="Ajv logo" width="160" src="http://epoberezkin.github.io/ajv/images/ajv_logo.png">
+
+# Ajv: Another JSON Schema Validator
+
+The fastest JSON Schema validator for Node.js and browser. Supports draft-04/06/07.
+
+
+[![Build Status](https://travis-ci.org/epoberezkin/ajv.svg?branch=master)](https://travis-ci.org/epoberezkin/ajv)
+[![npm](https://img.shields.io/npm/v/ajv.svg)](https://www.npmjs.com/package/ajv)
+[![npm downloads](https://img.shields.io/npm/dm/ajv.svg)](https://www.npmjs.com/package/ajv)
+[![Coverage Status](https://coveralls.io/repos/epoberezkin/ajv/badge.svg?branch=master&service=github)](https://coveralls.io/github/epoberezkin/ajv?branch=master)
+[![Greenkeeper badge](https://badges.greenkeeper.io/epoberezkin/ajv.svg)](https://greenkeeper.io/)
+[![Gitter](https://img.shields.io/gitter/room/ajv-validator/ajv.svg)](https://gitter.im/ajv-validator/ajv)
+
+
+## Using version 6
+
+[JSON Schema draft-07](http://json-schema.org/latest/json-schema-validation.html) is published.
+
+[Ajv version 6.0.0](https://github.com/epoberezkin/ajv/releases/tag/v6.0.0) that supports draft-07 is released. It may require either migrating your schemas or updating your code (to continue using draft-04 and v5 schemas, draft-06 schemas will be supported without changes).
+
+__Please note__: To use Ajv with draft-06 schemas you need to explicitly add the meta-schema to the validator instance:
+
+```javascript
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-06.json'));
+```
+
+To use Ajv with draft-04 schemas in addition to explicitly adding meta-schema you also need to use option schemaId:
+
+```javascript
+var ajv = new Ajv({schemaId: 'id'});
+// If you want to use both draft-04 and draft-06/07 schemas:
+// var ajv = new Ajv({schemaId: 'auto'});
+ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
+```
+
+
+## Contents
+
+- [Performance](#performance)
+- [Features](#features)
+- [Getting started](#getting-started)
+- [Frequently Asked Questions](https://github.com/epoberezkin/ajv/blob/master/FAQ.md)
+- [Using in browser](#using-in-browser)
+- [Command line interface](#command-line-interface)
+- Validation
+  - [Keywords](#validation-keywords)
+  - [Annotation keywords](#annotation-keywords)
+  - [Formats](#formats)
+  - [Combining schemas with $ref](#ref)
+  - [$data reference](#data-reference)
+  - NEW: [$merge and $patch keywords](#merge-and-patch-keywords)
+  - [Defining custom keywords](#defining-custom-keywords)
+  - [Asynchronous schema compilation](#asynchronous-schema-compilation)
+  - [Asynchronous validation](#asynchronous-validation)
+- Modifying data during validation
+  - [Filtering data](#filtering-data)
+  - [Assigning defaults](#assigning-defaults)
+  - [Coercing data types](#coercing-data-types)
+- API
+  - [Methods](#api)
+  - [Options](#options)
+  - [Validation errors](#validation-errors)
+- [Plugins](#plugins)
+- [Related packages](#related-packages)
+- [Packages using Ajv](#some-packages-using-ajv)
+- [Tests, Contributing, History, License](#tests)
+
+
+## Performance
+
+Ajv generates code using [doT templates](https://github.com/olado/doT) to turn JSON Schemas into super-fast validation functions that are efficient for v8 optimization.
+
+Currently Ajv is the fastest and the most standard compliant validator according to these benchmarks:
+
+- [json-schema-benchmark](https://github.com/ebdrup/json-schema-benchmark) - 50% faster than the second place
+- [jsck benchmark](https://github.com/pandastrike/jsck#benchmarks) - 20-190% faster
+- [z-schema benchmark](https://rawgit.com/zaggino/z-schema/master/benchmark/results.html)
+- [themis benchmark](https://cdn.rawgit.com/playlyfe/themis/master/benchmark/results.html)
+
+
+Performance of different validators by [json-schema-benchmark](https://github.com/ebdrup/json-schema-benchmark):
+
+[![performance](https://chart.googleapis.com/chart?chxt=x,y&cht=bhs&chco=76A4FB&chls=2.0&chbh=32,4,1&chs=600x416&chxl=-1:|djv|ajv|json-schema-validator-generator|jsen|is-my-json-valid|themis|z-schema|jsck|skeemas|json-schema-library|tv4&chd=t:100,98,72.1,66.8,50.1,15.1,6.1,3.8,1.2,0.7,0.2)](https://github.com/ebdrup/json-schema-benchmark/blob/master/README.md#performance)
+
+
+## Features
+
+- Ajv implements full JSON Schema [draft-06/07](http://json-schema.org/) and draft-04 standards:
+  - all validation keywords (see [JSON Schema validation keywords](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md))
+  - full support of remote refs (remote schemas have to be added with `addSchema` or compiled to be available)
+  - support of circular references between schemas
+  - correct string lengths for strings with unicode pairs (can be turned off)
+  - [formats](#formats) defined by JSON Schema draft-07 standard and custom formats (can be turned off)
+  - [validates schemas against meta-schema](#api-validateschema)
+- supports [browsers](#using-in-browser) and Node.js 0.10-8.x
+- [asynchronous loading](#asynchronous-schema-compilation) of referenced schemas during compilation
+- "All errors" validation mode with [option allErrors](#options)
+- [error messages with parameters](#validation-errors) describing error reasons to allow creating custom error messages
+- i18n error messages support with [ajv-i18n](https://github.com/epoberezkin/ajv-i18n) package
+- [filtering data](#filtering-data) from additional properties
+- [assigning defaults](#assigning-defaults) to missing properties and items
+- [coercing data](#coercing-data-types) to the types specified in `type` keywords
+- [custom keywords](#defining-custom-keywords)
+- draft-06/07 keywords `const`, `contains`, `propertyNames` and `if/then/else`
+- draft-06 boolean schemas (`true`/`false` as a schema to always pass/fail).
+- keywords `switch`, `patternRequired`, `formatMaximum` / `formatMinimum` and `formatExclusiveMaximum` / `formatExclusiveMinimum` from [JSON Schema extension proposals](https://github.com/json-schema/json-schema/wiki/v5-Proposals) with [ajv-keywords](https://github.com/epoberezkin/ajv-keywords) package
+- [$data reference](#data-reference) to use values from the validated data as values for the schema keywords
+- [asynchronous validation](#asynchronous-validation) of custom formats and keywords
+
+Currently Ajv is the only validator that passes all the tests from [JSON Schema Test Suite](https://github.com/json-schema/JSON-Schema-Test-Suite) (according to [json-schema-benchmark](https://github.com/ebdrup/json-schema-benchmark), apart from the test that requires that `1.0` is not an integer that is impossible to satisfy in JavaScript).
+
+
+## Install
+
+```
+npm install ajv
+```
+
+
+## <a name="usage"></a>Getting started
+
+Try it in the Node.js REPL: https://tonicdev.com/npm/ajv
+
+
+The fastest validation call:
+
+```javascript
+var Ajv = require('ajv');
+var ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+var validate = ajv.compile(schema);
+var valid = validate(data);
+if (!valid) console.log(validate.errors);
+```
+
+or with less code
+
+```javascript
+// ...
+var valid = ajv.validate(schema, data);
+if (!valid) console.log(ajv.errors);
+// ...
+```
+
+or
+
+```javascript
+// ...
+var valid = ajv.addSchema(schema, 'mySchema')
+               .validate('mySchema', data);
+if (!valid) console.log(ajv.errorsText());
+// ...
+```
+
+See [API](#api) and [Options](#options) for more details.
+
+Ajv compiles schemas to functions and caches them in all cases (using schema serialized with [fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify) or a custom function as a key), so that the next time the same schema is used (not necessarily the same object instance) it won't be compiled again.
+
+The best performance is achieved when using compiled functions returned by `compile` or `getSchema` methods (there is no additional function call).
+
+__Please note__: every time a validation function or `ajv.validate` are called `errors` property is overwritten. You need to copy `errors` array reference to another variable if you want to use it later (e.g., in the callback). See [Validation errors](#validation-errors)
+
+
+## Using in browser
+
+You can require Ajv directly from the code you browserify - in this case Ajv will be a part of your bundle.
+
+If you need to use Ajv in several bundles you can create a separate UMD bundle using `npm run bundle` script (thanks to [siddo420](https://github.com/siddo420)).
+
+Then you need to load Ajv in the browser:
+```html
+<script src="ajv.min.js"></script>
+```
+
+This bundle can be used with different module systems; it creates global `Ajv` if no module system is found.
+
+The browser bundle is available on [cdnjs](https://cdnjs.com/libraries/ajv).
+
+Ajv is tested with these browsers:
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/epoberezkin.svg)](https://saucelabs.com/u/epoberezkin)
+
+__Please note__: some frameworks, e.g. Dojo, may redefine global require in such way that is not compatible with CommonJS module format. In such case Ajv bundle has to be loaded before the framework and then you can use global Ajv (see issue [#234](https://github.com/epoberezkin/ajv/issues/234)).
+
+
+## Command line interface
+
+CLI is available as a separate npm package [ajv-cli](https://github.com/jessedc/ajv-cli). It supports:
+
+- compiling JSON Schemas to test their validity
+- BETA: generating standalone module exporting a validation function to be used without Ajv (using [ajv-pack](https://github.com/epoberezkin/ajv-pack))
+- migrate schemas to draft-07 (using [json-schema-migrate](https://github.com/epoberezkin/json-schema-migrate))
+- validating data file(s) against JSON Schema
+- testing expected validity of data against JSON Schema
+- referenced schemas
+- custom meta-schemas
+- files in JSON and JavaScript format
+- all Ajv options
+- reporting changes in data after validation in [JSON-patch](https://tools.ietf.org/html/rfc6902) format
+
+
+## Validation keywords
+
+Ajv supports all validation keywords from draft-07 of JSON Schema standard:
+
+- [type](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#type)
+- [for numbers](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-numbers) - maximum, minimum, exclusiveMaximum, exclusiveMinimum, multipleOf
+- [for strings](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-strings) - maxLength, minLength, pattern, format
+- [for arrays](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-arrays) - maxItems, minItems, uniqueItems, items, additionalItems, [contains](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#contains)
+- [for objects](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-objects) - maxProperties, minProperties, required, properties, patternProperties, additionalProperties, dependencies, [propertyNames](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#propertynames)
+- [for all types](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#keywords-for-all-types) - enum, [const](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#const)
+- [compound keywords](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#compound-keywords) - not, oneOf, anyOf, allOf, [if/then/else](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#ifthenelse)
+
+With [ajv-keywords](https://github.com/epoberezkin/ajv-keywords) package Ajv also supports validation keywords from [JSON Schema extension proposals](https://github.com/json-schema/json-schema/wiki/v5-Proposals) for JSON Schema standard:
+
+- [patternRequired](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#patternrequired-proposed) - like `required` but with patterns that some property should match.
+- [formatMaximum, formatMinimum, formatExclusiveMaximum, formatExclusiveMinimum](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md#formatmaximum--formatminimum-and-exclusiveformatmaximum--exclusiveformatminimum-proposed) - setting limits for date, time, etc.
+
+See [JSON Schema validation keywords](https://github.com/epoberezkin/ajv/blob/master/KEYWORDS.md) for more details.
+
+
+## Annotation keywords
+
+JSON Schema specification defines several annotation keywords that describe schema itself but do not perform any validation.
+
+- `title` and `description`: information about the data represented by that schema
+- `$comment` (NEW in draft-07): information for developers. Wi# ms
+
+[![Build Status](https://travis-ci.org/zeit/ms.svg?branch=master)](https://travis-ci.org/zeit/ms)
+[![Slack Channel](http://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
+
+Use this package to easily convert various time formats to milliseconds.
+
+## Examples
+
+```js
+ms('2 days')  // 172800000
+ms('1d')      // 86400000
+ms('10h')     // 36000000
+ms('2.5 hrs') // 9000000
+ms('2h')      // 7200000
+ms('1m')      // 60000
+ms('5s')      // 5000
+ms('1y')      // 31557600000
+ms('100')     // 100
+ms('-3 days') // -259200000
+ms('-1h')     // -3600000
+ms('-200')    // -200
+```
+
+### Convert from Milliseconds
+
+```js
+ms(60000)             // "1m"
+ms(2 * 60000)         // "2m"
+ms(-3 * 60000)        // "-3m"
+ms(ms('10 hours'))    // "10h"
+```
+
+### Time Format Written-Out
+
+```js
+ms(60000, { long: true })             // "1 minute"
+ms(2 * 60000, { long: true })         // "2 minutes"
+ms(-3 * 60000, { long: true })        // "-3 minutes"
+ms(ms('10 hours'), { long: true })    // "10 hours"
+```
+
+## Features
+
+- Works both in [Node.js](https://nodejs.org) and in the browser
+- If a number is supplied to `ms`, a string with a unit is returned
+- If a string that contains the number is supplied, it returns it as a number (e.g.: it returns `100` for `'100'`)
+- If you pass a string with a number and a valid unit, the number of equivalent milliseconds is returned
+
+## Related Packages
+
+- [ms.macro](https://github.com/knpwrs/ms.macro) - Run `ms` as a macro at build-time.
+
+## Caught a Bug?
+
+1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
+2. Link the package to the global module directory: `npm link`
+3. Within the module you want to test your local development instance of ms, just link it to the dependencies: `npm link ms`. Instead of the default one from npm, Node.js will now use your clone of ms!
+
+As always, you can run the tests using: `npm test`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              # ms
+
+[![Build Status](https://travis-ci.org/zeit/ms.svg?branch=master)](https://travis-ci.org/zeit/ms)
+[![Slack Channel](http://zeit-slackin.now.sh/badge.svg)](https://zeit.chat/)
+
+Use this package to easily convert various time formats to milliseconds.
+
+## Examples
+
+```js
+ms('2 days')  // 172800000
+ms('1d')      // 86400000
+ms('10h')     // 36000000
+ms('2.5 hrs') // 9000000
+ms('2h')      // 7200000
+ms('1m')      // 60000
+ms('5s')      // 5000
+ms('1y')      // 31557600000
+ms('100')     // 100
+```
+
+### Convert from milliseconds
+
+```js
+ms(60000)             // "1m"
+ms(2 * 60000)         // "2m"
+ms(ms('10 hours'))    // "10h"
+```
+
+### Time format written-out
+
+```js
+ms(60000, { long: true })             // "1 minute"
+ms(2 * 60000, { long: true })         // "2 minutes"
+ms(ms('10 hours'), { long: true })    // "10 hours"
+```
+
+## Features
+
+- Works both in [node](https://nodejs.org) and in the browser.
+- If a number is supplied to `ms`, a string with a unit is returned.
+- If a string that contains the number is supplied, it returns it as a number (e.g.: it returns `100` for `'100'`).
+- If you pass a string with a number and a valid unit, the number of equivalent ms is returned.
+
+## Caught a bug?
+
+1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
+2. Link the package to the global module directory: `npm link`
+3. Within the module you want to test your local development instance of ms, just link it to the dependencies: `npm link ms`. Instead of the default one from npm, node will now use your clone of ms!
+
+As always, you can run the tests using: `npm test`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       2.1.28 / 2021-01-01
+===================
+
+  * deps: mime-db@1.45.0
+    - Add `application/ubjson` with extension `.ubj`
+    - Add `image/avif` with extension `.avif`
+    - Add `image/ktx2` with extension `.ktx2`
+    - Add extension `.dbf` to `application/vnd.dbf`
+    - Add extension `.rar` to `application/vnd.rar`
+    - Add extension `.td` to `application/urc-targetdesc+xml`
+    - Add new upstream MIME types
+    - Fix extension of `application/vnd.apple.keynote` to be `.key`
+
+2.1.27 / 2020-04-23
+===================
+
+  * deps: mime-db@1.44.0
+    - Add charsets from IANA
+    - Add extension `.cjs` to `application/node`
+    - Add new upstream MIME types
+
+2.1.26 / 2020-01-05
+===================
+
+  * deps: mime-db@1.43.0
+    - Add `application/x-keepass2` with extension `.kdbx`
+    - Add extension `.mxmf` to `audio/mobile-xmf`
+    - Add extensions from IANA for `application/*+xml` types
+    - Add new upstream MIME types
+
+2.1.25 / 2019-11-12
+===================
+
+  * deps: mime-db@1.42.0
+    - Add new upstream MIME types
+    - Add `application/toml` with extension `.toml`
+    - Add `image/vnd.ms-dds` with extension `.dds`
+
+2.1.24 / 2019-04-20
+===================
+
+  * deps: mime-db@1.40.0
+    - Add extensions from IANA for `model/*` types
+    - Add `text/mdx` with extension `.mdx`
+
+2.1.23 / 2019-04-17
+===================
+
+  * deps: mime-db@~1.39.0
+    - Add extensions `.siv` and `.sieve` to `application/sieve`
+    - Add new upstream MIME types
+
+2.1.22 / 2019-02-14
+===================
+
+  * deps: mime-db@~1.38.0
+    - Add extension `.nq` to `application/n-quads`
+    - Add extension `.nt` to `application/n-triples`
+    - Add new upstream MIME types
+    - Mark `text/less` as compressible
+
+2.1.21 / 2018-10-19
+===================
+
+  * deps: mime-db@~1.37.0
+    - Add extensions to HEIC image types
+    - Add new upstream MIME types
+
+2.1.20 / 2018-08-26
+===================
+
+  * deps: mime-db@~1.36.0
+    - Add Apple file extensions from IANA
+    - Add extensions from IANA for `image/*` types
+    - Add new upstream MIME types
+
+2.1.19 / 2018-07-17
+===================
+
+  * deps: mime-db@~1.35.0
+    - Add extension `.csl` to `application/vnd.citationstyles.style+xml`
+    - Add extension `.es` to `application/ecmascript`
+    - Add extension `.owl` to `application/rdf+xml`
+    - Add new upstream MIME types
+    - Add UTF-8 as default charset for `text/turtle`
+
+2.1.18 / 2018-02-16
+===================
+
+  * deps: mime-db@~1.33.0
+    - Add `application/raml+yaml` with extension `.raml`
+    - Add `application/wasm` with extension `.wasm`
+    - Add `text/shex` with extension `.shex`
+    - Add extensions for JPEG-2000 images
+    - Add extensions from IANA for `message/*` types
+    - Add new upstream MIME types
+    - Update font MIME types
+    - Update `text/hjson` to registered `application/hjson`
+
+2.1.17 / 2017-09-01
+===================
+
+  * deps: mime-db@~1.30.0
+    - Add `application/vnd.ms-outlook`
+    - Add `application/x-arj`
+    - Add extension `.mjs` to `application/javascript`
+    - Add glTF types and extensions
+    - Add new upstream MIME types
+    - Add `text/x-org`
+    - Add VirtualBox MIME types
+    - Fix `source` records for `video/*` types that are IANA
+    - Update `font/opentype` to registered `font/otf`
+
+2.1.16 / 2017-07-24
+===================
+
+  * deps: mime-db@~1.29.0
+    - Add `application/fido.trusted-apps+json`
+    - Add extension `.wadl` to `application/vnd.sun.wadl+xml`
+    - Add extension `.gz` to `application/gzip`
+    - Add new upstream MIME types
+    - Update extensions `.md` and `.markdown` to be `text/markdown`
+
+2.1.15 / 2017-03-23
+===================
+
+  * deps: mime-db@~1.27.0
+    - Add new mime types
+    - Add `image/apng`
+
+2.1.14 / 2017-01-14
+===================
+
+  * deps: mime-db@~1.26.0
+    - Add new mime types
+
+2.1.13 / 2016-11-18
+===================
+
+  * deps: mime-db@~1.25.0
+    - Add new mime types
+
+2.1.12 / 2016-09-18
+===================
+
+  * deps: mime-db@~1.24.0
+    - Add new mime types
+    - Add `audio/mp3`
+
+2.1.11 / 2016-05-01
+===================
+
+  * deps: mime-db@~1.23.0
+    - Add new mime types
+
+2.1.10 / 2016-02-15
+===================
+
+  * deps: mime-db@~1.22.0
+    - Add new mime types
+    - Fix extension of `application/dash+xml`
+    - Update primary extension for `audio/mp4`
+
+2.1.9 / 2016-01-06
+==================
+
+  * deps: mime-db@~1.21.0
+    - Add new mime types
+
+2.1.8 / 2015-11-30
+==================
+
+  * deps: mime-db@~1.20.0
+    - Add new mime types
+
+2.1.7 / 2015-09-20
+==================
+
+  * deps: mime-db@~1.19.0
+    - Add new mime types
+
+2.1.6 / 2015-09-03
+==================
+
+  * deps: mime-db@~1.18.0
+    - Add new mime types
+
+2.1.5 / 2015-08-20
+==================
+
+  * deps: mime-db@~1.17.0
+    - Add new mime types
+
+2.1.4 / 2015-07-30
+==================
+
+  * deps: mime-db@~1.16.0
+    - Add new mime types
+
+2.1.3 / 2015-07-13
+==================
+
+  * deps: mime-db@~1.15.0
+    - Add new mime types
+
+2.1.2 / 2015-06-25
+==================
+
+  * deps: mime-db@~1.14.0
+    - Add new mime types
+
+2.1.1 / 2015-06-08
+==================
+
+  * perf: fix deopt during mapping
+
+2.1.0 / 2015-06-07
+==================
+
+  * Fix incorrectly treating extension-less file name as extension
+    - i.e. `'path/to/json'` will no longer return `application/json`
+  * Fix `.charset(type)` to accept parameters
+  * Fix `.charset(type)` to match case-insensitive
+  * Improve generation of extension to MIME mapping
+  * Refactor internals for readability and no argument reassignment
+  * Prefer `application/*` MIME types from the same source
+  * Prefer any type over `application/octet-stream`
+  * deps: mime-db@~1.13.0
+    - Add nginx as a source
+    - Add new mime types
+
+2.0.14 / 2015-06-06
+===================
+
+  * deps: mime-db@~1.12.0
+    - Add new mime types
+
+2.0.13 / 2015-05-31
+===================
+
+  * deps: mime-db@~1.11.0
+    - Add new mime types
+
+2.0.12 / 2015-05-19
+===================
+
+  * deps: mime-db@~1.10.0
+    - Add new mime types
+
+2.0.11 / 2015-05-05
+===================
+
+  * deps: mime-db@~1.9.1
+    - Add new mime types
+
+2.0.10 / 2015-03-13
+===================
+
+  * deps: mime-db@~1.8.0
+    - Add new mime types
+
+2.0.9 / 2015-02-09
+==================
+
+  * deps: mime-db@~1.7.0
+    - Add new mime types
+    - Community extensions ownership transferred from `node-mime`
+
+2.0.8 / 2015-01-29
+==================
+
+  * deps: mime-db@~1.6.0
+    - Add new mime types
+
+2.0.7 / 2014-12-30
+==================
+
+  * deps: mime-db@~1.5.0
+    - Add new mime types
+    - Fix various invalid MIME type entries
+
+2.0.6 / 2014-12-30
+==================
+
+  * deps: mime-db@~1.4.0
+    - Add new mime types
+    - Fix various invalid MIME type entries
+    - Remove example template MIME types
+
+2.0.5 / 2014-12-29
+==================
+
+  * deps: mime-db@~1.3.1
+    - Fix missing extensions
+
+2.0.4 / 2014-12-10
+==================
+
+  * deps: mime-db@~1.3.0
+    - Add new mime types
+
+2.0.3 / 2014-11-09
+==================
+
+  * deps: mime-db@~1.2.0
+    - Add new mime types
+
+2.0.2 / 2014-09-28
+==================
+
+  * deps: mime-db@~1.1.0
+    - Add new mime types
+    - Add additional compressible
+    - Update charsets
+
+2.0.1 / 2014-09-07
+==================
+
+  * Support Node.js 0.6
+
+2.0.0 / 2014-09-02
+==================
+
+  * Use `mime-db`
+  * Remove `.define()`
+
+1.0.2 / 2014-08-04
+==================
+
+  * Set charset=utf-8 for `text/javascript`
+
+1.0.1 / 2014-06-24
+==================
+
+  * Add `text/jsx` type
+
+1.0.0 / 2014-05-12
+==================
+
+  * Return `false` for unknown types
+  * Set charset=utf-8 for `application/json`
+
+0.1.0 / 2014-05-02
+==================
+
+  * Initial release
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              /*!
+ * http-errors
+ * Copyright(c) 2014 Jonathan Ong
+ * Copyright(c) 2016 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
+'use strict'
+
+/**
+ * Module dependencies.
+ * @private
+ */
+
+var deprecate = require('depd')('http-errors')
+var setPrototypeOf = require('setprototypeof')
+var statuses = require('statuses')
+var inherits = require('inherits')
+
+/**
+ * Module exports.
+ * @public
+ */
+
+module.exports = createError
+module.exports.HttpError = createHttpErrorConstructor()
+
+// Populate exports for all constructors
+populateConstructorExports(module.exports, statuses.codes, module.exports.HttpError)
+
+/**
+ * Get the code class of a status code.
+ * @private
+ */
+
+function codeClass (status) {
+  return Number(String(status).charAt(0) + '00')
+}
+
+/**
+ * Create a new HTTP Error.
+ *
+ * @returns {Error}
+ * @public
+ */
+
+function createError () {
+  // so much arity going on ~_~
+  var err
+  var msg
+  var status = 500
+  var props = {}
+  for (var i = 0; i < arguments.length; i++) {
+    var arg = arguments[i]
+    if (arg instanceof Error) {
+      err = arg
+      status = err.status || err.statusCode || status
+      continue
+    }
+    switch (typeof arg) {
+      case 'string':
+        msg = arg
+        break
+      case 'number':
+        status = arg
+        if (i !== 0) {
+          deprecate('non-first-argument status code; replace with createError(' + arg + ', ...)')
+        }
+        break
+      case 'object':
+        props = arg
+        break
+    }
+  }
+
+  if (typeof status === 'number' && (status < 400 || status >= 600)) {
+    deprecate('non-error status code; use only 4xx or 5xx status codes')
+  }
+
+  if (typeof status !== 'number' ||
+    (!statuses[status] && (status < 400 || status >= 600))) {
+    status = 500
+  }
+
+  // constructor
+  var HttpError = createError[status] || createError[codeClass(status)]
+
+  if (!err) {
+    // create error
+    err = HttpError
+      ? new HttpError(msg)
+      : new Error(msg || statuses[status])
+    Error.captureStackTrace(err, createError)
+  }
+
+  if (!HttpError || !(err instanceof HttpError) || err.status !== status) {
+    // add properties to generic error
+    err.expose = status < 500
+    err.status = err.statusCode = status
+  }
+
+  for (var key in props) {
+    if (key !== 'status' && key !== 'statusCode') {
+      err[key] = props[key]
+    }
+  }
+
+  return err
+}
+
+/**
+ * Create HTTP error abstract base class.
+ * @private
+ */
+
+function createHttpErrorConstructor () {
+  function HttpError () {
+    throw new TypeError('cannot construct abstract class')
+  }
+
+  inherits(HttpError, Error)
+
+  return HttpError
+}
+
+/**
+ * Create a constructor for a client error.
+ * @private
+ */
+
+function createClientErrorConstructor (HttpError, name, code) {
+  var className = name.match(/Error$/) ? name : name + 'Error'
+
+  function ClientError (message) {
+    // create the error object
+    var msg = message != null ? message : statuses[code]
+    var err = new Error(msg)
+
+    // capture a stack trace to the construction point
+    Error.captureStackTrace(err, ClientError)
+
+    // adjust the [[Prototype]]
+    setPrototypeOf(err, ClientError.prototype)
+
+    // redefine the error message
+    Object.defineProperty(err, 'message', {
+      enumerable: true,
+      configurable: true,
+      value: msg,
+      writable: true
+    })
+
+    // redefine the error name
+    Object.defineProperty(err, 'name', {
+      enumerable: false,
+      configurable: true,
+      value: className,
+      writable: true
+    })
+
+    return err
+  }
+
+  inherits(ClientError, HttpError)
+
+  ClientError.prototype.status = code
+  ClientError.prototype.statusCode = code
+  ClientError.prototype.expose = true
+
+  return ClientError
+}
+
+/**
+ * Create a constructor for a server error.
+ * @private
+ */
+
+function createServerErrorConstructor (HttpError, name, code) {
+  var className = name.match(/Error$/) ? name : name + 'Error'
+
+  function ServerError (message) {
+    // create the error object
+    var msg = message != null ? message : statuses[code]
+    var err = new Error(msg)
+
+    // capture a stack trace to the construction point
+    Error.captureStackTrace(err, ServerError)
+
+    // adjust the [[Prototype]]
+    setPrototypeOf(err, ServerError.prototype)
+
+    // redefine the error message
+    Object.defineProperty(err, 'message', {
+      enumerable: true,
+      configurable: true,
+      value: msg,
+      writable: true
+    })
+
+    // redefine the error name
+    Object.defineProperty(err, 'name', {
+      enumerable: false,
+      configurable: true,
+      value: className,
+      writable: true
+    })
+
+    return err
+  }
+
+  inherits(ServerError, HttpError)
+
+  ServerError.prototype.status = code
+  ServerError.prototype.statusCode = code
+  ServerError.prototype.expose = false
+
+  return ServerError
+}
+
+/**
+ * Populate the exports object with constructors for every error class.
+ * @private
+ */
+
+function populateConstructorExports (exports, codes, HttpError) {
+  codes.forEach(function forEachCode (code) {
+    var CodeError
+    var name = toIdentifier(statuses[code])
+
+    switch (codeClass(code)) {
+      case 400:
+        CodeError = createClientErrorConstructor(HttpError, name, code)
+        break
+      case 500:
+        CodeError = createServerErrorConstructor(HttpError, name, code)
+        break
+    }
+
+    if (CodeError) {
+      // export the constructor
+      exports[code] = CodeError
+      exports[name] = CodeError
+    }
+  })
+
+  // backwards-compatibility
+  exports["I'mateapot"] = deprecate.function(exports.ImATeapot,
+    '"I\'mateapot"; use "ImATeapot" instead')
+}
+
+/**
+ * Convert a string of words to a JavaScript identifier.
+ * @private
+ */
+
+function toIdentifier (str) {
+  return str.split(' ').map(function (token) {
+    return token.slice(0, 1).toUpperCase() + token.slice(1)
+  }).join('').replace(/[^ _0-9a-z]/gi, '')
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  (function(r){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=r()}else if(typeof define==="function"&&define.amd){define([],r)}else{var e;if(typeof window!=="undefined"){e=window}else if(typeof global!=="undefined"){e=global}else if(typeof self!=="undefined"){e=self}else{e=this}e.base64js=r()}})(function(){var r,e,t;return function r(e,t,n){function o(i,a){if(!t[i]){if(!e[i]){var u=typeof require=="function"&&require;if(!a&&u)return u(i,!0);if(f)return f(i,!0);var d=new Error("Cannot find module '"+i+"'");throw d.code="MODULE_NOT_FOUND",d}var c=t[i]={exports:{}};e[i][0].call(c.exports,function(r){var t=e[i][1][r];return o(t?t:r)},c,c.exports,r,e,t,n)}return t[i].exports}var f=typeof require=="function"&&require;for(var i=0;i<n.length;i++)o(n[i]);return o}({"/":[function(r,e,t){"use strict";t.byteLength=c;t.toByteArray=v;t.fromByteArray=s;var n=[];var o=[];var f=typeof Uint8Array!=="undefined"?Uint8Array:Array;var i="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";for(var a=0,u=i.length;a<u;++a){n[a]=i[a];o[i.charCodeAt(a)]=a}o["-".charCodeAt(0)]=62;o["_".charCodeAt(0)]=63;function d(r){var e=r.length;if(e%4>0){throw new Error("Invalid string. Length must be a multiple of 4")}return r[e-2]==="="?2:r[e-1]==="="?1:0}function c(r){return r.length*3/4-d(r)}function v(r){var e,t,n,i,a;var u=r.length;i=d(r);a=new f(u*3/4-i);t=i>0?u-4:u;var c=0;for(e=0;e<t;e+=4){n=o[r.charCodeAt(e)]<<18|o[r.charCodeAt(e+1)]<<12|o[r.charCodeAt(e+2)]<<6|o[r.charCodeAt(e+3)];a[c++]=n>>16&255;a[c++]=n>>8&255;a[c++]=n&255}if(i===2){n=o[r.charCodeAt(e)]<<2|o[r.charCodeAt(e+1)]>>4;a[c++]=n&255}else if(i===1){n=o[r.charCodeAt(e)]<<10|o[r.charCodeAt(e+1)]<<4|o[r.charCodeAt(e+2)]>>2;a[c++]=n>>8&255;a[c++]=n&255}return a}function l(r){return n[r>>18&63]+n[r>>12&63]+n[r>>6&63]+n[r&63]}function h(r,e,t){var n;var o=[];for(var f=e;f<t;f+=3){n=(r[f]<<16)+(r[f+1]<<8)+r[f+2];o.push(l(n))}return o.join("")}function s(r){var e;var t=r.length;var o=t%3;var f="";var i=[];var a=16383;for(var u=0,d=t-o;u<d;u+=a){i.push(h(r,u,u+a>d?d:u+a))}if(o===1){e=r[t-1];f+=n[e>>2];f+=n[e<<4&63];f+="=="}else if(o===2){e=(r[t-2]<<8)+r[t-1];f+=n[e>>10];f+=n[e>>4&63];f+=n[e<<2&63];f+="="}i.push(f);return i.join("")}},{}]},{},[])("/")});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 var Stream = require('stream')
+
+module.exports = MuteStream
+
+// var out = new MuteStream(process.stdout)
+// argument auto-pipes
+function MuteStream (opts) {
+  Stream.apply(this)
+  opts = opts || {}
+  this.writable = this.readable = true
+  this.muted = false
+  this.on('pipe', this._onpipe)
+  this.replace = opts.replace
+
+  // For readline-type situations
+  // This much at the start of a line being redrawn after a ctrl char
+  // is seen (such as backspace) won't be redrawn as the replacement
+  this._prompt = opts.prompt || null
+  this._hadControl = false
+}
+
+MuteStream.prototype = Object.create(Stream.prototype)
+
+Object.defineProperty(MuteStream.prototype, 'constructor', {
+  value: MuteStream,
+  enumerable: false
+})
+
+MuteStream.prototype.mute = function () {
+  this.muted = true
+}
+
+MuteStream.prototype.unmute = function () {
+  this.muted = false
+}
+
+Object.defineProperty(MuteStream.prototype, '_onpipe', {
+  value: onPipe,
+  enumerable: false,
+  writable: true,
+  configurable: true
+})
+
+function onPipe (src) {
+  this._src = src
+}
+
+Object.defineProperty(MuteStream.prototype, 'isTTY', {
+  get: getIsTTY,
+  set: setIsTTY,
+  enumerable: true,
+  configurable: true
+})
+
+function getIsTTY () {
+  return( (this._dest) ? this._dest.isTTY
+        : (this._src) ? this._src.isTTY
+        : false
+        )
+}
+
+// basically just get replace the getter/setter with a regular value
+function setIsTTY (isTTY) {
+  Object.defineProperty(this, 'isTTY', {
+    value: isTTY,
+    enumerable: true,
+    writable: true,
+    configurable: true
+  })
+}
+
+Object.defineProperty(MuteStream.prototype, 'rows', {
+  get: function () {
+    return( this._dest ? this._dest.rows
+          : this._src ? this._src.rows
+          : undefined )
+  }, enumerable: true, configurable: true })
+
+Object.defineProperty(MuteStream.prototype, 'columns', {
+  get: function () {
+    return( this._dest ? this._dest.columns
+          : this._src ? this._src.columns
+          : undefined )
+  }, enumerable: true, configurable: true })
+
+
+MuteStream.prototype.pipe = function (dest) {
+  this._dest = dest
+  return Stream.prototype.pipe.call(this, dest)
+}
+
+MuteStream.prototype.pause = function () {
+  if (this._src) return this._src.pause()
+}
+
+MuteStream.prototype.resume = function () {
+  if (this._src) return this._src.resume()
+}
+
+MuteStream.prototype.write = function (c) {
+  if (this.muted) {
+    if (!this.replace) return true
+    if (c.match(/^\u001b/)) {
+      this._hadControl = true
+      return this.emit('data', c)
+    } else {
+      if (this._prompt && this._hadControl &&
+          c.indexOf(this._prompt) === 0) {
+        this._hadControl = false
+        this.emit('data', this._prompt)
+        c = c.substr(this._prompt.length)
+      }
+      c = c.toString().replace(/./g, this.replace)
+    }
+  }
+  this.emit('data', c)
+}
+
+MuteStream.prototype.end = function (c) {
+  if (this.muted) {
+    if (c && this.replace) {
+      c = c.toString().replace(/./g, this.replace)
+    } else {
+      c = null
+    }
+  }
+  if (c) this.emit('data', c)
+  this.emit('end')
+}
+
+function proxy (fn) { return function () {
+  var d = this._dest
+  var s = this._src
+  if (d && d[fn]) d[fn].apply(d, arguments)
+  if (s && s[fn]) s[fn].apply(s, arguments)
+}}
+
+MuteStream.prototype.destroy = proxy('destroy')
+MuteStream.prototype.destroySoon = proxy('destroySoon')
+MuteStream.prototype.close = proxy('close')
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        [![npm][npm]][npm-url]
+[![node][node]][node-url]
+[![deps][deps]][deps-url]
+[![test][test]][test-url]
+[![coverage][cover]][cover-url]
+[![chat][chat]][chat-url]
+
+<div align="center">
+  <a href="https://github.com/webpack/webpack">
+    <img width="200" height="200" src="https://cdn.rawgit.com/webpack/media/e7485eb2/logo/icon.svg">
+  </a>
+  <h1>Worker Loader</h1>
+  <p>This loader registers the script as <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">Web Worker</a><p>
+</div>
+
+
+<h2 align="center">Install</h2>
+
+```bash
+npm i -D worker-loader
+```
+
+<h2 align="center"><a href="https://webpack.js.org/concepts/loaders">Usage</a></h2>
+
+### `Inlined`
+
+**App.js**
+```js
+import Worker from 'worker-loader!./Worker.js';
+```
+
+### `Config`
+
+**webpack.config.js**
+```js
+{
+  module: {
+    rules: [
+      {
+        test: /\.worker\.js$/,
+        use: { loader: 'worker-loader' }
+      }
+    ]
+  }
+}
+```
+
+**App.js**
+```js
+import Worker from './file.worker.js';
+
+const worker = new Worker();
+
+worker.postMessage({ a: 1 });
+worker.onmessage = function (event) {};
+
+worker.addEventListener("message", function (event) {});
+```
+
+<h2 align="center">Options</h2>
+
+|Name|Type|Default|Description|
+|:--:|:--:|:-----:|:----------|
+|[**`name`**](#name)|`{String}`|`[hash].worker.js`|Set a custom name for the output script| 
+|[**`inline`**](#inline)|`{Boolean}`|`false`|Inline the worker as a BLOB|
+|[**`fallback`**](#fallback)|`{Boolean}`|`false`|Require a fallback for non-worker supporting environments|
+|[**`publicPath`**](#publicPath)|`{String}`|`null`|Override the path from which worker scripts are downloaded|
+
+### `name`
+
+To set a custom name for the output script, use the `name` parameter. The name may contain the string `[hash]`, which will be replaced with a content dependent hash for caching purposes. When using `name` alone `[hash]` is omitted.
+
+*webpack.config.js**
+```js
+{
+  loader: 'worker-loader',
+  options: { name: 'WorkerName.[hash].js' }
+}
+```
+
+### `inline`
+
+You can also inline the worker as a BLOB with the `inline` parameter
+
+**webpack.config.js**
+```js
+{
+  loader: 'worker-loader',
+  options: { inline: true }
+}
+```
+
+> ℹ️  Inline mode will also create chunks for browsers without support for inline workers, to disable this behavior just set `fallback` parameter as `false`
+
+**webpack.config.js**
+```js
+{
+  loader: 'worker-loader'
+  options: { inline: true, fallback: false }
+}
+```
+
+### `fallback`
+
+Require a fallback for non-worker supporting environments
+
+**webpack.config.js**
+```js
+{
+  loader: 'worker-loader'
+  options: { fallback: false }
+}
+```
+
+### `publicPath`
+
+Overrides the path from which worker scripts are downloaded. If not specified, the same public path used for other
+webpack assets is used
+
+**webpack.config.js**
+```js
+{
+  loader: 'worker-loader'
+  options: { publicPath: '/scripts/workers/' }
+}
+```
+
+<h2 align="center">Examples</h2>
+
+The worker file can import dependencies just like any other file
+
+**Worker.js**
+```js
+const _ = require('lodash')
+
+const obj = { foo: 'foo' }
+
+_.has(obj, 'foo')
+
+// Post data to parent thread
+self.postMessage({ foo: 'foo' })
+
+// Respond to message from parent thread
+self.addEventListener('message', (event) => console.log(event))  
+```
+
+### `Integrating with ES2015 Modules`
+
+> ℹ️  You can even use ES2015 Modules if you have the [`babel-loader`](https://github.com/babel/babel-loader) configured.
+
+**Worker.js**
+```js
+import _ from 'lodash'
+
+const obj = { foo: 'foo' }
+
+_.has(obj, 'foo')
+
+// Post data to parent thread
+self.postMessage({ foo: 'foo' })
+
+// Respond to message from parent thread
+self.addEventListener('message', (event) => console.log(event))
+```
+
+### `Integrating with TypeScript`
+
+To integrate with TypeScript, you will need to define a custom module for the exports of your worker
+
+**typings/custom.d.ts**
+```typescript
+declare module "worker-loader!*" {
+  class WebpackWorker extends Worker {
+    constructor();
+  }
+
+  export default WebpackWorker;
+}
+```
+
+**Worker.ts**
+```typescript
+const ctx: Worker = self as any;
+
+// Post data to parent thread
+ctx.postMessage({ foo: "foo" });
+
+// Respond to message from parent thread
+ctx.addEventListener("message", (event) => console.log(event));
+```
+
+**App.ts**
+```typescript
+import Worker from "worker-loader!./Worker";
+
+const worker = new Worker();
+
+worker.postMessage({ a: 1 });
+worker.onmessage = (event) => {};
+
+worker.addEventListener("message", (event) => {});
+```
+
+### `Cross-Origin Policy`
+
+[`WebWorkers`](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) are restricted by a [same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy), so if your `webpack` assets are not being served from the same origin as your application, their download may be blocked by your browser. This scenario can commonly occur if you are hosting your assets under a CDN domain. Even downloads from the `webpack-dev-server` could be blocked. There are two workarounds
+
+Firstly, you can inline the worker as a blob instead of downloading it as an external script via the [`inline`](#inline) parameter
+
+**App.js**
+```js
+import Worker from './file.worker.js';
+```
+
+**webpack.config.js**
+```js
+{
+  loader: 'worker-loader'
+  options: { inline: true }
+}
+```
+
+Secondly, you may override the base download URL for your worker script via the [`publicPath`](#publicpath) option
+
+**App.js**
+```js
+// This will cause the worker to be downloaded from `/workers/file.worker.js`
+import Worker from './file.worker.js';
+```
+
+**webpack.config.js**
+```js
+{
+  loader: 'worker-loader'
+  options: { publicPath: '/workers/' }
+}
+```
+
+<h2 align="center">Maintainers</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/TrySound">
+          <img width="150" height="150" src="https://avatars3.githubusercontent.com/u/5635476?v=3&s=150">
+        </a>
+        <br />
+        <a href="https://github.com/TrySound">Bogdan Chadkin</a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/bebraw">
+          <img width="150" height="150" src="https://github.com/bebraw.png?v=3&s=150">
+          </br>
+          Juho Vepsäläinen
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/d3viant0ne">
+          <img width="150" height="150" src="https://github.com/d3viant0ne.png?v=3&s=150">
+          </br>
+          Joshua Wiens
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/michael-ciniawsky">
+          <img width="150" height="150" src="https://github.com/michael-ciniawsky.png?v=3&s=150">
+          </br>
+          Michael Ciniawsky
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/evilebottnawi">
+          <img width="150" height="150" src="https://github.com/evilebottnawi.png?v=3&s=150">
+          </br>
+          Alexander Krasnoyarov
+        </a>
+      </td>
+    </tr>
+  <tbody>
+</table>
+
+
+[npm]: https://img.shields.io/npm/v/worker-loader.svg
+[npm-url]: https://npmjs.com/package/worker-loader
+
+[node]: https://img.shields.io/node/v/cache-loader.svg
+[node-url]: https://nodejs.org
+
+[deps]: https://david-dm.org/webpack-contrib/worker-loader.svg
+[deps-url]: https://david-dm.org/webpack-contrib/worker-loader
+
+[test]: http://img.shields.io/travis/webpack-contrib/worker-loader.svg
+[test-url]: https://travis-ci.org/webpack-contrib/worker-loader
+
+[cover]: https://codecov.io/gh/webpack-contrib/cache-loader/branch/master/graph/badge.svg
+[cover-url]: https://codecov.io/gh/webpack-contrib/cache-loader
+
+[chat]: https://img.shields.io/badge/gitter-webpack%2Fwebpack-brightgreen.svg
+[chat-url]: https://gitter.im/webpack/webpack
+                                                                                                                                                                                                                                                    # resolve-from [![Build Status](https://travis-ci.org/sindresorhus/resolve-from.svg?branch=master)](https://travis-ci.org/sindresorhus/resolve-from)
+
+> Resolve the path of a module like [`require.resolve()`](https://nodejs.org/api/globals.html#globals_require_resolve) but from a given path
+
+
+## Install
+
+```
+$ npm install --save resolve-from
+```
+
+
+## Usage
+
+```js
+const resolveFrom = require('resolve-from');
+
+// There is a file at `./foo/bar.js`
+
+resolveFrom('foo', './bar');
+//=> '/Users/sindresorhus/dev/test/foo/bar.js'
+```
+
+
+## API
+
+### resolveFrom(fromDir, moduleId)
+
+Like `require()`, throws when the module can't be found.
+
+### resolveFrom.silent(fromDir, moduleId)
+
+Returns `null` instead of throwing when the module can't be found.
+
+#### fromDir
+
+Type: `string`
+
+Directory to resolve from.
+
+#### moduleId
+
+Type: `string`
+
+What you would use in `require()`.
+
+
+## Tip
+
+Create a partial using a bound function if you want to resolve from the same `fromDir` multiple times:
+
+```js
+const resolveFromFoo = resolveFrom.bind(null, 'foo');
+
+resolveFromFoo('./bar');
+resolveFromFoo('./baz');
+```
+
+
+## Related
+
+- [resolve-cwd](https://github.com/sindresorhus/resolve-cwd) - Resolve the path of a module from the current working directory
+- [req-from](https://github.com/sindresorhus/req-from) - Require a module from a given path
+- [req-cwd](https://github.com/sindresorhus/req-cwd) - Require a module from the current working directory
+- [resolve-pkg](https://github.com/sindresorhus/resolve-pkg) - Resolve the path of a package regardless of it having an entry point
+- [lazy-req](https://github.com/sindresorhus/lazy-req) - Require modules lazily
+
+
+## License
+
+MIT © [Sindre Sorhus](https://sindresorhus.com)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ## **6.3.2**
+- [Fix] follow `allowPrototypes` option during merge (#201, #200)
+- [Dev Deps] update `eslint`
+- [Fix] chmod a-x
+- [Fix] support keys starting with brackets (#202, #200)
+- [Tests] up to `node` `v7.7`, `v6.10`,` v4.8`; disable osx builds since they block linux builds
+
+## **6.3.1**
+- [Fix] ensure that `allowPrototypes: false` does not ever shadow Object.prototype properties (thanks, @snyk!)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `browserify`, `iconv-lite`, `qs-iconv`, `tape`
+- [Tests] on all node minors; improve test matrix
+- [Docs] document stringify option `allowDots` (#195)
+- [Docs] add empty object and array values example (#195)
+- [Docs] Fix minor inconsistency/typo (#192)
+- [Docs] document stringify option `sort` (#191)
+- [Refactor] `stringify`: throw faster with an invalid encoder
+- [Refactor] remove unnecessary escapes (#184)
+- Remove contributing.md, since `qs` is no longer part of `hapi` (#183)
+
+## **6.3.0**
+- [New] Add support for RFC 1738 (#174, #173)
+- [New] `stringify`: Add `serializeDate` option to customize Date serialization (#159)
+- [Fix] ensure `utils.merge` handles merging two arrays
+- [Refactor] only constructors should be capitalized
+- [Refactor] capitalized var names are for constructors only
+- [Refactor] avoid using a sparse array
+- [Robustness] `formats`: cache `String#replace`
+- [Dev Deps] update `browserify`, `eslint`, `@ljharb/eslint-config`; add `safe-publish-latest`
+- [Tests] up to `node` `v6.8`, `v4.6`; improve test matrix
+- [Tests] flesh out arrayLimit/arrayFormat tests (#107)
+- [Tests] skip Object.create tests when null objects are not available
+- [Tests] Turn on eslint for test files (#175)
+
+## **6.2.1**
+- [Fix] ensure `key[]=x&key[]&key[]=y` results in 3, not 2, values
+- [Refactor] Be explicit and use `Object.prototype.hasOwnProperty.call`
+- [Tests] remove `parallelshell` since it does not reliably report failures
+- [Tests] up to `node` `v6.3`, `v5.12`
+- [Dev Deps] update `tape`, `eslint`, `@ljharb/eslint-config`, `qs-iconv`
+
+## [**6.2.0**](https://github.com/ljharb/qs/issues?milestone=36&state=closed)
+- [New] pass Buffers to the encoder/decoder directly (#161)
+- [New] add "encoder" and "decoder" options, for custom param encoding/decoding (#160)
+- [Fix] fix compacting of nested sparse arrays (#150)
+
+## [**6.1.0**](https://github.com/ljharb/qs/issues?milestone=35&state=closed)
+- [New] allowDots option for `stringify` (#151)
+- [Fix] "sort" option should work at a depth of 3 or more (#151)
+- [Fix] Restore `dist` directory; will be removed in v7 (#148)
+
+## [**6.0.2**](https://github.com/ljharb/qs/issues?milestone=33&state=closed)
+- Revert ES6 requirement and restore support for node down to v0.8.
+
+## [**6.0.1**](https://github.com/ljharb/qs/issues?milestone=32&state=closed)
+- [**#127**](https://github.com/ljharb/qs/pull/127) Fix engines definition in package.json
+
+## [**6.0.0**](https://github.com/ljharb/qs/issues?milestone=31&state=closed)
+- [**#124**](https://github.com/ljharb/qs/issues/124) Use ES6 and drop support for node < v4
+
+## **5.2.1**
+- [Fix] ensure `key[]=x&key[]&key[]=y` results in 3, not 2, values
+
+## [**5.2.0**](https://github.com/ljharb/qs/issues?milestone=30&state=closed)
+- [**#64**](https://github.com/ljharb/qs/issues/64) Add option to sort object keys in the query string
+
+## [**5.1.0**](https://github.com/ljharb/qs/issues?milestone=29&state=closed)
+- [**#117**](https://github.com/ljharb/qs/issues/117) make URI encoding stringified results optional
+- [**#106**](https://github.com/ljharb/qs/issues/106) Add flag `skipNulls` to optionally skip null values in stringify
+
+## [**5.0.0**](https://github.com/ljharb/qs/issues?milestone=28&state=closed)
+- [**#114**](https://github.com/ljharb/qs/issues/114) default allowDots to false
+- [**#100**](https://github.com/ljharb/qs/issues/100) include dist to npm
+
+## [**4.0.0**](https://github.com/ljharb/qs/issues?milestone=26&state=closed)
+- [**#98**](https://github.com/ljharb/qs/issues/98) make returning plain objects and allowing prototype overwriting properties optional
+
+## [**3.1.0**](https://github.com/ljharb/qs/issues?milestone=24&state=closed)
+- [**#89**](https://github.com/ljharb/qs/issues/89) Add option to disable "Transform dot notation to bracket notation"
+
+## [**3.0.0**](https://github.com/ljharb/qs/issues?milestone=23&state=closed)
+- [**#80**](https://github.com/ljharb/qs/issues/80) qs.parse silently drops properties
+- [**#77**](https://github.com/ljharb/qs/issues/77) Perf boost
+- [**#60**](https://github.com/ljharb/qs/issues/60) Add explicit option to disable array parsing
+- [**#74**](https://github.com/ljharb/qs/issues/74) Bad parse when turning array into object
+- [**#81**](https://github.com/ljharb/qs/issues/81) Add a `filter` option
+- [**#68**](https://github.com/ljharb/qs/issues/68) Fixed issue with recursion and passing strings into objects.
+- [**#66**](https://github.com/ljharb/qs/issues/66) Add mixed array and object dot notation support Closes: #47
+- [**#76**](https://github.com/ljharb/qs/issues/76) RFC 3986
+- [**#85**](https://github.com/ljharb/qs/issues/85) No equal sign
+- [**#84**](https://github.com/ljharb/qs/issues/84) update license attribute
+
+## [**2.4.1**](https://github.com/ljharb/qs/issues?milestone=20&state=closed)
+- [**#73**](https://github.com/ljharb/qs/issues/73) Property 'hasOwnProperty' of object #<Object> is not a function
+
+## [**2.4.0**](https://github.com/ljharb/qs/issues?milestone=19&state=closed)
+- [**#70**](https://github.com/ljharb/qs/issues/70) Add arrayFormat option
+
+## [**2.3.3**](https://github.com/ljharb/qs/issues?milestone=18&state=closed)
+- [**#59**](https://github.com/ljharb/qs/issues/59) make sure array indexes are >= 0, closes #57
+- [**#58**](https://github.com/ljharb/qs/issues/58) make qs usable for browser loader
+
+## [**2.3.2**](https://github.com/ljharb/qs/issues?milestone=17&state=closed)
+- [**#55**](https://github.com/ljharb/qs/issues/55) allow merging a string into an object
+
+## [**2.3.1**](https://github.com/ljharb/qs/issues?milestone=16&state=closed)
+- [**#52**](https://github.com/ljharb/qs/issues/52) Return "undefined" and "false" instead of throwing "TypeError".
+
+## [**2.3.0**](https://github.com/ljharb/qs/issues?milestone=15&state=closed)
+- [**#50**](https://github.com/ljharb/qs/issues/50) add option to omit array indices, closes #46
+
+## [**2.2.5**](https://github.com/ljharb/qs/issues?milestone=14&state=closed)
+- [**#39**](https://github.com/ljharb/qs/issues/39) Is there an alternative to Buffer.isBuffer?
+- [**#49**](https://github.com/ljharb/qs/issues/49) refactor utils.merge, fixes #45
+- [**#41**](https://github.com/ljharb/qs/issues/41) avoid browserifying Buffer, for #39
+
+## [**2.2.4**](https://github.com/ljharb/qs/issues?milestone=13&state=closed)
+- [**#38**](https://github.com/ljharb/qs/issues/38) how to handle object keys beginning with a number
+
+## [**2.2.3**](https://github.com/ljharb/qs/issues?milestone=12&state=closed)
+- [**#37**](https://github.com/ljharb/qs/issues/37) parser discards first empty value in array
+- [**#36**](https://github.com/ljharb/qs/issues/36) Update to lab 4.x
+
+## [**2.2.2**](https://github.com/ljharb/qs/issues?milestone=11&state=closed)
+- [**#33**](https://github.com/ljharb/qs/issues/33) Error when plain object in a value
+- [**#34**](https://github.com/ljharb/qs/issues/34) use Object.prototype.hasOwnProperty.call instead of obj.hasOwnProperty
+- [**#24**](https://github.com/ljharb/qs/issues/24) Changelog? Semver?
+
+## [**2.2.1**](https://github.com/ljharb/qs/issues?milestone=10&state=closed)
+- [**#32**](https://github.com/ljharb/qs/issues/32) account for circular references properly, closes #31
+- [**#31**](https://github.com/ljharb/qs/issues/31) qs.parse stackoverflow on circular objects
+
+## [**2.2.0**](https://github.com/ljharb/qs/issues?milestone=9&state=closed)
+- [**#26**](https://github.com/ljharb/qs/issues/26) Don't use Buffer global if it's not present
+- [**#30**](https://github.com/ljharb/qs/issues/30) Bug when merging non-object values into arrays
+- [**#29**](https://github.com/ljharb/qs/issues/29) Don't call Utils.clone at the top of Utils.merge
+- [**#23**](https://github.com/ljharb/qs/issues/23) Ability to not limit parameters?
+
+## [**2.1.0**](https://github.com/ljharb/qs/issues?milestone=8&state=closed)
+- [**#22**](https://github.com/ljharb/qs/issues/22) Enable using a RegExp as delimiter
+
+## [**2.0.0**](https://github.com/ljharb/qs/issues?milestone=7&state=closed)
+- [**#18**](https://github.com/ljharb/qs/issues/18) Why is there arrayLimit?
+- [**#20**](https://github.com/ljharb/qs/issues/20) Configurable parametersLimit
+- [**#21**](https://github.com/ljharb/qs/issues/21) make all limits optional, for #18, for #20
+
+## [**1.2.2**](https://github.com/ljharb/qs/issues?milestone=6&state=closed)
+- [**#19**](https://github.com/ljharb/qs/issues/19) Don't overwrite null values
+
+## [**1.2.1**](https://github.com/ljharb/qs/issues?milestone=5&state=closed)
+- [**#16**](https://github.com/ljharb/qs/issues/16) ignore non-string delimiters
+- [**#15**](https://github.com/ljharb/qs/issues/15) Close code block
+
+## [**1.2.0**](https://github.com/ljharb/qs/issues?milestone=4&state=closed)
+- [**#12**](https://github.com/ljharb/qs/issues/12) Add optional delim argument
+- [**#13**](https://github.com/ljharb/qs/issues/13) fix #11: flattened keys in array are now correctly parsed
+
+## [**1.1.0**](https://github.com/ljharb/qs/issues?milestone=3&state=closed)
+- [**#7**](https://github.com/ljharb/qs/issues/7) Empty values of a POST array disappear after being submitted
+- [**#9**](https://github.com/ljharb/qs/issues/9) Should not omit equals signs (=) when value is null
+- [**#6**](https://github.com/ljharb/qs/issues/6) Minor grammar fix in README
+
+## [**1.0.2**](https://github.com/ljharb/qs/issues?milestone=2&state=closed)
+- [**#5**](https://github.com/ljharb/qs/issues/5) array holes incorrectly copied into object on large index
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ## Pure JS character encoding conversion [![Build Status](https://travis-ci.org/ashtuchkin/iconv-lite.svg?branch=master)](https://travis-ci.org/ashtuchkin/iconv-lite)
+
+ * Doesn't need native code compilation. Works on Windows and in sandboxed environments like [Cloud9](http://c9.io).
+ * Used in popular projects like [Express.js (body_parser)](https://github.com/expressjs/body-parser), 
+   [Grunt](http://gruntjs.com/), [Nodemailer](http://www.nodemailer.com/), [Yeoman](http://yeoman.io/) and others.
+ * Faster than [node-iconv](https://github.com/bnoordhuis/node-iconv) (see below for performance comparison).
+ * Intuitive encode/decode API
+ * Streaming support for Node v0.10+
+ * [Deprecated] Can extend Node.js primitives (buffers, streams) to support all iconv-lite encodings.
+ * In-browser usage via [Browserify](https://github.com/substack/node-browserify) (~180k gzip compressed with Buffer shim included).
+ * Typescript [type definition file](https://github.com/ashtuchkin/iconv-lite/blob/master/lib/index.d.ts) included.
+ * React Native is supported (need to explicitly `npm install` two more modules: `buffer` and `stream`).
+ * License: MIT.
+
+[![NPM Stats](https://nodei.co/npm/iconv-lite.png?downloads=true&downloadRank=true)](https://npmjs.org/packages/iconv-lite/)
+
+## Usage
+### Basic API
+```javascript
+var iconv = require('iconv-lite');
+
+// Convert from an encoded buffer to js string.
+str = iconv.decode(Buffer.from([0x68, 0x65, 0x6c, 0x6c, 0x6f]), 'win1251');
+
+// Convert from js string to an encoded buffer.
+buf = iconv.encode("Sample input string", 'win1251');
+
+// Check if encoding is supported
+iconv.encodingExists("us-ascii")
+```
+
+### Streaming API (Node v0.10+)
+```javascript
+
+// Decode stream (from binary stream to js strings)
+http.createServer(function(req, res) {
+    var converterStream = iconv.decodeStream('win1251');
+    req.pipe(converterStream);
+
+    converterStream.on('data', function(str) {
+        console.log(str); // Do something with decoded strings, chunk-by-chunk.
+    });
+});
+
+// Convert encoding streaming example
+fs.createReadStream('file-in-win1251.txt')
+    .pipe(iconv.decodeStream('win1251'))
+    .pipe(iconv.encodeStream('ucs2'))
+    .pipe(fs.createWriteStream('file-in-ucs2.txt'));
+
+// Sugar: all encode/decode streams have .collect(cb) method to accumulate data.
+http.createServer(function(req, res) {
+    req.pipe(iconv.decodeStream('win1251')).collect(function(err, body) {
+        assert(typeof body == 'string');
+        console.log(body); // full request body string
+    });
+});
+```
+
+### [Deprecated] Extend Node.js own encodings
+> NOTE: This doesn't work on latest Node versions. See [details](https://github.com/ashtuchkin/iconv-lite/wiki/Node-v4-compatibility).
+
+```javascript
+// After this call all Node basic primitives will understand iconv-lite encodings.
+iconv.extendNodeEncodings();
+
+// Examples:
+buf = new Buffer(str, 'win1251');
+buf.write(str, 'gbk');
+str = buf.toString('latin1');
+assert(Buffer.isEncoding('iso-8859-15'));
+Buffer.byteLength(str, 'us-ascii');
+
+http.createServer(function(req, res) {
+    req.setEncoding('big5');
+    req.collect(function(err, body) {
+        console.log(body);
+    });
+});
+
+fs.createReadStream("file.txt", "shift_jis");
+
+// External modules are also supported (if they use Node primitives, which they probably do).
+request = require('request');
+request({
+    url: "http://github.com/", 
+    encoding: "cp932"
+});
+
+// To remove extensions
+iconv.undoExtendNodeEncodings();
+```
+
+## Supported encodings
+
+ *  All node.js native encodings: utf8, ucs2 / utf16-le, ascii, binary, base64, hex.
+ *  Additional unicode encodings: utf16, utf16-be, utf-7, utf-7-imap.
+ *  All widespread singlebyte encodings: Windows 125x family, ISO-8859 family, 
+    IBM/DOS codepages, Macintosh family, KOI8 family, all others supported by iconv library. 
+    Aliases like 'latin1', 'us-ascii' also supported.
+ *  All widespread multibyte encodings: CP932, CP936, CP949, CP950, GB2312, GBK, GB18030, Big5, Shift_JIS, EUC-JP.
+
+See [all supported encodings on wiki](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings).
+
+Most singlebyte encodings are generated automatically from [node-iconv](https://github.com/bnoordhuis/node-iconv). Thank you Ben Noordhuis and libiconv authors!
+
+Multibyte encodings are generated from [Unicode.org mappings](http://www.unicode.org/Public/MAPPINGS/) and [WHATWG Encoding Standard mappings](http://encoding.spec.whatwg.org/). Thank you, respective authors!
+
+
+## Encoding/decoding speed
+
+Comparison with node-iconv module (1000x256kb, on MacBook Pro, Core i5/2.6 GHz, Node v0.12.0). 
+Note: your results may vary, so please always check on your hardware.
+
+    operation             iconv@2.1.4   iconv-lite@0.4.7
+    ----------------------------------------------------------
+    encode('win1251')     ~96 Mb/s      ~320 Mb/s
+    decode('win1251')     ~95 Mb/s      ~246 Mb/s
+
+## BOM handling
+
+ * Decoding: BOM is stripped by default, unless overridden by passing `stripBOM: false` in options
+   (f.ex. `iconv.decode(buf, enc, {stripBOM: false})`).
+   A callback might also be given as a `stripBOM` parameter - it'll be called if BOM character was actually found.
+ * If you want to detect UTF-8 BOM when decoding other encodings, use [node-autodetect-decoder-stream](https://github.com/danielgindi/node-autodetect-decoder-stream) module.
+ * Encoding: No BOM added, unless overridden by `addBOM: true` option.
+
+## UTF-16 Encodings
+
+This library supports UTF-16LE, UTF-16BE and UTF-16 encodings. First two are straightforward, but UTF-16 is trying to be
+smart about endianness in the following ways:
+ * Decoding: uses BOM and 'spaces heuristic' to determine input endianness. Default is UTF-16LE, but can be 
+   overridden with `defaultEncoding: 'utf-16be'` option. Strips BOM unless `stripBOM: false`.
+ * Encoding: uses UTF-16LE and writes BOM by default. Use `addBOM: false` to override.
+
+## Other notes
+
+When decoding, be sure to supply a Buffer to decode() method, otherwise [bad things usually happen](https://github.com/ashtuchkin/iconv-lite/wiki/Use-Buffers-when-decoding).  
+Untranslatable characters are set to � or ?. No transliteration is currently supported.  
+Node versions 0.10.31 and 0.11.13 are buggy, don't use them (see #65, #77).  
+
+## Testing
+
+```bash
+$ git clone git@github.com:ashtuchkin/iconv-lite.git
+$ cd iconv-lite
+$ npm install
+$ npm test
+    
+$ # To view performance:
+$ node test/performance.js
+
+$ # To view test coverage:
+$ npm run coverage
+$ open coverage/lcov-report/index.html
+```
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          # ms
+
+![CI](https://github.com/vercel/ms/workflows/CI/badge.svg)
+
+Use this package to easily convert various time formats to milliseconds.
+
+## Examples
+
+```js
+ms('2 days')  // 172800000
+ms('1d')      // 86400000
+ms('10h')     // 36000000
+ms('2.5 hrs') // 9000000
+ms('2h')      // 7200000
+ms('1m')      // 60000
+ms('5s')      // 5000
+ms('1y')      // 31557600000
+ms('100')     // 100
+ms('-3 days') // -259200000
+ms('-1h')     // -3600000
+ms('-200')    // -200
+```
+
+### Convert from Milliseconds
+
+```js
+ms(60000)             // "1m"
+ms(2 * 60000)         // "2m"
+ms(-3 * 60000)        // "-3m"
+ms(ms('10 hours'))    // "10h"
+```
+
+### Time Format Written-Out
+
+```js
+ms(60000, { long: true })             // "1 minute"
+ms(2 * 60000, { long: true })         // "2 minutes"
+ms(-3 * 60000, { long: true })        // "-3 minutes"
+ms(ms('10 hours'), { long: true })    // "10 hours"
+```
+
+## Features
+
+- Works both in [Node.js](https://nodejs.org) and in the browser
+- If a number is supplied to `ms`, a string with a unit is returned
+- If a string that contains the number is supplied, it returns it as a number (e.g.: it returns `100` for `'100'`)
+- If you pass a string with a number and a valid unit, the number of equivalent milliseconds is returned
+
+## Related Packages
+
+- [ms.macro](https://github.com/knpwrs/ms.macro) - Run `ms` as a macro at build-time.
+
+## Caught a Bug?
+
+1. [Fork](https://help.github.com/articles/fork-a-repo/) this repository to your own GitHub account and then [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device
+2. Link the package to the global module directory: `npm link`
+3. Within the module you want to test your local development instance of ms, just link it to the dependencies: `npm link ms`.

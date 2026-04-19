@@ -1,0 +1,1796 @@
+import paper from '@scratch/paper';
+import {getHoveredItem} from '../hover';
+import {expandBy} from '../math';
+import {createGradientObject} from '../style-path';
+import GradientTypes from '../../lib/gradient-types';
+
+class FillTool extends paper.Tool {
+    static get TOLERANCE () {
+        return 2;
+    }
+    /**
+     * @param {function} setHoveredItem Callback to set the hovered item
+     * @param {function} clearHoveredItem Callback to clear the hovered item
+     * @param {!function} onUpdateImage A callback to call when the image visibly changes
+     */
+    constructor (setHoveredItem, clearHoveredItem, onUpdateImage) {
+        super();
+        this.setHoveredItem = setHoveredItem;
+        this.clearHoveredItem = clearHoveredItem;
+        this.onUpdateImage = onUpdateImage;
+
+        // We have to set these functions instead of just declaring them because
+        // paper.js tools hook up the listeners in the setter functions.
+        this.onMouseDown = this.handleMouseDown;
+        this.onMouseMove = this.handleMouseMove;
+        this.onMouseUp = this.handleMouseUp;
+
+        // Color to fill with
+        this.fillColor = null;
+        this.fillColor2 = null;
+        this.gradientType = null;
+
+        // The path that's being hovered over.
+        this.fillItem = null;
+        // The style property that we're applying the color to (either fill or stroke).
+        this.fillProperty = null;
+        // If we're hovering over a hole in a compound path, we can't just recolor it. This is the
+        // added item that's the same shape as the hole that's drawn over the hole when we fill a hole.
+        this.addedFillItem = null;
+        this.fillItemOrigColor = null;
+        this.prevHoveredItemId = null;
+    }
+    getHitOptions () {
+        const isAlmostClosedPath = function (item) {
+            return item instanceof paper.Path && item.segments.length > 2 &&
+                item.lastSegment.point.getDistance(item.firstSegment.point) < 8;
+        };
+        return {
+            segments: false,
+            stroke: true,
+            curves: false,
+            fill: true,
+            guide: false,
+            match: function (hitResult) {
+                // Allow fills to be hit only if the item has a fill already or the path is closed/nearly closed
+                const hitFill = hitResult.item.hasFill() || hitResult.item.closed || isAlmostClosedPath(hitResult.item);
+                if (hitResult.item instanceof paper.Path &&
+                    // Disallow hits that don't qualify for the fill criteria, but only if they're fills
+                    (hitFill || hitResult.type !== 'fill')) {
+                    return true;
+                }
+                if (hitResult.item instanceof paper.PointText) {
+                    return true;
+                }
+            },
+            hitUnfilledPaths: true,
+            // If the color is transparent/none, then we need to be able to hit "invisible" outlines so that we don't
+            // prevent ourselves from hitting an outline when we make it transparent via the fill preview, causing it to
+            // flicker back and forth between transparent/its previous color as we hit it, then stop hitting it, etc.
+            // If the color *is* visible, then don't hit "invisible" outlines, since this would add visible outlines to
+            // non-outlined shapes when you hovered over where their outlines would be.
+            hitUnstrokedPaths: this.gradientType === GradientTypes.SOLID && this.fillColor === null,
+            tolerance: FillTool.TOLERANCE / paper.view.zoom
+        };
+    }
+    setFillColor (fillColor) {
+        this.fillColor = fillColor;
+    }
+    setFillColor2 (fillColor2) {
+        this.fillColor2 = fillColor2;
+    }
+    setGradientType (gradientType) {
+        this.gradientType = gradientType;
+    }
+    /**
+     * To be called when the hovered item changes. When the select tool hovers over a
+     * new item, it compares against this to see if a hover item change event needs to
+     * be fired.
+     * @param {paper.Item} prevHoveredItemId ID of the highlight item that indicates the mouse is
+     *     over a given item currently
+     */
+    setPrevHoveredItemId (prevHoveredItemId) {
+        this.prevHoveredItemId = prevHoveredItemId;
+    }
+    updateFillPreview (event) {
+        const hoveredItem = getHoveredItem(event, this.getHitOptions(), true /* subselect */);
+        if ((!hoveredItem && this.prevHoveredItemId) || // There is no longer a hovered item
+                (hoveredItem && !this.prevHoveredItemId) || // There is now a hovered item
+                (hoveredItem && this.prevHoveredItemId &&
+                    hoveredItem.id !== this.prevHoveredItemId)) { // hovered item changed
+            this.setHoveredItem(hoveredItem ? hoveredItem.id : null);
+        }
+        const hitItem = hoveredItem ? hoveredItem.data.origItem : null;
+        const hitType = hoveredItem ? hoveredItem.data.hitResult.type : null;
+
+        // The hit "target" changes if we switch items or switch between fill/outline on the same item
+        const hitTargetChanged = hitItem !== this.fillItem || hitType !== this.fillProperty;
+
+        // Still hitting the same thing
+        if (!hitTargetChanged) {
+            // Only radial gradient needs to be updated
+            if (this.gradientType === GradientTypes.RADIAL) {
+                this._setFillItemColor(this.fillColor, this.fillColor2, this.gradientType, event.point);
+            }
+            return;
+        }
+        if (this.fillItem) {
+            if (this.addedFillItem) {
+                this.addedFillItem.remove();
+                this.addedFillItem = null;
+            } else {
+                this._setFillItemColor(this.fillItemOrigColor);
+            }
+            this.fillItemOrigColor = null;
+            this.fillItem = null;
+            this.fillProperty = null;
+        }
+        if (hitItem) {
+            this.fillItem = hitItem;
+            this.fillProperty = hitType;
+            const colorProp = hitType === 'fill' ? 'fillColor' : 'strokeColor';
+            this.fillItemOrigColor = hitItem[colorProp];
+            if (hitItem.parent instanceof paper.CompoundPath && hitItem.area < 0 && hitType === 'fill') { // hole
+                if (!this.fillColor) {
+                    // Hole filled with transparent is no-op
+                    this.fillItem = null;
+                    this.fillProperty = null;
+                    this.fillItemOrigColor = null;
+                    return;
+                }
+                // Make an item to fill the hole
+                this.addedFillItem = hitItem.clone();
+                this.addedFillItem.setClockwise(true);
+                this.addedFillItem.data.noHover = true;
+                this.addedFillItem.data.origItem = hitItem;
+                // This usually fixes it so there isn't a teeny tiny gap in between the fill and the outline
+                // when filling in a hole
+                expandBy(this.addedFillItem, .1);
+                this.addedFillItem.insertAbove(hitItem.parent);
+            } else if (this.fillItem.parent instanceof paper.CompoundPath) {
+                this.fillItemOrigColor = hitItem.parent[colorProp];
+            }
+            this._setFillItemColor(this.fillColor, this.fillColor2, this.gradientType, event.point);
+        }
+    }
+    handleMouseDown (event) {
+        // on touch, the user might touch-and-hold to preview what the fill tool would do
+        // if they don't move their finger at all after the "mouse down" event
+        // then this might be our only chance to give them a good preview
+        this.updateFillPreview(event);
+    }
+    handleMouseMove (event) {
+        this.updateFillPreview(event);
+    }
+    handleMouseUp (event) {
+        if (event.event.button > 0) return; // only first mouse button
+        if (this.fillItem) {
+            // If the hole we're filling in is the same color as the parent, and parent has no outline, remove the hole
+            if (this.addedFillItem &&
+                    this._noStroke(this.fillItem.parent) &&
+                    this.addedFillItem.fillColor.type !== 'gradient' &&
+                    this.fillItem.parent.fillColor.toCSS() === this.addedFillItem.fillColor.toCSS()) {
+                this.addedFillItem.remove();
+                this.addedFillItem = null;
+                let parent = this.fillItem.parent;
+                this.fillItem.remove();
+                parent = parent.reduce();
+                parent.fillColor = this.fillColor;
+            } else if (this.addedFillItem) {
+                // Fill in a hole.
+                this.addedFillItem.data.noHover = false;
+            } else if (!this.fillColor &&
+                    this.fillItem.data &&
+                    this.fillItem.data.origItem) {
+                // Filling a hole filler with transparent returns it to being gone
+                // instead of making a shape that's transparent
+                const group = this.fillItem.parent;
+                this.fillItem.remove();
+                if (!(group instanceof paper.Layer) && group.children.length === 1) {
+                    group.reduce();
+                }
+            }
+
+            this.clearHoveredItem();
+            this.fillItem = null;
+            this.fillProperty = null;
+            this.addedFillItem = null;
+            this.fillItemOrigColor = null;
+            this.onUpdateImage();
+        }
+    }
+    _noStroke (item) {
+        return !item.strokeColor ||
+                item.strokeColor.alpha === 0 ||
+                item.strokeWidth === 0;
+    }
+    // Either pass in a fully defined paper.Color as color1,
+    // or pass in 2 color strings, a gradient type, and a pointer location
+    _setFillItemColor (color1, color2, gradientType, pointerLocation) {
+        const item = this._getFillItem();
+        if (!item) return;
+        const colorProp = this.fillProperty === 'fill' ? 'fillColor' : 'strokeColor';
+        // Only create a gradient if specifically requested, else use color1 directly
+        // This ensures we do not set a gradient by accident (see scratch-paint#830).
+        if (gradientType && gradientType !== GradientTypes.SOLID) {
+            item[colorProp] = createGradientObject(
+                color1,
+                color2,
+                gradientType,
+                item.bounds,
+                pointerLocation,
+                item.strokeWidth
+            );
+        } else {
+            item[colorProp] = color1;
+        }
+    }
+    _getFillItem () {
+        if (this.addedFillItem) {
+            return this.addedFillItem;
+        } else if (this.fillItem && this.fillItem.parent instanceof paper.CompoundPath) {
+            return this.fillItem.parent;
+        }
+        return this.fillItem;
+    }
+    deactivateTool () {
+        if (this.fillItem) {
+            this._setFillItemColor(this.fillItemOrigColor);
+            this.fillItemOrigColor = null;
+            this.fillItem = null;
+            this.fillProperty = null;
+        }
+        this.clearHoveredItem();
+        this.setHoveredItem = null;
+        this.clearHoveredItem = null;
+    }
+}
+
+export default FillTool;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     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" data-paper-data="{&quot;origPos&quot;:null}" id="Layer_0_copy"/></g></g></svg>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    !function(n,i){"object"==typeof exports&&"undefined"!=typeof module?module.exports=i():"function"==typeof define&&define.amd?define(i):(n.ReactIntlLocaleData=n.ReactIntlLocaleData||{},n.ReactIntlLocaleData.ga=i())}(this,function(){"use strict";return[{locale:"ga",pluralRuleFunction:function(n,i){var e=String(n).split("."),a=Number(e[0])==n;return i?1==n?"one":"other":1==n?"one":2==n?"two":a&&n>=3&&n<=6?"few":a&&n>=7&&n<=10?"many":"other"},fields:{year:{displayName:"Bliain",relative:{0:"an bhliain seo",1:"an bhliain seo chugainn","-1":"anuraidh"},relativeTime:{future:{one:"i gceann {0} bhliain",two:"i gceann {0} bhliain",few:"i gceann {0} bliana",many:"i gceann {0} mbliana",other:"i gceann {0} bliain"},past:{one:"{0} bhliain ó shin",two:"{0} bhliain ó shin",few:"{0} bliana ó shin",many:"{0} mbliana ó shin",other:"{0} bliain ó shin"}}},"year-short":{displayName:"bl.",relative:{0:"an bhl. seo",1:"an bhl. seo chugainn","-1":"anuraidh"},relativeTime:{future:{one:"i gceann {0} bl.",two:"i gceann {0} bhl.",few:"i gceann {0} bl.",many:"i gceann {0} mbl.",other:"i gceann {0} bl."},past:{one:"{0} bhl. ó shin",two:"{0} bhl. ó shin",few:"{0} bl. ó shin",many:"{0} mbl. ó shin",other:"{0} bl. ó shin"}}},month:{displayName:"Mí",relative:{0:"an mhí seo",1:"an mhí seo chugainn","-1":"an mhí seo caite"},relativeTime:{future:{one:"i gceann {0} mhí",two:"i gceann {0} mhí",few:"i gceann {0} mhí",many:"i gceann {0} mí",other:"i gceann {0} mí"},past:{one:"{0} mhí ó shin",two:"{0} mhí ó shin",few:"{0} mhí ó shin",many:"{0} mí ó shin",other:"{0} mí ó shin"}}},"month-short":{displayName:"mí",relative:{0:"an mhí seo",1:"an mhí seo chugainn","-1":"an mhí seo caite"},relativeTime:{future:{one:"i gceann {0} mhí",two:"i gceann {0} mhí",few:"i gceann {0} mhí",many:"i gceann {0} mí",other:"i gceann {0} mí"},past:{one:"{0} mhí ó shin",two:"{0} mhí ó shin",few:"{0} mhí ó shin",many:"{0} mí ó shin",other:"{0} mí ó shin"}}},day:{displayName:"Lá",relative:{0:"inniu",1:"amárach",2:"arú amárach","-2":"arú inné","-1":"inné"},relativeTime:{future:{one:"i gceann {0} lá",two:"i gceann {0} lá",few:"i gceann {0} lá",many:"i gceann {0} lá",other:"i gceann {0} lá"},past:{one:"{0} lá ó shin",two:"{0} lá ó shin",few:"{0} lá ó shin",many:"{0} lá ó shin",other:"{0} lá ó shin"}}},"day-short":{displayName:"Lá",relative:{0:"inniu",1:"amárach",2:"arú amárach","-2":"arú inné","-1":"inné"},relativeTime:{future:{one:"i gceann {0} lá",two:"i gceann {0} lá",few:"i gceann {0} lá",many:"i gceann {0} lá",other:"i gceann {0} lá"},past:{one:"{0} lá ó shin",two:"{0} lá ó shin",few:"{0} lá ó shin",many:"{0} lá ó shin",other:"{0} lá ó shin"}}},hour:{displayName:"Uair",relative:{0:"an uair seo"},relativeTime:{future:{one:"i gceann {0} uair an chloig",two:"i gceann {0} uair an chloig",few:"i gceann {0} huaire an chloig",many:"i gceann {0} n-uaire an chloig",other:"i gceann {0} uair an chloig"},past:{one:"{0} uair an chloig ó shin",two:"{0} uair an chloig ó shin",few:"{0} huaire an chloig ó shin",many:"{0} n-uaire an chloig ó shin",other:"{0} uair an chloig ó shin"}}},"hour-short":{displayName:"uair",relative:{0:"an uair seo"},relativeTime:{future:{one:"i gceann {0} uair",two:"i gceann {0} uair",few:"i gceann {0} huaire",many:"i gceann {0} n-uaire",other:"i gceann {0} uair"},past:{one:"{0} uair ó shin",two:"{0} uair ó shin",few:"{0} huaire ó shin",many:"{0} n-uaire ó shin",other:"{0} uair ó shin"}}},minute:{displayName:"Nóiméad",relative:{0:"an nóiméad seo"},relativeTime:{future:{one:"i gceann {0} nóiméad",two:"i gceann {0} nóiméad",few:"i gceann {0} nóiméad",many:"i gceann {0} nóiméad",other:"i gceann {0} nóiméad"},past:{one:"{0} nóiméad ó shin",two:"{0} nóiméad ó shin",few:"{0} nóiméad ó shin",many:"{0} nóiméad ó shin",other:"{0} nóiméad ó shin"}}},"minute-short":{displayName:"nóim.",relative:{0:"an nóiméad seo"},relativeTime:{future:{one:"i gceann {0} nóim.",two:"i gceann {0} nóim.",few:"i gceann {0} nóim.",many:"i gceann {0} nóim.",other:"i gceann {0} nóim."},past:{one:"{0} nóim. ó shin",two:"{0} nóim. ó shin",few:"{0} nóim. ó shin",many:"{0} nóim. ó shin",other:"{0} nóim. ó shin"}}},second:{displayName:"Soicind",relative:{0:"anois"},relativeTime:{future:{one:"i gceann {0} soicind",two:"i gceann {0} shoicind",few:"i gceann {0} shoicind",many:"i gceann {0} soicind",other:"i gceann {0} soicind"},past:{one:"{0} soicind ó shin",two:"{0} shoicind ó shin",few:"{0} shoicind ó shin",many:"{0} soicind ó shin",other:"{0} soicind ó shin"}}},"second-short":{displayName:"soic.",relative:{0:"anois"},relativeTime:{future:{one:"i gceann {0} soic.",two:"i gceann {0} shoic.",few:"i gceann {0} shoic.",many:"i gceann {0} soic.",other:"i gceann {0} soic."},past:{one:"{0} soic. ó shin",two:"{0} shoic. ó shin",few:"{0} shoic. ó shin",many:"{0} soic. ó shin",other:"{0} soic. ó shin"}}}}}]});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          'use strict';
+
+var test = require('tape');
+
+if (typeof Symbol === 'function' && typeof Symbol() === 'symbol') {
+	test('has native Symbol support', function (t) {
+		t.equal(typeof Symbol, 'function');
+		t.equal(typeof Symbol(), 'symbol');
+		t.end();
+	});
+	return;
+}
+
+var hasSymbols = require('../../shams');
+
+test('polyfilled Symbols', function (t) {
+	/* eslint-disable global-require */
+	t.equal(hasSymbols(), false, 'hasSymbols is false before polyfilling');
+	require('core-js/fn/symbol');
+	require('core-js/fn/symbol/to-string-tag');
+
+	require('../tests')(t);
+
+	var hasSymbolsAfter = hasSymbols();
+	t.equal(hasSymbolsAfter, true, 'hasSymbols is true after polyfilling');
+	/* eslint-enable global-require */
+	t.end();
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             IntlPolyfill.__addLocaleData({locale:"hr-HR",date:{ca:["gregory","buddhist","chinese","coptic","dangi","ethioaa","ethiopic","generic","hebrew","indian","islamic","islamicc","japanese","persian","roc"],hourNo0:true,hour12:false,formats:{short:"{1} {0}",medium:"{1} {0}",full:"{1} 'u' {0}",long:"{1} 'u' {0}",availableFormats:{"d":"d.","E":"ccc",Ed:"E, d.",Ehm:"E h:mm a",EHm:"E HH:mm",Ehms:"E h:mm:ss a",EHms:"E HH:mm:ss",Gy:"y. G",GyMMM:"LLL y. G",GyMMMd:"d. MMM y. G",GyMMMEd:"E, d. MMM y. G","h":"h a","H":"HH",hm:"hh:mm a",Hm:"HH:mm",hms:"hh:mm:ss a",Hms:"HH:mm:ss",hmsv:"h:mm:ss a v",Hmsv:"HH:mm:ss v",hmv:"h:mm a v",Hmv:"HH:mm v","M":"L.",Md:"dd.MM.",MEd:"E, dd.MM.",MMdd:"dd. MM.",MMM:"LLL",MMMd:"d. MMM",MMMEd:"E, d. MMM",MMMMd:"d. MMMM",MMMMEd:"E, d. MMMM",ms:"mm:ss","y":"y.",yM:"MM.y.",yMd:"dd.MM.y.",yMEd:"E, dd.MM.y.",yMM:"MM. y.",yMMM:"LLL y.",yMMMd:"d. MMM y.",yMMMEd:"E, d. MMM y.",yMMMM:"LLLL y.",yQQQ:"QQQ y.",yQQQQ:"QQQQ y."},dateFormats:{yMMMMEEEEd:"EEEE, d. MMMM y.",yMMMMd:"d. MMMM y.",yMMMd:"d. MMM y.",yMd:"dd.MM.y."},timeFormats:{hmmsszzzz:"HH:mm:ss zzzz",hmsz:"HH:mm:ss z",hms:"HH:mm:ss",hm:"HH:mm"}},calendars:{buddhist:{months:{narrow:["1.","2.","3.","4.","5.","6.","7.","8.","9.","10.","11.","12."],short:["sij","velj","ožu","tra","svi","lip","srp","kol","ruj","lis","stu","pro"],long:["siječnja","veljače","ožujka","travnja","svibnja","lipnja","srpnja","kolovoza","rujna","listopada","studenoga","prosinca"]},days:{narrow:["N","P","U","S","Č","P","S"],short:["ned","pon","uto","sri","čet","pet","sub"],long:["nedjelja","ponedjeljak","utorak","srijeda","četvrtak","petak","subota"]},eras:{narrow:["BE"],short:["BE"],long:["BE"]},dayPeriods:{am:"AM",pm:"PM"}},chinese:{months:{narrow:["1","2","3","4","5","6","7","8","9","10","11","12"],short:["M01","M02","M03","M04","M05","M06","M07","M08","M09","M10","M11","M12"],long:["M01","M02","M03","M04","M05","M06","M07","M08","M09","M10","M11","M12"]},days:{narrow:["N","P","U","S","Č","P","S"],short:["ned","pon","uto","sri","čet","pet","sub"],long:["nedjelja","ponedjeljak","utorak","srijeda","četvrtak","petak","subota"]},dayPeriods:{am:"AM",pm:"PM"}},coptic:{months:{narrow:["1","2","3","4","5","6","7","8","9","10","11","12","13"],short:["Tout","Baba","Hator","Kiahk","Toba","Amshir","Baramhat","Baramouda","Bashans","Paona","Epep","Mesra","Nasie"],long:["Tout","Baba","Hator","Kiahk","Toba","Amshir","Baramhat","Baramouda","Bashans","Paona","Epep","Mesra","Nasie"]},days:{narrow:["N","P","U","S","Č","P","S"],short:["ned","pon","uto","sri","čet","pet","sub"],long:["nedjelja","ponedjeljak","utorak","srijeda","četvrtak","petak","subota"]},eras:{narrow:["ERA0","ERA1"],short:["ERA0","ERA1"],long:["ERA0","ERA1"]},dayPeriods:{am:"AM",pm:"PM"}},dangi:{months:{narrow:["1","2","3","4","5","6","7","8","9","10","11","12"],short:["M01","M02","M03","M04","M05","M06","M07","M08","M09","M10","M11","M12"],long:["M01","M02","M03","M04","M05","M06","M07","M08","M09","M10","M11","M12"]},days:{narrow:["N","P","U","S","Č","P","S"],short:["ned","pon","uto","sri","čet","pet","sub"],long:["nedjelja","ponedjeljak","utorak","srijeda","četvrtak","petak","subota"]},dayPeriods:{am:"AM",pm:"PM"}},ethiopic:{months:{narrow:["1","2","3","4","5","6","7","8","9","10","11","12","13"],short:["Meskerem","Tekemt","Hedar","Tahsas","Ter","Yekatit","Megabit","Miazia","Genbot","Sene","Hamle","Nehasse","Pagumen"],long:["Meskerem","Tekemt","Hedar","Tahsas","Ter","Yekatit","Megabit","Miazia","Genbot","Sene","Hamle","Nehasse","Pagumen"]},days:{narrow:["N","P","U","S","Č","P","S"],short:["ned","pon","uto","sri","čet","pet","sub"],long:["nedjelja","ponedjeljak","utorak","srijeda","četvrtak","petak","subota"]},eras:{narrow:["ERA0","ERA1"],short:["ERA0","ERA1"],long:["ERA0","ERA1"]},dayPeriods:{am:"AM",pm:"PM"}},ethioaa:{months:{narrow:["1","2","3","4","5","6","7","8","9","10","11","12","13"],short:["Meskerem","Tekemt","Hedar","Tahsas","Ter","Yekatit","Megabit","Miazia","Genbot","Sene","Hamle","Nehasse","Pagumen"],long:["Meskerem","Tekemt","Hedar","Tahsas","Ter","Yekatit","Megabit","Miazia","Genbot","Sene","Hamle","Nehcratch қосымшасының көмегімен сіз кеңейтімдерге қосыла аласыз және Scratch Link қажет емес.",
+    "download.howConnectHardwareDevices": "Scratch қосымшасын аппараттық құрылғыларға қалай қосуға болады?",
+    "download.howConnectHardwareDevicesAnswerLink": "Scratch қосымшасын пайдалану кезінде аппараттық құрылғыларға қосылу үшін сізге Scratch Link-ті орнату және іске қосу қажет {operatingsystem}. Scratch Link пайдалану үшін сізге интернет байланысы қажет.",
+    "download.howConnectHardwareDevicesAnswerApp": "Scratch бағдарламасының көмегімен сіз micro: bit немесе LEGO Boost сияқты аппараттық құрылғыларға қосыла аласыз. Scratch қосымшасын  {operatingsystem}пайдаланған кезде сізге Scratch Link қажет емес.",
+    "download.desktopAndBrowser": "Мен Scratch Desktop бағдарламасын пайдалана аламын ба және Scratch браузерде ашық бола ма?",
+    "download.appAndBrowser": "Мен Scratch қосымшасын пайдалана аламын, сонымен қатар Scratch браузерде ашық бола ма?",
+    "download.yesAnswer": "Иә.",
+    "download.onPhone": "Scratch-ты Android телефоныма орната аламын ба?",
+    "download.onPhoneAnswer": "Жоқ Scratch for Android-тің қазіргі нұсқасы тек планшеттерде жұмыс істейді.",
+    "download.howUpdateApp": "Scratch бағдарламасын қалай жаңартуға болады?",
+    "download.howUpdateAppAnswerPlayStore": "Google Play дүкенін ашып, жаңартуларды тексеріңіз. Егер сіздің орнатуды мектеп әкімшілері басқаратын болса, олар нұсқасын жаңартып, басқарылатын құрылғыларға жаңартуды қол жетімді етуі керек.",
+    "download.howUpdateAppAnswerDownload": "{operatingsystem}Осы беттен Scratch үшін жаңарту үшін ең соңғы нұсқасын жүктеп алыңыз. Сізде қандай нұсқа бар екенін тексеру үшін жүктелген бағдарламада Scratch логотипін нұқыңыз.",
+    "download.canIShare": "Мен Scratch Desktop арқылы бөлісе аламын ба?",
+    "download.canIShareAnswer": "Қазіргі уақытта бұған қолдау көрсетілмейді. Әзірге сіз Scratch Desktop бағдарламасынан жобаны сақтап, оны Scratch тіркелгісіне жүктеп, сол жерде бөлісе аласыз. Кейінгі нұсқада біз Scratch жұмыс үстеліне тікелей Scratch тіркелгісіне жүктеу мүмкіндігін қосамыз.",
+    "download.canIShareApp": "Scratch қосымшасынан желідегі қоғамдастықпен бөлісе аламын ба {operatingsystem}?",
+    "download.canIShareAnswerPlayStore": "Иә. Вестибюльдегі жобадағы 3 нүктелік мәзірді нұқыңыз және опциялардың ішінен «Бөлісу» пәрменін таңдаңыз. Электрондық пошта арқылы бөлісуден басқа, сіз Scratch тіркелгісіне кіре аласыз және Scratch онлайн қауымдастығымен жобамен бөлісе аласыз.",
+    "download.canIShareAnswerDownloaded": "Scratch бағдарламасынан онлайн-қауымдастықпен тікелей бөлісуге {operatingsystem} қазір қолдау көрсетілмейді. Әзірге сіз Scratch бағдарламасынан жобаны экспорттай аласыз, содан кейін Scratch веб-сайтына кіріп, сол жерде өз жобаңызды жүктеп, бөлісе аласыз.",
+    "download.whyNoDevicesVisible": "Неліктен мен аппараттық кеңейтімдерді қосуға тырысқанда Scratch ешбір құрылғыны көрсетпейді?",
+    "download.whyNoDevicesVisibleAnswer": "Жүйе параметрлерінде {devicePosessive}bluetooth-ды өшіріп, қайта қосу әдетте аппараттық құрылғыларды қайтадан көруге мүмкіндік беретінін анықтадық. Егер мәселе шешілмесе, құрылғыда орынды анықтау қызметтері қосылғанын тексеріңіз. Егер сіз әлі ешқандай құрылғыларды көрмесеңіз,{whyNoDevicesContactUsLink} өтінемін.",
+    "download.whyNoDevicesContactUsLink": "Бізбен байланысу",
+    "download.chromebookPossessive": "Chromebook-тың",
+    "download.androidPossessive": "Android планшеттікі",
+    "download.whyAskForLocation": "Неліктен {operatingsystem} менің орналасқан жерімді сұрайды?",
+    "download.whyAskForLocationAnswer": "Scratch басқа құрылғыларға қосылу үшін bluetooth қолданады, мысалы micro: bit немесе LEGO BOOST. Қолданбаға орналасу деректерін беру үшін Bluetooth қолданылуы мүмкін, сондықтан Google bluetooth пайдаланатын барлық қолданбалардан пайдаланушылардан олардың орналасқан жеріне кіруге рұқсат сұрайды. Скретч сіздің орналасқан жеріңізді бақылау үшін bluetooth пайдаланбайды.",
+    "download.whereProjectStored": "Scratch App менің жобаларымды қайда сақтайды?",
+    "download.whereProjectStoredAnswer": "Жобалар қосымшада ішкі сақталады. Жоба файлын экспорттау үшін 3 нүктелі мәзірді нұқып, «Бөлісу» пәрменін таңдаңыз. Келесі экранда «экспорттау» тармағын таңдаңыз. Көрінетін опциялар құрылғыда орнатылған бағдарламаларға байланысты. Google Drive, файлдар және электрондық поштаның жалпы нұсқалары.",
+    "download.iconAltText": "Жүктеп алу"
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ,2,1,2,6,2,0,9,9,49,4,2,1,2,4,9,9,330,3,19306,9,135,4,60,6,26,9,1014,0,2,54,8,3,82,0,12,1,19628,1,5319,4,4,5,9,7,3,6,31,3,149,2,1418,49,513,54,5,49,9,0,15,0,23,4,2,14,1361,6,2,16,3,6,2,1,2,4,262,6,10,9,419,13,1495,6,110,6,6,9,4759,9,787719,239]\n\n// This has a complexity linear to the value of the code. The\n// assumption is that looking up astral identifier characters is\n// rare.\nfunction isInAstralSet(code, set) {\n  let pos = 0x10000\n  for (let i = 0; i < set.length; i += 2) {\n    pos += set[i]\n    if (pos > code) return false\n    pos += set[i + 1]\n    if (pos >= code) return true\n  }\n}\n\n// Test whether a given character code starts an identifier.\n\nexport function isIdentifierStart(code, astral) {\n  if (code < 65) return code === 36\n  if (code < 91) return true\n  if (code < 97) return code === 95\n  if (code < 123) return true\n  if (code <= 0xffff) return code >= 0xaa && nonASCIIidentifierStart.test(String.fromCharCode(code))\n  if (astral === false) return false\n  return isInAstralSet(code, astralIdentifierStartCodes)\n}\n\n// Test whether a given character is part of an identifier.\n\nexport function isIdentifierChar(code, astral) {\n  if (code < 48) return code === 36\n  if (code < 58) return true\n  if (code < 65) return false\n  if (code < 91) return true\n  if (code < 97) return code === 95\n  if (code < 123) return true\n  if (code <= 0xffff) return code >= 0xaa && nonASCIIidentifier.test(String.fromCharCode(code))\n  if (astral === false) return false\n  return isInAstralSet(code, astralIdentifierStartCodes) || isInAstralSet(code, astralIdentifierCodes)\n}\n","// ## Token types\n\n// The assignment of fine-grained, information-carrying type objects\n// allows the tokenizer to store the information it has about a\n// token in a way that is very cheap for the parser to look up.\n\n// All token type variables start with an underscore, to make them\n// easy to recognize.\n\n// The `beforeExpr` property is used to disambiguate between regular\n// expressions and divisions. It is set on all token types that can\n// be followed by an expression (thus, a slash after them would be a\n// regular expression).\n//\n// The `startsExpr` property is used to check if the token ends a\n// `yield` expression. It is set on all token types that either can\n// directly start an expression (like a quotation mark) or can\n// continue an expression (like the body of a string).\n//\n// `isLoop` marks a keyword as starting a loop, which is important\n// to know when parsing a label, in order to allow or disallow\n// continue jumps to that label.\n\nexport class TokenType {\n  constructor(label, conf = {}) {\n    this.label = label\n    this.keyword = conf.keyword\n    this.beforeExpr = !!conf.beforeExpr\n    this.startsExpr = !!conf.startsExpr\n    this.isLoop = !!conf.isLoop\n    this.isAssign = !!conf.isAssign\n    this.prefix = !!conf.prefix\n    this.postfix = !!conf.postfix\n    this.binop = conf.binop || null\n    this.updateContext = null\n  }\n}\n\nfunction binop(name, prec) {\n  return new TokenType(name, {beforeExpr: true, binop: prec})\n}\nconst beforeExpr = {beforeExpr: true}, startsExpr = {startsExpr: true}\n\n// Map keyword names to token types.\n\nexport const keywords = {}\n\n// Succinct definitions of keyword token types\nfunction kw(name, options = {}) {\n  options.keyword = name\n  return keywords[name] = new TokenType(name, options)\n}\n\nexport const types = {\n  num: new TokenType(\"num\", startsExpr),\n  regexp: new TokenType(\"regexp\", startsExpr),\n  string: new TokenType(\"string\", startsExpr),\n  name: new TokenType(\"name\", startsExpr),\n  eof: new TokenType(\"eof\"),\n\n  // Punctuation token types.\n  bracketL: new TokenType(\"[\", {beforeExpr: true, startsExpr: true}),\n  bracketR: new TokenType(\"]\"),\n  braceL: new TokenType(\"{\", {beforeExpr: true, startsExpr: true}),\n  braceR: new TokenType(\"}\"),\n  parenL: new TokenType(\"(\", {beforeExpr: true, startsExpr: true}),\n  parenR: new TokenType(\")\"),\n  comma: new TokenType(\",\", beforeExpr),\n  semi: new TokenType(\";\", beforeExpr),\n  colon: new TokenType(\":\", beforeExpr),\n  dot: new TokenType(\".\"),\n  question: new TokenType(\"?\", beforeExpr),\n  questionDot: new TokenType(\"?.\"),\n  arrow: new TokenType(\"=>\", beforeExpr),\n  template: new TokenType(\"template\"),\n  invalidTemplate: new TokenType(\"invalidTemplate\"),\n  ellipsis: new TokenType(\"...\", beforeExpr),\n  backQuote: new TokenType(\"`\", startsExpr),\n  dollarBraceL: new TokenType(\"${\", {beforeExpr: true, startsExpr: true}),\n\n  // Operators. These carry several kinds of properties to help the\n  // parser use them properly (the presence of these properties is\n  // what categorizes them as operators).\n  //\n  // `binop`, when present, specifies that this operator is a binary\n  // operator, and will refer to its precedence.\n  //\n  // `prefix` and `postfix` mark the operator as a prefix or postfix\n  // unary operator.\n  //\n  // `isAssign` marks all of `=`, `+=`, `-=` etcetera, which act as\n  // binary operators with a very low precedence, that should result\n  // in AssignmentExpression nodes.\n\n  eq: new TokenType(\"=\", {beforeExpr: true, isAssign: true}),\n  assign: new TokenType(\"_=\", {beforeExpr: true, isAssign: true}),\n  incDec: new TokenType(\"++/--\", {prefix: true, postfix: true, startsExpr: true}),\n  prefix: new TokenType(\"!/~\", {beforeExpr: true, prefix: true, startsExpr: true}),\n  logicalOR: binop(\"||\", 1),\n  logicalAND: binop(\"&&\", 2),\n  bitwiseOR: binop(\"|\", 3),\n  bitwiseXOR: binop(\"^\", 4),\n  bitwiseAND: binop(\"&\", 5),\n  equality: binop(\"==/!=/===/!==\", 6),\n  relational: binop(\"</>/<=/>=\", 7),\n  bitShift: binop(\"<</>>/>>>\", 8),\n  plusMin: new TokenType(\"+/-\", {beforeExpr: true, binop: 9, prefix: true, startsExpr: true}),\n  modulo: binop(\"%\", 10),\n  star: binop(\"*\", 10),\n  slash: binop(\"/\", 10),\n  starstar: new TokenType(\"**\", {beforeExpr: true}),\n  coalesce: binop(\"??\", 1),\n\n  // Keyword token types.\n  _break: kw(\"break\"),\n  _case: kw(\"case\", beforeExpr),\n  _catch: kw(\"catch\"),\n  _continue: kw(\"continue\"),\n  _debugger: kw(\"debugger\"),\n  _default: kw(\"default\", beforeExpr),\n  _do: kw(\"do\", {isLoop: true, beforeExpr: true}),\n  _else: kw(\"else\", beforeExpr),\n  _finally: kw(\"finally\"),\n  _for: kw(\"for\", {isLoop: true}),\n  _function: kw(\"function\", startsExpr),\n  _if: kw(\"if\"),\n  _return: kw(\"return\", beforeExpr),\n  _switch: kw(\"switch\"),\n  _throw: kw(\"throw\", beforeExpr),\n  _try: kw(\"try\"),\n  _var: kw(\"var\"),\n  _const: kw(\"const\"),\n  _while: kw(\"while\", {isLoop: true}),\n  _with: kw(\"with\"),\n  _new: kw(\"new\", {beforeExpr: true, startsExpr: true}),\n  _this: kw(\"this\", startsExpr),\n  _super: kw(\"super\", startsExpr),\n  _class: kw(\"class\", startsExpr),\n  _extends: kw(\"extends\", beforeExpr),\n  _export: kw(\"export\"),\n  _import: kw(\"import\", startsExpr),\n  _null: kw(\"null\", startsExpr),\n  _true: kw(\"true\", startsExpr),\n  _false: kw(\"false\", startsExpr),\n  _in: kw(\"in\", {beforeExpr: true, binop: 7}),\n  _instanceof: kw(\"instanceof\", {beforeExpr: true, binop: 7}),\n  _typeof: kw(\"typeof\", {beforeExpr: true, prefix: true, startsExpr: true}),\n  _void: kw(\"void\", {beforeExpr: true, prefix: true, startsExpr: true}),\n  _delete: kw(\"delete\", {beforeExpr: true, prefix: true, startsExpr: true})\n}\n","// Matches a whole line break (where CRLF is considered a single\n// line break). Used to count lines.\n\nexport const lineBreak = /\\r\\n?|\\n|\\u2028|\\u2029/\nexport const lineBreakG = new RegExp(lineBreak.source, \"g\")\n\nexport function isNewLine(code, ecma2019String) {\n  return code === 10 || code === 13 || (!ecma2019String && (code === 0x2028 || code === 0x2029))\n}\n\nexport const nonASCIIwhitespace = /[\\u1680\\u2000-\\u200a\\u202f\\u205f\\u3000\\ufeff]/\n\nexport const skipWhiteSpace = /(?:\\s|\\/\\/.*|\\/\\*[^]*?\\*\\/)*/g\n","const {hasOwnProperty, toString} = Object.prototype\n\n// Checks if an object has a property.\n\nexport function has(obj, propName) {\n  return hasOwnProperty.call(obj, propName)\n}\n\nexport const isArray = Array.isArray || ((obj) => (\n  toString.call(obj) === \"[object Array]\"\n))\n\nexport function wordsRegexp(words) {\n  return new RegExp(\"^(?:\" + words.replace(/ /g, \"|\") + \")$\")\n}\n","import {lineBreakG} from \"./whitespace.js\"\n\n// These are used when `options.locations` is on, for the\n// `startLoc` and `endLoc` properties.\n\nexport class Position {\n  constructor(line, col) {\n    this.line = line\n    this.column = col\n  }\n\n  offset(n) {\n    return new Position(this.line, this.column + n)\n  }\n}\n\nexport class SourceLocation {\n  constructor(p, start, end) {\n    this.start = start\n    this.end = end\n    if (p.sourceFile !== null) this.source = p.sourceFile\n  }\n}\n\n// The `getLineInfo` function is mostly useful when the\n// `locations` option is off (for performance reasons) and you\n// want to find the line/column position for a given character\n// offset. `input` should be the code string that the offset refers\n// into.\n\nexport function getLineInfo(input, offset) {\n  for (let line = 1, cur = 0;;) {\n    lineBreakG.lastIndex = cur\n    let match = lineBreakG.exec(input)\n    if (match && match.index < offset) {\n      ++line\n      cur = match.index + match[0].length\n    } else {\n      return new Position(line, offset - cur)\n    }\n  }\n}\n","import {has, isArray} from \"./util.js\"\nimport {SourceLocation} from \"./locutil.js\"\n\n// A second argument must be given to configure the parser process.\n// These options are recognized (only `ecmaVersion` is required):\n\nexport const defaultOptions = {\n  // `ecmaVersion` indicates the ECMAScript version to parse. Must be\n  // either 3, 5, 6 (or 2015), 7 (2016), 8 (2017), 9 (2018), 10\n  // (2019), 11 (2020), 12 (2021), or `\"latest\"` (the latest version\n  // the library supports). This influences support for strict mode,\n  // the set of reserved words, and support for new syntax features.\n  ecmaVersion: null,\n  // `sourceType` indicates the mode the code should be parsed in.\n  // Can be either `\"script\"` or `\"module\"`. This influences global\n  // strict mode and parsing of `import` and `export` declarations.\n  sourceType: \"script\",\n  // `onInsertedSemicolon` can be a callback that will be called\n  // when a semicolon is automatically inserted. It will be passed\n  // the position of the comma as an offset, and if `locations` is\n  // enabled, it is given the location as a `{line, column}` object\n  // as second argument.\n  onInsertedSemicolon: null,\n  // `onTrailingComma` is similar to `onInsertedSemicolon`, but for\n  // trailing commas.\n  onTrailingComma: null,\n  // By default, reserved words are only enforced if ecmaVersion >= 5.\n  // Set `allowReserved` to a boolean value to explicitly turn this on\n  // an off. When this option has the value \"never\", reserved words\n  // and keywords can also not be used as property names.\n  allowReserved: null,\n  // When enabled, a return at the top level is not considered an\n  // error.\n  allowReturnOutsideFunction: false,\n  // When enabled, import/export statements are not constrained to\n  // appearing at the top of the program.\n  allowImportExportEverywhere: false,\n  // When enabled, await identifiers are allowed to appear at the top-level scope,\n  // but they are still not allowed in non-async functions.\n  allowAwaitOutsideFunction: false,\n  // When enabled, hashbang directive in the beginning of file\n  // is allowed and treated as a line comment.\n  allowHashBang: false,\n  // When `locations` is on, `loc` properties holding objects with\n  // `start` and `end` properties in `{line, column}` form (with\n  // line being 1-based and column 0-based) will be attached to the\n  // nodes.\n  locations: false,\n  // A function can be passed as `onToken` option, which will\n  // cause Acorn to call that function with object in the same\n  // format as tokens returned from `tokenizer().getToken()`. Note\n  // that you are not allowed to call the parser from the\n  // callback—that will corrupt its internal state.\n  onToken: null,\n  // A function can be passed as `onComment` option, which will\n  // cause Acorn to call that function with `(block, text, start,\n  // end)` parameters whenever a comment is skipped. `block` is a\n  // boolean indicating whether this is a block (`/* */`) comment,\n  // `text` is the content of the comment, and `start` and `end` are\n  // character offsets that denote the start and end of the comment.\n  // When the `locations` option is on, two more parameters are\n  // passed, the full `{line, column}` locations of the start and\n  // end of the comments. Note that you are not allowed to call the\n  // parser from the callback—that will corrupt its internal state.\n  onComment: null,\n  // Nodes have their start and end characters offsets recorded in\n  // `start` and `end` properties (directly on the node, rather than\n  // the `loc` object, which holds line/column data. To also add a\n  // [semi-standardized][range] `range` property holding a `[start,\n  // end]` array with the same numbers, set the `ranges` option to\n  // `true`.\n  //\n  // [range]: https://bugzilla.mozilla.org/show_bug.cgi?id=745678\n  ranges: false,\n  // It is possible to parse multiple files into a single AST by\n  // passing the tree produced by parsing the first file as\n  // `program` option in subsequent parses. This will add the\n  // toplevel forms of the parsed file to the `Program` (top) node\n  // of an existing parse tree.\n  program: null,\n  // When `locations` is on, you can pass this to record the source\n  // file in every node's `loc` object.\n  sourceFile: null,\n  // This value, if given, is stored in every node, whether\n  // `locations` is on or off.\n  directSourceFile: null,\n  // When enabled, parenthesized expressions are represented by\n  // (non-standard) ParenthesizedExpression nodes\n  preserveParens: false\n}\n\n// Interpret and default an options object\n\nlet warnedAboutEcmaVersion = false\n\nexport function getOptions(opts) {\n  let options = {}\n\n  for (let opt in defaultOptions)\n    options[opt] = opts && has(opts, opt) ? opts[opt] : defaultOptions[opt]\n\n  if (options.ecmaVersion === \"latest\") {\n    options.ecmaVersion = 1e8\n  } else if (options.ecmaVersion == null) {\n    if (!warnedAboutEcmaVersion && typeof console === \"object\" && console.warn) {\n      warnedAboutEcmaVersion = true\n      console.warn(\"Since Acorn 8.0.0, options.ecmaVersion is required.\\nDefaulting to 2020, but this will stop working in the future.\")\n    }\n    options.ecmaVersion = 11\n  } else if (options.ecmaVersion >= 2015) {\n    options.ecmaVersion -= 2009\n  }\n\n  if (options.allowReserved == null)\n    options.allowReserved = options.ecmaVersion < 5\n\n  if (isArray(options.onToken)) {\n    let tokens = options.onToken\n    options.onToken = (token) => tokens.push(token)\n  }\n  if (isArray(options.onComment))\n    options.onComment = pushComment(options, options.onComment)\n\n  return options\n}\n\nfunction pushComment(options, array) {\n  return function(block, text, start, end, startLoc, endLoc) {\n    let comment = {\n      type: block ? \"Block\" : \"Line\",\n      value: text,\n      start: start,\n      end: end\n    }\n    if (options.locations)\n      comment.loc = new SourceLocation(this, startLoc, endLoc)\n    if (options.ranges)\n      comment.range = [start, end]\n    array.push(comment)\n  }\n}\n","// Each scope gets a bitset that may contain these flags\nexport const\n    SCOPE_TOP = 1,\n    SCOPE_FUNCTION = 2,\n    SCOPE_VAR = SCOPE_TOP | SCOPE_FUNCTION,\n    SCOPE_ASYNC = 4,\n    SCOPE_GENERATOR = 8,\n    SCOPE_ARROW = 16,\n    SCOPE_SIMPLE_CATCH = 32,\n    SCOPE_SUPER = 64,\n    SCOPE_DIRECT_SUPER = 128\n\nexport function functionFlags(async, generator) {\n  return SCOPE_FUNCTION | (async ? SCOPE_ASYNC : 0) | (generator ? SCOPE_GENERATOR : 0)\n}\n\n// Used in checkLVal* and declareName to determine the type of a binding\nexport const\n    BIND_NONE = 0, // Not a binding\n    BIND_VAR = 1, // Var-style binding\n    BIND_LEXICAL = 2, // Let- or const-style binding\n    BIND_FUNCTION = 3, // Function de// Process escaped chars and hardbreaks
+
+'use strict';
+
+var isSpace = require('../common/utils').isSpace;
+
+var ESCAPED = [];
+
+for (var i = 0; i < 256; i++) { ESCAPED.push(0); }
+
+'\\!"#$%&\'()*+,./:;<=>?@[]^_`{|}~-'
+  .split('').forEach(function (ch) { ESCAPED[ch.charCodeAt(0)] = 1; });
+
+
+module.exports = function escape(state, silent) {
+  var ch, pos = state.pos, max = state.posMax;
+
+  if (state.src.charCodeAt(pos) !== 0x5C/* \ */) { return false; }
+
+  pos++;
+
+  if (pos < max) {
+    ch = state.src.charCodeAt(pos);
+
+    if (ch < 256 && ESCAPED[ch] !== 0) {
+      if (!silent) { state.pending += state.src[pos]; }
+      state.pos += 2;
+      return true;
+    }
+
+    if (ch === 0x0A) {
+      if (!silent) {
+        state.push('hardbreak', 'br', 0);
+      }
+
+      pos++;
+      // skip leading whitespaces from next line
+      while (pos < max) {
+        ch = state.src.charCodeAt(pos);
+        if (!isSpace(ch)) { break; }
+        pos++;
+      }
+
+      state.pos = pos;
+      return true;
+    }
+  }
+
+  if (!silent) { state.pending += '\\'; }
+  state.pos++;
+  return true;
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          'use strict';
+
+module.exports = {
+	abs: {
+		url: 'https://262.ecma-international.org/13.0/#eqn-abs'
+	},
+	AddEntriesFromIterable: {
+		url: 'https://262.ecma-international.org/13.0/#sec-add-entries-from-iterable'
+	},
+	AddRestrictedFunctionProperties: {
+		url: 'https://262.ecma-international.org/13.0/#sec-addrestrictedfunctionproperties'
+	},
+	AddToKeptObjects: {
+		url: 'https://262.ecma-international.org/13.0/#sec-addtokeptobjects'
+	},
+	AddWaiter: {
+		url: 'https://262.ecma-international.org/13.0/#sec-addwaiter'
+	},
+	AdvanceStringIndex: {
+		url: 'https://262.ecma-international.org/13.0/#sec-advancestringindex'
+	},
+	'agent-order': {
+		url: 'https://262.ecma-international.org/13.0/#sec-agent-order'
+	},
+	AgentCanSuspend: {
+		url: 'https://262.ecma-international.org/13.0/#sec-agentcansuspend'
+	},
+	AgentSignifier: {
+		url: 'https://262.ecma-international.org/13.0/#sec-agentsignifier'
+	},
+	AllocateArrayBuffer: {
+		url: 'https://262.ecma-international.org/13.0/#sec-allocatearraybuffer'
+	},
+	AllocateSharedArrayBuffer: {
+		url: 'https://262.ecma-international.org/13.0/#sec-allocatesharedarraybuffer'
+	},
+	AllocateTypedArray: {
+		url: 'https://262.ecma-international.org/13.0/#sec-allocatetypedarray'
+	},
+	AllocateTypedArrayBuffer: {
+		url: 'https://262.ecma-international.org/13.0/#sec-allocatetypedarraybuffer'
+	},
+	ApplyStringOrNumericBinaryOperator: {
+		url: 'https://262.ecma-international.org/13.0/#sec-applystringornumericbinaryoperator'
+	},
+	ArrayCreate: {
+		url: 'https://262.ecma-international.org/13.0/#sec-arraycreate'
+	},
+	ArraySetLength: {
+		url: 'https://262.ecma-international.org/13.0/#sec-arraysetlength'
+	},
+	ArraySpeciesCreate: {
+		url: 'https://262.ecma-international.org/13.0/#sec-arrayspeciescreate'
+	},
+	AsyncBlockStart: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncblockstart'
+	},
+	AsyncFromSyncIteratorContinuation: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncfromsynciteratorcontinuation'
+	},
+	AsyncFunctionStart: {
+		url: 'https://262.ecma-international.org/13.0/#sec-async-functions-abstract-operations-async-function-start'
+	},
+	AsyncGeneratorAwaitReturn: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratorawaitreturn'
+	},
+	AsyncGeneratorCompleteStep: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratorcompletestep'
+	},
+	AsyncGeneratorDrainQueue: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratordrainqueue'
+	},
+	AsyncGeneratorEnqueue: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratorenqueue'
+	},
+	AsyncGeneratorResume: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratorresume'
+	},
+	AsyncGeneratorStart: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratorstart'
+	},
+	AsyncGeneratorUnwrapYieldResumption: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratorunwrapyieldresumption'
+	},
+	AsyncGeneratorValidate: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratorvalidate'
+	},
+	AsyncGeneratorYield: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asyncgeneratoryield'
+	},
+	AsyncIteratorClose: {
+		url: 'https://262.ecma-international.org/13.0/#sec-asynciteratorclose'
+	},
+	AsyncModuleExecutionFulfilled: {
+		url: 'https://262.ecma-international.org/13.0/#sec-async-module-execution-fulfilled'
+	},
+	AsyncModuleExecutionRejected: {
+		url: 'https://262.ecma-international.org/13.0/#sec-async-module-execution-rejected'
+	},
+	AtomicReadModifyWrite: {
+		url: 'https://262.ecma-international.org/13.0/#sec-atomicreadmodifywrite'
+	},
+	Await: {
+		url: 'https://262.ecma-international.org/13.0/#await'
+	},
+	BackreferenceMatcher: {
+		url: 'https://262.ecma-international.org/13.0/#sec-backreference-matcher'
+	},
+	'BigInt::add': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-add'
+	},
+	'BigInt::bitwiseAND': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-bitwiseAND'
+	},
+	'BigInt::bitwiseNOT': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-bitwiseNOT'
+	},
+	'BigInt::bitwiseOR': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-bitwiseOR'
+	},
+	'BigInt::bitwiseXOR': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-bitwiseXOR'
+	},
+	'BigInt::divide': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-divide'
+	},
+	'BigInt::equal': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-equal'
+	},
+	'BigInt::exponentiate': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-exponentiate'
+	},
+	'BigInt::leftShift': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-leftShift'
+	},
+	'BigInt::lessThan': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-lessThan'
+	},
+	'BigInt::multiply': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-multiply'
+	},
+	'BigInt::remainder': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-remainder'
+	},
+	'BigInt::sameValue': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-sameValue'
+	},
+	'BigInt::sameValueZero': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-sameValueZero'
+	},
+	'BigInt::signedRightShift': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-signedRightShift'
+	},
+	'BigInt::subtract': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-subtract'
+	},
+	'BigInt::toString': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-tostring'
+	},
+	'BigInt::unaryMinus': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-unaryMinus'
+	},
+	'BigInt::unsignedRightShift': {
+		url: 'https://262.ecma-international.org/13.0/#sec-numeric-types-bigint-unsignedRightShift'
+	},
+	BigIntBitwiseOp: {
+		url: 'https://262.ecma-international.org/13.0/#sec-bigintbitwiseop'
+	},
+	BinaryAnd: {
+		url: 'https://262.ecma-international.org/13.0/#sec-binaryand'
+	},
+	BinaryOr: {
+		url: 'https://262.ecma-international.org/13.0/#sec-binaryor'
+	},
+	BinaryXor: {
+		url: 'https://262.ecma-international.org/13.0/#sec-binaryxor'
+	},
+	BlockDeclarationInstantiation: {
+		url: 'https://262.ecma-international.org/13.0/#sec-blockdeclarationinstantiation'
+	},
+	BoundFunctionCreate: {
+		url: 'https://262.ecma-international.org/13.0/#sec-boundfunctioncreate'
+	},
+	ByteListBitwiseOp: {
+		url: 'https://262.ecma-international.org/13.0/#sec-bytelistbitwiseop'
+	},
+	ByteListEqual: {
+		url: 'https://262.ecma-international.org/13.0/#sec-bytelistequal'
+	},
+	Call: {
+		url: 'https://262.ecma-international.org/13.0/#sec-call'
+	},
+	Canonicalize: {
+		url: 'https://262.ecma-international.org/13.0/#sec-runtime-semantics-canonicalize-ch'
+	},
+	CanonicalNumericIndexString: {
+		url: 'https://262.ecma-international.org/13.0/#sec-canonicalnumericindexstring'
+	},
+	CaseClauseIsSelected: {
+		url: 'https://262.ecma-international.org/13.0/#sec-runtime-semantics-caseclauseisselected'
+	},
+	CharacterRange: {
+		url: 'https://262.ecma-international.org/13.0/#sec-runtime-semantics-characterrange-abstract-operation'
+	},
+	CharacterRangeOrUnion: {
+		url: 'https://262.ecma-international.org/13.0/#sec-runtime-semantics-characterrangeorunion-abstract-operation'
+	},
+	CharacterSetMatcher: {
+		url: 'https://262.ecma-international.org/13.0/#sec-runtime-semantics-charactersetmatcher-abstract-operation'
+	},
+	clamp: {
+		url: 'https://262.ecma-international.org/13.0/#clamping'
+	},
+	CleanupFinalizationRegistry: {
+		url: 'https://262.ecma-international.org/13.0/#sec-cleanup-finalization-registry'
+	},
+	ClearKeptObjects: {
+		url: 'https://262.ecma-international.org/13.0/#sec-clear-kept-objects'
+	},
+	CloneArrayBuffer: {
+		url: 'https://262.ecma-international.org/13.0/#sec-clonearraybuffer'
+	},
+	CodePointAt: {
+		url: 'https://262.ecma-international.org/13.0/#sec-codepointat'
+	},
+	CodePointsToString: {
+		url: 'https://262.ecma-international.org/13.0/#sec-codepointstostring'
+	},
+	CompletePropertyDescriptor: {
+		url: 'https://262.ecma-international.org/13.0/#sec-completepropertydescriptor'
+	},
+	Completion: {
+		url: 'https://262.ecma-international.org/13.0/#sec-completion-ao'
+	},
+	CompletionRecord: {
+		url: 'https://262.ecma-international.org/13.0/#sec-completion-record-specification-type'
+	},
+	ComposeWriteEventBytes: {
+		url: 'https://262.ecma-international.org/13.0/#sec-composewriteeventbytes'
+	},
+	Construct: {
+		url: 'https://262.ecma-international.org/13.0/#sec-construct'
+	},
+	CopyDataBlockBytes: {
+		url: 'https://262.ecma-international.org/13.0/#sec-copydatablockbytes'
+	},
+	CopyDataProperties: {
+		url: 'https://262.ecma-international.org/13.0/#sec-copydataproperties'
+	},
+	CreateArrayFromList: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createarrayfromlist'
+	},
+	CreateArrayIterator: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createarrayiterator'
+	},
+	CreateAsyncFromSyncIterator: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createasyncfromsynciterator'
+	},
+	CreateAsyncIteratorFromClosure: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createasynciteratorfromclosure'
+	},
+	CreateBuiltinFunction: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createbuiltinfunction'
+	},
+	CreateByteDataBlock: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createbytedatablock'
+	},
+	CreateDataProperty: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createdataproperty'
+	},
+	CreateDataPropertyOrThrow: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createdatapropertyorthrow'
+	},
+	CreateDynamicFunction: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createdynamicfunction'
+	},
+	CreateForInIterator: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createforiniterator'
+	},
+	CreateHTML: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createhtml'
+	},
+	CreateIntrinsics: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createintrinsics'
+	},
+	CreateIteratorFromClosure: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createiteratorfromclosure'
+	},
+	CreateIterResultObject: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createiterresultobject'
+	},
+	CreateListFromArrayLike: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createlistfromarraylike'
+	},
+	CreateListIteratorRecord: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createlistiteratorRecord'
+	},
+	CreateMapIterator: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createmapiterator'
+	},
+	CreateMappedArgumentsObject: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createmappedargumentsobject'
+	},
+	CreateMethodProperty: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createmethodproperty'
+	},
+	CreateNonEnumerableDataPropertyOrThrow: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createnonenumerabledatapropertyorthrow'
+	},
+	CreatePerIterationEnvironment: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createperiterationenvironment'
+	},
+	CreateRealm: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createrealm'
+	},
+	CreateRegExpStringIterator: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createregexpstringiterator'
+	},
+	CreateResolvingFunctions: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createresolvingfunctions'
+	},
+	CreateSetIterator: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createsetiterator'
+	},
+	CreateSharedByteDataBlock: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createsharedbytedatablock'
+	},
+	CreateUnmappedArgumentsObject: {
+		url: 'https://262.ecma-international.org/13.0/#sec-createunmappedargumentsobject'
+	},
+	DateFromTime: {
+		url: 'https://262.ecma-international.org/13.0/#sec-date-number'
+	},
+	DateString: {
+		url: 'https://262.ecma-international.org/13.0/#sec-datestring'
+	},
+	Day: {
+		url: 'https://262.ecma-international.org/13.0/#eqn-Day'
+	},
+	DayFromYear: {
+		url: 'https://262.ecma-international.org/13.0/#eqn-DaysFromYear'
+	},
+	DaysInYear: {
+		url: 'https://262.ecma-international.org/13.0/#eqn-DaysInYear'
+	},
+	DayWithinYear: {
+		url: 'https://262.ecma-international.org/13.0/#eqn-DayWithinYear'
+	},
+	Decode: {
+		url: 'https://262.ecma-international.org/13.0/#sec-decode'
+	},
+	DefineField: {
+		url: 'https://262.ecma-international.org/13.0/#sec-definefield'
+	},
+	DefineMethodProperty: {
+		url: 'https://262.ecma-international.org/13.0/#sec-definemethodproperty'
+	},
+	DefinePropertyOrThrow: {
+		url: 'https://262.ecma-international.org/13.0/#sec-definepropertyorthrow'
+	},
+	DeletePropertyOrThrow: {
+		url: 'https://262.ecma-international.org/13.0/#sec-deletepropertyorthrow'
+	},
+	DetachArrayBuffer: {
+		url: 'https://262.ecma-international.org/13.0/#sec-detacharraybuffer'
+	},
+	Encode: {
+		url: 'https://262.ecma-international.org/13.0/#sec-encode'
+	},
+	EnterCriticalSection: {
+		url: 'https://262.ecma-international.org/13.0/#sec-entercriticalsection'
+	},
+	EnumerableOwnPropertyNames: {
+		url: 'https://262.ecma-international.org/13.0/#sec-enumerableownpropertynames'
+	},
+	EnumerateObjectProperties: {
+		url: 'https://262.ecma-international.org/13.0/#sec-enumerate-object-properties'
+	},
+	EscapeRegExpPattern: {
+		url: 'https://262.ecma-international.org/13.0/#sec-escaperegexppattern'
+	},
+	EvalDeclarationInstantiation: {
+		url: 'https://262.ecma-international.org/13.0/#sec-evaldeclarationinstantiation'
+	},
+	EvaluateCall: {
+		url: 'https://262.ecma-international.org/13.0/#sec-evaluatecall'
+	},
+	EvaluateNew: {
+		url: 'https://262.ecma-international.org/13.0/#sec-evaluatenew'
+	},
+	EvaluatePropertyAccessWithExpressionKey: {
+		url: 'https://262.ecma-international.org/13.0/#sec-evaluate-property-access-with-expression-key'
+	},
+	EvaluatePropertyAccessWithIdentifierKey: {
+		url: 'https://262.ecma-international.org/13.0/#sec-evaluate-property-access-with-identifier-key'
+	},
+	EvaluateStringOrNumericBinaryExpression: {
+		url: 'https://262.ecma-international.org/13.0/#sec-evaluatestringornumericbinaryexpression'
+	},
+	EventSet: {
+		url: 'https://262.ecma-international.org/13.0/#sec-event-set'
+	},
+	ExecuteAsyncModule: {
+		url: 'https://262.ecma-international.org/13.0/#sec-execute-async-module'
+	},
+	FinishDynamicImport: {
+		url: 'https://262.ecma-international.org/13.0/#sec-finishdynamicimport'
+	},
+	FlattenIntoArray: {
+		url: 'https://262.ecma-international.org/13.0/#sec-flattenintoarray'
+	},
+	floor: {
+		url: 'https://262.ecma-international.org/13.0/#eqn-floor'
+	},
+	ForBodyEvaluation: {
+		url: 'https://262.ecma-international.org/13.0/#sec-forbodyevaluation'
+	},
+	'ForIn/OfBodyEvaluation': {
+		url: 'https://262.ecma-international.org/13.0/#sec-runtime-semantics-forin-div-ofbodyevaluation-lhs-stmt-iterator-lhskind-labelset'
+	},
+	'ForIn/OfHeadEvaluation': {
+		url: 'https://262.ecma-international.org/13.0/#sec-runtime-semantics-forinofheadevaluation'
+	},
+	FromPropertyDescriptor: {
+		url: 'https://262.ecma-international.org/13.0/#sec-frompropertydescriptor'
+	},
+	FulfillPromise: {
+		url: 'https://262.ecma-international.org/13.0/#sec-fulfillpromise'
+	},
+	FunctionDeclarationInstantiation: {
+		url: 'https://262.ecma-international.org/13.0/#sec-functiondeclarationinstantiation'
+	},
+	GatherAvailableAncestors: {
+		url: 'https://262.ecma-international.org/13.0/#sec-gather-available-ancestors'
+	},
+	GeneratorResume: {
+		url: 'https://262.ecma-international.org/13.0/#sec-generatorresume'
+	},
+	GeneratorResumeAbrupt: {
+		url: 'https://262.ecma-international.org/13.0/#sec-generatorresumeabrupt'
+	},
+	GeneratorStart: {
+		url: 'https://262.ecma-international.org/13.0/#sec-generatorstart'
+	},
+	GeneratorValidate: {
+		url: 'https://262.ecma-international.org/13.0/#sec-generatorvalidate'
+	},
+	GeneratorYield: {
+		url: 'https://262.ecma-international.org/13.0/#sec-generatoryield'
+	},
+	Get: {
+		url: 'https://262.ecma-international.org/13.0/#sec-get-o-p'
+	},
+	GetActiveScriptOrModule: {
+		url: 'https://262.ecma-international.org/13.0/#sec-getactivescriptormodule'
+	},
+	GetFunctionRealm: {
+		url: 'https://262.ecma-international.org/13.0/#sec-getfunctionrealm'
+	},
+	GetGeneratorKind: {
+		url: 'https://262.ecma-international.org/13.0/#sec-getgeneratorkind'
+	},
+	GetGlobalObject: {
+		url: 'https://262.ecma-international.org/13.0/#sec-getglobalobject'
+	},
+	GetIdentifierReference: {
+		url: 'https://262.ecma-international.org/13.0/#sec-getidentifierreference'
+	},
+	GetIterator: {
+		url: 'https://ail;
+
+        this.initialBufs.length = this.initialBufsLen = 0;
+        return resStr;
+    }
+
+    return this.decoder.end();
+};
+
+function detectEncoding(bufs, defaultEncoding) {
+    var b = [];
+    var charsProcessed = 0;
+    var invalidLE = 0, invalidBE = 0;   // Number of invalid chars when decoded as LE or BE.
+    var bmpCharsLE = 0, bmpCharsBE = 0; // Number of BMP chars when decoded as LE or BE.
+
+    outer_loop:
+    for (var i = 0; i < bufs.length; i++) {
+        var buf = bufs[i];
+        for (var j = 0; j < buf.length; j++) {
+            b.push(buf[j]);
+            if (b.length === 4) {
+                if (charsProcessed === 0) {
+                    // Check BOM first.
+                    if (b[0] === 0xFF && b[1] === 0xFE && b[2] === 0 && b[3] === 0) {
+                        return 'utf-32le';
+                    }
+                    if (b[0] === 0 && b[1] === 0 && b[2] === 0xFE && b[3] === 0xFF) {
+                        return 'utf-32be';
+                    }
+                }
+
+                if (b[0] !== 0 || b[1] > 0x10) invalidBE++;
+                if (b[3] !== 0 || b[2] > 0x10) invalidLE++;
+
+                if (b[0] === 0 && b[1] === 0 && (b[2] !== 0 || b[3] !== 0)) bmpCharsBE++;
+                if ((b[0] !== 0 || b[1] !== 0) && b[2] === 0 && b[3] === 0) bmpCharsLE++;
+
+                b.length = 0;
+                charsProcessed++;
+
+                if (charsProcessed >= 100) {
+                    break outer_loop;
+                }
+            }
+        }
+    }
+
+    // Make decisions.
+    if (bmpCharsBE - invalidBE > bmpCharsLE - invalidLE)  return 'utf-32be';
+    if (bmpCharsBE - invalidBE < bmpCharsLE - invalidLE)  return 'utf-32le';
+
+    // Couldn't decide (likely all zeros or not enough data).
+    return defaultEncoding || 'utf-32le';
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  arseTokens(value);
+        }
+
+        if (utils$1.isFunction(parser)) {
+          return parser.call(this, value, key);
+        }
+
+        if (utils$1.isRegExp(parser)) {
+          return parser.exec(value);
+        }
+
+        throw new TypeError('parser must be boolean|regexp|function');
+      }
+    }
+  }
+
+  has(header, matcher) {
+    header = normalizeHeader(header);
+
+    if (header) {
+      const key = utils$1.findKey(this, header);
+
+      return !!(key && this[key] !== undefined && (!matcher || matchHeaderValue(this, this[key], key, matcher)));
+    }
+
+    return false;
+  }
+
+  delete(header, matcher) {
+    const self = this;
+    let deleted = false;
+
+    function deleteHeader(_header) {
+      _header = normalizeHeader(_header);
+
+      if (_header) {
+        const key = utils$1.findKey(self, _header);
+
+        if (key && (!matcher || matchHeaderValue(self, self[key], key, matcher))) {
+          delete self[key];
+
+          deleted = true;
+        }
+      }
+    }
+
+    if (utils$1.isArray(header)) {
+      header.forEach(deleteHeader);
+    } else {
+      deleteHeader(header);
+    }
+
+    return deleted;
+  }
+
+  clear(matcher) {
+    const keys = Object.keys(this);
+    let i = keys.length;
+    let deleted = false;
+
+    while (i--) {
+      const key = keys[i];
+      if(!matcher || matchHeaderValue(this, this[key], key, matcher, true)) {
+        delete this[key];
+        deleted = true;
+      }
+    }
+
+    return deleted;
+  }
+
+  normalize(format) {
+    const self = this;
+    const headers = {};
+
+    utils$1.forEach(this, (value, header) => {
+      const key = utils$1.findKey(headers, header);
+
+      if (key) {
+        self[key] = normalizeValue(value);
+        delete self[header];
+        return;
+      }
+
+      const normalized = format ? formatHeader(header) : String(header).trim();
+
+      if (normalized !== header) {
+        delete self[header];
+      }
+
+      self[normalized] = normalizeValue(value);
+
+      headers[normalized] = true;
+    });
+
+    return this;
+  }
+
+  concat(...targets) {
+    return this.constructor.concat(this, ...targets);
+  }
+
+  toJSON(asStrings) {
+    const obj = Object.create(null);
+
+    utils$1.forEach(this, (value, header) => {
+      value != null && value !== false && (obj[header] = asStrings && utils$1.isArray(value) ? value.join(', ') : value);
+    });
+
+    return obj;
+  }
+
+  [Symbol.iterator]() {
+    return Object.entries(this.toJSON())[Symbol.iterator]();
+  }
+
+  toString() {
+    return Object.entries(this.toJSON()).map(([header, value]) => header + ': ' + value).join('\n');
+  }
+
+  getSetCookie() {
+    return this.get("set-cookie") || [];
+  }
+
+  get [Symbol.toStringTag]() {
+    return 'AxiosHeaders';
+  }
+
+  static from(thing) {
+    return thing instanceof this ? thing : new this(thing);
+  }
+
+  static concat(first, ...targets) {
+    const computed = new this(first);
+
+    targets.forEach((target) => computed.set(target));
+
+    return computed;
+  }
+
+  static accessor(header) {
+    const internals = this[$internals] = (this[$internals] = {
+      accessors: {}
+    });
+
+    const accessors = internals.accessors;
+    const prototype = this.prototype;
+
+    function defineAccessor(_header) {
+      const lHeader = normalizeHeader(_header);
+
+      if (!accessors[lHeader]) {
+        buildAccessors(prototype, _header);
+        accessors[lHeader] = true;
+      }
+    }
+
+    utils$1.isArray(header) ? header.forEach(defineAccessor) : defineAccessor(header);
+
+    return this;
+  }
+}
+
+AxiosHeaders$1.accessor(['Content-Type', 'Content-Length', 'Accept', 'Accept-Encoding', 'User-Agent', 'Authorization']);
+
+// reserved names hotfix
+utils$1.reduceDescriptors(AxiosHeaders$1.prototype, ({value}, key) => {
+  let mapped = key[0].toUpperCase() + key.slice(1); // map `set` => `Set`
+  return {
+    get: () => value,
+    set(headerValue) {
+      this[mapped] = headerValue;
+    }
+  }
+});
+
+utils$1.freezeMethods(AxiosHeaders$1);
+
+const AxiosHeaders$2 = AxiosHeaders$1;
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Array|Function} fns A single function or Array of functions
+ * @param {?Object} response The response object
+ *
+ * @returns {*} The resulting transformed data
+ */
+function transformData(fns, response) {
+  const config = this || defaults$1;
+  const context = response || config;
+  const headers = AxiosHeaders$2.from(context.headers);
+  let data = context.data;
+
+  utils$1.forEach(fns, function transform(fn) {
+    data = fn.call(config, data, headers.normalize(), response ? response.status : undefined);
+  });
+
+  headers.normalize();
+
+  return data;
+}
+
+function isCancel$1(value) {
+  return !!(value && value.__CANCEL__);
+}
+
+/**
+ * A `CanceledError` is an object that is thrown when an operation is canceled.
+ *
+ * @param {string=} message The message.
+ * @param {Object=} config The config.
+ * @param {Object=} request The request.
+ *
+ * @returns {CanceledError} The created error.
+ */
+function CanceledError$1(message, config, request) {
+  // eslint-disable-next-line no-eq-null,eqeqeq
+  AxiosError$1.call(this, message == null ? 'canceled' : message, AxiosError$1.ERR_CANCELED, config, request);
+  this.name = 'CanceledError';
+}
+
+utils$1.inherits(CanceledError$1, AxiosError$1, {
+  __CANCEL__: true
+});
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ *
+ * @returns {object} The response.
+ */
+function settle(resolve, reject, response) {
+  const validateStatus = response.config.validateStatus;
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(new AxiosError$1(
+      'Request failed with status code ' + response.status,
+      [AxiosError$1.ERR_BAD_REQUEST, AxiosError$1.ERR_BAD_RESPONSE][Math.floor(response.status / 100) - 4],
+      response.config,
+      response.request,
+      response
+    ));
+  }
+}
+
+function parseProtocol(url) {
+  const match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
+  return match && match[1] || '';
+}
+
+/**
+ * Calculate data maxRate
+ * @param {Number} [samplesCount= 10]
+ * @param {Number} [min= 1000]
+ * @returns {Function}
+ */
+function speedometer(samplesCount, min) {
+  samplesCount = samplesCount || 10;
+  const bytes = new Array(samplesCount);
+  const timestamps = new Array(samplesCount);
+  let head = 0;
+  let tail = 0;
+  let firstSampleTS;
+
+  min = min !== undefined ? min : 1000;
+
+  return function push(chunkLength) {
+    const now = Date.now();
+
+    const startedAt = timestamps[tail];
+
+    if (!firstSampleTS) {
+      firstSampleTS = now;
+    }
+
+    bytes[head] = chunkLength;
+    timestamps[head] = now;
+
+    let i = tail;
+    let bytesCount = 0;
+
+    while (i !== head) {
+      bytesCount += bytes[i++];
+      i = i % samplesCount;
+    }
+
+    head = (head + 1) % samplesCount;
+
+    if (head === tail) {
+      tail = (tail + 1) % samplesCount;
+    }
+
+    if (now - firstSampleTS < min) {
+      return;
+    }
+
+    const passed = startedAt && now - startedAt;
+
+    return passed ? Math.round(bytesCount * 1000 / passed) : undefined;
+  };
+}
+
+/**
+ * Throttle decorator
+ * @param {Function} fn
+ * @param {Number} freq
+ * @return {Function}
+ */
+function throttle(fn, freq) {
+  let timestamp = 0;
+  let threshold = 1000 / freq;
+  let lastArgs;
+  let timer;
+
+  const invoke = (args, now = Date.now()) => {
+    timestamp = now;
+    lastArgs = null;
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    fn.apply(null, args);
+  };
+
+  const throttled = (...args) => {
+    const now = Date.now();
+    const passed = now - timestamp;
+    if ( passed >= threshold) {
+      invoke(args, now);
+    } else {
+      lastArgs = args;
+      if (!timer) {
+        timer = setTimeout(() => {
+          timer = null;
+          invoke(lastArgs);
+        }, threshold - passed);
+      }
+    }
+  };
+
+  const flush = () => lastArgs && invoke(lastArgs);
+
+  return [throttled, flush];
+}
+
+const progressEventReducer = (listener, isDownloadStream, freq = 3) => {
+  let bytesNotified = 0;
+  const _speedometer = speedometer(50, 250);
+
+  return throttle(e => {
+    const loaded = e.loaded;
+    const total = e.lengthComputable ? e.total : undefined;
+    const progressBytes = loaded - bytesNotified;
+    const rate = _speedometer(progressBytes);
+    const inRange = loaded <= total;
+
+    bytesNotified = loaded;
+
+    const data = {
+      loaded,
+      total,
+      progress: total ? (loaded / total) : undefined,
+      bytes: progressBytes,
+      rate: rate ? rate : undefined,
+      estimated: rate && total && inRange ? (total - loaded) / rate : undefined,
+      event: e,
+      lengthComputable: total != null,
+      [isDownloadStream ? 'download' : 'upload']: true
+    };
+
+    listener(data);
+  }, freq);
+};
+
+const progressEventDecorator = (total, throttled) => {
+  const lengthComputable = total != null;
+
+  return [(loaded) => throttled[0]({
+    lengthComputable,
+    total,
+    loaded
+  }), throttled[1]];
+};
+
+const asyncDecorator = (fn) => (...args) => utils$1.asap(() => fn(...args));
+
+const isURLSameOrigin = platform.hasStandardBrowserEnv ? ((origin, isMSIE) => (url) => {
+  url = new URL(url, platform.origin);
+
+  return (
+    origin.protocol === url.protocol &&
+    origin.host === url.host &&
+    (isMSIE || origin.port === url.port)
+  );
+})(
+  new URL(platform.origin),
+  platform.navigator && /(msie|trident)/i.test(platform.navigator.userAgent)
+) : () => true;
+
+const cookies = platform.hasStandardBrowserEnv ?
+
+  // Standard browser envs support document.cookie
+  {
+    write(name, value, expires, path, domain, secure) {
+      const cookie = [name + '=' + encodeURIComponent(value)];
+
+      utils$1.isNumber(expires) && cookie.push('expires=' + new Date(expires).toGMTString());
+
+      utils$1.isString(path) && cookie.push('path=' + path);
+
+      utils$1.isString(domain) && cookie.push('domain=' + domain);
+
+      secure === true && cookie.push('secure');
+
+      document.cookie = cookie.join('; ');
+    },
+
+    read(name) {
+      const match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+      return (match ? decodeURIComponent(match[3]) : null);
+    },
+
+    remove(name) {
+      this.write(name, '', Date.now() - 86400000);
+    }
+  }
+
+  :
+
+  // Non-standard browser env (web workers, react-native) lack needed support.
+  {
+    write() {},
+    read() {
+      return null;
+    },
+    remove() {}
+  };
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ *
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
+}
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ *
+ * @returns {string} The combined URL
+ */
+function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/?\/$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+    : baseURL;
+}
+
+/**
+ * Creates a new URL by combining the baseURL with the requestedURL,
+ * only when the requestedURL is not already an absolute URL.
+ * If the requestURL is absolute, this function returns the requestedURL untouched.
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} requestedURL Absolute or relative URL to combine
+ *
+ * @returns {string} The combined full path
+ */
+function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
+  let isRelativeUrl = !isAbsoluteURL(requestedURL);
+  if (baseURL && (isRelativeUrl || allowAbsoluteUrls == false)) {
+    return combineURLs(baseURL, requestedURL);
+  }
+  return requestedURL;
+}
+
+const headersToObject = (thing) => thing instanceof AxiosHeaders$2 ? { ...thing } : thing;
+
+/**
+ * Config-specific merge-function which creates a new config-object
+ * by merging two configuration objects together.
+ *
+ * @param {Object} config1
+ * @param {Object} config2
+ *
+ * @returns {Object} New object resulting from merging config2 to config1
+ */
+function mergeConfig$1(config1, config2) {
+  // eslint-disable-next-line no-param-reassign
+  config2 = config2 || {};
+  const config = {};
+
+  function getMergedValue(target, source, prop, caseless) {
+    if (utils$1.isPlainObject(target) && utils$1.isPlainObject(source)) {
+      return utils$1.merge.call({caseless}, target, source);
+    } else if (utils$1.isPlainObject(source)) {
+      return utils$1.merge({}, source);
+    } else if (utils$1.isArray(source)) {
+      return source.slice();
+    }
+    return source;
+  }
+
+  // eslint-disable-next-line consistent-return
+  function mergeDeepProperties(a, b, prop , caseless) {
+    if (!utils$1.isUndefined(b)) {
+      return getMergedValue(a, b, prop , caseless);
+    } else if (!utils$1.isUndefined(a)) {
+      return getMergedValue(undefined, a, prop , caseless);
+    }
+  }
+
+  // eslint-disable-next-line consistent-return
+  function valueFromConfig2(a, b) {
+    if (!utils$1.isUndefined(b)) {
+      return getMergedValue(undefined, b);
+    }
+  }
+
+  // eslint-disable-next-line consistent-return
+  function defaultToConfig2(a, b) {
+    if (!utils$1.isUndefined(b)) {
+      return getMergedValue(undefined, b);
+    } else if (!utils$1.isUndefined(a)) {
+      return getMergedValue(undefined, a);
+    }
+  }
+
+  // eslint-disable-next-line consistent-return
+  function mergeDirectKeys(a, b, prop) {
+    if (prop in config2) {
+      return getMergedValue(a, b);
+    } else if (prop in config1) {
+      return getMergedValue(undefined, a);
+    }
+  }
+
+  const mergeMap = {
+    url: valueFromConfig2,
+    method: valueFromConfig2,
+    data: valueFromConfig2,
+    baseURL: defaultToConfig2,
+    transformRequest: defaultToConfig2,
+    transformResponse: defaultToConfig2,
+    paramsSerializer: defaultToConfig2,
+    timeout: defaultToConfig2,
+    timeoutMessage: defaultToConfig2,
+    withCredentials: defaultToConfig2,
+    withXSRFToken: defaultToConfig2,
+    adapter: defaultToConfig2,
+    responseType: defaultToConfig2,
+    xsrfCookieName: defaultToConfig2,
+    xsrfHeaderName: defaultToConfig2,
+    onUploadProgress: defaultToConfig2,
+    onDownloadProgress: defaultToConfig2,
+    decompress: defaultToConfig2,
+    maxContentLength: defaultToConfig2,
+    maxBodyLength: defaultToConfig2,
+    beforeRedirect: defaultToConfig2,
+    transport: defaultToConfig2,
+    httpAgent: defaultToConfig2,
+    httpsAgent: defaultToConfig2,
+    cancelToken: defaultToConfig2,
+    socketPath: defaultToConfig2,
+    responseEncoding: defaultToConfig2,
+    validateStatus: mergeDirectKeys,
+    headers: (a, b , prop) => mergeDeepProperties(headersToObject(a), headersToObject(b),prop, true)
+  };
+
+  utils$1.forEach(Object.keys(Object.assign({}, config1, config2)), function computeConfigValue(prop) {
+    const merge = mergeMap[prop] || mergeDeepProperties;
+    const configValue = merge(config1[prop], config2[prop], prop);
+    (utils$1.isUndefined(configValue) && merge !== mergeDirectKeys) || (config[prop] = configValue);
+  });
+
+  return config;
+}
+
+const resolveConfig = (config) => {
+  const newConfig = mergeConfig$1({}, config);
+
+  let {data, withXSRFToken, xsrfHeaderName, xsrfCookieName, headers, auth} = newConfig;
+
+  newConfig.headers = headers = AxiosHeaders$2.from(headers);
+
+  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url, newConfig.allowAbsoluteUrls), config.params, config.paramsSerializer);
+
+  // HTTP basic authentication
+  if (auth) {
+    headers.set('Authorization', 'Basic ' +
+      btoa((auth.username || '') + ':' + (auth.password ? unescape(encodeURIComponent(auth.password)) : ''))
+    );
+  }
+
+  let contentType;
+
+  if (utils$1.isFormData(data)) {
+    if (platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv) {
+      headers.setContentType(undefined); // Let the browser set it
+    } else if ((contentType = headers.getContentType()) !== false) {
+      // fix semicolon duplication issue for ReactNative FormData implementation
+      const [type, ...tokens] = contentType ? contentType.split(';').map(token => token.trim()).filter(Boolean) : [];
+      headeimport MarkdownIt = require('.');
+import Ruler = require('./ruler');
+import Token = require('./token');
+import StateInline = require('./rules_inline/state_inline');
+
+declare namespace ParserInline {
+    type RuleInline = (state: StateInline, silent: boolean) => boolean;
+    type RuleInline2 = (state: StateInline) => boolean;
+}
+
+declare class ParserInline {
+    /**
+     * [[Ruler]] instance. Keep configuration of inline rules.
+     */
+    ruler: Ruler<ParserInline.RuleInline>;
+
+    /**
+     * [[Ruler]] instance. Second ruler used for post-processing
+     * (e.g. in emphasis-like rules).
+     */
+    ruler2: Ruler<ParserInline.RuleInline2>;
+
+    /**
+     * Skip single token by running all rules in validation mode;
+     * returns `true` if any rule reported success
+     */
+    skipToken(state: StateInline): void;
+
+    /**
+     * Generate tokens for input range
+     */
+    tokenize(state: StateInline): void;
+
+    /**
+     * Process input string and push inline tokens into `outTokens`
+     */
+    parse(str: string, md: MarkdownIt, env: any, outTokens: Token[]): void;
+
+    State: typeof StateInline;
+}
+
+export = ParserInline;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                # String.prototype.trim <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
+[![dependency status][deps-svg]][deps-url]
+[![dev dependency status][dev-deps-svg]][dev-deps-url]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
+
+[![npm badge][npm-badge-png]][package-url]
+
+An ES5 spec-compliant `String.prototype.trim` shim. Invoke its "shim" method to shim `String.prototype.trim` if it is unavailable.
+
+This package implements the [es-shim API](https://github.com/es-shims/api) interface. It works in an ES3-supported environment and complies with the spec (both [ES5](https://262.ecma-international.org/5.1/#sec-15.5.4.20) and [current](https://tc39.es/ecma262/#sec-string.prototype.trim)).
+
+Most common usage:
+
+```js
+var assert = require('assert');
+var trim = require('string.prototype.trim');
+
+assert(trim(' \t\na \t\n') === 'a');
+
+trim.shim(); // will be a no-op if not needed
+
+assert(trim(' \t\na \t\n') === ' \t\na \t\n'.trim());
+```
+
+## Engine Bugs
+Some implementations of `String#trim` incorrectly trim zero-width spaces. This shim detects and corrects this behavior.
+
+## Tests
+Simply clone the repo, `npm install`, and run `npm test`
+
+[package-url]: https://npmjs.com/package/string.prototype.trim
+[npm-version-svg]: https://versionbadg.es/es-shims/String.prototype.trim.svg
+[deps-svg]: https://david-dm.org/es-shims/String.prototype.trim.svg
+[deps-url]: https://david-dm.org/es-shims/String.prototype.trim
+[dev-deps-svg]: https://david-dm.org/es-shims/String.prototype.trim/dev-status.svg
+[dev-deps-url]: https://david-dm.org/es-shims/String.prototype.trim#info=devDependencies
+[license-image]: https://img.shields.io/npm/l/string.prototype.trim.svg
+[license-url]: LICENSE
+[downloads-image]: https://img.shields.io/npm/dm/string.prototype.trim.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=string.prototype.trim
+[codecov-image]: https://codecov.io/gh/es-shims/String.prototype.trim/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/es-shims/String.prototype.trim/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/es-shims/String.prototype.trim
+[actions-url]: https://github.com/es-shims/String.prototype.trim/actions
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              意懿擬椅毅疑矣義艤薏蟻衣誼"],
+["eca1","議醫二以伊利吏夷姨履已弛彛怡易李梨泥爾珥理異痍痢移罹而耳肄苡荑裏裡貽貳邇里離飴餌匿溺瀷益翊翌翼謚人仁刃印吝咽因姻寅引忍湮燐璘絪茵藺蚓認隣靭靷鱗麟一佚佾壹日溢逸鎰馹任壬妊姙恁林淋稔臨荏賃入卄"],
+["eda1","立笠粒仍剩孕芿仔刺咨姉姿子字孜恣慈滋炙煮玆瓷疵磁紫者自茨蔗藉諮資雌作勺嚼斫昨灼炸爵綽芍酌雀鵲孱棧殘潺盞岑暫潛箴簪蠶雜丈仗匠場墻壯奬將帳庄張掌暲杖樟檣欌漿牆狀獐璋章粧腸臟臧莊葬蔣薔藏裝贓醬長"],
+["eea1","障再哉在宰才材栽梓渽滓災縡裁財載齋齎爭箏諍錚佇低儲咀姐底抵杵楮樗沮渚狙猪疽箸紵苧菹著藷詛貯躇這邸雎齟勣吊嫡寂摘敵滴狄炙的積笛籍績翟荻謫賊赤跡蹟迪迹適鏑佃佺傳全典前剪塡塼奠專展廛悛戰栓殿氈澱"],
+["efa1","煎琠田甸畑癲筌箋箭篆纏詮輾轉鈿銓錢鐫電顚顫餞切截折浙癤竊節絶占岾店漸点粘霑鮎點接摺蝶丁井亭停偵呈姃定幀庭廷征情挺政整旌晶晸柾楨檉正汀淀淨渟湞瀞炡玎珽町睛碇禎程穽精綎艇訂諪貞鄭酊釘鉦鋌錠霆靖"],
+["f0a1","靜頂鼎制劑啼堤帝弟悌提梯濟祭第臍薺製諸蹄醍除際霽題齊俎兆凋助嘲弔彫措操早晁曺曹朝條棗槽漕潮照燥爪璪眺祖祚租稠窕粗糟組繰肇藻蚤詔調趙躁造遭釣阻雕鳥族簇足鏃存尊卒拙猝倧宗從悰慫棕淙琮種終綜縱腫"],
+["f1a1","踪踵鍾鐘佐坐左座挫罪主住侏做姝胄呪周嗾奏宙州廚晝朱柱株注洲湊澍炷珠疇籌紂紬綢舟蛛註誅走躊輳週酎酒鑄駐竹粥俊儁准埈寯峻晙樽浚準濬焌畯竣蠢逡遵雋駿茁中仲衆重卽櫛楫汁葺增憎曾拯烝甑症繒蒸證贈之只"],
+["f2a1","咫地址志持指摯支旨智枝枳止池沚漬知砥祉祗紙肢脂至芝芷蜘誌識贄趾遲直稙稷織職唇嗔塵振搢晉晋桭榛殄津溱珍瑨璡畛疹盡眞瞋秦縉縝臻蔯袗診賑軫辰進鎭陣陳震侄叱姪嫉帙桎瓆疾秩窒膣蛭質跌迭斟朕什執潗緝輯"],
+["f3a1","鏶集徵懲澄且侘借叉嗟嵯差次此磋箚茶蹉車遮捉搾着窄錯鑿齪撰澯燦璨瓚竄簒纂粲纘讚贊鑽餐饌刹察擦札紮僭參塹慘慙懺斬站讒讖倉倡創唱娼廠彰愴敞昌昶暢槍滄漲猖瘡窓脹艙菖蒼債埰寀寨彩採砦綵菜蔡采釵冊柵策"],
+["f4a1","責凄妻悽處倜刺剔尺慽戚拓擲斥滌瘠脊蹠陟隻仟千喘天川擅泉淺玔穿舛薦賤踐遷釧闡阡韆凸哲喆徹撤澈綴輟轍鐵僉尖沾添甛瞻簽籤詹諂堞妾帖捷牒疊睫諜貼輒廳晴淸聽菁請靑鯖切剃替涕滯締諦逮遞體初剿哨憔抄招梢"],
+["f5a1","椒楚樵炒焦硝礁礎秒稍肖艸苕草蕉貂超酢醋醮促囑燭矗蜀觸寸忖村邨叢塚寵悤憁摠總聰蔥銃撮催崔最墜抽推椎楸樞湫皺秋芻萩諏趨追鄒酋醜錐錘鎚雛騶鰍丑畜祝竺筑築縮蓄蹙蹴軸逐春椿瑃出朮黜充忠沖蟲衝衷悴膵萃"],
+["f6a1","贅取吹嘴娶就炊翠聚脆臭趣醉驟鷲側仄厠惻測層侈値嗤峙幟恥梔治淄熾痔痴癡稚穉緇緻置致蚩輜雉馳齒則勅飭親七柒漆侵寢枕沈浸琛砧針鍼蟄秤稱快他咤唾墮妥惰打拖朶楕舵陀馱駝倬卓啄坼度托拓擢晫柝濁濯琢琸託"],
+["f7a1","鐸呑嘆坦彈憚歎灘炭綻誕奪脫探眈耽貪塔搭榻宕帑湯糖蕩兌台太怠態殆汰泰笞胎苔跆邰颱宅擇澤撑攄兎吐土討慟桶洞痛筒統通堆槌腿褪退頹偸套妬投透鬪慝特闖坡婆巴把播擺杷波派爬琶破罷芭跛頗判坂板版瓣販辦鈑"],
+["f8a1","阪八叭捌佩唄悖敗沛浿牌狽稗覇貝彭澎烹膨愎便偏扁片篇編翩遍鞭騙貶坪平枰萍評吠嬖幣廢弊斃肺蔽閉陛佈包匍匏咆哺圃布怖抛抱捕暴泡浦疱砲胞脯苞葡蒲袍褒逋鋪飽鮑幅暴曝瀑爆輻俵剽彪慓杓標漂瓢票表豹飇飄驃"],
+["f9a1","品稟楓諷豊風馮彼披疲皮被避陂匹弼必泌珌畢疋筆苾馝乏逼下何厦夏廈昰河瑕荷蝦賀遐霞鰕壑學虐謔鶴寒恨悍旱汗漢澣瀚罕翰閑閒限韓割轄函含咸啣喊檻涵緘艦銜陷鹹合哈盒蛤閤闔陜亢伉姮嫦巷恒抗杭桁沆港缸肛航"],
+["faa1","行降項亥偕咳垓奚孩害懈楷海瀣蟹解該諧邂駭骸劾核倖幸杏荇行享向嚮珦鄕響餉饗香噓墟虛許憲櫶獻軒歇險驗奕爀赫革俔峴弦懸晛泫炫玄玹現眩睍絃絢縣舷衒見賢鉉顯孑穴血頁嫌俠協夾峽挾浹狹脅脇莢鋏頰亨兄刑型"],
+["fba1","形泂滎瀅灐炯熒珩瑩荊螢衡逈邢鎣馨兮彗惠慧暳蕙蹊醯鞋乎互呼壕壺好岵弧戶扈昊晧毫浩淏湖滸澔濠濩灝狐琥瑚瓠皓祜糊縞胡芦葫蒿虎號蝴護豪鎬頀顥惑或酷婚昏混渾琿魂忽惚笏哄弘汞泓洪烘紅虹訌鴻化和嬅樺火畵"],
+["fca1","禍禾花華話譁貨靴廓擴攫確碻穫丸喚奐宦幻患換歡晥桓渙煥環紈還驩鰥活滑猾豁闊凰幌徨恍惶愰慌晃晄榥況湟滉潢煌璜皇篁簧荒蝗遑隍黃匯回廻徊恢悔懷晦會檜淮澮灰獪繪膾茴蛔誨賄劃獲宖橫鐄哮嚆孝效斅曉梟涍淆"],
+["fda1","爻肴酵驍侯候厚后吼喉嗅帿後朽煦珝逅勛勳塤壎焄熏燻薰訓暈薨喧暄煊萱卉喙毁彙徽揮暉煇諱輝麾休携烋畦虧恤譎鷸兇凶匈洶胸黑昕欣炘痕吃屹紇訖欠欽歆吸恰洽翕興僖凞喜噫囍姬嬉希憙憘戱晞曦熙熹熺犧禧稀羲詰"]
+]
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       The listener of the `net.Socket` `'close'` event.
+ *
+ * @private
+ */
+function socketOnClose() {
+  const websocket = this[kWebSocket];
+
+  this.removeListener('close', socketOnClose);
+  this.removeListener('data', socketOnData);
+  this.removeListener('end', socketOnEnd);
+
+  websocket._readyState = WebSocket.CLOSING;
+
+  let chunk;
+
+  //
+  // The close frame might not have been received or the `'end'` event emitted,
+  // for example, if the socket was destroyed due to an error. Ensure that the
+  // `receiver` stream is closed after writing any remaining buffered data to
+  // it. If the readable side of the socket is in flowing mode then there is no
+  // buffered data as everything has been already written and `readable.read()`
+  // will return `null`. If instead, the socket is paused, any possible buffered
+  // data will be read as a single chunk.
+  //
+  if (
+    !this._readableState.endEmitted &&
+    !websocket._closeFrameReceived &&
+    !websocket._receiver._writableState.errorEmitted &&
+    (chunk = websocket._socket.read()) !== null
+  ) {
+    websocket._receiver.write(chunk);
+  }
+
+  websocket._receiver.end();
+
+  this[kWebSocket] = undefined;
+
+  clearTimeout(websocket._closeTimer);
+
+  if (
+    websocket._receiver._writableState.finished ||
+    websocket._receiver._writableState.errorEmitted
+  ) {
+    websocket.emitClose();
+  } else {
+    websocket._receiver.on('error', receiverOnFinish);
+    websocket._receiver.on('finish', receiverOnFinish);
+  }
+}
+
+/**
+ * The listener of the `net.Socket` `'data'` event.
+ *
+ * @param {Buffer} chunk A chunk of data
+ * @private
+ */
+function socketOnData(chunk) {
+  if (!this[kWebSocket]._receiver.write(chunk)) {
+    this.pause();
+  }
+}
+
+/**
+ * The listener of the `net.Socket` `'end'` event.
+ *
+ * @private
+ */
+function socketOnEnd() {
+  const websocket = this[kWebSocket];
+
+  websocket._readyState = WebSocket.CLOSING;
+  websocket._receiver.end();
+  this.end();
+}
+
+/**
+ * The listener of the `net.Socket` `'error'` event.
+ *
+ * @private
+ */
+function socketOnError() {
+  const websocket = this[kWebSocket];
+
+  this.removeListener('error', socketOnError);
+  this.on('error', NOOP);
+
+  if (websocket) {
+    websocket._readyState = WebSocket.CLOSING;
+    this.destroy();
+  }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       {
+	"name": "function.prototype.name",
+	"version": "1.1.6",
+	"author": "Jordan Harband <ljharb@gmail.com>",
+	"funding": {
+		"url": "https://github.com/sponsors/ljharb"
+	},
+	"description": "An ES2015 spec-compliant `Function.prototype.name` shim",
+	"license": "MIT",
+	"main": "index.js",
+	"scripts": {
+		"prepack": "npmignore --auto --commentLines=autogenerated",
+		"prepublish": "not-in-publish || npm run prepublishOnly",
+		"prepublishOnly": "safe-publish-latest",
+		"pretest": "npm run lint",
+		"test": "npm run --silent tests-only",
+		"posttest": "aud --production",
+		"tests-only": "nyc tape 'test/**/*.js'",
+		"prelint": "eclint check $(git ls-files | xargs find 2> /dev/null | grep -vE 'node_modules|\\.git')",
+		"lint": "eslint --ext=js,mjs .",
+		"postlint": "es-shim-api --bound",
+		"version": "auto-changelog && git add CHANGELOG.md",
+		"postversion": "auto-changelog && git add CHANGELOG.md && git commit --no-edit --amend && git tag -f \"v$(node -e \"console.log(require('./package.json').version)\")\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/es-shims/Function.prototype.name.git"
+	},
+	"keywords": [
+		"Function.prototype.name",
+		"function",
+		"name",
+		"ES6",
+		"ES2015",
+		"shim",
+		"polyfill",
+		"es-shim API"
+	],
+	"dependencies": {
+		"call-bind": "^1.0.2",
+		"define-properties": "^1.2.0",
+		"es-abstract": "^1.22.1",
+		"functions-have-names": "^1.2.3"
+	},
+	"devDependencies": {
+		"@es-shims/api": "^2.4.2",
+		"@ljharb/eslint-config": "^21.1.0",
+		"aud": "^2.0.3",
+		"auto-changelog": "^2.4.0",
+		"eclint": "^2.8.1",
+		"eslint": "=8.8.0",
+		"for-each": "^0.3.3",
+		"has-strict-mode": "^1.0.1",
+		"in-publish": "^2.0.1",
+		"make-arrow-function": "^1.2.0",
+		"make-async-function": "^1.0.0",
+		"make-generator-function": "^2.0.0",
+		"npmignore": "^0.3.0",
+		"nyc": "^10.3.2",
+		"safe-publish-latest": "^2.0.0",
+		"tape": "^5.6.6",
+		"uglify-register": "^1.0.1"
+	},
+	"testling": {
+		"files": "test/index.js",
+		"browsers": [
+			"iexplore/9.0..latest",
+			"firefox/4.0..6.0",
+			"firefox/15.0..latest",
+			"firefox/nightly",
+			"chrome/4.0..10.0",
+			"chrome/20.0..latest",
+			"chrome/canary",
+			"opera/11.6..latest",
+			"opera/next",
+			"safari/5.0..latest",
+			"ipad/6.0..latest",
+			"iphone/6.0..latest",
+			"android-browser/4.2"
+		]
+	},
+	"engines": {
+		"node": ">= 0.4"
+	},
+	"auto-changelog": {
+		"output": "CHANGELOG.md",
+		"template": "keepachangelog",
+		"unreleased": false,
+		"commitLimit": false,
+		"backfillLimit": false,
+		"hideCredit": true,
+		"startingVersion": "v1.1.6"
+	},
+	"publishConfig": {
+		"ignore": [
+			".github/workflows"
+		]
+	}
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
